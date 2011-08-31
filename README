@@ -1,0 +1,23 @@
+FC Readme
+
+Welcome the FC, the development framework used by CurlyRocket.
+
+First, some caveats:
+
+FC builds on both iOS and OSX but has limited functionality depending on platform.
+FC is very immature - pretty much everything is open to change, so don't build your livelyhood on it just yet.
+FC is meant for both target executables and tools.
+FC is written in Objective-C++ and works only on iOS and OSX. Don't expect a C++, Java or C# version - FC is not built to be cross platform.
+
+TODO:
+
+Document
+Cean up old chuff that isn't needed - UIView stutt - it's a bit redundant or needs a nicer replacement
+Better OSX support
+Physics, actors etc etc...
+Document resource format and intent
+etc.
+
+Have fun - suggestions etc send to: link@curlyrocket.com
+@fizzychicken
+@curlyrocketltd
