@@ -26,6 +26,9 @@ static const float kFCInvalidFloat = -FLT_MAX;
 static const int kFCInvalidInt = 0x7fffffff;
 
 extern NSString* kFCKeyId;
+extern NSString* kFCKeyTexture;
+extern NSString* kFCKeyAtlas;
+extern NSString* kFCKeyName;
 
 // Physics
 
@@ -70,6 +73,8 @@ extern NSString* kFCKeyType;
 
 extern NSString* kFCKeyX;
 extern NSString* kFCKeyY;
+extern NSString* kFCKeyWidth;
+extern NSString* kFCKeyHeight;
 extern NSString* kFCKeyOffsetX;
 extern NSString* kFCKeyOffsetY;
 extern NSString* kFCKeyAngle;

@@ -16,6 +16,8 @@ Cean up old chuff that isn't needed - UIView stutt - it's a bit redundant or nee
 Better OSX support
 Physics, actors etc etc...
 Document resource format and intent
+Unit tests
+ARC support
 etc.
 
 Have fun - suggestions etc send to: link@curlyrocket.com

@@ -23,6 +23,9 @@
 #import "FCKeys.h"
 
 NSString* kFCKeyId = @"id";
+NSString* kFCKeyTexture = @"texture";
+NSString* kFCKeyAtlas = @"atlas";
+NSString* kFCKeyName = @"name";
 
 // Physics
 
@@ -67,6 +70,8 @@ NSString* kFCKeyType = @"type";
 
 NSString* kFCKeyX = @"x";
 NSString* kFCKeyY = @"y";
+NSString* kFCKeyWidth = @"width";
+NSString* kFCKeyHeight = @"height";
 NSString* kFCKeyOffsetX = @"offsetX";
 NSString* kFCKeyOffsetY = @"offsetY";
 NSString* kFCKeyAngle = @"angle";

@@ -20,33 +20,31 @@
  THE SOFTWARE.
  */
 
-/* TODO:
-		Add perf metrics
- */
+#import "FCTextureFile.h"
 
-#if TARGET_OS_IPHONE
+@implementation FCTextureFile
+@synthesize name = _name;
+@synthesize rawdata = _rawdata;
+@synthesize frame = _frame;
 
-#import <Foundation/Foundation.h>
-
-@class FCShaderManager;
-@class FCTextureManager;
-
-@interface FCRenderer : NSObject {
-	NSMutableArray* mModels;
-	NSMutableArray* mGatherList;
+-(id)initWithURL:(NSURL *)url
+{
+	self = [super init];
+	if (self) {
+		// blah
+	}
+	return self;
 }
-@property(nonatomic, readonly) FCShaderManager* shaderManager;
-@property(nonatomic, readonly) FCTextureManager* textureManager;
 
-+(FCRenderer*)instance;
--(id)init;
--(void)render;
++(id)fcTextureFileWithURL:(NSURL *)url
+{
+	return [[[FCTextureFile alloc] initWithURL:url] autorelease];
+}
 
--(void)addToGatherList:(id)obj;
--(void)removeFromGatherList:(id)obj;
-
--(void)prebuildShaders;
+-(void)dealloc
+{
+	self.name = nil;
+	[super dealloc];
+}
 
 @end
-
-#endif // TARGET_OS_IPHONE

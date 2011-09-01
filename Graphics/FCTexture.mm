@@ -20,33 +20,45 @@
  THE SOFTWARE.
  */
 
-/* TODO:
-		Add perf metrics
- */
+#import "FCTexture.h"
 
-#if TARGET_OS_IPHONE
+@implementation FCTexture
+@synthesize name = _name;
+@synthesize textureFile = _textureFile;
+@synthesize absUV = _absUV;
 
-#import <Foundation/Foundation.h>
-
-@class FCShaderManager;
-@class FCTextureManager;
-
-@interface FCRenderer : NSObject {
-	NSMutableArray* mModels;
-	NSMutableArray* mGatherList;
+-(id)init
+{
+	self = [super init];
+	if (self) {
+		// blah
+	}
+	return self;
 }
-@property(nonatomic, readonly) FCShaderManager* shaderManager;
-@property(nonatomic, readonly) FCTextureManager* textureManager;
 
-+(FCRenderer*)instance;
--(id)init;
--(void)render;
++(id)fcTexture
+{
+	return [[[FCTexture alloc] init] autorelease];
+}
 
--(void)addToGatherList:(id)obj;
--(void)removeFromGatherList:(id)obj;
+-(void)dealloc
+{
+	[super dealloc];
+}
 
--(void)prebuildShaders;
+-(CGRect)absUVFromRelUV:(CGRect)relUV
+{
+	return CGRectMake(relUV.origin.x + (relUV.size.width * self.absUV.size.width), 
+					  relUV.origin.y + (relUV.size.height * self.absUV.size.height), 
+					  self.absUV.size.width * relUV.size.width, 
+					  self.absUV.size.height * relUV.size.height );
+}
+
+#if defined (DEBUG)
+-(NSString*)description
+{
+	return [NSString stringWithFormat:@"frame(%f,%f,%f,%f)", self.absUV.origin.x, self.absUV.origin.y, self.absUV.size.width, self.absUV.size.height];
+}
+#endif
 
 @end
-
-#endif // TARGET_OS_IPHONE

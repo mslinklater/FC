@@ -20,33 +20,17 @@
  THE SOFTWARE.
  */
 
-/* TODO:
-		Add perf metrics
- */
-
-#if TARGET_OS_IPHONE
-
 #import <Foundation/Foundation.h>
 
-@class FCShaderManager;
-@class FCTextureManager;
+@class FCTextureFile;
 
-@interface FCRenderer : NSObject {
-	NSMutableArray* mModels;
-	NSMutableArray* mGatherList;
-}
-@property(nonatomic, readonly) FCShaderManager* shaderManager;
-@property(nonatomic, readonly) FCTextureManager* textureManager;
+@interface FCTexture : NSObject
+@property(nonatomic, retain) NSString* name;
+@property(nonatomic, retain) FCTextureFile* textureFile;
+@property(nonatomic) CGRect absUV;
 
-+(FCRenderer*)instance;
 -(id)init;
--(void)render;
++(id)fcTexture;
 
--(void)addToGatherList:(id)obj;
--(void)removeFromGatherList:(id)obj;
-
--(void)prebuildShaders;
-
+-(CGRect)absUVFromRelUV:(CGRect)relUV;
 @end
-
-#endif // TARGET_OS_IPHONE

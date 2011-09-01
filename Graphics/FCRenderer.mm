@@ -31,9 +31,11 @@
 #import "FCModel.h"
 #import "FCProtocols.h"
 #import "FCShaderManager.h"
+#import "FCTextureManager.h"
 
 @implementation FCRenderer
 @synthesize shaderManager = _shaderManager;
+@synthesize textureManager = _textureManager;
 
 #pragma mark - FCSingleton protocol
 
@@ -54,7 +56,7 @@
 		mModels = [[NSMutableArray alloc] init];
 		mGatherList = [[NSMutableArray alloc] init];
 		_shaderManager = [[FCShaderManager alloc] init];
-		
+		_textureManager = [[FCTextureManager alloc] init];
 	}
 	FC_LOG(@"FCRenderer initialised OK");
 	return self;
