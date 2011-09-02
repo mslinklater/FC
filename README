@@ -1,4 +1,5 @@
 FC Readme
+=========
 
 Welcome the FC, the development framework used by CurlyRocket.
 
@@ -7,7 +8,50 @@ First, some caveats:
 FC builds on both iOS and OSX but has limited functionality depending on platform.
 FC is very immature - pretty much everything is open to change, so don't build your livelyhood on it just yet.
 FC is meant for both target executables and tools.
-FC is written in Objective-C++ and works only on iOS and OSX. Don't expect a C++, Java or C# version - FC is not built to be cross platform.
+FC is written in Objective-C++ and works only on iOS and OSX. Don't expect a C++, Java or C# version - FC is not built 
+to be cross platform.
+
+What does FC do ?
+=================
+
+FC is the backbone of all software written by CurlyRocket. It is aimed quite loosly at games development, but includes 
+code which shuold be useful for tools and general app development too. At the moment FC is one monolithic chunk of code.
+Moving forward I expect the physical structure to be broken up a bit and more tightly focused on the thing it is doing
+for you.
+
+FC currently consists of a few folders covering the following functionality:
+
+* Categories
+
+Useful categories which extend the use of built-in Foundation and AppKit types.
+
+* Core
+
+The real base of all FC functionality. Covers types, macros, protocols and error/log handling.
+
+* Debug
+
+Debugging objects to help devlopment.
+
+* Graphics
+
+Rendering subsystem, covering model and mesh formats, OpenGL state management, shader and texture handling etc.
+Also contains UIViews focused at native iOS UI development.
+
+* Maths
+
+C++ maths routines
+
+* Physics
+
+Abstraction layer for 2D and 3D physics. Currently wraps Box2D and (soon)Bullet.
+
+* Framework
+
+Pretty much everything else I've written which could be handy to share. An actor system, analytics wrapper, Game Center
+wrappers, resource management, ui management, XML data handler, crypto, device caps, persistent save data... etc.
+
+------------------------------------------------------------------------------------------------------------------------
 
 TODO:
 
@@ -18,6 +62,7 @@ Physics, actors etc etc...
 Document resource format and intent
 Unit tests
 ARC support
+Optimisations - not even looked at this yet, although obvious problems shouldn't be present.
 etc.
 
 Have fun - suggestions etc send to: link@curlyrocket.com
