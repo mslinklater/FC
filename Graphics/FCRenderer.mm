@@ -70,8 +70,7 @@
 
 -(void)prebuildShaders
 {
-	[self.shaderManager addProgram:@"test_test"];
-	[self.shaderManager addProgram:@"simple_simple"];
+	[self.shaderManager addProgram:@"debug_debug"];
 }
 
 -(void)addToGatherList:(id)obj

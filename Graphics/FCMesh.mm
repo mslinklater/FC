@@ -29,30 +29,60 @@
 #import "FCGLHelpers.h"
 #import "FCShaderManager.h"
 #import "FCRenderer.h"
+#import "FCVertexDescriptor.h"
+
+@interface FCMesh() 
+{
+}
+@property(nonatomic) BOOL fixedUp;
+-(void)fixup;
+@end
 
 @implementation FCMesh
+@synthesize numVertices = _numVertices;
+@synthesize numTriangles = _numTriangles;
+@synthesize vertexDescriptor = _vertexDescriptor;
+@synthesize pVertexBuffer = _pVertexBuffer;
+@synthesize pIndexBuffer = _pIndexBuffer;
+@synthesize colorUniform = _colorUniform;
+@synthesize fixedUp = _fixedUp;
+@synthesize shaderProgram = _shaderProgram;
 
 #pragma mark - Object lifetime
 
--(id)initWithNumVertices:(int)numVerts numTriangles:(int)numTriangles
+-(id)initWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor shaderName:(NSString*)shaderName
 {
 	self = [super init];
 	if (self) {
-		NSAssert(!mNumVerts, @"FCMesh num verts already initialized");
-		NSAssert(!m_pPrimitiveBuffer, @"Primitive buffer already allocated");
-//		NSAssert(!m_pVertexBuffer, @"Vertex buffer already allocated");
-//		NSAssert(!m_pNormalBuffer, @"Normal buffer already allocated");
-//		NSAssert(!m_pColorBuffer, @"Color buffer already allocated");
-		
-		mNumVerts = numVerts;
-		mNumTriangles = numTriangles;
-		
-		m_pPrimitiveBuffer = (FC::VertexTypeDebug*)malloc(mNumVerts * sizeof(FC::VertexTypeDebug));
-		m_pIndexBuffer = (FC::Vector3s*)malloc(mNumTriangles * sizeof(FC::Vector3s));
-		
-		mFixedup = NO;
+		_numVertices = 0;
+		_numTriangles = 0;
+		_fixedUp = NO;
+		_vertexDescriptor = [vertexDescriptor retain];
+		_pVertexBuffer = 0;
+		_pIndexBuffer = 0;
+		self.shaderProgram = [[FCRenderer instance].shaderManager program:shaderName];
 	}
 	return self;
+}
+
++(id)fcMeshWithVertexDescriptor:(FCVertexDescriptor *)vertexDescriptor shaderName:(NSString *)shaderName
+{
+	return [[[FCMesh alloc] initWithVertexDescriptor:vertexDescriptor shaderName:shaderName] autorelease];
+}
+
+-(void)setNumVertices:(unsigned int)numVertices
+{
+	FC_ASSERT1(self.numVertices == 0, @"numVertices already set - cannot do twice");
+	FC_ASSERT1(numVertices < 65535, @"Cannot cope with meshes with more than 65535 verts yet");
+	_numVertices = numVertices;
+	_pVertexBuffer = malloc(self.numVertices * self.vertexDescriptor.stride);
+}
+
+-(void)setNumTriangles:(unsigned int)numTriangles
+{
+	FC_ASSERT1(self.numTriangles == 0, @"numTriangles already set - cannot do twice");
+	_numTriangles = numTriangles;
+	_pIndexBuffer = (FC::Vector3us*)malloc(self.numTriangles * sizeof(FC::Vector3us));
 }
 
 -(void)dealloc
@@ -62,102 +92,78 @@
 	glDeleteBuffers(1, &m_primBuffer);
 	GLCHECK;
 	
+	[_vertexDescriptor release];
+	
 	[super dealloc];
+}
+
+-(FC::Vector3us*)pIndexBufferAtIndex:(unsigned short)index
+{
+	return self.pIndexBuffer + index;
 }
 
 #pragma mark - render
 
 -(void)render
 {
-	NSAssert(mFixedup, @"Render called on unfinalised mesh");
+	if (!self.fixedUp) {
+		[self fixup];
+	}
 
-	FCShaderProgram* program = [[FCRenderer instance].shaderManager program:@"simple_simple"];
-	GLuint positionSlot = [program getAttribLocation:@"Position"];
-	GLuint colorSlot = [program getAttribLocation:@"Color"];
+	GLuint positionSlot = [self.shaderProgram getAttribLocation:@"position"];
 	
-	GLsizei stride = [self stride];
-	const GLvoid* colorOffset = (GLvoid*)sizeof(FC::Vector3f);
+	GLsizei stride = self.vertexDescriptor.stride;
 
-	[program use];
+	[self.shaderProgram use];
+	
+	FCShaderUniform* diffuseColorUniform = [self.shaderProgram getUniform:@"diffusecolor"];
+	[self.shaderProgram setUniformValue:diffuseColorUniform to:&_colorUniform size:sizeof(FC::Color4f)];
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, m_primBuffer);
 	glVertexAttribPointer(positionSlot, 3, GL_FLOAT, GL_FALSE, stride, 0);
-	glVertexAttribPointer(colorSlot, 4, GL_FLOAT, GL_FALSE, stride, colorOffset);
 	glEnableVertexAttribArray(positionSlot);
-	glEnableVertexAttribArray(colorSlot);
 	
 #if defined (DEBUG)
-	[program validate];
+	[self.shaderProgram validate];
 #endif
-		
-	glDrawElements(GL_TRIANGLES, mNumTriangles * 3, GL_UNSIGNED_SHORT, 0);
+
+	glDrawElements(GL_TRIANGLES, self.numTriangles * 3, GL_UNSIGNED_SHORT, 0);
 }
-
-#pragma mark - Getters
-
--(FC::Vector3f*)vertexNum:(int)num
-{
-	NSAssert(num < mNumVerts, @"vertexNum outside bounds");
-	return (FC::Vector3f*)&(m_pPrimitiveBuffer[num].vertex.x);
-}
-
--(FC::Color4f*)colorNum:(int)num
-{
-	NSAssert(num < mNumVerts, @"vertexNum outside bounds");
-	return (FC::Color4f*)&(m_pPrimitiveBuffer[num].color.r);
-}
-
--(FC::Vector3s*)indexNum:(int)num
-{
-	NSAssert(num < mNumTriangles, @"indexNum outside bounds");
-	return (FC::Vector3s*)&(m_pIndexBuffer[num].x);
-}
-
--(int)numVerts
-{
-	return mNumVerts;
-}
-
--(int)stride
-{
-	return sizeof(FC::VertexTypeDebug);
-}
-
-#pragma mark - Setters
-
-#pragma mark - Misc
 
 -(void)fixup
 {
+	FC_ASSERT(self.fixedUp == NO);
+	
 	// build VBOs
 	
 	glGenBuffers(1, &m_primBuffer);
 	GLCHECK;
 	glBindBuffer(GL_ARRAY_BUFFER, m_primBuffer);
 	GLCHECK;
-	glBufferData(GL_ARRAY_BUFFER, mNumVerts * sizeof(FC::VertexTypeDebug), m_pPrimitiveBuffer, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, self.numVertices * self.vertexDescriptor.stride, self.pVertexBuffer, GL_STATIC_DRAW);
 	GLCHECK;
-	
+
 	glGenBuffers(1, &m_indexBuffer);
 	GLCHECK;
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
 	GLCHECK;
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, mNumTriangles * sizeof(FC::Vector3s), m_pIndexBuffer, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.numTriangles * sizeof(FC::Vector3s), self.pIndexBuffer, GL_STATIC_DRAW);
 	GLCHECK;
-	
+
 	// release working memory
-	
-	if (m_pPrimitiveBuffer) {
-		free( m_pPrimitiveBuffer );
-		m_pPrimitiveBuffer = 0;
+
+	if (self.pVertexBuffer) {
+		free( self.pVertexBuffer );
+		_pVertexBuffer = 0;
 	}
-	if (m_pIndexBuffer) {
-		free( m_pIndexBuffer );
-		m_pIndexBuffer = 0;
+	
+	if (self.pIndexBuffer) {
+		free( self.pIndexBuffer );
+		_pIndexBuffer = 0;
 	}
 
-	mFixedup = YES;
+	self.fixedUp = YES;
 }
 
 @end

@@ -66,6 +66,8 @@
 		
 		NSString* path = [[NSBundle mainBundle] pathForResource:resourceName ofType:resourceType];
 		
+		FC_ASSERT1(path, @"shader not found");
+		
 		// load it
 		
 		NSError* error;
@@ -128,6 +130,7 @@
 
 -(FCShaderProgram*)program:(NSString *)name
 {
+	FC_ASSERT1([self.programs valueForKey:name] != nil, @"Trying to use an unknown shader");
 	return [self.programs valueForKey:name];
 }
 

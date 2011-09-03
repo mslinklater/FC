@@ -21,13 +21,25 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <OpenGLES/ES2/gl.h>
+
+enum FCTextureFileSourceFormat {
+	kFCTextureFileSourceUnknown,
+	kFCTextureFileSourcePVR
+};
 
 @interface FCTextureFile : NSObject
 @property(nonatomic, retain) NSString* name;
 @property(nonatomic) void* rawdata;
-@property(nonatomic) CGRect frame;
+@property(nonatomic) CGSize size;
+@property(nonatomic, readonly) GLuint glHandle;
+@property(nonatomic, readonly) int hookCount;
+@property(nonatomic, readonly) FCTextureFileSourceFormat sourceFormat;
 
 -(id)initWithURL:(NSURL*)url;
 +(id)fcTextureFileWithURL:(NSURL*)url;
+
+-(void)hook;
+-(void)unhook;
 
 @end

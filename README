@@ -53,18 +53,6 @@ wrappers, resource management, ui management, XML data handler, crypto, device c
 
 ------------------------------------------------------------------------------------------------------------------------
 
-TODO:
-
-Document
-Cean up old chuff that isn't needed - UIView stutt - it's a bit redundant or needs a nicer replacement
-Better OSX support
-Physics, actors etc etc...
-Document resource format and intent
-Unit tests
-ARC support
-Optimisations - not even looked at this yet, although obvious problems shouldn't be present.
-etc.
-
 Have fun - suggestions etc send to: link@curlyrocket.com
 @fizzychicken
 @curlyrocketltd

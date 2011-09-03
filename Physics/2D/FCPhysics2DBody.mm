@@ -133,8 +133,8 @@
 			b2CircleShape shape;
 			shape.m_radius = [[fixture valueForKey:kFCKeyRadius] floatValue];
 			b2Vec2 circlePos;
-			circlePos.x = [[fixture valueForKey:@"xOffset"] floatValue];
-			circlePos.y = [[fixture valueForKey:@"yOffset"] floatValue];
+			circlePos.x = [[fixture valueForKey:kFCKeyOffsetX] floatValue];
+			circlePos.y = [[fixture valueForKey:kFCKeyOffsetY] floatValue];
 			shape.m_p = circlePos;
 			fixtureDef.shape = &shape;
 			pBody->CreateFixture( &fixtureDef );
@@ -145,8 +145,8 @@
 			
 			b2Vec2 rectanglePos;
 			float rectangleAngle = [[fixture valueForKey:kFCKeyAngle] floatValue];
-			rectanglePos.x = [[fixture valueForKey:@"xOffset"] floatValue];
-			rectanglePos.y = [[fixture valueForKey:@"yOffset"] floatValue];
+			rectanglePos.x = [[fixture valueForKey:kFCKeyOffsetX] floatValue];
+			rectanglePos.y = [[fixture valueForKey:kFCKeyOffsetY] floatValue];
 			
 			shape.SetAsBox( [[fixture valueForKey:kFCKeyXSize] floatValue] * 0.5f,	// box2D uses half height etc
 						   [[fixture valueForKey:kFCKeyYSize] floatValue] * 0.5f,
@@ -165,8 +165,8 @@
 			
 			b2Vec2* verts = (b2Vec2*)malloc(sizeof(b2Vec2) * numVerts );
 			
-			float xOffset = [[fixture valueForKey:@"xOffset"] floatValue];
-			float yOffset = [[fixture valueForKey:@"yOffset"] floatValue];
+			float xOffset = [[fixture valueForKey:kFCKeyOffsetX] floatValue];
+			float yOffset = [[fixture valueForKey:kFCKeyOffsetY] floatValue];
 			
 			for(int i = 0 ; i < numVerts ; i++ )	// backwards due to different winding between collada and box2d
 			{

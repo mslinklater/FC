@@ -21,17 +21,44 @@
  */
 
 #import "FCTextureFile.h"
+#import "FCCore.h"
+#import "FCGraphicsProtocols.h"
+#import "FCTextureFilePVR.h"
+
+@interface FCTextureFile()
+@property(nonatomic, assign) NSURL* url;
+@property(nonatomic, retain) NSObject<FCTextureFileDelegate>* delegate;
+@end
 
 @implementation FCTextureFile
 @synthesize name = _name;
 @synthesize rawdata = _rawdata;
-@synthesize frame = _frame;
+@synthesize size = _size;
+@synthesize glHandle = _glHandle;
+@synthesize hookCount = _hookCount;
+@synthesize url = _url;
+@synthesize sourceFormat = _sourceFormat;
+@synthesize delegate = _delegate;
 
 -(id)initWithURL:(NSURL *)url
 {
+	FC_ASSERT(url);
+	
 	self = [super init];
 	if (self) {
-		// blah
+		_glHandle = 0;
+		_hookCount = 0;
+		self.url = url;
+		_sourceFormat = kFCTextureFileSourceUnknown;
+		
+		NSString* fileTypeString = [[self.url absoluteString] pathExtension];
+		
+		if ([fileTypeString isEqualToString:@"pvr"]) {
+			_sourceFormat = kFCTextureFileSourcePVR;
+			_delegate = [[FCTextureFilePVR alloc] init];
+		} else {
+			FC_ERROR1(@"Unknown source type", fileTypeString);
+		}
 	}
 	return self;
 }
@@ -44,7 +71,43 @@
 -(void)dealloc
 {
 	self.name = nil;
+	self.delegate = nil;
 	[super dealloc];
+}
+
+-(GLuint)getGlHandle
+{
+	FC_ASSERT(_glHandle);
+	return _glHandle;
+}
+
+-(void)hook
+{
+	if (self.hookCount == 0) {
+		// need to setup GL texture
+		glGenTextures(1, &_glHandle);
+		glBindTexture(GL_TEXTURE_2D, self.glHandle);
+
+		[_delegate loadWithContentsOfURL:self.url];
+		
+		glBindTexture(GL_TEXTURE_2D, self.glHandle);
+		
+		glTexImage2D(GL_TEXTURE_2D, 0, [self.delegate format], [self.delegate width], [self.delegate height], 0, [self.delegate format], [self.delegate type], [self.delegate pixels]);
+	}
+	_hookCount++;
+}
+
+-(void)unhook
+{
+	FC_ASSERT(self.hookCount);
+		
+	if (self.hookCount > 0) {
+		// need to unbind texture here
+		glDeleteTextures(1, &_glHandle);
+		_glHandle = 0;
+	}
+	
+	_hookCount--;
 }
 
 @end

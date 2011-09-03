@@ -40,27 +40,16 @@
 
 @end
 
-//
-
 @protocol FCGameObjectLifetime
 -(void)reset;
 -(void)destroy;
 @end
 
-//
-
 @protocol FCGameObjectUpdate
 -(void)update:(float)realTime gameTime:(float)gameTime;
 @end
-
-//
 
 @protocol FCGameObjectRender
 -(NSArray*)renderGather;
 @end
 
-//
-
-//@protocol FCSingleton
-//+(id)instance;
-//@end

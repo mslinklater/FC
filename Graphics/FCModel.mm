@@ -34,9 +34,12 @@
 #import "FCResource.h"
 #import "FCShaderManager.h"
 #import "FCRenderer.h"
+#import "FCVertexDescriptor.h"
 
 static 	FC::Color4f	debugColor( 1.0f, 1.0f, 1.0f, 1.0f );
 static int kNumCircleSegments = 16;
+static FCVertexDescriptor* s_debugVertexDescriptor;
+static NSString* s_debugShaderName = @"debug_debug";
 
 #pragma mark - Private interface
 
@@ -52,12 +55,16 @@ static int kNumCircleSegments = 16;
 
 @synthesize position = _position;
 @synthesize rotation = _rotation;
+@synthesize meshes = _meshes;
 
 #pragma mark -
 #pragma mark Initialisers
 
 +(void)initialize
 {
+	s_debugVertexDescriptor = [[FCVertexDescriptor alloc] init];
+	s_debugVertexDescriptor.positionType = kFCVertexDescriptorPropertyTypeAttributeVec3;
+	s_debugVertexDescriptor.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec4;
 }
 
 +(void)setDebugColor:(FC::Color4f)col
@@ -71,8 +78,8 @@ static int kNumCircleSegments = 16;
 	if (self) {
 		// go through meshes and build for fixtures
 		
-		mMeshes = [[NSMutableArray alloc] init];
-
+		self.meshes = [NSMutableArray array];
+		
 		NSArray* fixtures;
 		
 		if ([[bodyDict valueForKey:@"fixture"] isKindOfClass:[NSDictionary class]]) {
@@ -89,8 +96,8 @@ static int kNumCircleSegments = 16;
 			{
 				// rectangle
 				NSMutableDictionary* debugDict = [[NSMutableDictionary alloc] init];
-				[debugDict setValue:[fixture valueForKey:@"xOffset"] forKey:@"xOffset"];
-				[debugDict setValue:[fixture valueForKey:@"yOffset"] forKey:@"yOffset"];
+				[debugDict setValue:[fixture valueForKey:kFCKeyOffsetX] forKey:kFCKeyOffsetX];
+				[debugDict setValue:[fixture valueForKey:kFCKeyOffsetY] forKey:kFCKeyOffsetY];
 				[debugDict setValue:[fixture valueForKey:@"xSize"] forKey:kFCKeyXSize];
 				[debugDict setValue:[fixture valueForKey:@"ySize"] forKey:kFCKeyYSize];
 				
@@ -102,8 +109,8 @@ static int kNumCircleSegments = 16;
 			{
 				// circle
 				NSMutableDictionary* debugDict = [[NSMutableDictionary alloc] init];
-				[debugDict setValue:[fixture valueForKey:@"xOffset"] forKey:@"xOffset"];
-				[debugDict setValue:[fixture valueForKey:@"yOffset"] forKey:@"yOffset"];
+				[debugDict setValue:[fixture valueForKey:kFCKeyOffsetX] forKey:kFCKeyOffsetX];
+				[debugDict setValue:[fixture valueForKey:kFCKeyOffsetY] forKey:kFCKeyOffsetY];
 				[debugDict setValue:[fixture valueForKey:@"radius"] forKey:kFCKeyRadius];
 				
 				[self addDebugCircle:debugDict];
@@ -119,10 +126,10 @@ static int kNumCircleSegments = 16;
 
 				int numVerts = [floatArray count] / 2;
 				
-				[debugDict setValue:[NSString stringWithFormat:@"%d", numVerts] forKey:kFCKeyNumVerts];
+				[debugDict setValue:[NSString stringWithFormat:@"%d", numVerts] forKey:kFCKeyNumVertices];
 				[debugDict setValue:[fixture valueForKey:@"verts"] forKey:@"verts"];
-				[debugDict setValue:[fixture valueForKey:@"xOffset"] forKey:@"xOffset"];
-				[debugDict setValue:[fixture valueForKey:@"yOffset"] forKey:@"yOffset"];
+				[debugDict setValue:[fixture valueForKey:kFCKeyOffsetX] forKey:kFCKeyOffsetX];
+				[debugDict setValue:[fixture valueForKey:kFCKeyOffsetY] forKey:kFCKeyOffsetY];
 				
 				[self addDebugPolygon:debugDict];
 				
@@ -138,90 +145,84 @@ static int kNumCircleSegments = 16;
 	self = [super init];
 	if (self) 
 	{
-		mMeshes = [[NSMutableArray alloc] init];
+#if 0
+		self.meshes = [NSMutableArray array];
 
-		NSArray* meshes;
+		NSArray* meshesArray;
 		
-		if ([[modelDict valueForKey:@"mesh"] isKindOfClass:[NSArray class]]) {
-			meshes = [modelDict valueForKey:@"mesh"];
+		if ([[modelDict valueForKey:@"mesh"] isKindOfClass:[NSArray class]]) 
+		{
+			meshesArray = [modelDict valueForKey:@"mesh"];
 		}
 		else
 		{
-			meshes = [NSArray arrayWithObject:[modelDict valueForKey:@"mesh"]];
+			meshesArray = [NSArray arrayWithObject:[modelDict valueForKey:@"mesh"]];
 		}
 		
-		for (NSDictionary* meshDict in meshes)
+		for (NSDictionary* meshDict in meshesArray)
 		{
 			NSArray* chunks = [res.xmlData arrayForKeyPath:@"fcr.binarypayload.chunk"];
 			
-			NSString* vertexChunkName = [meshDict valueForKey:@"fcvertexarray"];
-			NSDictionary* vertexChunk = nil;
-			
-//			NSString* normalChunkName = [meshDict valueForKey:kFCKeyNormalArray];
-//			NSDictionary* normalChunk = nil;
-
-			NSString* indexChunkName = [meshDict valueForKey:@"fcindexarray"];
-			NSDictionary* indexChunk = nil;
+			NSString* vertexBufferChunkName = [meshDict valueForKey:kFCKeyVertexBuffer];
+			NSDictionary* vertexBufferChunk = nil;
 			
 			for(NSDictionary* chunk in chunks)
 			{
 				NSString* chunkId = [chunk valueForKey:kFCKeyId];
 				
-				if ( [chunkId isEqualToString:vertexChunkName]) {
-					vertexChunk = chunk;
-				}
-//				if ([chunkId isEqualToString:normalChunkName]) {
-//					normalChunk = chunk;
-//				}
-				if ([chunkId isEqualToString:indexChunkName]) {
-					indexChunk = chunk;
+				if( [chunkId isEqualToString:vertexBufferChunkName] ) 
+				{
+					vertexBufferChunk = [chunk retain];
 				}
 			}
 
-			NSInteger numVerts = [[vertexChunk valueForKey:kFCKeyCount] intValue];
-			NSInteger numTriangles = [[indexChunk valueForKey:@"numtris"] intValue];
+			FC_ASSERT(vertexBufferChunk);
 			
-			FCMesh* mesh = [[FCMesh alloc] initWithNumVertices:numVerts numTriangles:numTriangles];
+			NSInteger numTriangles = [[vertexBufferChunk valueForKey:kFCKeyNumTriangles] intValue];
+
+			FCMesh* mesh = [[FCMesh alloc] initWithNumVertices:numTriangles * 3 numTriangles:numTriangles];
 
 			// copy vertex buffer over
 			
-			NSInteger vertexSrcOffset = [[vertexChunk valueForKey:@"offset"] intValue];
-			NSInteger vertexSrcSize = [[vertexChunk valueForKey:@"size"] intValue];
-			
-			FC::Vector3f* destVertices = [mesh vertexNum:0];
-			NSRange range;
-			range.location = vertexSrcOffset;
-			range.length = vertexSrcSize;
-			[res.binaryPayload getBytes:destVertices range:range];
-			
-			// create color buffer
-			
-			FC::Color4f* pColor;
-			
-			for (int i = 0 ; i < numVerts; i++) 
-			{
-				pColor = [mesh colorNum:i];
-				pColor->r = debugColor.r;
-				pColor->g = debugColor.g;
-				pColor->b = debugColor.b;
-				pColor->a = debugColor.a;
-			}
-
-			// copy index buffer over - need to set the format so both debug and proper indexes work.
-
-			[mesh fixup];
-			[mMeshes addObject:mesh];
-			
+//			NSInteger vertexSrcOffset = [[vertexChunk valueForKey:@"offset"] intValue];
+//			NSInteger vertexSrcSize = [[vertexChunk valueForKey:@"size"] intValue];
+//			
+//			FC::Vector3f* destVertices = [mesh vertexNum:0];
+//			NSRange range;
+//			range.location = vertexSrcOffset;
+//			range.length = vertexSrcSize;
+//			[res.binaryPayload getBytes:destVertices range:range];
+//			
+//			// create color buffer
+//			
+//			FC::Color4f* pColor;
+//			
+//			for (int i = 0 ; i < numVerts; i++) 
+//			{
+//				pColor = [mesh colorNum:i];
+//				pColor->r = debugColor.r;
+//				pColor->g = debugColor.g;
+//				pColor->b = debugColor.b;
+//				pColor->a = debugColor.a;
+//			}
+//
+//			// copy index buffer over - need to set the format so both debug and proper indexes work.
+//
+//			[mesh fixup];
+//			[self.meshes addObject:mesh];
+//			
 			[mesh release];
+			[vertexBufferChunk release];
 		}
+#endif
 	}
 	return self;
 }
 
 -(void)render
 {
-	FCShaderProgram* program = [[FCRenderer instance].shaderManager program:@"simple_simple"];
-	FCShaderUniform* uniform = [program getUniform:@"Modelview"];
+	FCShaderProgram* program = [[FCRenderer instance].shaderManager program:@"debug_debug"];
+	FCShaderUniform* uniform = [program getUniform:@"modelview"];
 	
 	FC::Matrix4f mat = FC::Matrix4f::Identity();
 	FC::Matrix4f trans = FC::Matrix4f::Translate(self.position.x, self.position.y, 0.0f);
@@ -231,7 +232,7 @@ static int kNumCircleSegments = 16;
 	
 	[program setUniformValue:uniform to:&mat size:sizeof(mat)];
 	
-	for (FCMesh* mesh in mMeshes) 
+	for (FCMesh* mesh in self.meshes) 
 	{
 		[mesh render];
 	}
@@ -239,19 +240,21 @@ static int kNumCircleSegments = 16;
 
 -(void)addDebugCircle:(NSDictionary*)def
 {
-	int numVerts = kNumCircleSegments + 1;
+	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:s_debugVertexDescriptor shaderName:s_debugShaderName];
+	[self.meshes addObject:mesh];
 
-	FCMesh* mesh = [[FCMesh alloc] initWithNumVertices:numVerts numTriangles:kNumCircleSegments];
-
-	float radius = [[def valueForKey:@"radius"] floatValue];
+	mesh.numVertices = kNumCircleSegments + 1;
+	mesh.numTriangles = kNumCircleSegments;
+	
+	float radius = [[def valueForKey:kFCKeyRadius] floatValue];
 	
 	FC::Vector3f* pVert;
 	FC::Vector3f center;
-	center.x = [[def valueForKey:@"xOffset"] floatValue];
-	center.y = [[def valueForKey:@"yOffset"] floatValue];
+	center.x = [[def valueForKey:kFCKeyOffsetX] floatValue];
+	center.y = [[def valueForKey:kFCKeyOffsetY] floatValue];
 	center.z = 0.0f;
 
-	pVert = [mesh vertexNum:0];
+	pVert = (FC::Vector3f*)((unsigned long)mesh.pVertexBuffer + mesh.vertexDescriptor.positionOffset);
 	pVert->x = center.x;
 	pVert->y = center.y;
 	pVert->z = center.z;
@@ -260,161 +263,129 @@ static int kNumCircleSegments = 16;
 	{		
 		float angle1 = ( 3.142f * 2.0f / kNumCircleSegments ) * i;
 		
-		pVert = [mesh vertexNum:i+1];
+		pVert = (FC::Vector3f*)((unsigned int)pVert + mesh.vertexDescriptor.stride);
+		
 		pVert->x = center.x + sinf( angle1 ) * radius;
 		pVert->y = center.y + cosf( angle1 ) * radius;
 		pVert->z = center.z;		
 	}
+
+	mesh.colorUniform = debugColor;
 	
-	FC::Color4f* pColor;
-	
-	for (int i = 0 ; i < numVerts; i++) 
-	{
-		pColor = [mesh colorNum:i];
-		pColor->r = debugColor.r;
-		pColor->g = debugColor.g;
-		pColor->b = debugColor.b;
-		pColor->a = debugColor.a;
-	}
-	
-	FC::Vector3s* pIndex;
+	FC::Vector3us* pIndex;
 	
 	for (int i = 0 ; i < kNumCircleSegments - 1; i++) 
 	{
-		pIndex = [mesh indexNum:i];
+		pIndex = [mesh pIndexBufferAtIndex:i];
 		pIndex->x = 0;
 		pIndex->y = i+1;
 		pIndex->z = i+2;
 	}
 
-	pIndex = [mesh indexNum:kNumCircleSegments - 1];
+	pIndex = [mesh pIndexBufferAtIndex:kNumCircleSegments - 1];
 	pIndex->x = 0;
 	pIndex->y = kNumCircleSegments;
 	pIndex->z = 1;
 
-	[mesh fixup];
-	[mMeshes addObject:mesh];
-	[mesh release];
 }
 
 -(void)addDebugRectangle:(NSDictionary*)def
 {
-	int numVerts = 4;
-	int numTriangles = 2;
+	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:s_debugVertexDescriptor shaderName:s_debugShaderName];
+	[self.meshes addObject:mesh];
+
+	mesh.numVertices = 4;
+	mesh.numTriangles = 2;
+	
 	FC::Vector2f size( [[def valueForKey:kFCKeyXSize] floatValue] * 0.5f, [[def valueForKey:kFCKeyYSize] floatValue] * 0.5f);
 
-	FCMesh* mesh = [[FCMesh alloc] initWithNumVertices:numVerts numTriangles:numTriangles];
-	
 	FC::Vector3f center;
-	center.x = [[def valueForKey:@"xOffset"] floatValue];
-	center.y = [[def valueForKey:@"yOffset"] floatValue];
+	center.x = [[def valueForKey:kFCKeyOffsetX] floatValue];
+	center.y = [[def valueForKey:kFCKeyOffsetY] floatValue];
 	center.z = 0.0f;
 
-	FC::Vector3f* pVert = [mesh vertexNum:0];
+	FC::Vector3f* pVert;
+	
+	pVert = (FC::Vector3f*)((unsigned long)mesh.pVertexBuffer + mesh.vertexDescriptor.positionOffset);
 	pVert->x = center.x + size.x * -1.0f;
 	pVert->y = center.y + size.y * -1.0f;
 	pVert->z = center.z;
 	
-	pVert = [mesh vertexNum:1];
+	pVert = (FC::Vector3f*)((unsigned int)pVert + mesh.vertexDescriptor.stride);
 	pVert->x = center.x + size.x * 1.0f;
 	pVert->y = center.y + size.y * -1.0f;
 	pVert->z = center.z;
 	
-	pVert = [mesh vertexNum:2];
+	pVert = (FC::Vector3f*)((unsigned int)pVert + mesh.vertexDescriptor.stride);
 	pVert->x = center.x + size.x * 1.0f;
 	pVert->y = center.y + size.y * 1.0f;
 	pVert->z = center.z;
 	
-	pVert = [mesh vertexNum:3];
+	pVert = (FC::Vector3f*)((unsigned int)pVert + mesh.vertexDescriptor.stride);
 	pVert->x = center.x + size.x * -1.0f;
 	pVert->y = center.y + size.y * 1.0f;
 	pVert->z = center.z;
 	
-	FC::Color4f* pColor;
-	
-	for (int i = 0; i < numVerts; i++) 
-	{
-		pColor = [mesh colorNum:i];
-		pColor->r = debugColor.r;
-		pColor->g = debugColor.g;
-		pColor->b = debugColor.b;
-		pColor->a = debugColor.a;
-	}	
+	mesh.colorUniform = debugColor;
 
-	FC::Vector3s* pIndex;
+	FC::Vector3us* pIndex;
 	
-	pIndex = [mesh indexNum:0];
+	pIndex = [mesh pIndexBufferAtIndex:0];
 	pIndex->x = 0;
 	pIndex->y = 1;
 	pIndex->z = 2;
-	pIndex = [mesh indexNum:1];
+	pIndex = [mesh pIndexBufferAtIndex:1];
 	pIndex->x = 0;
 	pIndex->y = 2;
 	pIndex->z = 3;
 	
-	[mesh fixup];
-
-	[mMeshes addObject:mesh];
-	[mesh release];
 }
 
 -(void)addDebugPolygon:(NSDictionary*)def
 {
-	int numVerts = [[def valueForKey:kFCKeyNumVerts] intValue];
-	int numTriangles =  numVerts - 2;
+	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:s_debugVertexDescriptor shaderName:s_debugShaderName];
+	[self.meshes addObject:mesh];
 	
-	FCMesh* mesh = [[FCMesh alloc] initWithNumVertices:numVerts numTriangles:numTriangles];
+	mesh.numVertices = [[def valueForKey:kFCKeyNumVertices] intValue];
+	mesh.numTriangles = mesh.numVertices - 2;
 	
 	FC::Vector3f* pVert;
 
 	NSArray* vertsArray = [[def valueForKeyPath:@"verts"] componentsSeparatedByString:@" "];
 
-	pVert = [mesh vertexNum:0];
+	pVert = (FC::Vector3f*)((unsigned long)mesh.pVertexBuffer + mesh.vertexDescriptor.positionOffset);
 	
-	float xOffset = [[def valueForKey:@"xOffset"] floatValue];
-	float yOffset = [[def valueForKey:@"yOffset"] floatValue];
+	float xOffset = [[def valueForKey:kFCKeyOffsetX] floatValue];
+	float yOffset = [[def valueForKey:kFCKeyOffsetY] floatValue];
 	
 	pVert->x = [[vertsArray objectAtIndex:0] floatValue] + xOffset;
 	pVert->y = [[vertsArray objectAtIndex:1] floatValue] + yOffset;
 	pVert->z = 0.0f;
 
-	for (int i = 1 ; i < numVerts ; i++) 
+	for (int i = 1 ; i < mesh.numVertices ; i++) 
 	{
-		pVert = [mesh vertexNum:i];
+		pVert = (FC::Vector3f*)((unsigned int)pVert + mesh.vertexDescriptor.stride);
 		pVert->x = [[vertsArray objectAtIndex:i*2] floatValue] + xOffset;
 		pVert->y = [[vertsArray objectAtIndex:(i*2)+1] floatValue] + yOffset;
 		pVert->z = 0.0f;
 	}	
 
-	FC::Color4f* pColor;
-	for (int i = 0; i < numVerts; i++)
-	{
-		pColor = [mesh colorNum:i];
-		pColor->r = debugColor.r;
-		pColor->g = debugColor.g;
-		pColor->b = debugColor.b;
-		pColor->a = debugColor.a;
-	}	
+	mesh.colorUniform = debugColor;
+
+	FC::Vector3us* pIndex;
 	
-	FC::Vector3s* pIndex;
-	
-	for (int i = 0; i < numTriangles; i++) 
+	for (int i = 0; i < mesh.numTriangles; i++) 
 	{
-		pIndex = [mesh indexNum:i];
+		pIndex = [mesh pIndexBufferAtIndex:i];
 		pIndex->x = 0;
 		pIndex->y = i+1;
 		pIndex->z = i+2;
 	}
-	
-	[mesh fixup];
-
-	[mMeshes addObject:mesh];
-	[mesh release];
 }
 
 -(void)dealloc
 {
-	[mMeshes release], mMeshes = nil;
+	self.meshes = nil;
 	[super dealloc];
 }
 @end

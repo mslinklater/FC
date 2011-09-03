@@ -435,8 +435,8 @@
 -(void)setProjectionMatrix
 {
 	FCShaderManager* shaderManager = [FCRenderer instance].shaderManager;
-	FCShaderProgram* program = [shaderManager program:@"simple_simple"];
-	FCShaderUniform* projectionUniform = [program getUniform:@"Projection"];
+	FCShaderProgram* program = [shaderManager program:@"debug_debug"];
+	FCShaderUniform* projectionUniform = [program getUniform:@"projection"];
 	
 	// build matrix
 	

@@ -26,6 +26,7 @@ NSString* kFCKeyId = @"id";
 NSString* kFCKeyTexture = @"texture";
 NSString* kFCKeyAtlas = @"atlas";
 NSString* kFCKeyName = @"name";
+NSString* kFCKeySize = @"size";
 
 // Physics
 
@@ -65,15 +66,18 @@ NSString* kFCKeyRndSeed = @"rndseed";
 NSString* kFCKeyModel = @"model";
 NSString* kFCKeyDebugShape = @"debugshape";
 
-NSString* kFCKeyNumVerts = @"numverts";
+NSString* kFCKeyNumVertices = @"numvertices";
+NSString* kFCKeyNumTriangles = @"numtriangles";
 NSString* kFCKeyType = @"type";
 
 NSString* kFCKeyX = @"x";
 NSString* kFCKeyY = @"y";
 NSString* kFCKeyWidth = @"width";
 NSString* kFCKeyHeight = @"height";
+NSString* kFCKeyOffset = @"offset";
 NSString* kFCKeyOffsetX = @"offsetX";
 NSString* kFCKeyOffsetY = @"offsetY";
+NSString* kFCKeyOffsetZ = @"offsetZ";
 NSString* kFCKeyAngle = @"angle";
 NSString* kFCKeyRadius = @"radius";
 NSString* kFCKeyShape = @"shape";
@@ -98,19 +102,29 @@ NSString* kFCKeyCount = @"count";
 
 NSString* kFCKeyPNG = @"png";
 
-NSString* kFCKeyVertexPosition = @"fcvertexposition";
-NSString* kFCKeyVertexNormal = @"fcvertexnormal";
-NSString* kFCKeyVertexTexCoord0 = @"fcvertextexcoord0";
+NSString* kFCKeyVertexPosition = @"vertexposition";
+NSString* kFCKeyVertexNormal = @"vertexnormal";
+NSString* kFCKeyVertexTexCoord0 = @"vertextexcoord0";
 
-NSString* kFCKeyNormalArray = @"fcnormalarray";
-NSString* kFCKeyVertexArray = @"fcvertexarray";
-NSString* kFCKeyTexcoord0Array = @"fctexcoord0array";
-NSString* kFCKeyTexcoord1Array = @"fctexcoord1array";
-NSString* kFCKeyTexcoord2Array = @"fctexcoord2array";
-NSString* kFCKeyTexcoord3Array = @"fctexcoord3array";
-NSString* kFCKeyIndexArray = @"fcindexarray";
-NSString* kFCKeyMaterialDiffuseColor = @"fcmaterialdiffusecolor";
-NSString* kFCKeyMaterialDiffuseTexture = @"fcmaterialdiffusetexture";
+NSString* kFCKeyVertexBuffer = @"vertexbuffer";
+NSString* kFCKeyNormalArray = @"normalarray";
+NSString* kFCKeyVertexArray = @"vertexarray";
+NSString* kFCKeyTexcoord0Array = @"texcoord0array";
+NSString* kFCKeyTexcoord1Array = @"texcoord1array";
+NSString* kFCKeyTexcoord2Array = @"texcoord2array";
+NSString* kFCKeyTexcoord3Array = @"texcoord3array";
+NSString* kFCKeyIndexArray = @"indexarray";
+NSString* kFCKeyMaterialDiffuseColor = @"materialdiffusecolor";
+NSString* kFCKeyMaterialDiffuseTexture = @"materialdiffusetexture";
+NSString* kFCKeyShaderProgramName = @"shaderprogramname";
+NSString* kFCKeyStride = @"stride";
 
-NSString* kFCKeyShaderProgramName = @"fcshaderprogramname";
-
+NSString* kFCKeyVersion = @"version";
+NSString* kFCKeyInput = @"input";
+NSString* kFCKeyOutput = @"output";
+NSString* kFCKeyBinaryPayload = @"binarypayload";
+NSString* kFCKeyTextures = @"textures";
+NSString* kFCKeyGameplay = @"gameplay";
+NSString* kFCKeyModels = @"models";
+NSString* kFCKeyBuffers = @"buffers";
+NSString* kFCKeyMesh = @"mesh";

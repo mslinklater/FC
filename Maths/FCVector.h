@@ -132,11 +132,27 @@ class Vector3s {
 		Vector3s operator+( Vector3s &v ){ return Vector3s( x + v.x, y + v.y, z + v.z); }
 		Vector3s operator-( Vector3s &v ){ return Vector3s( x - v.x, y - v.y, z - v.z); }
 		
-		void Zero( void ){ x = y = z = 0.0f; }
+		void Zero( void ){ x = y = z = 0; }
 		
 		short	x;
 		short	y;
 		short	z;
+};
+
+class Vector3us {
+	public:
+		Vector3us(){}
+		Vector3us( unsigned short xIn, unsigned short yIn, unsigned short zIn ) : x(xIn), y(yIn), z(zIn) {}
+		Vector3us( const Vector3us& vec ) : x(vec.x), y(vec.y), z(vec.z) {}
+		
+		Vector3us operator+( Vector3us &v ){ return Vector3us( x + v.x, y + v.y, z + v.z); }
+		Vector3us operator-( Vector3us &v ){ return Vector3us( x - v.x, y - v.y, z - v.z); }
+		
+		void Zero( void ){ x = y = z = 0; }
+		
+		unsigned short	x;
+		unsigned short	y;
+		unsigned short	z;
 };
 
 class Vector4uc {

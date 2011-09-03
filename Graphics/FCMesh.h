@@ -25,35 +25,35 @@
 #import <Foundation/Foundation.h>
 #import "FCVertexTypes.h"
 
+@class FCVertexDescriptor;
+@class FCShaderProgram;
+
 @interface FCMesh : NSObject 
 {	
-	GLuint					m_primBuffer;
-	GLuint					m_indexBuffer;
-	
-	FC::VertexTypeDebug*	m_pPrimitiveBuffer;
-	
-//	FC::Vector3f*			m_pVertexBuffer;
-//	FC::Vector3f*			m_pNormalBuffer;
-//	FC::Vector3f*			m_pColorBuffer;
-	
-	FC::Vector3s*			m_pIndexBuffer;
-	
-	unsigned int			mNumVerts;
-	unsigned int			mNumTriangles;
-	BOOL					mFixedup;
+	unsigned int		_numVertices;
+	unsigned int		_numTriangles;
+	FCVertexDescriptor* _vertexDescriptor;
+	FCShaderProgram*	_shaderProgram;
+	void*				_pVertexBuffer;	
+	FC::Vector3us*		_pIndexBuffer;
+	FC::Color4f		_colorUniform;
+	GLuint	m_primBuffer;
+	GLuint	m_indexBuffer;	
+	BOOL	_fixedUp;
 }
+@property(nonatomic) unsigned int numVertices;
+@property(nonatomic) unsigned int numTriangles;
+@property(nonatomic, retain, readonly) FCVertexDescriptor* vertexDescriptor;
+@property(nonatomic, readonly) void* pVertexBuffer;
+@property(nonatomic, readonly) FC::Vector3us* pIndexBuffer;
+@property(nonatomic) FC::Color4f colorUniform;
+@property(nonatomic, retain) FCShaderProgram* shaderProgram;
 
--(id)initWithNumVertices:(int)numVerts numTriangles:(int)numTriangles;
--(void)fixup;
+-(id)initWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor shaderName:(NSString*)shaderName;
++(id)fcMeshWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor shaderName:(NSString*)shaderName;
 
 -(void)render;
-
--(FC::Vector3f*)vertexNum:(int)num;
--(FC::Color4f*)colorNum:(int)num;
--(FC::Vector3s*)indexNum:(int)num;
-
--(int)stride;
--(int)numVerts;
+-(FC::Vector3us*)pIndexBufferAtIndex:(unsigned short)index;
 @end
 
 #endif // TARGET_OS_IPHONE

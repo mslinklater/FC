@@ -29,6 +29,7 @@ extern NSString* kFCKeyId;
 extern NSString* kFCKeyTexture;
 extern NSString* kFCKeyAtlas;
 extern NSString* kFCKeyName;
+extern NSString* kFCKeySize;
 
 // Physics
 
@@ -68,15 +69,18 @@ extern NSString* kFCKeyRndSeed;
 extern NSString* kFCKeyModel;
 extern NSString* kFCKeyDebugShape;
 
-extern NSString* kFCKeyNumVerts;
+extern NSString* kFCKeyNumVertices;
+extern NSString* kFCKeyNumTriangles;
 extern NSString* kFCKeyType;
 
 extern NSString* kFCKeyX;
 extern NSString* kFCKeyY;
 extern NSString* kFCKeyWidth;
 extern NSString* kFCKeyHeight;
+extern NSString* kFCKeyOffset;
 extern NSString* kFCKeyOffsetX;
 extern NSString* kFCKeyOffsetY;
+extern NSString* kFCKeyOffsetZ;
 extern NSString* kFCKeyAngle;
 extern NSString* kFCKeyRadius;
 extern NSString* kFCKeyShape;
@@ -107,6 +111,7 @@ extern NSString* kFCKeyVertexPosition;
 extern NSString* kFCKeyVertexNormal;
 extern NSString* kFCKeyVertexTexCoord0;
 
+extern NSString* kFCKeyVertexBuffer;
 extern NSString* kFCKeyNormalArray;
 extern NSString* kFCKeyVertexArray;
 extern NSString* kFCKeyTexcoord0Array;
@@ -117,4 +122,14 @@ extern NSString* kFCKeyIndexArray;
 extern NSString* kFCKeyMaterialDiffuseColor;
 extern NSString* kFCKeyMaterialDiffuseTexture;
 extern NSString* kFCKeyShaderProgramName;
+extern NSString* kFCKeyStride;
 
+extern NSString* kFCKeyVersion;
+extern NSString* kFCKeyInput;
+extern NSString* kFCKeyOutput;
+extern NSString* kFCKeyBinaryPayload;
+extern NSString* kFCKeyTextures;
+extern NSString* kFCKeyGameplay;
+extern NSString* kFCKeyModels;
+extern NSString* kFCKeyBuffers;
+extern NSString* kFCKeyMesh;

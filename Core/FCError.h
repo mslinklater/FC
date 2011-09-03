@@ -38,6 +38,7 @@
 #define FC_LOG2(n,m,a) [FCError log2:n arg1:(m) arg2:(a)]
 
 #define FC_ASSERT(n) if(!(n))FC_FATAL(@"Assert failure")
+#define FC_ASSERT1(n,m) if(!(n))FC_FATAL(m)
 
 #else
 
@@ -50,6 +51,7 @@
 #define FC_LOG2(n,m,a) {}
 
 #define FC_ASSERT(n)
+#define FC_ASSERT1(n,m)
 
 #endif
 

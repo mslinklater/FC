@@ -109,7 +109,7 @@
 
 		NSString* atlasName = [attributeDict valueForKey:kFCKeyName];
 
-		NSURL* url = [[NSBundle mainBundle] URLForResource:atlasName withExtension:@"pvr"];
+		NSURL* url = [[NSBundle mainBundle] URLForResource:atlasName withExtension:@"pvr" subdirectory:@"Output/Textures"];
 
 		FCTextureFile* textureFile = [FCTextureFile fcTextureFileWithURL:url];
 		textureFile.name = atlasName;

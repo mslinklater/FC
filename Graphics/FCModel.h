@@ -29,9 +29,14 @@
 @class FCResource;
 
 @interface FCModel : NSObject {	
-	NSMutableArray* mMeshes;
+#if defined (DEBUG)
+	NSMutableArray* _meshes;
+	FC::Vector3f _position;
+	float _rotation;
+#endif
 }
 
+@property(nonatomic, retain) NSMutableArray* meshes;
 @property(nonatomic) FC::Vector3f position;
 @property(nonatomic) float rotation;
 

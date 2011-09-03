@@ -129,6 +129,7 @@
 -(FCShaderUniform*)getUniform:(NSString *)name
 {
 	FCShaderUniform* uniform = [self.uniforms valueForKey:name];
+	FC_ASSERT(uniform);
 	return uniform;
 }
 
