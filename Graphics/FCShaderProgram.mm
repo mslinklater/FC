@@ -27,15 +27,23 @@
 #import "FCCore.h"
 #import "FCGLHelpers.h"
 #import "FCShaderUniform.h"
+#import "FCShaderAttribute.h"
 
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/glext.h>
+
+@interface FCShaderProgram()
+-(void)processUniforms;
+-(void)processAttributes;
+@end
 
 @implementation FCShaderProgram
 @synthesize glHandle = _glHandle;
 @synthesize vertexShader = _vertexShader;
 @synthesize fragmentShader = _fragmentShader;
 @synthesize uniforms = _uniforms;
+@synthesize attributes = _attributes;
+@synthesize requiredVertexDescriptor = _requiredVertexDescriptor;
 
 -(id)initWithVertex:(FCShader*)vertexShader andFragment:(FCShader*)fragmentShader
 {
@@ -54,7 +62,8 @@
 		
 		glGetProgramiv(self.glHandle, GL_LINK_STATUS, &linked);
 		
-		if (!linked) {
+		if (!linked) 
+		{
 			GLint infoLen = 0;
 			
 			glGetProgramiv(self.glHandle, GL_INFO_LOG_LENGTH, &infoLen);
@@ -71,47 +80,9 @@
 			return nil;
 		}
 		
-		// get uniform information
-
-		NSMutableDictionary* uniforms = [[NSMutableDictionary alloc] init];
-
-		GLint numUniforms;
+		[self processUniforms];
+		[self processAttributes];
 		
-		glGetProgramiv(self.glHandle, GL_ACTIVE_UNIFORMS, &numUniforms);
-		
-		GLint uniformMax;
-		
-		glGetProgramiv(self.glHandle, GL_ACTIVE_UNIFORM_MAX_LENGTH, &uniformMax);
-		
-		GLchar* buffer = (GLchar*)malloc(sizeof(GLchar) * uniformMax);
-		
-		for (GLuint iUniform = 0; iUniform < numUniforms; iUniform++) 
-		{
-			GLsizei length;
-			GLint num;
-			GLenum type;
-			GLint location;
-			
-			glGetActiveUniform(self.glHandle, iUniform, uniformMax, &length, &num, &type, buffer);
-			
-			location = glGetUniformLocation(self.glHandle, buffer);
-			
-			FCShaderUniform* thisUniform = [[FCShaderUniform alloc] init];
-			
-			thisUniform.location = location;
-			thisUniform.num = num;
-			thisUniform.type = type;			
-			[uniforms setValue:thisUniform forKey:[NSString stringWithFormat:@"%s", buffer]];			
-			[thisUniform release];
-		}
-
-		free(buffer);
-		
-		_uniforms = [[NSDictionary dictionaryWithDictionary:uniforms] retain];
-		
-		[uniforms release];
-		
-		NSLog(@"%@", self.uniforms);
 		[self getActiveAttributes];
 	}
 	return self;
@@ -124,6 +95,77 @@
 	[_fragmentShader release];
 	[_uniforms release];
 	[super dealloc];
+}
+
+-(void)processUniforms
+{
+	NSMutableDictionary* uniforms = [NSMutableDictionary dictionary];
+	
+	GLint numUniforms;
+	glGetProgramiv(self.glHandle, GL_ACTIVE_UNIFORMS, &numUniforms);
+	
+	GLint uniformMax;	
+	glGetProgramiv(self.glHandle, GL_ACTIVE_UNIFORM_MAX_LENGTH, &uniformMax);
+	
+	GLchar* uniformNameBuffer = (GLchar*)malloc(sizeof(GLchar) * uniformMax);
+	
+	for (GLuint iUniform = 0; iUniform < numUniforms; iUniform++) 
+	{
+		GLsizei length;
+		GLint num;
+		GLenum type;
+		GLint location;
+		
+		glGetActiveUniform(self.glHandle, iUniform, uniformMax, &length, &num, &type, uniformNameBuffer);
+		
+		location = glGetUniformLocation(self.glHandle, uniformNameBuffer);
+		
+		FCShaderUniform* thisUniform = [FCShaderUniform fcShaderUniform];
+		
+		thisUniform.glLocation = location;
+		thisUniform.num = num;
+		thisUniform.type = type;			
+		
+		[uniforms setValue:thisUniform forKey:[NSString stringWithFormat:@"%s", uniformNameBuffer]];			
+	}
+	
+	free(uniformNameBuffer);
+	
+	_uniforms = [[NSDictionary dictionaryWithDictionary:uniforms] retain];	
+}
+
+-(void)processAttributes
+{
+	NSMutableDictionary* attributes = [NSMutableDictionary dictionary];
+	
+	GLint numActive;
+	GLint maxLength;
+	
+	glGetProgramiv(self.glHandle, GL_ACTIVE_ATTRIBUTES, &numActive);
+	glGetProgramiv(self.glHandle, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxLength);
+	
+	char* attributeNameBuffer = (char*)malloc(sizeof(char) * maxLength);
+	
+	for (int i = 0; i < numActive; i++) 
+	{
+		GLsizei sizeWritten;
+		GLint size;
+		GLenum type;
+		GLint location;
+		
+		glGetActiveAttrib(self.glHandle, i, maxLength, &sizeWritten, &size, &type, attributeNameBuffer);
+		location = glGetAttribLocation(self.glHandle, attributeNameBuffer);
+		
+		FCShaderAttribute* thisAttribute = [FCShaderAttribute fcShaderAttribute];
+		thisAttribute.glLocation = location;
+		
+		[attributes setValue:thisAttribute forKey:[NSString stringWithFormat:@"%s", attributeNameBuffer]];
+	}
+	
+	free( attributeNameBuffer );
+	
+	_attributes = [[NSDictionary dictionaryWithDictionary:attributes] retain];	
+
 }
 
 -(FCShaderUniform*)getUniform:(NSString *)name
@@ -150,49 +192,49 @@
 	{
 		case GL_FLOAT:
 			FC_ASSERT(size == sizeof(GLfloat) * uniform.num);
-			glUniform1fv(uniform.location, uniform.num, (GLfloat*)pValues);
+			glUniform1fv(uniform.glLocation, uniform.num, (GLfloat*)pValues);
 			break;
 		case GL_FLOAT_VEC2:
 			FC_ASSERT(size == sizeof(GLfloat) * 2 * uniform.num);
-			glUniform2fv(uniform.location, uniform.num, (GLfloat*)pValues);
+			glUniform2fv(uniform.glLocation, uniform.num, (GLfloat*)pValues);
 			break;
 		case GL_FLOAT_VEC3:
 			FC_ASSERT(size == sizeof(GLfloat) * 3 * uniform.num);
-			glUniform3fv(uniform.location, uniform.num, (GLfloat*)pValues);
+			glUniform3fv(uniform.glLocation, uniform.num, (GLfloat*)pValues);
 			break;
 		case GL_FLOAT_VEC4:
 			FC_ASSERT(size == sizeof(GLfloat) * 4 * uniform.num);
-			glUniform4fv(uniform.location, uniform.num, (GLfloat*)pValues);
+			glUniform4fv(uniform.glLocation, uniform.num, (GLfloat*)pValues);
 			break;
 			
 		case GL_INT:
 			FC_ASSERT(size == sizeof(GLint) * uniform.num);
-			glUniform1iv(uniform.location, uniform.num, (GLint*)pValues);
+			glUniform1iv(uniform.glLocation, uniform.num, (GLint*)pValues);
 			break;
 		case GL_INT_VEC2:
 			FC_ASSERT(size == sizeof(GLint) * 2 * uniform.num);
-			glUniform2iv(uniform.location, uniform.num, (GLint*)pValues);
+			glUniform2iv(uniform.glLocation, uniform.num, (GLint*)pValues);
 			break;
 		case GL_INT_VEC3:
 			FC_ASSERT(size == sizeof(GLint) * 3 * uniform.num);
-			glUniform3iv(uniform.location, uniform.num, (GLint*)pValues);
+			glUniform3iv(uniform.glLocation, uniform.num, (GLint*)pValues);
 			break;
 		case GL_INT_VEC4:
 			FC_ASSERT(size == sizeof(GLint) * 4 * uniform.num);
-			glUniform4iv(uniform.location, uniform.num, (GLint*)pValues);
+			glUniform4iv(uniform.glLocation, uniform.num, (GLint*)pValues);
 			break;
 			
 		case GL_FLOAT_MAT2:
 			FC_ASSERT(size == sizeof(GLfloat) * 4 * uniform.num);
-			glUniformMatrix2fv(uniform.location, uniform.num, GL_FALSE, (GLfloat*)pValues);
+			glUniformMatrix2fv(uniform.glLocation, uniform.num, GL_FALSE, (GLfloat*)pValues);
 			break;			
 		case GL_FLOAT_MAT3:
 			FC_ASSERT(size == sizeof(GLfloat) * 9 * uniform.num);
-			glUniformMatrix3fv(uniform.location, uniform.num, GL_FALSE, (GLfloat*)pValues);
+			glUniformMatrix3fv(uniform.glLocation, uniform.num, GL_FALSE, (GLfloat*)pValues);
 			break;
 		case GL_FLOAT_MAT4:
 			FC_ASSERT(size == sizeof(GLfloat) * 16 * uniform.num);
-			glUniformMatrix4fv(uniform.location, uniform.num, GL_FALSE, (GLfloat*)pValues);
+			glUniformMatrix4fv(uniform.glLocation, uniform.num, GL_FALSE, (GLfloat*)pValues);
 			break;
 
 		default:
@@ -256,8 +298,6 @@
 	}
 	
 	free( pBuffer );
-	
-//	NSLog(@"%@", attribArray);
 	
 	return [NSArray arrayWithArray:attribArray];
 }

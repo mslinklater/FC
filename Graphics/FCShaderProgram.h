@@ -27,12 +27,19 @@
 
 @class FCShader;
 @class FCShaderUniform;
+@class FCVertexDescriptor;
 
 @interface FCShaderProgram : NSObject
+{
+	NSDictionary* _attributes;
+	NSDictionary* _uniforms;
+}
 @property(nonatomic, readonly) GLuint glHandle;
 @property(nonatomic, readonly) FCShader* vertexShader;
 @property(nonatomic, readonly) FCShader* fragmentShader;
 @property(nonatomic, readonly) NSDictionary* uniforms;
+@property(nonatomic, readonly) NSDictionary* attributes;
+@property(nonatomic, retain) FCVertexDescriptor* requiredVertexDescriptor;
 
 -(id)initWithVertex:(FCShader*)vertexShader andFragment:(FCShader*)fragmentShader;
 -(FCShaderUniform*)getUniform:(NSString*)name;
@@ -40,7 +47,7 @@
 -(GLuint)getAttribLocation:(NSString*)name;
 -(void)use;
 -(void)validate;
--(NSArray*)getActiveAttributes;
+-(NSArray*)getActiveAttributes;	// Deprecate;
 
 @end
 

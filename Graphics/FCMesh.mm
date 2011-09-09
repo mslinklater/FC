@@ -35,7 +35,7 @@
 {
 }
 @property(nonatomic) BOOL fixedUp;
--(void)fixup;
+-(void)fixupVBOs;
 @end
 
 @implementation FCMesh
@@ -47,6 +47,8 @@
 @synthesize colorUniform = _colorUniform;
 @synthesize fixedUp = _fixedUp;
 @synthesize shaderProgram = _shaderProgram;
+@synthesize vertexBufferHandle = _vertexBufferHandle;
+@synthesize indexBufferHandle = _indexBufferHandle;
 
 #pragma mark - Object lifetime
 
@@ -87,9 +89,9 @@
 
 -(void)dealloc
 {
-	glDeleteBuffers(1, &m_indexBuffer);
+	glDeleteBuffers(1, &_indexBufferHandle);
 	GLCHECK;
-	glDeleteBuffers(1, &m_primBuffer);
+	glDeleteBuffers(1, &_vertexBufferHandle);
 	GLCHECK;
 	
 	[_vertexDescriptor release];
@@ -107,7 +109,7 @@
 -(void)render
 {
 	if (!self.fixedUp) {
-		[self fixup];
+		[self fixupVBOs];
 	}
 
 	GLuint positionSlot = [self.shaderProgram getAttribLocation:@"position"];
@@ -119,8 +121,8 @@
 	FCShaderUniform* diffuseColorUniform = [self.shaderProgram getUniform:@"diffusecolor"];
 	[self.shaderProgram setUniformValue:diffuseColorUniform to:&_colorUniform size:sizeof(FC::Color4f)];
 	
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
-	glBindBuffer(GL_ARRAY_BUFFER, m_primBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.indexBufferHandle);
+	glBindBuffer(GL_ARRAY_BUFFER, self.vertexBufferHandle);
 	glVertexAttribPointer(positionSlot, 3, GL_FLOAT, GL_FALSE, stride, 0);
 	glEnableVertexAttribArray(positionSlot);
 	
@@ -131,22 +133,22 @@
 	glDrawElements(GL_TRIANGLES, self.numTriangles * 3, GL_UNSIGNED_SHORT, 0);
 }
 
--(void)fixup
+-(void)fixupVBOs
 {
 	FC_ASSERT(self.fixedUp == NO);
 	
 	// build VBOs
 	
-	glGenBuffers(1, &m_primBuffer);
+	glGenBuffers(1, &_vertexBufferHandle);
 	GLCHECK;
-	glBindBuffer(GL_ARRAY_BUFFER, m_primBuffer);
+	glBindBuffer(GL_ARRAY_BUFFER, self.vertexBufferHandle);
 	GLCHECK;
 	glBufferData(GL_ARRAY_BUFFER, self.numVertices * self.vertexDescriptor.stride, self.pVertexBuffer, GL_STATIC_DRAW);
 	GLCHECK;
 
-	glGenBuffers(1, &m_indexBuffer);
+	glGenBuffers(1, &_indexBufferHandle);
 	GLCHECK;
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_indexBuffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.indexBufferHandle);
 	GLCHECK;
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.numTriangles * sizeof(FC::Vector3s), self.pIndexBuffer, GL_STATIC_DRAW);
 	GLCHECK;

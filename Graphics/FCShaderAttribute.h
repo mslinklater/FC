@@ -20,27 +20,19 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#import <Foundation/Foundation.h>
+#import <OpenGLES/ES2/gl.h>
 
-#import "FCShaderUniform.h"
-#import "FCGLHelpers.h"
-
-@implementation FCShaderUniform
-@synthesize glLocation;
-@synthesize num;
-@synthesize type;
-
-+(id)fcShaderUniform
+@interface FCShaderAttribute : NSObject
 {
-	return [[[FCShaderUniform alloc] init] autorelease];
+	GLint glLocation;
+	GLint num;
+	GLenum type;
 }
+@property(nonatomic) GLint glLocation;
+@property(nonatomic) GLint num;
+@property(nonatomic) GLenum type;
 
--(NSString*)description
-{
-	return [NSString stringWithFormat:@"%d %@ x %d", glLocation, FCGLStringForEnum(type), num];
-}
++(id)fcShaderAttribute;
 
 @end
-
-#endif // TARGET_OS_IPHONE
-

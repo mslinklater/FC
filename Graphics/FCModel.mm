@@ -38,7 +38,7 @@
 
 static 	FC::Color4f	debugColor( 1.0f, 1.0f, 1.0f, 1.0f );
 static int kNumCircleSegments = 16;
-static FCVertexDescriptor* s_debugVertexDescriptor;
+static FCVertexDescriptor* s_debugMeshVertexDescriptor;
 static NSString* s_debugShaderName = @"debug_debug";
 
 #pragma mark - Private interface
@@ -62,9 +62,9 @@ static NSString* s_debugShaderName = @"debug_debug";
 
 +(void)initialize
 {
-	s_debugVertexDescriptor = [[FCVertexDescriptor alloc] init];
-	s_debugVertexDescriptor.positionType = kFCVertexDescriptorPropertyTypeAttributeVec3;
-	s_debugVertexDescriptor.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec4;
+	s_debugMeshVertexDescriptor = [[FCVertexDescriptor alloc] init];
+	s_debugMeshVertexDescriptor.positionType = kFCVertexDescriptorPropertyTypeAttributeVec3;
+	s_debugMeshVertexDescriptor.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec4;
 }
 
 +(void)setDebugColor:(FC::Color4f)col
@@ -145,6 +145,12 @@ static NSString* s_debugShaderName = @"debug_debug";
 	self = [super init];
 	if (self) 
 	{
+		// get vertex description provided by the resource
+		
+		// check the shaders can get all they need from the resource
+		
+		// build meshes
+		
 #if 0
 		self.meshes = [NSMutableArray array];
 
@@ -221,26 +227,24 @@ static NSString* s_debugShaderName = @"debug_debug";
 
 -(void)render
 {
-	FCShaderProgram* program = [[FCRenderer instance].shaderManager program:@"debug_debug"];
-	FCShaderUniform* uniform = [program getUniform:@"modelview"];
-	
 	FC::Matrix4f mat = FC::Matrix4f::Identity();
 	FC::Matrix4f trans = FC::Matrix4f::Translate(self.position.x, self.position.y, 0.0f);
 	FC::Matrix4f rot = FC::Matrix4f::Rotate(self.rotation, FC::Vector3f(0.0f, 0.0f, -1.0f) );
 	
 	mat = rot * trans;
-	
-	[program setUniformValue:uniform to:&mat size:sizeof(mat)];
-	
+		
 	for (FCMesh* mesh in self.meshes) 
 	{
+		FCShaderUniform* uniform = [mesh.shaderProgram getUniform:@"modelview"];		
+		[mesh.shaderProgram setUniformValue:uniform to:&mat size:sizeof(mat)];
+
 		[mesh render];
 	}
 }
 
 -(void)addDebugCircle:(NSDictionary*)def
 {
-	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:s_debugVertexDescriptor shaderName:s_debugShaderName];
+	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:s_debugMeshVertexDescriptor shaderName:s_debugShaderName];
 	[self.meshes addObject:mesh];
 
 	mesh.numVertices = kNumCircleSegments + 1;
@@ -291,7 +295,7 @@ static NSString* s_debugShaderName = @"debug_debug";
 
 -(void)addDebugRectangle:(NSDictionary*)def
 {
-	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:s_debugVertexDescriptor shaderName:s_debugShaderName];
+	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:s_debugMeshVertexDescriptor shaderName:s_debugShaderName];
 	[self.meshes addObject:mesh];
 
 	mesh.numVertices = 4;
@@ -338,12 +342,11 @@ static NSString* s_debugShaderName = @"debug_debug";
 	pIndex->x = 0;
 	pIndex->y = 2;
 	pIndex->z = 3;
-	
 }
 
 -(void)addDebugPolygon:(NSDictionary*)def
 {
-	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:s_debugVertexDescriptor shaderName:s_debugShaderName];
+	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:s_debugMeshVertexDescriptor shaderName:s_debugShaderName];
 	[self.meshes addObject:mesh];
 	
 	mesh.numVertices = [[def valueForKey:kFCKeyNumVertices] intValue];
@@ -374,7 +377,7 @@ static NSString* s_debugShaderName = @"debug_debug";
 
 	FC::Vector3us* pIndex;
 	
-	for (int i = 0; i < mesh.numTriangles; i++) 
+	for (int i = 0; i < mesh.numTriangles; i++)
 	{
 		pIndex = [mesh pIndexBufferAtIndex:i];
 		pIndex->x = 0;

@@ -20,19 +20,17 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
-
-#import "FCShaderUniform.h"
+#import "FCShaderAttribute.h"
 #import "FCGLHelpers.h"
 
-@implementation FCShaderUniform
+@implementation FCShaderAttribute
 @synthesize glLocation;
 @synthesize num;
 @synthesize type;
 
-+(id)fcShaderUniform
++(id)fcShaderAttribute
 {
-	return [[[FCShaderUniform alloc] init] autorelease];
+	return [[[FCShaderAttribute alloc] init] autorelease];
 }
 
 -(NSString*)description
@@ -41,6 +39,3 @@
 }
 
 @end
-
-#endif // TARGET_OS_IPHONE
-

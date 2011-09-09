@@ -196,7 +196,7 @@ static FCCaps* pInstance;
 	
 	// UDID
 
-	[_caps setValue:[UIDevice currentDevice].uniqueIdentifier forKey:kFCCapsHardwareUDID];
+//	[_caps setValue:[UIDevice currentDevice].uniqueIdentifier forKey:kFCCapsHardwareUDID];
 
 	// name
 

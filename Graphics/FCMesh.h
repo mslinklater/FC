@@ -36,10 +36,10 @@
 	FCShaderProgram*	_shaderProgram;
 	void*				_pVertexBuffer;	
 	FC::Vector3us*		_pIndexBuffer;
-	FC::Color4f		_colorUniform;
-	GLuint	m_primBuffer;
-	GLuint	m_indexBuffer;	
-	BOOL	_fixedUp;
+	FC::Color4f			_colorUniform;
+	GLuint				_vertexBufferHandle;
+	GLuint				_indexBufferHandle;	
+	BOOL				_fixedUp;
 }
 @property(nonatomic) unsigned int numVertices;
 @property(nonatomic) unsigned int numTriangles;
@@ -48,6 +48,8 @@
 @property(nonatomic, readonly) FC::Vector3us* pIndexBuffer;
 @property(nonatomic) FC::Color4f colorUniform;
 @property(nonatomic, retain) FCShaderProgram* shaderProgram;
+@property(nonatomic) GLuint vertexBufferHandle;
+@property(nonatomic) GLuint indexBufferHandle;
 
 -(id)initWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor shaderName:(NSString*)shaderName;
 +(id)fcMeshWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor shaderName:(NSString*)shaderName;

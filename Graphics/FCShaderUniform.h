@@ -26,9 +26,16 @@
 #import <OpenGLES/ES2/gl.h>
 
 @interface FCShaderUniform : NSObject
-@property(nonatomic) GLint location;
+{
+	GLint glLocation;
+	GLint num;
+	GLenum type;
+}
+@property(nonatomic) GLint glLocation;
 @property(nonatomic) GLint num;
 @property(nonatomic) GLenum type;
+
++(id)fcShaderUniform;
 @end
 
 #endif // TARGET_OS_IPHONE
