@@ -29,8 +29,8 @@
 @end
 
 @implementation FCQuartzButton
-
 @synthesize style = _style;
+@synthesize delegate = _delegate;
 
 #pragma mark - Object Lifetime
 
@@ -44,12 +44,12 @@
 		
 		switch (self.style) {
 			case kFCQuartzButtonStyleDefault:
-				mDrawDelegate = self;
-				mDrawSelector = @selector(drawDefaultRect:);
+//				mDrawDelegate = self;
+//				mDrawSelector = @selector(drawDefaultRect:);
 				break;
 			case kFCQuartzButtonStyleCustom:
-				mDrawSelector = nil;
-				mDrawDelegate = nil;
+//				mDrawSelector = nil;
+//				mDrawDelegate = nil;
 			default:
 				break;
 		}
@@ -66,8 +66,8 @@
 
 -(void)setDrawDelegate:(id)del withSelector:(SEL)selector
 {
-	mDrawDelegate = del;
-	mDrawSelector = selector;
+//	mDrawDelegate = del;
+//	mDrawSelector = selector;
 }
 
 #pragma mark - Getters
@@ -76,12 +76,12 @@
 
 -(void)drawRect:(CGRect)rect
 {
-	[super drawRect:rect];
-	
-	NSAssert(mDrawDelegate && mDrawSelector, @"Drawing delegate or delector nil");
-	
-	NSValue* frameValue = [NSValue valueWithCGRect:rect];		
-	[mDrawDelegate performSelector:mDrawSelector withObject:frameValue];
+//	[super drawRect:rect];
+//	
+//	NSAssert(mDrawDelegate && mDrawSelector, @"Drawing delegate or delector nil");
+//	
+//	NSValue* frameValue = [NSValue valueWithCGRect:rect];		
+//	[mDrawDelegate performSelector:mDrawSelector withObject:frameValue];
 	
 	return;
 }

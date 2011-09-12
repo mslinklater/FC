@@ -55,9 +55,9 @@ static FCUserDefaults* pInstance;
 
 //----------------------------------------------------------------------------------------------------------------------
 
--(void)registerDefaults
+-(void)registerDefaults:(FCXMLData*)gameData
 {
-	NSArray* gameDataArray = [[[FCGameContext instance] gameData] arrayForKeyPath:@"gamedata.defaults.default"];
+	NSArray* gameDataArray = [gameData arrayForKeyPath:@"gamedata.defaults.default"];
 	
 	NSMutableDictionary* defaultsDictionary = [[NSMutableDictionary alloc] init];
 	

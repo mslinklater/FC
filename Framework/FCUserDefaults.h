@@ -24,13 +24,15 @@
 
 #import <Foundation/Foundation.h>
 
+@class FCXMLData;
+
 @interface FCUserDefaults : NSObject {
     
 }
 
 +(FCUserDefaults*)instance;
 
--(void)registerDefaults;
+-(void)registerDefaults:(FCXMLData*)gameData;
 @end
 
 #endif // TARGET_OS_IPHONE

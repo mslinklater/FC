@@ -29,11 +29,17 @@ enum FCQuartzButtonStyle {
 	kFCQuartzButtonStyleCustom
 };
 
+@protocol FCQuartzButtonDelegate <NSObject>
+-(void)drawQuartzButtonWithRect:(CGRect)rect;
+@end
+
 @interface FCQuartzButton : UIButton {
-    id	mDrawDelegate;
-	SEL	mDrawSelector;
+//    id	mDrawDelegate;
+//	SEL	mDrawSelector;
+//	id<FCQuartzButtonDelegate> delegate;
 }
 @property(nonatomic) FCQuartzButtonStyle style;
+@property(nonatomic, assign) id<FCQuartzButtonDelegate> delegate;
 
 -(id)initWithFrame:(CGRect)frame withStyle:(FCQuartzButtonStyle)style;
 -(void)setDrawDelegate:(id)del withSelector:(SEL)selector;

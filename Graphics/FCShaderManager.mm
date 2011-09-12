@@ -55,7 +55,7 @@
 
 -(FCShader*)addShader:(NSString *)name
 {
-	FCShader* ret = [self.shaders valueForKey:name];
+	FCShader* ret = [[self.shaders valueForKey:name] retain];
 	
 	if (!ret) 
 	{
@@ -83,15 +83,16 @@
 			type = kShaderTypeFragment;
 		}
 		
-		FCShader* newShader = [[FCShader alloc] initType:type withSource:source];
+//		FCShader* newShader = [[FCShader alloc] initType:type withSource:source];
+		ret = [[FCShader alloc] initType:type withSource:source];
 		
-		[self.shaders setValue:newShader forKey:name];
+		[self.shaders setValue:ret forKey:name];
 		
-		ret = newShader;
+//		ret = newShader;
 		
-		[newShader autorelease];
+//		[ret autorelease];
 	}
-	return ret;
+	return [ret autorelease];
 }
 
 -(FCShader*)shader:(NSString *)name
@@ -101,7 +102,7 @@
 
 -(FCShaderProgram*)addProgram:(NSString *)name
 {
-	FCShaderProgram* ret = [self.programs valueForKey:name];
+	FCShaderProgram* ret = [[self.programs valueForKey:name] retain];
 	
 	if (!ret) 
 	{
@@ -117,15 +118,17 @@
 		
 		// build program
 		
-		FCShaderProgram* program = [[FCShaderProgram alloc] initWithVertex:vertexShader andFragment:fragmentShader];
+//		FCShaderProgram* program = [[FCShaderProgram alloc] initWithVertex:vertexShader andFragment:fragmentShader];
+		ret = [[FCShaderProgram alloc] initWithVertex:vertexShader andFragment:fragmentShader];
 		
-		[self.programs setValue:program forKey:name];
+//		[self.programs setValue:program forKey:name];
+		[self.programs setValue:ret forKey:name];
 		
-		ret = program;
+//		ret = program;
 
-		[program autorelease];
+//		[program autorelease];
 	}
-	return ret;
+	return [ret autorelease];
 }
 
 -(FCShaderProgram*)program:(NSString *)name

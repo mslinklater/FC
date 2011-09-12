@@ -81,11 +81,11 @@
 		[FCUIManager instance];
 		[FCResourceManager instance];
 		_gameData = [[FCXMLData alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"gamedata" ofType:@"xml"]];
-		[[FCUserDefaults instance] registerDefaults];
+		[[FCUserDefaults instance] registerDefaults:self.gameData];
 		_state = [[NSMutableDictionary alloc] init];
 		[[FCRenderer instance] addToGatherList:[FCActorSystem instance]];
 		[FCPhysics instance];
-		NSArray* statsArray = [[[FCGameContext instance] gameData] arrayForKeyPath:@"gamedata.stats.stat"];
+		NSArray* statsArray = [self.gameData arrayForKeyPath:@"gamedata.stats.stat"];
 		[[FCStats instance] prepareStatsFromArray:statsArray withPlayerId:@"local"];
 
 		// game center
@@ -133,8 +133,7 @@
 	static FCGameContext* theInstance = nil;
 	
 	if (!theInstance) {
-		theInstance = [FCGameContext alloc];
-		[theInstance init];
+		theInstance = [[FCGameContext alloc] init];
 	}
 	return theInstance;
 }
