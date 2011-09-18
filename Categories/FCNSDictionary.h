@@ -20,11 +20,8 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
-#import "FCUIView.h"
-#endif // TARGET_OS_IPHONE
+#import <Foundation/Foundation.h>
 
-#import "FCNSArray.h"
-#import "FCNSData.h"
-#import "FCNSMutableDictionary.h"
-#import "FCNSDictionary.h"
+@interface NSDictionary (FCExtensions)
+-(NSArray*)arrayForKey:(NSString*)key;
+@end

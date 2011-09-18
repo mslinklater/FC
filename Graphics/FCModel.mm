@@ -26,6 +26,7 @@
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 
+#import "FCCategories.h"
 #import "FCModel.h"
 #import "FCMaths.h"
 #import "FCKeys.h"
@@ -145,6 +146,36 @@ static NSString* s_debugShaderName = @"debug_debug";
 	self = [super init];
 	if (self) 
 	{
+		NSArray* meshArray = [modelDict arrayForKey:kFCKeyMesh];;
+		NSArray* binaryPayloadArray = [res.xmlData arrayForKeyPath:@"fcr.binarypayload.chunk"];
+		(void)binaryPayloadArray;
+
+		for( NSDictionary* mesh in meshArray )
+		{
+			NSString* shaderProgramName = [mesh valueForKey:kFCKeyShaderProgramName];
+			(void)shaderProgramName;
+			
+			NSDictionary* buffers = [mesh valueForKey:kFCKeyBuffers];
+			NSString* vertexBufferId = [buffers valueForKey:kFCKeyVertexBuffer];
+
+			NSDictionary* chunkDictionary = nil; //= [binaryPayloadArray valueForKey:vertexBufferId];
+
+			for( NSDictionary* dict in binaryPayloadArray )
+			{
+				if ([[dict valueForKey:kFCKeyId] isEqualToString:vertexBufferId]) {
+					chunkDictionary = dict;
+				}
+			}
+			
+			
+			NSString* vertexFormatString = [chunkDictionary valueForKey:kFCKeyVertexFormat];
+
+			FCVertexDescriptor* resourceVertexDescriptor = [FCVertexDescriptor vertexDescriptorWithVertexFormatString:vertexFormatString 
+																									   andUniformDict:mesh];
+			
+			NSLog(@"%@", resourceVertexDescriptor);
+		}
+		
 		// get vertex description provided by the resource
 		
 		// check the shaders can get all they need from the resource

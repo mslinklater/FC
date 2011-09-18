@@ -23,11 +23,48 @@
 #import "FCVertexDescriptor.h"
 #import "FCCore.h"
 
+static NSString* s_nameForProperty[ kFCVertexDescriptorLastProperty ] = {
+	@"Absent",
+	@"Uniform Float",
+	@"Uniform Vec 2",
+	@"Uniform Vec 3",
+	@"Uniform Vec 4",
+	@"Uniform Int",
+	@"Uniform IVec2",
+	@"Uniform IVec3",
+	@"Uniform IVec4",
+	@"Uniform Bool",
+	@"Uniform BVec2",
+	@"Uniform BVec3",
+	@"Uniform BVec4",
+	@"Uniform Mat2",
+	@"Uniform Mat3",
+	@"Uniform Mat4",
+	@"First Attribute",
+	@"Attribute Float",
+	@"Attribute Vec2",
+	@"Attribute Vec3",
+	@"Attribute Vec4",
+	@"Attribute Int",
+	@"Attribute IVec2",
+	@"Attribute IVec3",
+	@"Attribute IVec4",
+	@"Attribute Bool",
+	@"Attribute BVec2",
+	@"Attribute BVec3",
+	@"Attribute BVec4",
+	@"Attribute Mat2",
+	@"Attribute Mat3",
+	@"Attribute Mat4",
+	@"Last Attribute"
+};
+
 @interface FCVertexDescriptor()
 -(unsigned int)sizeForType:(FCVertexDescriptorPropertyType)type;
 @end
 
 @implementation FCVertexDescriptor
+@synthesize name = _name;
 @synthesize positionType = _positionType;
 @synthesize diffuseColorType = _diffuseColorType;
 @synthesize normalType = _normalType;
@@ -57,6 +94,60 @@
 		self.tex3Type = kFCVertexDescriptorPropertyTypeAbsent;
 	}
 	return self;
+}
+
++(id)vertexDescriptor
+{
+	return [[[FCVertexDescriptor alloc] init] autorelease];
+}
+
+-(id)initWithVertexFormatString:(NSString *)desc andUniformDict:(NSDictionary *)uniformDict
+{
+	self = [self init];
+	
+	// Uniforms
+
+	NSString* diffuseColorValue = [uniformDict valueForKey:kFCKeyMaterialDiffuseColor];
+	
+	if (diffuseColorValue) {
+		NSArray* elementArray = [diffuseColorValue componentsSeparatedByString:@" "];
+		if ([elementArray count] == 3) {
+			self.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec3;
+		} else if ([elementArray count] == 4) {
+			self.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec4;			
+		} else {
+			FC_FATAL(@"Diffuse color with other than 3 or 4 components");
+		}
+	}
+
+	// Attributes
+
+	NSArray* attributeArray = [desc componentsSeparatedByString:@","];
+	
+	for( NSString* attributeString in attributeArray ) {
+		NSRange leftBracketRange = [attributeString rangeOfString:@"("];
+		NSRange rightBracketRange = [attributeString rangeOfString:@")"];
+
+		NSRange nameRange;
+		nameRange.location = 0;
+		nameRange.length = leftBracketRange.location;
+		
+		NSRange typeRange;
+		typeRange.location = leftBracketRange.location + 1;
+		typeRange.length = rightBracketRange.location - leftBracketRange.location - 1;
+		
+		NSString* attrNameString = [attributeString substringWithRange:nameRange];
+		NSString* attrTypeString = [attributeString substringWithRange:typeRange];
+		
+		NSLog(@"%@ %@", attrNameString, attrTypeString);
+	}
+							   
+	return self;
+}
+
++(id)vertexDescriptorWithVertexFormatString:(NSString *)desc andUniformDict:(NSDictionary *)uniformDict
+{
+	return [[[FCVertexDescriptor alloc] initWithVertexFormatString:desc andUniformDict:uniformDict] autorelease];
 }
 
 -(unsigned int)stride
@@ -164,5 +255,45 @@
 	(void)self.stride;
 	return _tex3Offset;
 }
+
+#if !defined (MASTER)
+-(NSString*)description
+{
+	NSMutableString* retString = [NSMutableString string];
+	[retString appendString:@"--- FCVertexDescriptor"];
+	[retString appendFormat:@"Name: %@", self.name];
+	[retString appendFormat:@"Stride: %@", self.stride];
+	
+	if (self.positionType != kFCVertexDescriptorPropertyTypeAbsent) {
+		[retString appendFormat:@"Position: %@, %d", s_nameForProperty[ self.positionType ], self.positionOffset ];
+	}
+
+	if (self.diffuseColorType != kFCVertexDescriptorPropertyTypeAbsent) {
+		[retString appendFormat:@"Diffuse Color: %@, %d", s_nameForProperty[ self.diffuseColorType ], self.diffuseColorOffset ];
+	}
+
+	if (self.normalType != kFCVertexDescriptorPropertyTypeAbsent) {
+		[retString appendFormat:@"Normal: %@, %d", s_nameForProperty[ self.normalType ], self.normalOffset ];
+	}
+
+	if (self.tex0Type != kFCVertexDescriptorPropertyTypeAbsent) {
+		[retString appendFormat:@"Tex0: %@, %d", s_nameForProperty[ self.tex0Type ], self.tex0Offset ];
+	}
+
+	if (self.tex1Type != kFCVertexDescriptorPropertyTypeAbsent) {
+		[retString appendFormat:@"Tex1: %@, %d", s_nameForProperty[ self.tex1Type ], self.tex1Offset ];
+	}
+
+	if (self.tex2Type != kFCVertexDescriptorPropertyTypeAbsent) {
+		[retString appendFormat:@"Tex2: %@, %d", s_nameForProperty[ self.tex2Type ], self.tex2Offset ];
+	}
+
+	if (self.tex3Type != kFCVertexDescriptorPropertyTypeAbsent) {
+		[retString appendFormat:@"Tex3: %@, %d", s_nameForProperty[ self.tex3Type ], self.tex3Offset ];
+	}
+
+	return [NSString stringWithString:retString];
+}
+#endif
 
 @end

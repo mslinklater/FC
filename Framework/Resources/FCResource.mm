@@ -40,6 +40,11 @@
     return self;
 }
 
++(id)resource
+{
+	return [[[FCResource alloc] init] autorelease];
+}
+
 -(id)initWithContentsOfURL:(NSURL*)url
 {
 	self = [self init];
@@ -53,7 +58,7 @@
 	return self;
 }
 
-+(FCResource*)fcresourceWithContentsOfURL:(NSURL*)url
++(FCResource*)resourceWithContentsOfURL:(NSURL*)url
 {
 	FCResource* ret = [[FCResource alloc] initWithContentsOfURL:url];
 	return [ret autorelease];
@@ -67,5 +72,17 @@
 	self.userData = nil;
 	[super dealloc];
 }
+
+#if !defined (MASTER)
+-(NSString*)description
+{
+	NSMutableString* retString = [NSMutableString stringWithString:@"--- FCResource ---\n"];
+	[retString appendFormat:@"Name: %@\n", self.name];
+	[retString appendFormat:@"Size: %d\n", [self.binaryPayload length]];
+	[retString appendFormat:@"UserData: %@\n", self.userData];
+	[retString appendFormat:@"XMLData: %@\n", self.xmlData];
+	return [NSString stringWithString:retString];
+}
+#endif
 
 @end

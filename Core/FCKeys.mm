@@ -102,6 +102,7 @@ NSString* kFCKeyCount = @"count";
 
 NSString* kFCKeyPNG = @"png";
 
+NSString* kFCKeyVertexFormat = @"vertexformat";
 NSString* kFCKeyVertexPosition = @"vertexposition";
 NSString* kFCKeyVertexNormal = @"vertexnormal";
 NSString* kFCKeyVertexTexCoord0 = @"vertextexcoord0";

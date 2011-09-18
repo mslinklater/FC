@@ -30,7 +30,7 @@
 +(FCResourceManager*)instance;
 
 -(NSData*)dataForResource:(NSString*)resource ofType:(NSString*)type;
--(FCResource*)fcresourceWithPath:(NSString*)resourcePath;
+-(FCResource*)resourceWithPath:(NSString*)resourcePath;
 
 @end
 

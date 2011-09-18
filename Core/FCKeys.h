@@ -107,6 +107,7 @@ extern NSString* kFCKeyCount;
 
 extern NSString* kFCKeyPNG;
 
+extern NSString* kFCKeyVertexFormat;
 extern NSString* kFCKeyVertexPosition;
 extern NSString* kFCKeyVertexNormal;
 extern NSString* kFCKeyVertexTexCoord0;

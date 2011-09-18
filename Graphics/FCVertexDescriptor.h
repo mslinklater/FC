@@ -23,7 +23,7 @@
 #import <Foundation/Foundation.h>
 
 enum FCVertexDescriptorPropertyType {
-	kFCVertexDescriptorPropertyTypeAbsent,
+	kFCVertexDescriptorPropertyTypeAbsent = 0,
 	
 	kFCVertexDescriptorPropertyTypeUniformFloat,
 	kFCVertexDescriptorPropertyTypeUniformVec2,
@@ -58,9 +58,11 @@ enum FCVertexDescriptorPropertyType {
 	kFCVertexDescriptorPropertyTypeAttributeMat3,
 	kFCVertexDescriptorPropertyTypeAttributeMat4,
 	kFCVertexDescriptorPropertyLastAttribute,
+	kFCVertexDescriptorLastProperty
 };
 
 @interface FCVertexDescriptor : NSObject {
+	NSString*						_name;
 	FCVertexDescriptorPropertyType	_positionType;
 	FCVertexDescriptorPropertyType	_diffuseColorType;
 	FCVertexDescriptorPropertyType	_normalType;
@@ -77,6 +79,7 @@ enum FCVertexDescriptorPropertyType {
 	unsigned int					_tex2Offset;
 	unsigned int					_tex3Offset;
 }
+@property(nonatomic, retain) NSString* name;
 @property(nonatomic) FCVertexDescriptorPropertyType positionType;
 @property(nonatomic) FCVertexDescriptorPropertyType diffuseColorType;
 @property(nonatomic) FCVertexDescriptorPropertyType normalType;
@@ -92,6 +95,12 @@ enum FCVertexDescriptorPropertyType {
 @property(nonatomic, readonly) unsigned int tex1Offset;
 @property(nonatomic, readonly) unsigned int tex2Offset;
 @property(nonatomic, readonly) unsigned int tex3Offset;
+
+-(id)init;
++(id)vertexDescriptor;
+
+-(id)initWithVertexFormatString:(NSString*)desc andUniformDict:(NSDictionary*)uniformDict;
++(id)vertexDescriptorWithVertexFormatString:(NSString*)desc andUniformDict:(NSDictionary*)uniformDict;
 
 @end
 

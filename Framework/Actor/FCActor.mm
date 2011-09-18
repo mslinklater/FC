@@ -74,8 +74,8 @@
 		
 		// now create a model
 		
-//		if (modelDict) 
-		if ( 0 )
+		if (modelDict) 
+//		if ( 0 )
 		{
 			mModel = [[FCModel alloc] initWithModel:modelDict resource:res];
 		}

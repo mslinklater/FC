@@ -141,7 +141,7 @@ static NSString* kUDSuffix = @"_ultra";
 
 	if (path == nil) 
 	{
-		FC_FATAL2(@"File not found", outputResource, type);
+		FC_FATAL2(@"File not found", actualResourceName, type);
 		return nil;
 	}
 	
@@ -150,7 +150,7 @@ static NSString* kUDSuffix = @"_ultra";
 
 #pragma mark - Public API
 
--(FCResource*)fcresourceWithPath:(NSString*)resourcePath
+-(FCResource*)resourceWithPath:(NSString*)resourcePath
 {
 	// resourcePath should not have a file suffix
 	
@@ -163,14 +163,15 @@ static NSString* kUDSuffix = @"_ultra";
 	FCXMLData* fcxmlData = [[FCXMLData alloc] initWithData:xmlData];
 	NSData* payloadData = [self dataForResource:payloadPath ofType:@"bin"];
 
-	FCResource* resource = [[FCResource alloc] init];
+	FCResource* resource = [FCResource resource];
 
 	resource.xmlData = fcxmlData;
 	resource.binaryPayload = payloadData;
+	resource.name = resourcePath;
 	
 	[fcxmlData release];
 	
-	return [resource autorelease];
+	return resource;
 }
 
 @end

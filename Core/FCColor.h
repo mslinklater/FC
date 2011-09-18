@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#import <Foundation/Foundation.h>
+
 namespace FC {
 	
 	class Color4f {

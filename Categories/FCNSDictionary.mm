@@ -20,11 +20,23 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
-#import "FCUIView.h"
-#endif // TARGET_OS_IPHONE
-
-#import "FCNSArray.h"
-#import "FCNSData.h"
-#import "FCNSMutableDictionary.h"
 #import "FCNSDictionary.h"
+
+@implementation NSDictionary (FCExtensions)
+
+-(NSArray*)arrayForKey:(NSString *)key
+{
+	id obj = [self valueForKey:key];
+	
+	if (!obj) {
+		return nil;
+	}
+	
+	if ([obj isKindOfClass:[NSArray class]]) {
+		return obj;
+	} else {
+		return [NSArray arrayWithObject:obj];
+	}
+}
+
+@end
