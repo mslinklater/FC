@@ -36,5 +36,6 @@
 -(double)nanoValue;
 -(double)microValue;
 -(double)milliValue;
+-(double)secondsValue;
 
 @end

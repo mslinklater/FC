@@ -21,6 +21,7 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "FCLuaClass.h"
 
 #define FC_FATAL(n) [FCError fatal:[NSString stringWithFormat:@"%s%s:%d", __FILE__, __FUNCTION__, __LINE__] info:n]
 #define FC_FATAL1(n,m) [FCError fatal1:[NSString stringWithFormat:@"%s%s:%d", __FILE__, __FUNCTION__, __LINE__] info:n arg1:m]
@@ -55,7 +56,9 @@
 
 #endif
 
-@interface FCError : NSObject
+@interface FCError : NSObject <FCLuaClass> {
+
+}
 +(void)fatal:(NSString*)location info:(NSString*)errorString;
 +(void)fatal1:(NSString*)location info:(NSString*)errorString arg1:(id)arg1;
 +(void)fatal2:(NSString*)location info:(NSString*)errorString arg1:(id)arg1 arg2:(id)arg2;

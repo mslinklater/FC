@@ -24,12 +24,28 @@
 
 #include <sys/types.h>
 #include <sys/sysctl.h>
+#import "GameKit/GameKit.h"
 
 #import "FCCore.h"
 #import "FCCaps.h"
 
 #import "FCXMLData.h"
 #import "FCMaths.h"
+#import "FCLua.h"
+
+#pragma mark - Lua Interface
+
+static int Lua_Probe( lua_State* lua )
+{
+	[[FCCaps instance] probe];
+	return 0;
+}
+
+static int Lua_WarmProbe( lua_State* lua )
+{
+	[[FCCaps instance] warmProbe];
+	return 0;
+}
 
 #pragma mark - Constants
 
@@ -60,7 +76,7 @@ NSString* kFCCapsHardwareModel = @"hardware_model";
 NSString* kFCCapsHardwareUDID = @"hardware_udid";
 NSString* kFCCapsHardwareName = @"hardware_name";
 
-NSString* kFCCapsOSMultitaskingSupported = @"os_multitaskingsupported";
+//NSString* kFCCapsOSMultitaskingSupported = @"os_multitaskingsupported";
 NSString* kFCCapsOSVersion = @"os_version";
 NSString* kFCCapsOSName = @"os_name";
 NSString* kFCCapsOSGameCenter = @"os_gamecenter";
@@ -69,15 +85,22 @@ NSString* kFCCapsPlatform = @"platform";
 
 NSString* kFCCapsSimulator = @"simulator";
 
-NSString* kFCCapsAppPirated = @"apppirated";
+NSString* kFCCapsAppPirated = @"pirated";
 
 #pragma mark - Implementation
 
 static FCCaps* pInstance;
 
+@interface FCCaps() {
+	FCLuaVM* _luaVM;
+}
+@property(nonatomic, retain) FCLuaVM* luaVM;
+@end
+
 @implementation FCCaps
 
 @synthesize caps = _caps;
+@synthesize luaVM = _luaVM;
 
 #pragma mark - Singleton
 
@@ -87,6 +110,15 @@ static FCCaps* pInstance;
 		pInstance = [[FCCaps alloc] init];
 	}
 	return pInstance;
+}
+
++(void)registerLuaFunctions:(FCLuaVM *)lua
+{
+	[FCCaps instance].luaVM = lua;
+	
+	[lua createGlobalTable:@"Caps"];
+	[lua registerCFunction:Lua_Probe as:@"Caps.Probe"];
+	[lua registerCFunction:Lua_WarmProbe as:@"Caps.WarmProbe"];
 }
 
 #pragma mark - Object Lifetime
@@ -176,8 +208,8 @@ static FCCaps* pInstance;
 	return pagesize;
 }
 
--(void)probeCaps
-{
+-(void)probe
+{	
 	// get the OS version...
 	
 	[_caps setValue:[UIDevice currentDevice].systemVersion forKey:kFCCapsOSVersion];
@@ -185,18 +217,6 @@ static FCCaps* pInstance;
 	// OS name
 
 	[_caps setValue:[UIDevice currentDevice].systemName forKey:kFCCapsOSName];
-
-	// multitasking support
-	
-	if ([UIDevice currentDevice].multitaskingSupported) {
-		[_caps setValue:kFCCapsTrue forKey:kFCCapsOSMultitaskingSupported];
-	} else {
-		[_caps setValue:kFCCapsFalse forKey:kFCCapsOSMultitaskingSupported];		
-	}
-	
-	// UDID
-
-//	[_caps setValue:[UIDevice currentDevice].uniqueIdentifier forKey:kFCCapsHardwareUDID];
 
 	// name
 
@@ -208,19 +228,6 @@ static FCCaps* pInstance;
 	
 	// Check for frameworks
 	
-	Class gcClass = (NSClassFromString(@"GKLocalPlayer"));	// Game Center
-	
-	BOOL osVersionSupported = ([[_caps valueForKey:kFCCapsOSVersion] compare:@"4.1" options:NSNumericSearch] != NSOrderedAscending);
-	
-	if (osVersionSupported && gcClass) 
-	{
-		[_caps setValue:kFCCapsUnknown forKey:kFCCapsOSGameCenter];	// Need to wait for login to complete
-	}
-	else
-	{
-		[_caps setValue:kFCCapsNotPresent forKey:kFCCapsOSGameCenter];		
-	}
-
 	// display caps
 
 	CGFloat scale = [UIScreen mainScreen].scale;
@@ -289,36 +296,31 @@ static FCCaps* pInstance;
 	} else {
 		[_caps setValue:kFCCapsFalse forKey:kFCCapsAppPirated];		
 	}
-	[self dumpToTTY];
-	
+//	[self dumpToTTY];
+
 	return;
+}
+
+-(void)warmProbe
+{
+	// Singed into game center
+	
+	[[GKLocalPlayer localPlayer] authenticateWithCompletionHandler:^(NSError *error) 
+	 {
+		 if (error == nil)
+		 {
+			 [_caps setValue:kFCCapsPresent forKey:kFCCapsOSGameCenter];
+		 }
+		 else
+		 {
+			 [_caps setValue:kFCCapsNotPresent forKey:kFCCapsOSGameCenter];
+		 }
+	 }];
 }
 
 -(void)dumpToTTY
 {
 	FC_LOG1(@"Caps - %@", self.caps);
-}
-
--(void)setGameCenterUnavailable
-{
-	[_caps setValue:kFCCapsNotPresent forKey:kFCCapsOSGameCenter];
-}
-
--(void)setGameCenterAvailable
-{
-	[_caps setValue:kFCCapsPresent forKey:kFCCapsOSGameCenter];
-}
-
--(void)setWindowBounds:(CGRect)bounds
-{
-	[_caps setValue:[NSNumber numberWithInt:bounds.size.width] forKey:kFCCapsDisplayLogicalXRes];
-	[_caps setValue:[NSNumber numberWithInt:bounds.size.height] forKey:kFCCapsDisplayLogicalYRes];
-}
-
--(void)setPhysicalResolutionX:(int)x Y:(int)y
-{
-	[_caps setValue:[NSNumber numberWithInt:x] forKey:kFCCapsDisplayPhysicalXRes];
-	[_caps setValue:[NSNumber numberWithInt:y] forKey:kFCCapsDisplayPhysicalYRes];	
 }
 
 -(id)valueForKey:(NSString *)key

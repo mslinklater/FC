@@ -20,33 +20,11 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+@class FCLuaVM;
 
-#import <Foundation/Foundation.h>
+@protocol FCLuaClass <NSObject>
 
-#import "FCProtocols.h"
-#import "FCLuaClass.h"
-
-@interface FCAnalytics : NSObject <FCLuaClass> {
-    int _sessionTime;
-	NSTimer* sessionTimer;
-}
-@property(nonatomic, retain) NSString* accountID;
-@property(nonatomic) int sessionTime;
-
-+(FCAnalytics*)instance;
--(void)shutdown;
-
-//----
-
-//-(void)registerSystemValues;
-
--(void)event:(NSString*)event action:(NSString*)action label:(NSString*)label value:(int)value;
--(void)eventStartPlaySession;
--(void)eventEndPlaySession;
-
-//-(void)gameLevelPlayed:(NSString*)levelInfo;
++(void)registerLuaFunctions:(FCLuaVM*)lua;
 
 @end
 
-#endif // TARGET_OS_IPHONE

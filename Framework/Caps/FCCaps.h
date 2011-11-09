@@ -23,6 +23,7 @@
 #if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>
+#import "FCLuaClass.h"
 
 // enums for caps
 
@@ -53,7 +54,7 @@ extern NSString* kFCCapsHardwareModel;
 extern NSString* kFCCapsHardwareUDID;
 extern NSString* kFCCapsHardwareName;
 
-extern NSString* kFCCapsOSMultitaskingSupported;
+//extern NSString* kFCCapsOSMultitaskingSupported;
 extern NSString* kFCCapsOSVersion;
 extern NSString* kFCCapsOSName;
 extern NSString* kFCCapsOSGameCenter;
@@ -62,17 +63,14 @@ extern NSString* kFCCapsSimulator;
 
 extern NSString* kFCCapsAppPirated;
 
-@interface FCCaps : NSObject {
+@interface FCCaps : NSObject <FCLuaClass> {
 }
 @property(nonatomic,readonly) NSMutableDictionary* caps;
 
 +(FCCaps*)instance;
 
--(void)probeCaps;
--(void)setWindowBounds:(CGRect)bounds;
--(void)setPhysicalResolutionX:(int)x Y:(int)y;
--(void)setGameCenterUnavailable;
--(void)setGameCenterAvailable;
+-(void)probe;
+-(void)warmProbe;
 
 -(void)dumpToTTY;
 

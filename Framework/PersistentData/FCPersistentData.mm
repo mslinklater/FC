@@ -22,6 +22,21 @@
 
 #import "FCPersistentData.h"
 #import "FCCore.h"
+#import "FCLua.h"
+
+#pragma mark - Lua Interface
+
+static int SaveData( lua_State* lua )
+{
+	[[FCPersistentData instance] saveData];
+	return 0;
+}
+
+static int LoadData( lua_State* lua )
+{
+	[[FCPersistentData instance] loadData];
+	return 0;
+}
 
 @implementation FCPersistentData
 
@@ -36,6 +51,13 @@
 		pInstance = [[FCPersistentData alloc] init];
 	}
 	return pInstance;
+}
+
++(void)registerLuaFunctions:(FCLuaVM*)lua
+{
+	[lua createGlobalTable:@"PersistentData"];
+	[lua registerCFunction:SaveData as:@"PersistentData.SaveData"];
+	[lua registerCFunction:LoadData as:@"PersistentData.LoadData"];
 }
 
 -(NSString*)filename

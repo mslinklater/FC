@@ -3,7 +3,7 @@ TODO:
 (This stuff should really be tracked as issues on guthub)
 
 Document
-Cean up old chuff that isn't needed - UIView stutt - it's a bit redundant or needs a nicer replacement
+Cean up old chuff that isn't needed - UIView stuff - it's a bit redundant or needs a nicer replacement
 Better OSX support
 Physics, actors etc etc...
 Document resource format and intent

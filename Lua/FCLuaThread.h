@@ -20,33 +20,29 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
-
 #import <Foundation/Foundation.h>
+#import "FCLuaVM.h"
 
-#import "FCProtocols.h"
-#import "FCLuaClass.h"
+enum eLuaThreadState {
+	kLuaThreadStateNew,
+	kLuaThreadStateRunning,
+	kLuaThreadStateSleeping,
+	kLuaThreadStateDead
+};
 
-@interface FCAnalytics : NSObject <FCLuaClass> {
-    int _sessionTime;
-	NSTimer* sessionTimer;
+@interface FCLuaThread : NSObject {
+	eLuaThreadState	_state;
+	double			_sleepTimeRemaining;
+	unsigned int	_threadId;
+	BOOL			_paused;
 }
-@property(nonatomic, retain) NSString* accountID;
-@property(nonatomic) int sessionTime;
+@property(nonatomic, readonly) eLuaThreadState state;
+@property(nonatomic, readonly) double sleepTimeRemaining;
+@property(nonatomic, readonly) unsigned int threadId;
+@property(nonatomic) BOOL paused;
 
-+(FCAnalytics*)instance;
--(void)shutdown;
-
-//----
-
-//-(void)registerSystemValues;
-
--(void)event:(NSString*)event action:(NSString*)action label:(NSString*)label value:(int)value;
--(void)eventStartPlaySession;
--(void)eventEndPlaySession;
-
-//-(void)gameLevelPlayed:(NSString*)levelInfo;
+-(id)initFromState:(lua_State*)state withId:(unsigned int)threadId;
+-(void)runVoidFunction:(NSString*)function;
+-(void)update:(float)dt;
 
 @end
-
-#endif // TARGET_OS_IPHONE

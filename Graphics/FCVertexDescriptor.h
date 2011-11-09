@@ -102,5 +102,7 @@ enum FCVertexDescriptorPropertyType {
 -(id)initWithVertexFormatString:(NSString*)desc andUniformDict:(NSDictionary*)uniformDict;
 +(id)vertexDescriptorWithVertexFormatString:(NSString*)desc andUniformDict:(NSDictionary*)uniformDict;
 
+-(BOOL)canSatisfy:(FCVertexDescriptor*)desc;
+
 @end
 

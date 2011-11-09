@@ -38,6 +38,7 @@
 #import "FCUserDefaults.h"
 #import "FCAnalytics.h"
 #import "FCNotifications.h"
+//#import "FCLua.h"
 
 @implementation FCGameContext
 
@@ -46,6 +47,7 @@
 @synthesize localPlayerGameCenterId = _localPlayerGameCenterID;
 @synthesize gameRoot = _gameRoot;
 @synthesize mainGameView = _mainGameView;
+//@synthesize luaVM = _luaVM;
 
 #pragma mark -
 #pragma mark Caps Probing
@@ -75,17 +77,28 @@
 	{
 		// initialise core FC systems
 		
-		[[FCCaps instance] probeCaps];
-		[[FCAnalytics instance] registerSystemValues];
+//		_luaVM = [[FCLua instance] newVM];
+		
+//		[[FCCaps instance] probeCaps];
+		
+//		[[FCAnalytics instance] registerSystemValues];
 
 		[FCUIManager instance];
+
 		[FCResourceManager instance];
+		
 		_gameData = [[FCXMLData alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"gamedata" ofType:@"xml"]];
+		
 		[[FCUserDefaults instance] registerDefaults:self.gameData];
+		
 		_state = [[NSMutableDictionary alloc] init];
+		
 		[[FCRenderer instance] addToGatherList:[FCActorSystem instance]];
+		
 		[FCPhysics instance];
+		
 		NSArray* statsArray = [self.gameData arrayForKeyPath:@"gamedata.stats.stat"];
+		
 		[[FCStats instance] prepareStatsFromArray:statsArray withPlayerId:@"local"];
 
 		// game center
@@ -97,12 +110,12 @@
 				if (error == nil)
 				{
 					self.localPlayerGameCenterId = [[GKLocalPlayer localPlayer] playerID];
-					[[FCCaps instance] setGameCenterAvailable];
+//					[[FCCaps instance] setGameCenterAvailable];
 					[self localPlayerGameCenterIdChanged];
 				}
 				else
 				{
-					[[FCCaps instance] setGameCenterUnavailable];
+//					[[FCCaps instance] setGameCenterUnavailable];
 					self.localPlayerGameCenterId = @"local";
 				}
 			}];
@@ -121,6 +134,7 @@
 	[_gameData release], _gameData = nil;
 	self.gameRoot = nil;
 	self.localPlayerGameCenterId = nil;
+//	[_luaVM release], _luaVM = nil;
 	
 	[super dealloc];
 }

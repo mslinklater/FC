@@ -20,33 +20,37 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
-
 #import <Foundation/Foundation.h>
 
-#import "FCProtocols.h"
-#import "FCLuaClass.h"
-
-@interface FCAnalytics : NSObject <FCLuaClass> {
-    int _sessionTime;
-	NSTimer* sessionTimer;
+extern "C" {
+	#include "lua.h"
 }
-@property(nonatomic, retain) NSString* accountID;
-@property(nonatomic) int sessionTime;
 
-+(FCAnalytics*)instance;
--(void)shutdown;
+typedef int(*tLuaCallableCFunction)(lua_State*);
 
-//----
+@interface FCLuaVM : NSObject {
+	lua_State* _state;
+}
+@property(nonatomic, readonly) lua_State* state;
 
-//-(void)registerSystemValues;
+-(void)loadFileFromMainBundle:(NSString*)path;
+-(void)addStandardLibraries;
+-(void)createGlobalTable:(NSString*)tableName;
+-(void)registerCFunction:(tLuaCallableCFunction)func as:(NSString*)name;
 
--(void)event:(NSString*)event action:(NSString*)action label:(NSString*)label value:(int)value;
--(void)eventStartPlaySession;
--(void)eventEndPlaySession;
+// Get
+-(long)globalNumber:(NSString*)name;
+-(UIColor*)globalColor:(NSString*)name;
 
-//-(void)gameLevelPlayed:(NSString*)levelInfo;
+// Set
+-(void)setGlobal:(NSString*)global integer:(long)number;
+-(void)setGlobal:(NSString*)global number:(double)number;
+-(void)setGlobal:(NSString*)global color:(UIColor*)color;
 
+// Function calling
+-(void)call:(NSString*)func withSig:(NSString*)sig, ...;
+
+// Debug functions
+-(void)dumpStack;
+-(void)dumpCallstack;
 @end
-
-#endif // TARGET_OS_IPHONE

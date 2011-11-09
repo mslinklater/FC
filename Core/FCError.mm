@@ -21,8 +21,48 @@
  */
 
 #import "FCError.h"
+#import "FCLua.h"
+
+static int Lua_Fatal( lua_State* state )
+{
+	const char* location = lua_tostring(state, -2);
+	const char* error = lua_tostring(state, -1);
+	[FCError fatal:[NSString stringWithCString:location encoding:NSUTF8StringEncoding] info:[NSString stringWithCString:error encoding:NSUTF8StringEncoding]];	
+	return 0;
+}
+
+static int Lua_Error( lua_State* state )
+{
+	const char* location = lua_tostring(state, -2);
+	const char* error = lua_tostring(state, -1);
+	[FCError error:[NSString stringWithCString:location encoding:NSUTF8StringEncoding] info:[NSString stringWithCString:error encoding:NSUTF8StringEncoding]];	
+	return 0;
+}
+
+static int Lua_Warning( lua_State* state )
+{
+	const char* location = lua_tostring(state, -2);
+	const char* error = lua_tostring(state, -1);
+	[FCError warning:[NSString stringWithCString:location encoding:NSUTF8StringEncoding] info:[NSString stringWithCString:error encoding:NSUTF8StringEncoding]];	
+	return 0;
+}
+
+static int Lua_Log( lua_State* state )
+{
+	const char* log = lua_tostring(state, -1);
+	[FCError log:[NSString stringWithCString:log encoding:NSUTF8StringEncoding]];	
+	return 0;
+}
 
 @implementation FCError
+
++(void)registerLuaFunctions:(FCLuaVM*)lua
+{
+	[lua registerCFunction:Lua_Fatal as:@"Fatal"];
+	[lua registerCFunction:Lua_Error as:@"Error"];
+	[lua registerCFunction:Lua_Warning as:@"Warning"];
+	[lua registerCFunction:Lua_Log as:@"Log"];
+}
 
 #pragma mark - Fatal
 

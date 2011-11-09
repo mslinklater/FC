@@ -37,8 +37,9 @@
 
 #import <Foundation/Foundation.h>
 #import "FCProtocols.h"
+#import "FCLuaClass.h"
 
-@interface FCPersistentData : NSObject
+@interface FCPersistentData : NSObject <FCLuaClass>
 {
 }
 @property(retain) NSMutableDictionary* dataRoot;

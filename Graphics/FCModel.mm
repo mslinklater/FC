@@ -34,6 +34,7 @@
 #import "FCMesh.h"
 #import "FCResource.h"
 #import "FCShaderManager.h"
+#import "FCShaderProgram.h"
 #import "FCRenderer.h"
 #import "FCVertexDescriptor.h"
 
@@ -172,6 +173,17 @@ static NSString* s_debugShaderName = @"debug_debug";
 
 			FCVertexDescriptor* resourceVertexDescriptor = [FCVertexDescriptor vertexDescriptorWithVertexFormatString:vertexFormatString 
 																									   andUniformDict:mesh];
+			
+			FCShaderProgram* shaderProgram = [[FCRenderer instance].shaderManager program:shaderProgramName];
+			FCVertexDescriptor* shaderVertexDescriptor = shaderProgram.requiredVertexDescriptor;
+			
+			if ([resourceVertexDescriptor canSatisfy:shaderVertexDescriptor]) {
+				// bind etc
+			}
+			else
+			{
+				FC_ERROR(@"Shader binding error for model");
+			}
 			
 			NSLog(@"%@", resourceVertexDescriptor);
 		}

@@ -36,19 +36,6 @@
 - (void)setWindow:(UIWindow*)window
 {
 	_window = window;
-	
-	CGRect windowBounds = window.screen.bounds;
-	
-	[[FCCaps instance] setWindowBounds:windowBounds];
-	
-
-	CGFloat scale = [UIScreen mainScreen].scale;
-	
-	int physicalX = windowBounds.size.width * scale;
-	int physicalY = windowBounds.size.height * scale;
-	
-	[[FCCaps instance] setPhysicalResolutionX:physicalX Y:physicalY];
-	
 }
 
 #pragma mark - FCSingleton

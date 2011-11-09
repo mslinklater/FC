@@ -150,6 +150,11 @@ static NSString* s_nameForProperty[ kFCVertexDescriptorLastProperty ] = {
 	return [[[FCVertexDescriptor alloc] initWithVertexFormatString:desc andUniformDict:uniformDict] autorelease];
 }
 
+-(BOOL)canSatisfy:(FCVertexDescriptor*)desc
+{
+	return NO;
+}
+
 -(unsigned int)stride
 {
 	// cache this
@@ -204,8 +209,8 @@ static NSString* s_nameForProperty[ kFCVertexDescriptorLastProperty ] = {
 
 -(unsigned int) diffuseColorOffset
 {
-	FC_ASSERT(self.diffuseColorType > kFCVertexDescriptorPropertyFirstAttribute);
-	FC_ASSERT(self.diffuseColorType < kFCVertexDescriptorPropertyLastAttribute);
+//	FC_ASSERT(self.diffuseColorType > kFCVertexDescriptorPropertyFirstAttribute);
+//	FC_ASSERT(self.diffuseColorType < kFCVertexDescriptorPropertyLastAttribute);
 	
 	(void)self.stride;
 	return _diffuseColorOffset;

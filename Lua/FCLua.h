@@ -20,33 +20,29 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
-
 #import <Foundation/Foundation.h>
+#import "FCLuaVM.h"
+#import "FCLuaThread.h"
 
-#import "FCProtocols.h"
-#import "FCLuaClass.h"
-
-@interface FCAnalytics : NSObject <FCLuaClass> {
-    int _sessionTime;
-	NSTimer* sessionTimer;
+@interface FCLua : NSObject {
+	NSMutableDictionary* _threads;
 }
-@property(nonatomic, retain) NSString* accountID;
-@property(nonatomic) int sessionTime;
+@property(nonatomic, readonly, readonly) NSMutableDictionary* threads;
 
-+(FCAnalytics*)instance;
--(void)shutdown;
++(FCLua*)instance;
 
-//----
+-(void)updateThreads;
 
-//-(void)registerSystemValues;
+-(FCLuaVM*)coreVM;
+-(FCLuaVM*)newVM;
 
--(void)event:(NSString*)event action:(NSString*)action label:(NSString*)label value:(int)value;
--(void)eventStartPlaySession;
--(void)eventEndPlaySession;
+-(FCLuaThread*)newThreadWithVoidFunction:(NSString*)function;
+//-(void)pauseThread:(float)seconds;
+//-(void)killThread:(int)threadId;
+//-(void)sleepThread:(float)seconds;
 
-//-(void)gameLevelPlayed:(NSString*)levelInfo;
+// thread manager
+// create vm
+// create thread
 
 @end
-
-#endif // TARGET_OS_IPHONE

@@ -20,33 +20,17 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+//
+//  FCDebug.h
+//
+//  Created by Martin Linklater on 03/11/2011.
+//  Copyright (c) 2011 CurlyRocket. All rights reserved.
+//
 
-#import <Foundation/Foundation.h>
+#ifndef HeadPopper_FCDebug_h
+#define HeadPopper_FCDebug_h
 
-#import "FCProtocols.h"
-#import "FCLuaClass.h"
+#import "Debug/FCPerformanceCounter.h"
+#import "Debug/FCRasterView.h"
 
-@interface FCAnalytics : NSObject <FCLuaClass> {
-    int _sessionTime;
-	NSTimer* sessionTimer;
-}
-@property(nonatomic, retain) NSString* accountID;
-@property(nonatomic) int sessionTime;
-
-+(FCAnalytics*)instance;
--(void)shutdown;
-
-//----
-
-//-(void)registerSystemValues;
-
--(void)event:(NSString*)event action:(NSString*)action label:(NSString*)label value:(int)value;
--(void)eventStartPlaySession;
--(void)eventEndPlaySession;
-
-//-(void)gameLevelPlayed:(NSString*)levelInfo;
-
-@end
-
-#endif // TARGET_OS_IPHONE
+#endif

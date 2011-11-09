@@ -60,4 +60,9 @@
 	return [self nanoValue] * 0.000001;
 }
 
+-(double)secondsValue
+{
+	return [self nanoValue] * 0.000000001;
+}
+
 @end

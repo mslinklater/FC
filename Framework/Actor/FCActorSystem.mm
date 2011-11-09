@@ -67,24 +67,11 @@
 	return self;
 }
 
--(void)dealloc
-{
-	[mUpdateActorsArray release];
-	[mRenderActorsArray release];
-	[mTapGestureActorsArray release];
-	[mAllActorsArray release];
-	[mDeleteList release];
-	[mClassArraysDictionary release];
-	[mActorIdDictionary release];
-	
-	[super dealloc];
-}
-
 #pragma mark - New FCR Based methods
 
 -(NSArray*)createActorsOfClass:(NSString *)actorClass withResource:(FCResource *)res
 {
-	NSMutableArray* newActors = [[NSMutableArray alloc] init];
+	NSMutableArray* newActors = [NSMutableArray array];
 
 	NSArray* actors = [res.xmlData arrayForKeyPath:@"fcr.scene.actor"];
 	
@@ -105,7 +92,6 @@
 	}
 
 	NSArray* retArray = [NSArray arrayWithArray:newActors];
-	[newActors release];
 	return retArray;
 }
 
@@ -172,9 +158,8 @@
 	
 	if (![mClassArraysDictionary valueForKey:actorClass]) 
 	{
-		NSMutableArray* classArray = [[NSMutableArray alloc] init];
+		NSMutableArray* classArray = [NSMutableArray array];
 		[mClassArraysDictionary setValue:classArray forKey:actorClass];
-		[classArray release];
 	}
 	
 	[[mClassArraysDictionary valueForKey:actorClass] addObject:actor];
@@ -402,7 +387,6 @@
 	
 	id newActor = [actorClass alloc];
 	[mAllActorsArray addObject:newActor];
-	[newActor release];
 
 	if ([newActor needsUpdate]) {
 		[mUpdateActorsArray addObject:newActor];
@@ -416,7 +400,7 @@
 		[mTapGestureActorsArray addObject:newActor];
 	}
 
-	return newActor;
+	return [newActor autorelease];
 }
 
 -(void)addToDeleteArray:(id)actor
@@ -475,14 +459,13 @@
 
 -(void)removeAllActors
 {
-	NSArray* actorsArray = [[NSArray alloc] initWithArray:mAllActorsArray];
+	NSArray* actorsArray = [NSArray arrayWithArray:mAllActorsArray];
 	
 	for (FCActor* actor in actorsArray)
 	{
 		[self removeActor:actor];
 	}
 
-	[actorsArray release];
 	
 //	[mUpdateActorsArray removeAllObjects];
 //	[mRenderActorsArray removeAllObjects];
@@ -534,7 +517,7 @@
 {
 	FCActor* ret = nil;
 	
-	NSMutableArray* candidates = [[NSMutableArray alloc] initWithCapacity:[mTapGestureActorsArray count]];
+	NSMutableArray* candidates = [NSMutableArray arrayWithCapacity:[mTapGestureActorsArray count]];
 	
 	// Find candidates using radius checks
 	
@@ -557,8 +540,6 @@
 			break;
 		}
 	}
-	
-	[candidates release];
 	
 	return ret;
 }

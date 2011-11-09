@@ -32,15 +32,18 @@
 @class FCActorSystem;
 @class FCPhysics;
 @class FCGLView;
+//@class FCLuaVM;
 
 @interface FCGameContext : NSObject {
+//	FCLuaVM* _luaVM;
 }
 
 @property(nonatomic, retain) NSMutableDictionary* state;
-@property(nonatomic, readonly) FCXMLData* gameData;
+@property(nonatomic, retain, readonly) FCXMLData* gameData;
 @property(nonatomic, retain) id gameRoot;
 @property(nonatomic, retain) NSString* localPlayerGameCenterId;
 @property(nonatomic, retain) FCGLView* mainGameView;
+//@property(nonatomic, retain, readonly) FCLuaVM* luaVM;
 
 +(FCGameContext*)instance;
 

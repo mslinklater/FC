@@ -28,6 +28,7 @@
 #import "FCGLHelpers.h"
 #import "FCShaderUniform.h"
 #import "FCShaderAttribute.h"
+#import "FCVertexDescriptor.h"
 
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/glext.h>
@@ -151,13 +152,13 @@
 		GLsizei sizeWritten;
 		GLint size;
 		GLenum type;
-		GLint location;
-		
-		glGetActiveAttrib(self.glHandle, i, maxLength, &sizeWritten, &size, &type, attributeNameBuffer);
-		location = glGetAttribLocation(self.glHandle, attributeNameBuffer);
-		
+
 		FCShaderAttribute* thisAttribute = [FCShaderAttribute fcShaderAttribute];
-		thisAttribute.glLocation = location;
+
+		glGetActiveAttrib(self.glHandle, i, maxLength, &sizeWritten, &size, &type, attributeNameBuffer);
+		thisAttribute.glLocation = glGetAttribLocation(self.glHandle, attributeNameBuffer);
+		thisAttribute.type = type;
+		thisAttribute.num = size;
 		
 		[attributes setValue:thisAttribute forKey:[NSString stringWithFormat:@"%s", attributeNameBuffer]];
 	}
@@ -300,6 +301,27 @@
 	free( pBuffer );
 	
 	return [NSArray arrayWithArray:attribArray];
+}
+
+-(FCVertexDescriptor*)requiredVertexDescriptor
+{
+	if (!_requiredVertexDescriptor) {
+		_requiredVertexDescriptor = [[FCVertexDescriptor alloc] init];
+		
+		NSLog(@"uniforms: %@", self.uniforms);
+		
+		NSLog(@"attributes: %@", self.attributes);
+		
+		NSArray* keys = [self.attributes allKeys];
+		
+		for( NSString* key in keys )
+		{
+//			FCShaderAttribute* attr = [self.attributes valueForKey:key];
+			
+		}
+		
+	}
+	return _requiredVertexDescriptor;
 }
 
 @end
