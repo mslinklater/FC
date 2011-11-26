@@ -26,6 +26,7 @@
 #define FC_FATAL(n) [FCError fatal:[NSString stringWithFormat:@"%s%s:%d", __FILE__, __FUNCTION__, __LINE__] info:n]
 #define FC_FATAL1(n,m) [FCError fatal1:[NSString stringWithFormat:@"%s%s:%d", __FILE__, __FUNCTION__, __LINE__] info:n arg1:m]
 #define FC_FATAL2(n,m,a) [FCError fatal2:[NSString stringWithFormat:@"%s%s:%d", __FILE__, __FUNCTION__, __LINE__] info:n arg1:m arg2:a]
+#define FC_HALT [FCError halt]
 
 #if defined (DEBUG)
 
@@ -37,6 +38,7 @@
 #define FC_LOG(n) [FCError log:n]
 #define FC_LOG1(n,m) [FCError log1:n arg1:(m)]
 #define FC_LOG2(n,m,a) [FCError log2:n arg1:(m) arg2:(a)]
+#define FC_LOG3(n,m,a,b) [FCError log3:n arg1:(m) arg2:(a) arg3:(b)]
 
 #define FC_ASSERT(n) if(!(n))FC_FATAL(@"Assert failure")
 #define FC_ASSERT1(n,m) if(!(n))FC_FATAL(m)
@@ -50,6 +52,7 @@
 #define FC_LOG(n) {}
 #define FC_LOG1(n,m) {}
 #define FC_LOG2(n,m,a) {}
+#define FC_LOG3(n,m,a,b) {}
 
 #define FC_ASSERT(n)
 #define FC_ASSERT1(n,m)
@@ -73,4 +76,6 @@
 +(void)log:(id)logItem;
 +(void)log1:(id)logItem arg1:(id)arg1;
 +(void)log2:(id)logItem arg1:(id)arg1 arg2:(id)arg2;
++(void)log3:(id)logItem arg1:(id)arg1 arg2:(id)arg2 arg3:(id)arg3;
++(void)halt;
 @end

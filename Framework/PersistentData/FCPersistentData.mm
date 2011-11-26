@@ -55,9 +55,9 @@ static int LoadData( lua_State* lua )
 
 +(void)registerLuaFunctions:(FCLuaVM*)lua
 {
-	[lua createGlobalTable:@"PersistentData"];
-	[lua registerCFunction:SaveData as:@"PersistentData.SaveData"];
-	[lua registerCFunction:LoadData as:@"PersistentData.LoadData"];
+	[lua createGlobalTable:@"FCPersistentData"];
+	[lua registerCFunction:SaveData as:@"FCPersistentData.SaveData"];
+	[lua registerCFunction:LoadData as:@"FCPersistentData.LoadData"];
 }
 
 -(NSString*)filename

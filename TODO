@@ -2,6 +2,10 @@ TODO:
 
 (This stuff should really be tracked as issues on guthub)
 
+Lua functions with FC prefix
+Lua threads
+Lua driven !
+
 Document
 Cean up old chuff that isn't needed - UIView stuff - it's a bit redundant or needs a nicer replacement
 Better OSX support

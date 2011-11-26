@@ -87,11 +87,11 @@ NSArray* FCGLQueryExtensions( void )
 void FCGLLogVersions( void )
 {
 	FC_LOG(@"---OpenGL Versions---");
-	FC_LOG1(@"Vendor:", FCGLQueryVendor());
-	FC_LOG1(@"Version:", FCGLQueryVersion());
-	FC_LOG1(@"Renderer:", FCGLQueryRenderer());
-	FC_LOG1(@"Shading language version:", FCGLQueryShadingLanguageVersion());
-	FC_LOG1(@"Extensions:", FCGLQueryExtensions());
+	FC_LOG1(@"Vendor:%@", FCGLQueryVendor());
+	FC_LOG1(@"Version:%@", FCGLQueryVersion());
+	FC_LOG1(@"Renderer:%@", FCGLQueryRenderer());
+	FC_LOG1(@"Shading language version:%@", FCGLQueryShadingLanguageVersion());
+	FC_LOG1(@"Extensions:%@", FCGLQueryExtensions());
 }
 
 #pragma mark - Caps
@@ -312,7 +312,7 @@ void FCGLLogState( void )
 {
 	NSString* entry;
 	entry = [NSString stringWithFormat:@"%d", FCGLCapsMaxTextureSize()];
-	FC_LOG1(@"Max Texture Size:", entry );
+	FC_LOG1(@"Max Texture Size:%@", entry );
 }
 
 #endif // TARGET_OS_IPHONE

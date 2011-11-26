@@ -107,7 +107,7 @@ static FCStats* FCStatsInstance = 0;
 
 -(void)prepareStatsFromArray:(NSArray*)statsArray withPlayerId:(id)playerId
 {
-	FC_LOG1(@"Preparing stats array with player ID:", playerId);
+	FC_LOG1(@"Preparing stats array with player ID:%@", playerId);
 	
 	NSDictionary* dataRoot = [[FCPersistentData instance] dataRoot];
 	

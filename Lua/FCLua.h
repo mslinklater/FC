@@ -25,21 +25,21 @@
 #import "FCLuaThread.h"
 
 @interface FCLua : NSObject {
-	NSMutableDictionary* _threads;
+	NSMutableDictionary*	_threadsDict;
+	unsigned int			_nextThreadId;
 }
-@property(nonatomic, readonly, readonly) NSMutableDictionary* threads;
+@property(nonatomic, readonly) NSMutableDictionary* threadsDict;
+@property(nonatomic, readonly) unsigned int nextThreadId;
 
 +(FCLua*)instance;
 
 -(void)updateThreads;
+-(void)incrementNextThreadId;
 
 -(FCLuaVM*)coreVM;
 -(FCLuaVM*)newVM;
 
--(FCLuaThread*)newThreadWithVoidFunction:(NSString*)function;
-//-(void)pauseThread:(float)seconds;
-//-(void)killThread:(int)threadId;
-//-(void)sleepThread:(float)seconds;
+-(unsigned int)newThreadWithVoidFunction:(NSString*)function;
 
 // thread manager
 // create vm

@@ -20,23 +20,21 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#import <Foundation/Foundation.h>
 
-#import "FCFont.h"
-#import "FCCore.h"
-
-@implementation FCFont
-
-+(void)logSystemFonts
-{
-	FC_LOG(@"Fonts found...");
-	FC_LOG([UIFont familyNames]);
-	for( NSString* familyName in [UIFont familyNames])
-	{
-		FC_LOG2( @"System font: %@ %@", familyName, [UIFont fontNamesForFamilyName:familyName]);
-	}
+extern "C" {
+#include "lua.h"
 }
 
-@end
+extern void* FCLuaAlloc(void*, void*, size_t, size_t);
 
-#endif // TARGET_OS_IPHONE
+@interface FCLuaMemory : NSObject
+{
+	int _totalMemory;
+	int	_numAllocs;
+}
+@property(nonatomic) int totalMemory;
+@property(nonatomic) int numAllocs;
+
++(FCLuaMemory*)instance;
+@end

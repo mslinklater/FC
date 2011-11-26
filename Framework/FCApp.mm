@@ -26,11 +26,11 @@ static FCLuaVM* s_lua;
 	[FCCaps registerLuaFunctions:s_lua];
 	[FCError registerLuaFunctions:s_lua];
 
-	[s_lua call:@"PrintTable" withSig:@"tb>", "Caps", true];
-	[s_lua call:@"PrintTable" withSig:@"tb>", "PersistentData", true];
-	[s_lua call:@"PrintTable" withSig:@"tb>", "Analytics", true];
+	[s_lua call:@"PrintTable" withSig:@"tb>", "FCCaps", true];
+	[s_lua call:@"PrintTable" withSig:@"tb>", "FCPersistentData", true];
+	[s_lua call:@"PrintTable" withSig:@"tb>", "FCAnalytics", true];
 
-	[s_lua loadFileFromMainBundle:@"main"];
+	[s_lua loadScript:@"main"];
 	[s_lua call:@"App.ColdBoot" withSig:@""];
 }
 

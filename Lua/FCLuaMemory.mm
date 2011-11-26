@@ -20,23 +20,56 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#import "FCLuaMemory.h"
 
-#import "FCFont.h"
-#import "FCCore.h"
+// global memory allocation routine
 
-@implementation FCFont
-
-+(void)logSystemFonts
+void* FCLuaAlloc( void* ud, void* ptr, size_t osize, size_t nsize )
 {
-	FC_LOG(@"Fonts found...");
-	FC_LOG([UIFont familyNames]);
-	for( NSString* familyName in [UIFont familyNames])
-	{
-		FC_LOG2( @"System font: %@ %@", familyName, [UIFont fontNamesForFamilyName:familyName]);
+	if (nsize) {
+		[FCLuaMemory instance].totalMemory += nsize - osize;
+		
+		if (osize) {
+			return realloc(ptr, nsize);
+		} else {
+			[FCLuaMemory instance].numAllocs++;
+			return malloc(nsize);			
+		}
+	} else {
+		[FCLuaMemory instance].totalMemory -= osize;
+		if (osize) {
+			[FCLuaMemory instance].numAllocs--;
+			free(ptr);
+		}
+		return NULL;
 	}
 }
 
-@end
+@implementation FCLuaMemory
+@synthesize totalMemory = _totalMemory;
+@synthesize numAllocs = _numAllocs;
 
-#endif // TARGET_OS_IPHONE
++(id)instance
+{
+	static FCLuaMemory* pInstance;
+	if (!pInstance) {
+		pInstance = [[FCLuaMemory alloc] init];
+	}
+	return pInstance;
+}
+
+-(id)init
+{
+	self = [super init];
+	if (self) {
+		// blah
+	}
+	return self;
+}
+
+-(void)setTotalMemory:(int)totalMemory
+{
+	_totalMemory = totalMemory;
+}
+
+@end

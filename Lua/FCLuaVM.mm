@@ -21,6 +21,8 @@
  */
 
 #import "FCLuaVM.h"
+#import "FCLuaMemory.h"
+#import "FCLuaCommon.h"
 
 extern "C" {
 	#import "lauxlib.h"
@@ -29,46 +31,17 @@ extern "C" {
 
 #import "FCError.h"
 
-#pragma mark - Internal Interface
 
-@interface FCLuaVM() {
-//	lua_State* L;
-}
-@end
-
-@implementation FCLuaVM
-@synthesize state = _state;
-
-#pragma mark - Object Lifecycle
-
--(id)init
+void common_LoadScriptForState(NSString* path, lua_State* _state)
 {
-	self = [super init];
-	if(self)
-	{
-		_state = luaL_newstate();		
-		if (!_state) {
-			FC_FATAL(@"luaL_newstate");
-		}
-	}
-	return self;
-}
-
--(void)dealloc
-{
-	lua_close(_state);
-}
-
-#pragma mark - Lua
-
--(void)loadFileFromMainBundle:(NSString*)path
-{
+	NSLog(@"Lua: Loading file %@", path);
+	
 	NSString* filePath = [[NSBundle mainBundle] pathForResource:path ofType:@"lua"];
 	
 	FC_ASSERT(filePath != nil);
 	
 	int ret = luaL_loadfile(_state, [filePath UTF8String]);
-
+	
 	switch (ret) {
 		case LUA_ERRSYNTAX:
 			FC_FATAL1(@"Syntax error on load of Lua file", path);
@@ -84,6 +57,7 @@ extern "C" {
 	
 	switch (ret) {
 		case LUA_ERRRUN:
+			FCLuaCommon_DumpStack(_state);
 			FC_FATAL1(@"Runtime error in Lua file", path);
 			break;
 		case LUA_ERRMEM:
@@ -95,6 +69,61 @@ extern "C" {
 		default:
 			break;
 	}
+}
+
+int Lua_LoadScript( lua_State* _state )
+{
+	NSString* path = [NSString stringWithCString:lua_tostring(_state, -1) encoding:NSUTF8StringEncoding];
+	common_LoadScriptForState(path, _state);
+	return 0;
+}
+
+#pragma mark - Internal Interface
+
+static int panic (lua_State *L) {
+	(void)L;  /* to avoid warnings */
+	const char* pString = lua_tostring(L, -1);
+	FC_FATAL1(@"PANIC: unprotected error in call to Lua API ", [NSString stringWithCString:pString encoding:NSUTF8StringEncoding]);
+	return 0;
+}
+
+@implementation FCLuaVM
+@synthesize state = _state;
+
+#pragma mark - Object Lifecycle
+
+-(id)init
+{
+	self = [super init];
+	if(self)
+	{
+		_state = lua_newstate(FCLuaAlloc, NULL);
+		
+		if (_state) {
+			lua_atpanic(_state, &panic);
+		}
+		
+		if (!_state) {
+			FC_FATAL(@"lua_newstate");
+		}
+		
+		// load core functions
+		
+		[self registerCFunction:Lua_LoadScript as:@"FCLoadScript"];
+	}
+	return self;
+}
+
+-(void)dealloc
+{
+	lua_close(_state);
+}
+
+#pragma mark - Lua
+
+-(void)loadScript:(NSString*)path
+{
+	common_LoadScriptForState(path, _state);
 }
 
 -(void)addStandardLibraries
@@ -265,7 +294,6 @@ extern "C" {
 					FC_FATAL1(@"Trying to pass table argument which is not a table", tableNSString);
 				}					
 				break;
-				
 			}
 			case '>':
 				csig++;
@@ -328,29 +356,7 @@ endargs:
 
 -(void)dumpStack
 {
-	NSLog(@"-- FCLuaVM:dumpStack --");
-	int i;
-	int top = lua_gettop(_state);
-	for( i = 1 ; i <= top ; i++ )
-	{
-		int t = lua_type(_state, i);
-		int negIndex = -(top - i) -1;
-		switch(t)
-		{
-			case LUA_TSTRING:
-				NSLog(@"(%d/%d) '%s'", i, negIndex, lua_tostring(_state, i));
-				break;
-			case LUA_TBOOLEAN:
-				NSLog(@"(%d/%d) %@", i, negIndex, lua_toboolean(_state, i) ? @"true" : @"false" );
-				break;
-			case LUA_TNUMBER:
-				NSLog(@"(%d/%d) %g", i, negIndex, lua_tonumber(_state, i));
-				break;
-			default:
-				NSLog(@"(%d/%d) %s", i, negIndex, lua_typename(_state, t));
-				break;
-		}
-	}
+	FCLuaCommon_DumpStack( self.state );
 }
 
 -(void)dumpCallstack

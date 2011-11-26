@@ -116,9 +116,9 @@ static FCCaps* pInstance;
 {
 	[FCCaps instance].luaVM = lua;
 	
-	[lua createGlobalTable:@"Caps"];
-	[lua registerCFunction:Lua_Probe as:@"Caps.Probe"];
-	[lua registerCFunction:Lua_WarmProbe as:@"Caps.WarmProbe"];
+	[lua createGlobalTable:@"FCCaps"];
+	[lua registerCFunction:Lua_Probe as:@"FCCaps.Probe"];
+	[lua registerCFunction:Lua_WarmProbe as:@"FCCaps.WarmProbe"];
 }
 
 #pragma mark - Object Lifetime

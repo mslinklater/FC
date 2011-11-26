@@ -185,7 +185,7 @@ static NSString* s_debugShaderName = @"debug_debug";
 				FC_ERROR(@"Shader binding error for model");
 			}
 			
-			NSLog(@"%@", resourceVertexDescriptor);
+//			NSLog(@"%@", resourceVertexDescriptor);
 		}
 		
 		// get vertex description provided by the resource

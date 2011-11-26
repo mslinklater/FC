@@ -465,19 +465,6 @@
 	{
 		[self removeActor:actor];
 	}
-
-	
-//	[mUpdateActorsArray removeAllObjects];
-//	[mRenderActorsArray removeAllObjects];
-//	[mTapGestureActorsArray removeAllObjects];
-//	
-//	if ([mAllActorsArray count]) 
-//	{
-//		//NSLog(@"Actor retain count %d", [[mAllActorsArray objectAtIndex:0] retainCount]);
-//	}
-//
-//	[mAllActorsArray removeAllObjects];	
-//	[mClassArraysDictionary removeAllObjects];
 }
 
 #pragma mark - GameObjectUpdate methods

@@ -50,7 +50,8 @@ static int Lua_Warning( lua_State* state )
 static int Lua_Log( lua_State* state )
 {
 	const char* log = lua_tostring(state, -1);
-	[FCError log:[NSString stringWithCString:log encoding:NSUTF8StringEncoding]];	
+	NSString* logString = [NSString stringWithFormat:@"Lua(0x%08x):%s", state, log];
+	[FCError log:logString];	
 	return 0;
 }
 
@@ -58,10 +59,10 @@ static int Lua_Log( lua_State* state )
 
 +(void)registerLuaFunctions:(FCLuaVM*)lua
 {
-	[lua registerCFunction:Lua_Fatal as:@"Fatal"];
-	[lua registerCFunction:Lua_Error as:@"Error"];
-	[lua registerCFunction:Lua_Warning as:@"Warning"];
-	[lua registerCFunction:Lua_Log as:@"Log"];
+	[lua registerCFunction:Lua_Fatal as:@"FCFatal"];
+	[lua registerCFunction:Lua_Error as:@"FCError"];
+	[lua registerCFunction:Lua_Warning as:@"FCWarning"];
+	[lua registerCFunction:Lua_Log as:@"FCLog"];
 }
 
 #pragma mark - Fatal
@@ -69,19 +70,19 @@ static int Lua_Log( lua_State* state )
 +(void)fatal:(NSString*)location info:(NSString*)errorString
 {
 	NSLog(@"FATAL - %@ - %@", location, errorString);
-	exit(1);
+	[FCError halt];
 }
 
 +(void)fatal1:(NSString*)location info:(NSString*)errorString arg1:(id)arg1
 {
 	NSLog(@"FATAL - %@ - %@ %@", location, errorString, arg1);
-	exit(1);
+	[FCError halt];
 }
 
 +(void)fatal2:(NSString*)location info:(NSString*)errorString arg1:(id)arg1 arg2:(id)arg2
 {
 	NSLog(@"FATAL - %@ - %@ %@ %@", location, errorString, arg1, arg2);
-	exit(1);
+	[FCError halt];
 }
 
 #pragma mark - Error
@@ -122,12 +123,23 @@ static int Lua_Log( lua_State* state )
 
 +(void)log1:(id)logItem arg1:(id)arg1
 {
-	NSLog(@"%@ %@", logItem, arg1);
+	NSLog( logItem, arg1 );
 }
 
 +(void)log2:(id)logItem arg1:(id)arg1 arg2:(id)arg2
 {
-	NSLog(@"%@ %@ %@", logItem, arg1, arg2);
+	NSLog( logItem, arg1, arg2 );
+}
+
++(void)log3:(id)logItem arg1:(id)arg1 arg2:(id)arg2 arg3:(id)arg3
+{
+	NSLog( logItem, arg1, arg2, arg3 );
+}
+
++(void)halt
+{
+	int* pHalt = 0;
+	*pHalt = 0xff;
 }
 
 @end

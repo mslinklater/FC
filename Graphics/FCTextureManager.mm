@@ -59,8 +59,8 @@
 
 		[parser release];
 
-		NSLog(@"NumAtlas %d", [self.textureFiles count]);
-		NSLog(@"Textures %@", self.textures);
+//		NSLog(@"NumAtlas %d", [self.textureFiles count]);
+//		NSLog(@"Textures %@", self.textures);
 		
 		// process textures in directory		
 		

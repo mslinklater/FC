@@ -34,15 +34,16 @@ enum eLuaThreadState {
 	eLuaThreadState	_state;
 	double			_sleepTimeRemaining;
 	unsigned int	_threadId;
-	BOOL			_paused;
+	lua_State*		_luaState;
 }
 @property(nonatomic, readonly) eLuaThreadState state;
 @property(nonatomic, readonly) double sleepTimeRemaining;
 @property(nonatomic, readonly) unsigned int threadId;
-@property(nonatomic) BOOL paused;
+@property(nonatomic, readonly) lua_State* luaState;
 
 -(id)initFromState:(lua_State*)state withId:(unsigned int)threadId;
 -(void)runVoidFunction:(NSString*)function;
 -(void)update:(float)dt;
+-(void)pause:(float)seconds;
 
 @end

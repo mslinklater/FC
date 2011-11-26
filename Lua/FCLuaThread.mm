@@ -22,13 +22,15 @@
 
 #import "FCLuaThread.h"
 #import "FCError.h"
+#import "FCLuaCommon.h"
 
-//extern "C" {
-//#include "lua.h"
-//}
+extern "C" {
+#include "lua.h"
+#import "lauxlib.h"
+#import "lualib.h"
+}
 
 @interface FCLuaThread() {
-	lua_State*	m_luaState;
 }
 @end
 
@@ -36,17 +38,19 @@
 @synthesize state = _state;
 @synthesize sleepTimeRemaining = _sleepTimeRemaining;
 @synthesize threadId = _threadId;
-@synthesize paused = _paused;
+@synthesize luaState = _luaState;
 
 -(id)initFromState:(lua_State *)state withId:(unsigned int)threadId
 {
 	self = [super init];
 	if (self) {
-		m_luaState = lua_newthread(state);
-		_state = kLuaThreadStateSleeping;
+		_luaState = lua_newthread(state);
+		char buffer[32];
+		sprintf(&buffer[0], "thread%d", threadId);		
+		lua_setfield(state, LUA_REGISTRYINDEX, &buffer[0]);
+		_state = kLuaThreadStateNew;
 		_sleepTimeRemaining = 0.0;
 		_threadId = threadId;
-		self.paused = NO;
 	}
 	return self;
 }
@@ -58,23 +62,38 @@
 
 -(void)runVoidFunction:(NSString *)function
 {
-	lua_getglobal(m_luaState, [function UTF8String]);
-	if (lua_isnil(m_luaState, -1)) {
+	lua_getglobal(_luaState, [function UTF8String]);
+	if (lua_isnil(_luaState, -1)) {
 		FC_FATAL1(@"Unknown Lua function", function);
 	}
-	int ret = lua_resume(m_luaState , 0);
+	_state = kLuaThreadStateRunning;
+	int ret = lua_resume(_luaState , 0);
 	switch (ret) {
 		case 0:
+			// finished naturally - remove thread from registry
+			
+			lua_pushnil(_luaState);
+			char buffer[32];
+			sprintf(&buffer[0], "thread%d", _threadId);		
+			lua_setfield(_luaState, LUA_REGISTRYINDEX, &buffer[0]);			
 			break;
 		case LUA_YIELD:
 			break;
 		case LUA_ERRRUN:
+			FCLuaCommon_DumpStack(_luaState);
+			FC_FATAL(@"LUA_ERRRUN");
 			break;
 		case LUA_ERRSYNTAX:
+			FCLuaCommon_DumpStack(_luaState);
+			FC_FATAL(@"LUA_ERRSYNTAX");
 			break;
 		case LUA_ERRMEM:
+			FCLuaCommon_DumpStack(_luaState);
+			FC_FATAL(@"LUA_ERRMEM");
 			break;
 		case LUA_ERRERR:
+			FCLuaCommon_DumpStack(_luaState);
+			FC_FATAL(@"LUA_ERRERR");
 			break;
 		default:
 			break;
@@ -83,19 +102,88 @@
 
 -(void)update:(float)dt
 {
-	if (self.paused) {
-		return;
-	}
-
+//	lua_gc(_luaState, LUA_GCCOLLECT, 0);
 	switch (self.state) {
 		case kLuaThreadStateNew:
 			break;
 		case kLuaThreadStateRunning:
+			{
+//				FCLuaCommon_DumpStack(_luaState);
+//				NSLog(@"Resuming %d", _threadId);
+				int ret = lua_resume(_luaState , 0);
+				switch (ret) {
+					case 0:	// non-yeilding, so ran to its end
+						_state = kLuaThreadStateDead;
+						lua_pushnil(_luaState);
+						char buffer[32];
+						sprintf(&buffer[0], "thread%d", _threadId);		
+						lua_setfield(_luaState, LUA_REGISTRYINDEX, &buffer[0]);			
+
+//						NSLog(@"dead %d", _threadId);
+						break;
+					case LUA_YIELD:
+//						NSLog(@"Yielded %d", _threadId);
+						break;
+					case LUA_ERRRUN:
+						FCLuaCommon_DumpStack(_luaState);
+						FC_FATAL(@"LUA_ERRRUN");
+						break;
+					case LUA_ERRSYNTAX:
+						FCLuaCommon_DumpStack(_luaState);
+						FC_FATAL(@"LUA_ERRSYNTAX");
+						break;
+					case LUA_ERRMEM:
+						FCLuaCommon_DumpStack(_luaState);
+						FC_FATAL(@"LUA_ERRMEM");
+						break;
+					case LUA_ERRERR:
+						FCLuaCommon_DumpStack(_luaState);
+						FC_FATAL(@"LUA_ERRERR");
+						break;
+					default:
+						FC_FATAL(@"default fallthrough");
+						break;
+				}
+			}
 			break;
 		case kLuaThreadStateSleeping:
+			{
+				_sleepTimeRemaining -= dt;
+				if (_sleepTimeRemaining <= 0.0) {
+					_state = kLuaThreadStateRunning;
+					_sleepTimeRemaining = 0.0;
+				}
+			}
 			break;
 		case kLuaThreadStateDead:
 			break;			
+	}
+}
+
+-(void)pause:(float)seconds
+{
+	_sleepTimeRemaining = (float)seconds;
+	_state = kLuaThreadStateSleeping;
+}
+
+-(NSString*)description
+{
+	switch (_state) {
+		case kLuaThreadStateDead:
+			return @"Dead";
+			break;
+		case kLuaThreadStateNew:
+			return @"New";
+			break;
+		case kLuaThreadStateRunning:
+			return @"Running";
+			break;
+		case kLuaThreadStateSleeping:
+			return @"Sleeping";
+			break;
+			
+		default:
+			break;
 	}
 }
 

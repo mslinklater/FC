@@ -20,44 +20,90 @@
  THE SOFTWARE.
  */
 
+#import <QuartzCore/QuartzCore.h>
+
 #import "FCLua.h"
+#import "FCError.h"
+#import "FCLuaCommon.h"
 #import "Debug/FCDebug.h"
+
+unsigned int common_newThreadWithVoidFunction( const char* function )
+{
+	FCLua* fcLua = [FCLua instance];
+	
+	FCLuaThread* thread = [[FCLuaThread alloc] initFromState:[[FCLua instance] coreVM].state withId:fcLua.nextThreadId];
+	
+	[fcLua.threadsDict setObject:thread forKey:[NSNumber numberWithUnsignedInt:fcLua.nextThreadId]];
+	
+	[fcLua incrementNextThreadId];
+	
+	[thread runVoidFunction:[NSString stringWithCString:function encoding:NSUTF8StringEncoding]];
+	
+	return thread.threadId;
+}
 
 #pragma mark - Lua Functions
 
 int Lua_NewThread( lua_State* state )
 {
+	// TODO - handle passing function as arg instead of string
+	
+	if (lua_isstring(state, 1)) 
+	{
+		const char* function = lua_tostring(state, -1);
+		lua_pop(state, 1);
+		
+		unsigned int threadId = common_newThreadWithVoidFunction( function );
+
+		lua_pushinteger( state, threadId );
+		return 1;
+	}
+	FC_FATAL(@"Creating thread from not a string");
 	return 0;
 }
 
 int Lua_WaitThread( lua_State* state )
 {
+	// find thread with this state
+	FCLua* instance = [FCLua instance];
+	NSArray* keys = [instance.threadsDict allKeys];
+	for( id key in keys )
+	{
+		FCLuaThread* thread = [instance.threadsDict objectForKey:key];
+		if (state == thread.luaState) {
+			double time = lua_tonumber(state, 1);
+//			lua_pop(state, 1);
+			[thread pause:time];
+//			FCLuaCommon_DumpStack(state);
+			int yieldVal = lua_yield(state, 0);
+			return yieldVal;
+		}
+	}
+	FC_FATAL(@"Cannot find thread");
 	return 0;
 }
 
 int Lua_KillThread( lua_State* state )
 {
+
 	return 0;
 }
 
-int Lua_LoadFile( lua_State* state )
-{
-	return 0;
-}
 
 #pragma mark - FCLua Private Interface
 
 @interface FCLua() {
 	FCLuaVM*				m_coreVM;
-	unsigned int			m_nextThreadId;
 	FCPerformanceCounter*	m_perfCounter;
+	CADisplayLink*			m_displayLink;
 }
 @end
 
 #pragma mark - FCLua Implementation
 
 @implementation FCLua
-@synthesize threads = _threads;
+@synthesize threadsDict = _threadsDict;
+@synthesize nextThreadId = _nextThreadId;
 
 #pragma mark - Class methods
 
@@ -72,13 +118,20 @@ int Lua_LoadFile( lua_State* state )
 
 -(void)updateThreads
 {
+	NSLog(@"%d %d", [self.threadsDict count], _nextThreadId);
 	float dt = (float)[m_perfCounter secondsValue];
 	[m_perfCounter zero];
 	
 	// update threads
-	for( FCLuaThread* thread in self.threads ) 
+	NSArray* keys = [self.threadsDict allKeys];
+	for( id key in keys ) 
 	{
+		FCLuaThread* thread = [self.threadsDict objectForKey:key];
 		[thread update:dt];
+		if (thread.state == kLuaThreadStateDead) {
+			[self.threadsDict removeObjectForKey:key];
+			[thread release];
+		}
 	}
 }
 
@@ -88,30 +141,46 @@ int Lua_LoadFile( lua_State* state )
 {
 	self = [super init];
 	if (self) {
-		_threads = [[NSMutableDictionary alloc] init];
+		_threadsDict = [[NSMutableDictionary alloc] init];
+		
+		// create global thread table
+
+
 		m_coreVM = [[FCLuaVM alloc] init];
 		[m_coreVM addStandardLibraries];
-		[m_coreVM loadFileFromMainBundle:@"util"];
+		[m_coreVM loadScript:@"util"];
 		
 		// register core API
-		[m_coreVM registerCFunction:Lua_NewThread as:@"NewThread"];
-		[m_coreVM registerCFunction:Lua_WaitThread as:@"Wait"];
-		[m_coreVM registerCFunction:Lua_KillThread as:@"KillThread"];
-		[m_coreVM registerCFunction:Lua_LoadFile as:@"LoadScript"];
+		[m_coreVM registerCFunction:Lua_NewThread as:@"FCNewThread"];
+		[m_coreVM registerCFunction:Lua_WaitThread as:@"FCWait"];
+		[m_coreVM registerCFunction:Lua_KillThread as:@"FCKillThread"];
 		
-		m_nextThreadId = 1;
+		_nextThreadId = 1;
 
 		m_perfCounter = [[FCPerformanceCounter alloc] init];
+		
+		// setup display link
+		
+		m_displayLink = [[CADisplayLink displayLinkWithTarget:self selector:@selector(updateThreads)] retain];
+		[m_displayLink setFrameInterval:1];
+		[m_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+
 	}
 	return self;
 }
 
 -(void)dealloc
 {
+	[m_displayLink invalidate];
 	[m_coreVM release];
-	[_threads release], _threads = nil;
+	[_threadsDict release], _threadsDict = nil;
 	[m_perfCounter release];
 	[super dealloc];
+}
+
+-(void)incrementNextThreadId
+{
+	_nextThreadId++;
 }
 
 #pragma mark - VM
@@ -128,13 +197,9 @@ int Lua_LoadFile( lua_State* state )
 
 #pragma mark - Threads
 
--(FCLuaThread*)newThreadWithVoidFunction:(NSString*)function
+-(unsigned int)newThreadWithVoidFunction:(NSString*)function
 {
-	FCLuaThread* thread = [[FCLuaThread alloc] initFromState:m_coreVM.state withId:m_nextThreadId];
-	[_threads setObject:thread forKey:[NSNumber numberWithUnsignedInt:m_nextThreadId]];
-	m_nextThreadId++;
-	[thread runVoidFunction:function];
-	return thread;
+	return common_newThreadWithVoidFunction( [function cStringUsingEncoding:NSUTF8StringEncoding] );
 }
 
 @end

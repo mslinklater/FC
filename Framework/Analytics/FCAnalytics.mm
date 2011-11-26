@@ -99,10 +99,10 @@ static const int kVariableAppPirated = 3;
 
 +(void)registerLuaFunctions:(FCLuaVM *)lua
 {
-	[lua createGlobalTable:@"Analytics"];
-	[lua registerCFunction: Lua_SetAccountId as:@"Analytics.SetAccountID"];
-	[lua registerCFunction: Lua_StartSession as:@"Analytics.StartSession"];
-	[lua registerCFunction: Lua_EndSession as:@"Analytics.EndSession"];
+	[lua createGlobalTable:@"FCAnalytics"];
+	[lua registerCFunction: Lua_SetAccountId as:@"FCAnalytics.SetAccountID"];
+	[lua registerCFunction: Lua_StartSession as:@"FCAnalytics.StartSession"];
+	[lua registerCFunction: Lua_EndSession as:@"FCAnalytics.EndSession"];
 }
 
 #pragma mark - Setters

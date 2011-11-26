@@ -477,7 +477,7 @@
 
 	mDisplayLink = [[CADisplayLink displayLinkWithTarget:mRenderTarget selector:mRenderAction] retain];
 	[mDisplayLink setFrameInterval:mFrameInterval];
-	[mDisplayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];	
+	[mDisplayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
 
 -(void)stop
