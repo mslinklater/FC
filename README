@@ -38,13 +38,18 @@ Debugging objects to help devlopment.
 Rendering subsystem, covering model and mesh formats, OpenGL state management, shader and texture handling etc.
 Also contains UIViews focused at native iOS UI development.
 
+* Lua
+
+A game oriented multi-lua-threaded Lua system. The goal is to enable Lua to drive all of the higher level functionality
+of FC. 
+
 * Maths
 
 C++ maths routines
 
 * Physics
 
-Abstraction layer for 2D and 3D physics. Currently wraps Box2D and (soon)Bullet.
+Abstraction layer for 2D and 3D physics. Currently wraps Box2D and when required, Bullet.
 
 * Framework
 

@@ -83,20 +83,35 @@ int Lua_WaitThread( lua_State* state )
 
 int Lua_KillThread( lua_State* state )
 {
+	if (!lua_isnumber(state, -1)) {
+		FC_FATAL(@"Trying to pass a non-number to thread kill");
+	}
+	int killid = lua_tointeger(state, -1);
+	
 	FCLua* instance = [FCLua instance];
-	NSArray* keys = [instance.threadsDict allKeys];
-	for( id key in keys )
-	{
-		FCLuaThread* thread = [instance.threadsDict objectForKey:key];
-		if (state == thread.luaState) {
+
+	NSNumber* key = [NSNumber numberWithInt:killid];
+
+	FCLuaThread* thread = [instance.threadsDict objectForKey:key];
+
+	if (thread) {
+		[thread die];
+	}
+	
+	
+//	NSArray* keys = [instance.threadsDict allKeys];
+//	for( id key in keys )
+//	{
+//		FCLuaThread* thread = [instance.threadsDict objectForKey:key];
+//		if (state == thread.luaState) {
 			[thread die];
 //			double time = lua_tonumber(state, 1);
 //			[thread pause:time];
 //			int yieldVal = lua_yield(state, 0);
 //			return yieldVal;
-		}
-	}
-	FC_FATAL(@"Cannot find thread");
+//		}
+//	}
+//	FC_FATAL(@"Cannot find thread");
 
 	return 0;
 }
@@ -130,7 +145,7 @@ int Lua_KillThread( lua_State* state )
 
 -(void)updateThreads
 {
-	NSLog(@"%d %d", [self.threadsDict count], _nextThreadId);
+//	NSLog(@"%d %d", [self.threadsDict count], _nextThreadId);
 	float dt = (float)[m_perfCounter secondsValue];
 	[m_perfCounter zero];
 	
