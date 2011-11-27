@@ -72,9 +72,7 @@ int Lua_WaitThread( lua_State* state )
 		FCLuaThread* thread = [instance.threadsDict objectForKey:key];
 		if (state == thread.luaState) {
 			double time = lua_tonumber(state, 1);
-//			lua_pop(state, 1);
 			[thread pause:time];
-//			FCLuaCommon_DumpStack(state);
 			int yieldVal = lua_yield(state, 0);
 			return yieldVal;
 		}
@@ -85,6 +83,20 @@ int Lua_WaitThread( lua_State* state )
 
 int Lua_KillThread( lua_State* state )
 {
+	FCLua* instance = [FCLua instance];
+	NSArray* keys = [instance.threadsDict allKeys];
+	for( id key in keys )
+	{
+		FCLuaThread* thread = [instance.threadsDict objectForKey:key];
+		if (state == thread.luaState) {
+			[thread die];
+//			double time = lua_tonumber(state, 1);
+//			[thread pause:time];
+//			int yieldVal = lua_yield(state, 0);
+//			return yieldVal;
+		}
+	}
+	FC_FATAL(@"Cannot find thread");
 
 	return 0;
 }

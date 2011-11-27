@@ -71,11 +71,11 @@ extern "C" {
 	switch (ret) {
 		case 0:
 			// finished naturally - remove thread from registry
-			
-			lua_pushnil(_luaState);
-			char buffer[32];
-			sprintf(&buffer[0], "thread%d", _threadId);		
-			lua_setfield(_luaState, LUA_REGISTRYINDEX, &buffer[0]);			
+			_state = kLuaThreadStateDying;
+//			lua_pushnil(_luaState);
+//			char buffer[32];
+//			sprintf(&buffer[0], "thread%d", _threadId);		
+//			lua_setfield(_luaState, LUA_REGISTRYINDEX, &buffer[0]);			
 			break;
 		case LUA_YIELD:
 			break;
@@ -108,21 +108,12 @@ extern "C" {
 			break;
 		case kLuaThreadStateRunning:
 			{
-//				FCLuaCommon_DumpStack(_luaState);
-//				NSLog(@"Resuming %d", _threadId);
 				int ret = lua_resume(_luaState , 0);
 				switch (ret) {
 					case 0:	// non-yeilding, so ran to its end
-						_state = kLuaThreadStateDead;
-						lua_pushnil(_luaState);
-						char buffer[32];
-						sprintf(&buffer[0], "thread%d", _threadId);		
-						lua_setfield(_luaState, LUA_REGISTRYINDEX, &buffer[0]);			
-
-//						NSLog(@"dead %d", _threadId);
+						_state = kLuaThreadStateDying;
 						break;
 					case LUA_YIELD:
-//						NSLog(@"Yielded %d", _threadId);
 						break;
 					case LUA_ERRRUN:
 						FCLuaCommon_DumpStack(_luaState);
@@ -151,13 +142,25 @@ extern "C" {
 				_sleepTimeRemaining -= dt;
 				if (_sleepTimeRemaining <= 0.0) {
 					_state = kLuaThreadStateRunning;
-					_sleepTimeRemaining = 0.0;
+//					_sleepTimeRemaining = 0.0;
 				}
 			}
+			break;
+		case kLuaThreadStateDying:
+			_state = kLuaThreadStateDead;
+			lua_pushnil(_luaState);
+			char buffer[32];
+			sprintf(&buffer[0], "thread%d", _threadId);		
+			lua_setfield(_luaState, LUA_REGISTRYINDEX, &buffer[0]);			
 			break;
 		case kLuaThreadStateDead:
 			break;			
 	}
+}
+
+-(void)die
+{
+	_state = kLuaThreadStateDying;
 }
 
 -(void)pause:(float)seconds
@@ -171,6 +174,9 @@ extern "C" {
 	switch (_state) {
 		case kLuaThreadStateDead:
 			return @"Dead";
+			break;
+		case kLuaThreadStateDying:
+			return @"Dying";
 			break;
 		case kLuaThreadStateNew:
 			return @"New";

@@ -27,6 +27,7 @@ enum eLuaThreadState {
 	kLuaThreadStateNew,
 	kLuaThreadStateRunning,
 	kLuaThreadStateSleeping,
+	kLuaThreadStateDying,
 	kLuaThreadStateDead
 };
 
@@ -45,5 +46,6 @@ enum eLuaThreadState {
 -(void)runVoidFunction:(NSString*)function;
 -(void)update:(float)dt;
 -(void)pause:(float)seconds;
+-(void)die;
 
 @end
