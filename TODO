@@ -13,7 +13,6 @@ Physics, actors etc etc...
 Document resource format and intent
 Unit tests
 ARC support
-Lua - spawning thread from lua thread instantly (without a wait)
 Optimisations - not even looked at this yet, although obvious problems shouldn't be present.
 etc.
 

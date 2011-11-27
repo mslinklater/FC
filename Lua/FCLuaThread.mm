@@ -70,12 +70,7 @@ extern "C" {
 	int ret = lua_resume(_luaState , 0);
 	switch (ret) {
 		case 0:
-			// finished naturally - remove thread from registry
 			_state = kLuaThreadStateDying;
-//			lua_pushnil(_luaState);
-//			char buffer[32];
-//			sprintf(&buffer[0], "thread%d", _threadId);		
-//			lua_setfield(_luaState, LUA_REGISTRYINDEX, &buffer[0]);			
 			break;
 		case LUA_YIELD:
 			break;
@@ -102,7 +97,6 @@ extern "C" {
 
 -(void)update:(float)dt
 {
-//	lua_gc(_luaState, LUA_GCCOLLECT, 0);
 	switch (self.state) {
 		case kLuaThreadStateNew:
 			break;
@@ -110,7 +104,7 @@ extern "C" {
 			{
 				int ret = lua_resume(_luaState , 0);
 				switch (ret) {
-					case 0:	// non-yeilding, so ran to its end
+					case 0:
 						_state = kLuaThreadStateDying;
 						break;
 					case LUA_YIELD:
@@ -142,7 +136,6 @@ extern "C" {
 				_sleepTimeRemaining -= dt;
 				if (_sleepTimeRemaining <= 0.0) {
 					_state = kLuaThreadStateRunning;
-//					_sleepTimeRemaining = 0.0;
 				}
 			}
 			break;

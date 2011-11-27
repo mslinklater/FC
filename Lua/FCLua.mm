@@ -27,9 +27,22 @@
 #import "FCLuaCommon.h"
 #import "Debug/FCDebug.h"
 
+
 unsigned int common_newThreadWithVoidFunction( const char* function )
 {
+	static int s_recurseCount = 0;
+	
+	s_recurseCount++;
+
+	if (s_recurseCount > 100) {
+		FC_FATAL(@"Recursive Lua thread creation - try inserting FCWait(0)");
+	}
+	
 	FCLua* fcLua = [FCLua instance];
+
+	if ([fcLua.threadsDict count] > 1024) {
+		FC_FATAL(@"Too many Lua threads");
+	}
 	
 	FCLuaThread* thread = [[FCLuaThread alloc] initFromState:[[FCLua instance] coreVM].state withId:fcLua.nextThreadId];
 	
@@ -38,6 +51,8 @@ unsigned int common_newThreadWithVoidFunction( const char* function )
 	[fcLua incrementNextThreadId];
 	
 	[thread runVoidFunction:[NSString stringWithCString:function encoding:NSUTF8StringEncoding]];
+
+	s_recurseCount--;
 	
 	return thread.threadId;
 }
@@ -96,23 +111,10 @@ int Lua_KillThread( lua_State* state )
 
 	if (thread) {
 		[thread die];
+	} else
+	{
+		FC_WARNING(@"Trying to kill non-existent Lua thread");
 	}
-	
-	
-//	NSArray* keys = [instance.threadsDict allKeys];
-//	for( id key in keys )
-//	{
-//		FCLuaThread* thread = [instance.threadsDict objectForKey:key];
-//		if (state == thread.luaState) {
-			[thread die];
-//			double time = lua_tonumber(state, 1);
-//			[thread pause:time];
-//			int yieldVal = lua_yield(state, 0);
-//			return yieldVal;
-//		}
-//	}
-//	FC_FATAL(@"Cannot find thread");
-
 	return 0;
 }
 
@@ -145,7 +147,6 @@ int Lua_KillThread( lua_State* state )
 
 -(void)updateThreads
 {
-//	NSLog(@"%d %d", [self.threadsDict count], _nextThreadId);
 	float dt = (float)[m_perfCounter secondsValue];
 	[m_perfCounter zero];
 	
