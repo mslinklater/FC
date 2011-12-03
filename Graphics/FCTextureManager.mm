@@ -20,15 +20,17 @@
  THE SOFTWARE.
  */
 
+#if TARGET_OS_IPHONE
+
 #import "FCTextureManager.h"
 #import "FCTextureFile.h"
 #import "FCTexture.h"
 #import "FCCore.h"
 
 @interface FCTextureManager()
-@property(nonatomic, retain) NSMutableDictionary* textures;
-@property(nonatomic, retain) NSMutableDictionary* textureFiles;
-@property(nonatomic, retain) FCTextureFile* currentTextureFile;
+@property(nonatomic, strong) NSMutableDictionary* textures;
+@property(nonatomic, strong) NSMutableDictionary* textureFiles;
+@property(nonatomic, strong) FCTextureFile* currentTextureFile;
 @end
 
 @implementation FCTextureManager
@@ -57,7 +59,6 @@
 			FC_FATAL(@"Error parsing texture manifest");
 		}
 
-		[parser release];
 
 //		NSLog(@"NumAtlas %d", [self.textureFiles count]);
 //		NSLog(@"Textures %@", self.textures);
@@ -68,13 +69,6 @@
 	return self;
 }
 
--(void)dealloc
-{
-	self.textures = nil;
-	self.textureFiles = nil;
-	self.currentTextureFile = nil;
-	[super dealloc];
-}
 
 #pragma mark - NSXMLParserDelegate
 
@@ -122,3 +116,5 @@
 
 
 @end
+
+#endif // TARGET_OS_IPHONE

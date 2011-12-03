@@ -98,7 +98,7 @@ static NSString* s_nameForProperty[ kFCVertexDescriptorLastProperty ] = {
 
 +(id)vertexDescriptor
 {
-	return [[[FCVertexDescriptor alloc] init] autorelease];
+	return [[FCVertexDescriptor alloc] init];
 }
 
 -(id)initWithVertexFormatString:(NSString *)desc andUniformDict:(NSDictionary *)uniformDict
@@ -147,7 +147,7 @@ static NSString* s_nameForProperty[ kFCVertexDescriptorLastProperty ] = {
 
 +(id)vertexDescriptorWithVertexFormatString:(NSString *)desc andUniformDict:(NSDictionary *)uniformDict
 {
-	return [[[FCVertexDescriptor alloc] initWithVertexFormatString:desc andUniformDict:uniformDict] autorelease];
+	return [[FCVertexDescriptor alloc] initWithVertexFormatString:desc andUniformDict:uniformDict];
 }
 
 -(BOOL)canSatisfy:(FCVertexDescriptor*)desc

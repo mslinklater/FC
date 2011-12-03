@@ -57,11 +57,6 @@ static const float kScoreHeight = 24;
     return self;
 }
 
--(void)dealloc
-{
-	self.nameLabel = nil;
-    [super dealloc];
-}
 
 #pragma mark - Layout
 

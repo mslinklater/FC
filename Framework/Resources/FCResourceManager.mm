@@ -43,7 +43,7 @@ static NSString* kUDSuffix = @"_ultra";
 @interface FCResourceManager() {
 	NSSet*	mSuffixedImageTypes;
 }
-@property(nonatomic, retain) NSString* suffixImages;
+@property(nonatomic, strong) NSString* suffixImages;
 @end
 
 //======================================================================================================================
@@ -76,20 +76,13 @@ static NSString* kUDSuffix = @"_ultra";
 	{
 //		NSString* filename = [[NSBundle mainBundle] pathForResource:kIPhoneResourceName ofType:@"tar"];
 		
-		mSuffixedImageTypes = [[NSSet setWithObjects:@"png", @"jpg", nil] retain];
+		mSuffixedImageTypes = [NSSet setWithObjects:@"png", @"jpg", nil];
 		
 //		mTarData = [[FCTarFile alloc] initWithContentsOfFile:filename];		
 	}
 	return self;
 }
 
--(void)dealloc
-{
-//	[mTarData release];
-	self.suffixImages = nil;
-	[mSuffixedImageTypes release];
-	[super dealloc];
-}
 
 #pragma mark - Member methods
 
@@ -169,7 +162,6 @@ static NSString* kUDSuffix = @"_ultra";
 	resource.binaryPayload = payloadData;
 	resource.name = resourcePath;
 	
-	[fcxmlData release];
 	
 	return resource;
 }

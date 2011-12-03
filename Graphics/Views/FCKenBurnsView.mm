@@ -53,11 +53,10 @@
 	self.imageFilenameArray = nil;
 	
 	//members
-	[mImageView[0] release], mImageView[0] = nil;
-	[mImageView[1] release], mImageView[1] = nil;
+	mImageView[0] = nil;
+	mImageView[1] = nil;
 	mFrontImageView = mBackImageView = nil;
 	
-    [super dealloc];
 }
 
 -(void)setImageFilenameArray:(NSArray *)imageFilenameArray

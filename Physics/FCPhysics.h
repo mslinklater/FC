@@ -33,9 +33,9 @@
 
 }
 
-@property(nonatomic, readonly) FCPhysics2D* twoD;
-@property(nonatomic, readonly) FCPhysics3D* threeD;
-@property(nonatomic, retain) NSMutableDictionary* materials;
+@property(strong, nonatomic, readonly) FCPhysics2D* twoD;
+@property(weak, nonatomic, readonly) FCPhysics3D* threeD;
+@property(nonatomic, strong) NSMutableDictionary* materials;
 
 +(FCPhysics*)instance;
 

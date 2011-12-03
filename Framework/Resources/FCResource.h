@@ -30,10 +30,10 @@
 	NSString* _name;
 	id _userData;
 }
-@property(nonatomic, retain) NSData* binaryPayload;
-@property(nonatomic, retain) FCXMLData* xmlData;
-@property(nonatomic, retain) NSString* name;
-@property(nonatomic, retain) id userData;	/// Mainly used for tools to attach metadata to a resource for processing
+@property(nonatomic, strong) NSData* binaryPayload;
+@property(nonatomic, strong) FCXMLData* xmlData;
+@property(nonatomic, strong) NSString* name;
+@property(nonatomic, strong) id userData;	/// Mainly used for tools to attach metadata to a resource for processing
 
 -(id)init;	// Designated initialiser
 +(id)resource;

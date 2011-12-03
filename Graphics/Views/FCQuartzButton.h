@@ -23,6 +23,7 @@
 #if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 enum FCQuartzButtonStyle {
 	kFCQuartzButtonStyleDefault,
@@ -39,7 +40,7 @@ enum FCQuartzButtonStyle {
 //	id<FCQuartzButtonDelegate> delegate;
 }
 @property(nonatomic) FCQuartzButtonStyle style;
-@property(nonatomic, assign) id<FCQuartzButtonDelegate> delegate;
+@property(nonatomic, unsafe_unretained) id<FCQuartzButtonDelegate> delegate;
 
 -(id)initWithFrame:(CGRect)frame withStyle:(FCQuartzButtonStyle)style;
 -(void)setDrawDelegate:(id)del withSelector:(SEL)selector;

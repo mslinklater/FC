@@ -28,8 +28,8 @@
 #import "FCShaderProgram.h"
 
 @interface FCShaderManager()
-@property(nonatomic, retain) NSMutableDictionary* shaders;
-@property(nonatomic, retain) NSMutableDictionary* programs;
+@property(nonatomic, strong) NSMutableDictionary* shaders;
+@property(nonatomic, strong) NSMutableDictionary* programs;
 @end
 
 @implementation FCShaderManager
@@ -46,16 +46,10 @@
 	return self;
 }
 
--(void)dealloc
-{
-	self.shaders = nil;
-	self.programs = nil;
-	[super dealloc];
-}
 
 -(FCShader*)addShader:(NSString *)name
 {
-	FCShader* ret = [[self.shaders valueForKey:name] retain];
+	FCShader* ret = [self.shaders valueForKey:name];
 	
 	if (!ret) 
 	{
@@ -92,7 +86,7 @@
 		
 //		[ret autorelease];
 	}
-	return [ret autorelease];
+	return ret;
 }
 
 -(FCShader*)shader:(NSString *)name
@@ -102,7 +96,7 @@
 
 -(FCShaderProgram*)addProgram:(NSString *)name
 {
-	FCShaderProgram* ret = [[self.programs valueForKey:name] retain];
+	FCShaderProgram* ret = [self.programs valueForKey:name];
 	
 	if (!ret) 
 	{
@@ -128,7 +122,7 @@
 
 //		[program autorelease];
 	}
-	return [ret autorelease];
+	return ret;
 }
 
 -(FCShaderProgram*)program:(NSString *)name

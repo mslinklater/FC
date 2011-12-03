@@ -20,7 +20,9 @@
  THE SOFTWARE.
  */
 
+#if TARGET_OS_IPHONE
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import <OpenGLES/ES2/gl.h>
 
 enum FCTextureFileSourceFormat {
@@ -29,7 +31,7 @@ enum FCTextureFileSourceFormat {
 };
 
 @interface FCTextureFile : NSObject
-@property(nonatomic, retain) NSString* name;
+@property(nonatomic, strong) NSString* name;
 @property(nonatomic) void* rawdata;
 @property(nonatomic) CGSize size;
 @property(nonatomic, readonly) GLuint glHandle;
@@ -43,3 +45,4 @@ enum FCTextureFileSourceFormat {
 -(void)unhook;
 
 @end
+#endif // TARGET_OS_IPHONE

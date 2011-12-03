@@ -23,12 +23,13 @@
 #if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface FCLeaderboardCell : UITableViewCell {
     
 }
-@property(nonatomic, retain) UILabel* scoreLabel;
-@property(nonatomic, retain) UILabel* nameLabel;
+@property(nonatomic, strong) UILabel* scoreLabel;
+@property(nonatomic, strong) UILabel* nameLabel;
 
 -(void)setWidth:(float)newWidth;
 +(float)height;

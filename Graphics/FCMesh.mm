@@ -59,7 +59,7 @@
 		_numVertices = 0;
 		_numTriangles = 0;
 		_fixedUp = NO;
-		_vertexDescriptor = [vertexDescriptor retain];
+		_vertexDescriptor = vertexDescriptor;
 		_pVertexBuffer = 0;
 		_pIndexBuffer = 0;
 		self.shaderProgram = [[FCRenderer instance].shaderManager program:shaderName];
@@ -69,7 +69,7 @@
 
 +(id)fcMeshWithVertexDescriptor:(FCVertexDescriptor *)vertexDescriptor shaderName:(NSString *)shaderName
 {
-	return [[[FCMesh alloc] initWithVertexDescriptor:vertexDescriptor shaderName:shaderName] autorelease];
+	return [[FCMesh alloc] initWithVertexDescriptor:vertexDescriptor shaderName:shaderName];
 }
 
 -(void)setNumVertices:(unsigned int)numVertices
@@ -94,9 +94,7 @@
 	glDeleteBuffers(1, &_vertexBufferHandle);
 	GLCHECK;
 	
-	[_vertexDescriptor release];
 	
-	[super dealloc];
 }
 
 -(FC::Vector3us*)pIndexBufferAtIndex:(unsigned short)index

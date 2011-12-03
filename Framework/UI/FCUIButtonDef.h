@@ -23,19 +23,20 @@
 #if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 #pragma mark - FCUIButtonDef
 
 @interface FCUIButtonDef : NSObject {
 }
-@property(nonatomic, retain) NSString* defaultImage;
-@property(nonatomic, retain) NSString* pressedImage;
+@property(nonatomic, strong) NSString* defaultImage;
+@property(nonatomic, strong) NSString* pressedImage;
 @property(nonatomic) CGPoint center;
-@property(nonatomic, retain) NSString* text;
-@property(nonatomic, retain) UIView* parentView;
-@property(nonatomic, retain) NSString* font;
+@property(nonatomic, strong) NSString* text;
+@property(nonatomic, strong) UIView* parentView;
+@property(nonatomic, strong) NSString* font;
 @property(nonatomic) int fontSize;
-@property(nonatomic,retain) id target;
+@property(nonatomic,strong) id target;
 @property(nonatomic) SEL action;
 @property(nonatomic) BOOL hidden;
 @property(nonatomic) float width;

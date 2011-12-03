@@ -34,7 +34,7 @@
 
 +(FCUITableDef*)def
 {
-	FCUITableDef* newDef = [[FCUITableDef alloc] autorelease];
+	FCUITableDef* newDef = [FCUITableDef alloc];
 	
 	newDef.rect = CGRectMake(20, 120, 280, 320);
 	

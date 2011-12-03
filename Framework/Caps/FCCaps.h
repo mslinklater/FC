@@ -65,7 +65,7 @@ extern NSString* kFCCapsAppPirated;
 
 @interface FCCaps : NSObject <FCLuaClass> {
 }
-@property(nonatomic,readonly) NSMutableDictionary* caps;
+@property(strong, nonatomic,readonly) NSMutableDictionary* caps;
 
 +(FCCaps*)instance;
 

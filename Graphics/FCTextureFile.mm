@@ -20,14 +20,16 @@
  THE SOFTWARE.
  */
 
+#if TARGET_OS_IPHONE
+
 #import "FCTextureFile.h"
 #import "FCCore.h"
 #import "FCGraphicsProtocols.h"
 #import "FCTextureFilePVR.h"
 
 @interface FCTextureFile()
-@property(nonatomic, assign) NSURL* url;
-@property(nonatomic, retain) NSObject<FCTextureFileDelegate>* delegate;
+@property(nonatomic, weak) NSURL* url;
+@property(nonatomic, strong) NSObject<FCTextureFileDelegate>* delegate;
 @end
 
 @implementation FCTextureFile
@@ -65,15 +67,9 @@
 
 +(id)fcTextureFileWithURL:(NSURL *)url
 {
-	return [[[FCTextureFile alloc] initWithURL:url] autorelease];
+	return [[FCTextureFile alloc] initWithURL:url];
 }
 
--(void)dealloc
-{
-	self.name = nil;
-	self.delegate = nil;
-	[super dealloc];
-}
 
 -(GLuint)getGlHandle
 {
@@ -111,3 +107,5 @@
 }
 
 @end
+
+#endif // TARGET_OS_IPHONE

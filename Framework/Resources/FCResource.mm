@@ -42,7 +42,7 @@
 
 +(id)resource
 {
-	return [[[FCResource alloc] init] autorelease];
+	return [[FCResource alloc] init];
 }
 
 -(id)initWithContentsOfURL:(NSURL*)url
@@ -61,17 +61,9 @@
 +(FCResource*)resourceWithContentsOfURL:(NSURL*)url
 {
 	FCResource* ret = [[FCResource alloc] initWithContentsOfURL:url];
-	return [ret autorelease];
+	return ret;
 }
 
--(void)dealloc
-{
-	self.binaryPayload = nil;
-	self.xmlData = nil;
-	self.name = nil;
-	self.userData = nil;
-	[super dealloc];
-}
 
 #if !defined (MASTER)
 -(NSString*)description

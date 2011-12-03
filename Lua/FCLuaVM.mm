@@ -31,6 +31,9 @@ extern "C" {
 
 #import "FCError.h"
 
+void common_LoadScriptForState(NSString* path, lua_State* _state);
+int Lua_LoadScript( lua_State* _state );
+
 
 void common_LoadScriptForState(NSString* path, lua_State* _state)
 {
@@ -135,9 +138,9 @@ static int panic (lua_State *L) {
 {
 	NSArray* components = [name componentsSeparatedByString:@"."];
 	
-	int numComponents = [components count];
+	NSUInteger numComponents = [components count];
 	
-	for (int i = 0; i < numComponents - 1; i++) {
+	for (NSUInteger i = 0; i < numComponents - 1; i++) {
 		if (i == 0) {
 			lua_getglobal(_state, [[components objectAtIndex:i] UTF8String]);
 		} else {
@@ -152,7 +155,7 @@ static int panic (lua_State *L) {
 		lua_setfield(_state, -2, [[components objectAtIndex:numComponents - 1] UTF8String]);
 	}
 	
-	lua_pop(_state, numComponents - 1);
+	lua_pop(_state, (int)(numComponents - 1));
 }
 
 -(void)createGlobalTable:(NSString*)tableName
@@ -173,6 +176,7 @@ static int panic (lua_State *L) {
 	return lua_tointeger(_state, -1);
 }
 
+#if TARGET_OS_IPHONE
 -(UIColor*)globalColor:(NSString*)name
 {
 	lua_getglobal(_state, [name UTF8String]);
@@ -212,6 +216,7 @@ static int panic (lua_State *L) {
 	lua_pop(_state, 1);
 	return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
 }
+#endif
 
 #pragma mark - Setters
 
@@ -227,6 +232,7 @@ static int panic (lua_State *L) {
 	lua_setglobal(_state, [global UTF8String]);
 }
 
+#if TARGET_OS_IPHONE
 -(void)setGlobal:(NSString *)global color:(UIColor*)color
 {
 	FC_ASSERT( CGColorGetNumberOfComponents(color.CGColor) == 4);
@@ -243,6 +249,7 @@ static int panic (lua_State *L) {
 	lua_setfield(_state, -2, "a");
 	lua_setglobal(_state, [global UTF8String]);
 }
+#endif
 
 -(void)call:(NSString*)func withSig:(NSString*)sig, ...
 {
@@ -257,9 +264,9 @@ static int panic (lua_State *L) {
 	
 	lua_getglobal(_state, [[components objectAtIndex:0] UTF8String]);
 	
-	int numComponents = [components count];
+	NSUInteger numComponents = [components count];
 	
-	for (int i = 1; i < numComponents; ++i) {
+	for (NSUInteger i = 1; i < numComponents; ++i) {
 		lua_getfield(_state, -1, [[components objectAtIndex:i] UTF8String]);
 	}
 

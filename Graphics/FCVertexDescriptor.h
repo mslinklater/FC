@@ -79,7 +79,7 @@ enum FCVertexDescriptorPropertyType {
 	unsigned int					_tex2Offset;
 	unsigned int					_tex3Offset;
 }
-@property(nonatomic, retain) NSString* name;
+@property(nonatomic, strong) NSString* name;
 @property(nonatomic) FCVertexDescriptorPropertyType positionType;
 @property(nonatomic) FCVertexDescriptorPropertyType diffuseColorType;
 @property(nonatomic) FCVertexDescriptorPropertyType normalType;

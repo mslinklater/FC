@@ -105,7 +105,6 @@ static NSString* s_debugShaderName = @"debug_debug";
 				
 				[self addDebugRectangle:debugDict];
 				
-				[debugDict release];
 			} 
 			else if([type isEqualToString:@"circle"]) 
 			{
@@ -117,7 +116,6 @@ static NSString* s_debugShaderName = @"debug_debug";
 				
 				[self addDebugCircle:debugDict];
 				
-				[debugDict release];
 			} 
 			else if([type isEqualToString:@"polygon"]) 
 			{
@@ -135,7 +133,6 @@ static NSString* s_debugShaderName = @"debug_debug";
 				
 				[self addDebugPolygon:debugDict];
 				
-				[debugDict release];
 			}
 		}
 	}
@@ -429,11 +426,6 @@ static NSString* s_debugShaderName = @"debug_debug";
 	}
 }
 
--(void)dealloc
-{
-	self.meshes = nil;
-	[super dealloc];
-}
 @end
 
 #endif // TARGET_OS_IPHONE

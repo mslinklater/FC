@@ -57,7 +57,6 @@
 -(void)dealloc
 {
 	pWorld->DestroyBody(pBody);
-	[super dealloc];
 }
 
 -(void)createBodyFromDef:(FCPhysics2DBodyDef *)def
@@ -68,7 +67,7 @@
 	b2def.position.x = def.position.x;
 	b2def.position.y = def.position.y;
 	b2def.angle = FCDegToRad( def.angle );
-	b2def.userData = (void*)def.actor;
+	b2def.userData = (__bridge void*)def.actor;
 	b2def.allowSleep = def.canSleep;
 	
 	// Linear damping
@@ -126,7 +125,7 @@
 		fixtureDef.density = [[materialDict valueForKey:kFCKeyDensity] floatValue];
 		fixtureDef.friction = [[materialDict valueForKey:kFCKeyFriction] floatValue];
 		fixtureDef.restitution = [[materialDict valueForKey:kFCKeyRestitution] floatValue];
-		fixtureDef.userData = (void*)def.actor;
+		fixtureDef.userData = (__bridge void*)def.actor;
 				
 		if ([type isEqualToString:kFCKeyCircle]) 
 		{

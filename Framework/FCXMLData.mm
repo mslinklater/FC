@@ -37,7 +37,7 @@
 {
 	static char cString[] = "                                                                                                                      ";
 	
-	NSString *tab = [[[NSString alloc] initWithBytes:cString length:tabLevel * 2 encoding:NSUTF8StringEncoding] autorelease];
+	NSString *tab = [[NSString alloc] initWithBytes:cString length:tabLevel * 2 encoding:NSUTF8StringEncoding];
 	
 	if (![dict isKindOfClass:[NSMutableDictionary class]]) 
 	{
@@ -97,7 +97,7 @@
 			FC_FATAL([error description]);
 		}
 		
-		[self initWithData:fileData];
+		self = [self initWithData:fileData];
 	}
 	return self;
 }
@@ -105,7 +105,7 @@
 +(FCXMLData*)fcxmlDataWithContentsOfFile:(NSString *)filePath
 {
 	FCXMLData* ret = [[FCXMLData alloc] initWithContentsOfFile:filePath];
-	return [ret autorelease];
+	return ret;
 }
 
 -(id)initWithData:(NSData*)data
@@ -131,7 +131,7 @@
 			FC_FATAL([error description]);
 		}
 		
-		[self initWithData:fileData];
+		self = [self initWithData:fileData];
 	}
 	return self;
 }
@@ -139,7 +139,7 @@
 +(FCXMLData*)fcxmlDataWithContentsOfURL:(NSURL *)url
 {
 	FCXMLData* ret = [[FCXMLData alloc] initWithContentsOfURL:url];
-	return [ret autorelease];
+	return ret;
 }
 
 
@@ -148,7 +148,6 @@
 	NSXMLParser* xmlParser = [[NSXMLParser alloc] initWithData:data];
 	xmlParser.delegate = self;
 	[xmlParser parse];
-	[xmlParser release];
 }
 
 -(NSArray*)arrayForKeyPath:(NSString*)keyPath
@@ -241,7 +240,6 @@
 			[newArray addObject:elementObject];
 			[mCurrentNode setObject:newArray forKey:elementName];
 			elementObject = newArray;
-			[newArray release];
 		}
 		
 		array = elementObject;
@@ -254,7 +252,6 @@
 	
 	[mCurrentNodeStack addObject:newElement];
 	mCurrentNode = newElement;
-	[newElement release];
 }
 
 - (void)parser:(NSXMLParser *)parser didStartMappingPrefix:(NSString *)prefix toURI:(NSString *)namespaceURI
@@ -311,7 +308,7 @@
 
 - (NSData *)parser:(NSXMLParser *)parser resolveExternalEntityName:(NSString *)entityName systemID:(NSString *)systemID
 {
-	return [[[NSData alloc] init] autorelease];
+	return [[NSData alloc] init];
 }
 
 - (void)parser:(NSXMLParser *)parser validationErrorOccurred:(NSError *)validError
@@ -324,9 +321,7 @@
 
 - (void)parserDidStartDocument:(NSXMLParser *)parser
 {
-	[mRoot release];
 	mRoot = [[NSMutableDictionary alloc] init];
-	[mCurrentNodeStack release];
 	mCurrentNodeStack = [[NSMutableArray alloc] init];
 	
 	[mCurrentNodeStack addObject:mRoot];

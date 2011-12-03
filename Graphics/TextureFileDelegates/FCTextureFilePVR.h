@@ -20,9 +20,13 @@
  THE SOFTWARE.
  */
 
+#if TARGET_OS_IPHONE
+
 #import <Foundation/Foundation.h>
 #import "FCGraphicsProtocols.h"
 
 @interface FCTextureFilePVR : NSObject <FCTextureFileDelegate>
 
 @end
+
+#endif // TARGET_OS_IPHONE

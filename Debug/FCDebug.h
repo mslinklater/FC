@@ -30,7 +30,7 @@
 #ifndef HeadPopper_FCDebug_h
 #define HeadPopper_FCDebug_h
 
-#import "Debug/FCPerformanceCounter.h"
-#import "Debug/FCRasterView.h"
+#import "FCPerformanceCounter.h"
+#import "FCRasterView.h"
 
 #endif

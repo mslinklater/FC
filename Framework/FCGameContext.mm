@@ -130,13 +130,9 @@
 
 -(void)dealloc
 {
-	self.state = nil;
-	[_gameData release], _gameData = nil;
-	self.gameRoot = nil;
-	self.localPlayerGameCenterId = nil;
+	_gameData = nil;
 //	[_luaVM release], _luaVM = nil;
 	
-	[super dealloc];
 }
 
 #pragma mark -

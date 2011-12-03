@@ -20,19 +20,22 @@
  THE SOFTWARE.
  */
 
+// NOTE: To deprecate ?
+
 #if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 #pragma mark - FCUISwitchDef
 
 @interface FCUISwitchDef : NSObject {
 }
-@property(nonatomic,retain) UIView* parentView;
+@property(nonatomic,strong) UIView* parentView;
 @property(nonatomic) CGRect rect;
-@property(nonatomic, retain) NSString* userDefaultsID;
-@property(nonatomic, retain) NSString* textString;
-@property(nonatomic, assign) id target;
+@property(nonatomic, strong) NSString* userDefaultsID;
+@property(nonatomic, strong) NSString* textString;
+@property(nonatomic, unsafe_unretained) id target;
 @property(nonatomic) SEL action;
 // hidden?
 

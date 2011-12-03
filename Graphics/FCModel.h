@@ -36,7 +36,7 @@
 #endif
 }
 
-@property(nonatomic, retain) NSMutableArray* meshes;
+@property(nonatomic, strong) NSMutableArray* meshes;
 @property(nonatomic) FC::Vector3f position;
 @property(nonatomic) float rotation;
 

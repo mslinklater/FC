@@ -94,7 +94,7 @@ static FCCaps* pInstance;
 @interface FCCaps() {
 	FCLuaVM* _luaVM;
 }
-@property(nonatomic, retain) FCLuaVM* luaVM;
+@property(nonatomic, strong) FCLuaVM* luaVM;
 @end
 
 @implementation FCCaps
@@ -134,8 +134,7 @@ static FCCaps* pInstance;
 
 -(void)dealloc
 {
-	[_caps release], _caps = nil;
-	[super dealloc];
+	_caps = nil;
 }
 
 #pragma mark - Misc

@@ -60,11 +60,6 @@
 	return self;
 }
 
--(void)dealloc
-{
-	[tweakables release];
-	[super dealloc];
-}
 
 -(id)valueForKey:(NSString *)key
 {

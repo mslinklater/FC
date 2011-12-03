@@ -32,9 +32,9 @@ static const int kNumMaxFrames = 10;
 
 @interface FCRasterViewEntry : NSObject {
 }
-@property(nonatomic, retain) UIColor* color;
+@property(nonatomic, strong) UIColor* color;
 @property(nonatomic) float size;
-@property(nonatomic, retain) NSString* desc;
+@property(nonatomic, strong) NSString* desc;
 @end
 
 @implementation FCRasterViewEntry
@@ -69,10 +69,9 @@ static const int kNumMaxFrames = 10;
 
 -(void)dealloc
 {
-	[mEntries release], mEntries = nil;
-	[mMaxEntries release], mMaxEntries = nil;
-	[mPerformanceCounter release], mPerformanceCounter = nil;
-    [super dealloc];
+	mEntries = nil;
+	mMaxEntries = nil;
+	mPerformanceCounter = nil;
 }
 
 -(void)frameStart
@@ -91,7 +90,6 @@ static const int kNumMaxFrames = 10;
 	[mPerformanceCounter zero];
 	[mEntries addObject:entry];
 
-	[entry release];
 }
 
 #pragma mark - Drawing
@@ -121,7 +119,6 @@ static const int kNumMaxFrames = 10;
 	}
 
 	if ((currentPos > maxTime) || (maxCount > 50) ){
-		[mMaxEntries release];
 		mMaxEntries = [mEntries copy];
 		maxTime = currentPos;
 		maxCount = 0;

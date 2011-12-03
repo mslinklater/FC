@@ -36,8 +36,8 @@
 	FCPhysics2DBody*	mBody2d;
 	FCModel*			mModel;
 }
-@property(nonatomic, readonly) NSString* Id;
-@property(nonatomic, readonly) NSDictionary* createDef;
+@property(weak, nonatomic, readonly) NSString* Id;
+@property(weak, nonatomic, readonly) NSDictionary* createDef;
 
 -(id)initWithDictionary:(NSDictionary*)dictionary body:(NSDictionary*)bodyDict model:(NSDictionary*)modelDict resource:(FCResource*)res;
 

@@ -23,6 +23,7 @@
 #if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 @interface FCKenBurnsView : UIView {
     UIImageView*	mImageView[2];
@@ -30,7 +31,7 @@
 	UIImageView*	mBackImageView;
 }
 
-@property(nonatomic, retain) NSArray* imageFilenameArray;
+@property(nonatomic, strong) NSArray* imageFilenameArray;
 
 @end
 

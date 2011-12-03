@@ -54,17 +54,17 @@ static const float kButtonHeight = 30;
 		
 		float buttonWidth = (self.width - (2 * kGapBetweenButtons) - (2 * kBorder)) / 3;
 
-		_localButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+		_localButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 		self.localButton.frame = CGRectMake(kBorder, kBorder, buttonWidth, kButtonHeight);
 		[self.localButton addTarget:self action:@selector(localButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 		[self addSubview:self.localButton];
 		
-		_friendsButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+		_friendsButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 		self.friendsButton.frame = CGRectMake(kBorder + buttonWidth + kGapBetweenButtons, kBorder, buttonWidth, kButtonHeight);
 		[self.friendsButton addTarget:self action:@selector(friendsButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 		[self addSubview:self.friendsButton];
 		
-		_worldButton = [[UIButton buttonWithType:UIButtonTypeRoundedRect] retain];
+		_worldButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
 		self.worldButton.frame = CGRectMake(kBorder + ((buttonWidth + kGapBetweenButtons) * 2), kBorder, buttonWidth, kButtonHeight);
 		[self.worldButton addTarget:self action:@selector(worldButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
 		[self addSubview:self.worldButton];
@@ -81,15 +81,6 @@ static const float kButtonHeight = 30;
     return self;
 }
 
--(void)dealloc
-{
-	self.localButton = nil;
-	self.friendsButton = nil;
-	self.worldButton = nil;
-	self.tableView = nil;
-
-    [super dealloc];
-}
 
 #pragma mark - Button responders
 
@@ -143,7 +134,7 @@ static const float kButtonHeight = 30;
 {
 	FCLeaderboardCell *cell = (FCLeaderboardCell*)[tableView dequeueReusableCellWithIdentifier:@"FCLeaderboardCell"];
 	if (!cell) {
-		cell = [[[FCLeaderboardCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"FCLeaderboardCell"] autorelease];
+		cell = [[FCLeaderboardCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"FCLeaderboardCell"];
 		[cell setWidth:self.width - (kBorder * 2)];
 		cell.nameLabel.text = [self.tableViewDelegate leaderboardView:self nameForActive:mActiveBoard row:[indexPath row]];
 		int score = [self.tableViewDelegate leaderboardView:self scoreForActive:mActiveBoard row:[indexPath row]];

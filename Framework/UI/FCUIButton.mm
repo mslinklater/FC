@@ -68,7 +68,7 @@ static NSMutableDictionary* sCurrentTheme;
 
 +(UIButton*)buttonWithFrame:(CGRect)frame
 {
-	UIButton* button = [[[UIButton alloc] initWithFrame:frame] autorelease];
+	UIButton* button = [[UIButton alloc] initWithFrame:frame];
 	
 	return button;
 }

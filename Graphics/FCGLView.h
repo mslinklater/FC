@@ -61,7 +61,7 @@
 	int				mFrameInterval;
 }
 
-@property(nonatomic, retain) EAGLContext *context;
+@property(nonatomic, strong) EAGLContext *context;
 @property(nonatomic) FC::Vector3f frustumTranslation;
 @property(nonatomic) float fov;
 @property(nonatomic) float nearClip;

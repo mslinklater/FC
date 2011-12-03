@@ -6,7 +6,7 @@ Welcome the FC, the development framework used by CurlyRocket.
 First, some caveats:
 
 FC builds on both iOS and OSX but has limited functionality depending on platform.
-FC is very immature - pretty much everything is open to change, so don't build your livelyhood on it just yet.
+FC is very immature - pretty much everything is open to change, so don't build your livelihood on it just yet.
 FC is meant for both target executables and tools.
 FC is written in Objective-C++ and works only on iOS and OSX. Don't expect a C++, Java or C# version - FC is not built 
 to be cross platform.
@@ -14,8 +14,8 @@ to be cross platform.
 What does FC do ?
 =================
 
-FC is the backbone of all software written by CurlyRocket. It is aimed quite loosly at games development, but includes 
-code which shuold be useful for tools and general app development too. At the moment FC is one monolithic chunk of code.
+FC is the backbone of all software written by CurlyRocket. It is aimed quite loosely at games development, but includes 
+code which should be useful for tools and general app development too. At the moment FC is one monolithic chunk of code.
 Moving forward I expect the physical structure to be broken up a bit and more tightly focused on the thing it is doing
 for you.
 
@@ -31,7 +31,7 @@ The real base of all FC functionality. Covers types, macros, protocols and error
 
 * Debug
 
-Debugging objects to help devlopment.
+Debugging objects to help development.
 
 * Graphics
 
@@ -55,6 +55,29 @@ Abstraction layer for 2D and 3D physics. Currently wraps Box2D and when required
 
 Pretty much everything else I've written which could be handy to share. An actor system, analytics wrapper, Game Center
 wrappers, resource management, ui management, XML data handler, crypto, device caps, persistent save data... etc.
+
+------------------------------------------------------------------------------------------------------------------------
+
+Build Instructions
+==================
+
+To build FC you need to look in the Build folder - this is where the XCode projects are stored. Once you open the one you
+need the only you should need to set up are the header include paths for some external dependencies:
+
+Lua
+Box2D
+Google Analytics
+
+These can be found in the 'Header Search Paths' part of the Build Settings page. If you don't know how to do this you
+probably shouldn't be trying to use FC in the first place 8). Once built you can link against FC in the normal way.
+
+------------------------------------------------------------------------------------------------------------------------
+
+Skeleton Project
+================
+
+One thing I need to do is create a skeleton 'hello world' project to show people what hooks FC needs into your code. Once
+I do that I'll put some documentation about it here.
 
 ------------------------------------------------------------------------------------------------------------------------
 

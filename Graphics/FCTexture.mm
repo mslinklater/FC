@@ -38,13 +38,9 @@
 
 +(id)fcTexture
 {
-	return [[[FCTexture alloc] init] autorelease];
+	return [[FCTexture alloc] init];
 }
 
--(void)dealloc
-{
-	[super dealloc];
-}
 
 -(CGRect)absUVFromRelUV:(CGRect)relUV
 {

@@ -78,11 +78,6 @@ static int LoadData( lua_State* lua )
 	return self;
 }
 
--(void)dealloc
-{
-	self.dataRoot = nil;
-	[super dealloc];
-}
 
 #pragma mark - Load and Save
 

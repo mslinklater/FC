@@ -42,10 +42,6 @@
 	return self;
 }
 
--(void)dealloc
-{
-	[super dealloc];
-}
 
 +(FCUISwitchDef*)def
 {
@@ -56,7 +52,7 @@
 	thisDef.rect = CGRectMake(0,0,0,0);
 	thisDef.target = nil;
 	thisDef.action = nil;
-	return [thisDef autorelease];
+	return thisDef;
 }
 @end
 

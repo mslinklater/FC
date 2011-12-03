@@ -43,11 +43,11 @@
 }
 @property(nonatomic) unsigned int numVertices;
 @property(nonatomic) unsigned int numTriangles;
-@property(nonatomic, retain, readonly) FCVertexDescriptor* vertexDescriptor;
+@property(nonatomic, strong, readonly) FCVertexDescriptor* vertexDescriptor;
 @property(nonatomic, readonly) void* pVertexBuffer;
 @property(nonatomic, readonly) FC::Vector3us* pIndexBuffer;
 @property(nonatomic) FC::Color4f colorUniform;
-@property(nonatomic, retain) FCShaderProgram* shaderProgram;
+@property(nonatomic, strong) FCShaderProgram* shaderProgram;
 @property(nonatomic) GLuint vertexBufferHandle;
 @property(nonatomic) GLuint indexBufferHandle;
 

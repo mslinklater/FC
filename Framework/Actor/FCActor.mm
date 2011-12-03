@@ -43,8 +43,8 @@
 	self = [super init];
 	if (self) 
 	{	
-		_createDef = [dictionary retain];
-		_id = [[self.createDef valueForKey:kFCKeyId] retain];
+		_createDef = dictionary;
+		_id = [self.createDef valueForKey:kFCKeyId];
 				
 		if (bodyDict) 
 		{
@@ -94,13 +94,10 @@
 
 -(void)dealloc
 {
-	[mBody2d release];
-	[mModel release];
 	
-	[_createDef release], _createDef = nil;
-	[_id release], _id = nil;
+	_createDef = nil;
+	_id = nil;
 	
-	[super dealloc];
 }
 
 #pragma mark - Joints

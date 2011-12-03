@@ -55,10 +55,6 @@ extern "C" {
 	return self;
 }
 
--(void)dealloc
-{
-	[super dealloc];
-}
 
 -(void)runVoidFunction:(NSString *)function
 {

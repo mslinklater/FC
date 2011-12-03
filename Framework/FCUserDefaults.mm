@@ -48,10 +48,6 @@ static FCUserDefaults* pInstance;
 	return self;
 }
 
--(void)dealloc
-{
-	[super dealloc];
-}
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -89,7 +85,6 @@ static FCUserDefaults* pInstance;
 	
 	[[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDictionary];
 
-	[defaultsDictionary release];
 }
 
 @end

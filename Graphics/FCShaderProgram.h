@@ -31,15 +31,15 @@
 
 @interface FCShaderProgram : NSObject
 {
-	NSDictionary* _attributes;
-	NSDictionary* _uniforms;
+	NSDictionary* __weak _attributes;
+	NSDictionary* __weak _uniforms;
 }
 @property(nonatomic, readonly) GLuint glHandle;
-@property(nonatomic, readonly) FCShader* vertexShader;
-@property(nonatomic, readonly) FCShader* fragmentShader;
+@property(weak, nonatomic, readonly) FCShader* vertexShader;
+@property(weak, nonatomic, readonly) FCShader* fragmentShader;
 @property(nonatomic, readonly) NSDictionary* uniforms;
 @property(nonatomic, readonly) NSDictionary* attributes;
-@property(nonatomic, retain) FCVertexDescriptor* requiredVertexDescriptor;
+@property(nonatomic, strong) FCVertexDescriptor* requiredVertexDescriptor;
 
 -(id)initWithVertex:(FCShader*)vertexShader andFragment:(FCShader*)fragmentShader;
 -(FCShaderUniform*)getUniform:(NSString*)name;

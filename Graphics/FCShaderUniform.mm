@@ -32,7 +32,7 @@
 
 +(id)fcShaderUniform
 {
-	return [[[FCShaderUniform alloc] init] autorelease];
+	return [[FCShaderUniform alloc] init];
 }
 
 -(NSString*)description

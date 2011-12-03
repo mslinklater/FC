@@ -20,11 +20,13 @@
  THE SOFTWARE.
  */
 
+#if TARGET_OS_IPHONE
+
 #import "FCTextureFilePVR.h"
 #import "PVRTTexture.h"
 
 @interface FCTextureFilePVR()
-@property(nonatomic, retain) NSData* imageData;
+@property(nonatomic, strong) NSData* imageData;
 @property(nonatomic) PVR_Texture_Header* pHeader;
 @end
 
@@ -66,3 +68,5 @@
 }
 
 @end
+
+#endif // TARGET_OS_IPHONE

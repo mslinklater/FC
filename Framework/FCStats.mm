@@ -47,10 +47,6 @@
 	return self;
 }
 
--(void)dealloc
-{
-	[super dealloc];
-}
 
 - (void)encodeWithCoder:(NSCoder *)encoder
 {
@@ -101,8 +97,7 @@ static FCStats* FCStatsInstance = 0;
 
 -(void)dealloc
 {
-	[userStats release]; userStats = 0;
-	[super dealloc];
+	 userStats = 0;
 }
 
 -(void)prepareStatsFromArray:(NSArray*)statsArray withPlayerId:(id)playerId
@@ -146,7 +141,6 @@ static FCStats* FCStatsInstance = 0;
 			newStat.textString = text;
 			newStat.numberValue = 0;
 			[statsDictionary setObject:newStat forKey:key];
-			[newStat release];
 		}
 	}
 	

@@ -42,7 +42,7 @@
 @interface FCPersistentData : NSObject <FCLuaClass>
 {
 }
-@property(retain) NSMutableDictionary* dataRoot;
+@property(strong) NSMutableDictionary* dataRoot;
 +(FCPersistentData*)instance;
 -(void)loadData;
 -(void)saveData;

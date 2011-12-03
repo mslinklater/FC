@@ -31,7 +31,7 @@
     int _sessionTime;
 	NSTimer* sessionTimer;
 }
-@property(nonatomic, retain) NSString* accountID;
+@property(nonatomic, strong) NSString* accountID;
 @property(nonatomic) int sessionTime;
 
 +(FCAnalytics*)instance;

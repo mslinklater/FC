@@ -92,10 +92,6 @@
 -(void)dealloc
 {
 	glDeleteProgram(self.glHandle);
-	[_vertexShader release];
-	[_fragmentShader release];
-	[_uniforms release];
-	[super dealloc];
 }
 
 -(void)processUniforms
@@ -132,7 +128,7 @@
 	
 	free(uniformNameBuffer);
 	
-	_uniforms = [[NSDictionary dictionaryWithDictionary:uniforms] retain];	
+	_uniforms = [NSDictionary dictionaryWithDictionary:uniforms];	
 }
 
 -(void)processAttributes
@@ -165,7 +161,7 @@
 	
 	free( attributeNameBuffer );
 	
-	_attributes = [[NSDictionary dictionaryWithDictionary:attributes] retain];	
+	_attributes = [NSDictionary dictionaryWithDictionary:attributes];	
 
 }
 

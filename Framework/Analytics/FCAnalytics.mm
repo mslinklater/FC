@@ -26,7 +26,7 @@
 
 #import "FCAnalytics.h"
 #import "FCCaps.h"
-#import "GANTracker.h"
+#import <GANTracker.h>
 #import "FCLua.h"
 
 #pragma mark - Lua Interface
@@ -87,10 +87,6 @@ static const int kVariableAppPirated = 3;
 	return self;
 }
 
--(void)dealloc
-{
-	[super dealloc];
-}
 
 -(void)shutdown
 {

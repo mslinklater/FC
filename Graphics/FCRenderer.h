@@ -35,8 +35,8 @@
 	NSMutableArray* mModels;
 	NSMutableArray* mGatherList;
 }
-@property(nonatomic, readonly) FCShaderManager* shaderManager;
-@property(nonatomic, readonly) FCTextureManager* textureManager;
+@property(strong, nonatomic, readonly) FCShaderManager* shaderManager;
+@property(strong, nonatomic, readonly) FCTextureManager* textureManager;
 
 +(FCRenderer*)instance;
 -(id)init;

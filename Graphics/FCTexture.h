@@ -22,11 +22,15 @@
 
 #import <Foundation/Foundation.h>
 
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#endif
+
 @class FCTextureFile;
 
 @interface FCTexture : NSObject
-@property(nonatomic, retain) NSString* name;
-@property(nonatomic, retain) FCTextureFile* textureFile;
+@property(nonatomic, strong) NSString* name;
+@property(nonatomic, strong) FCTextureFile* textureFile;
 @property(nonatomic) CGRect absUV;
 
 -(id)init;

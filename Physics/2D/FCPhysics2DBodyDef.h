@@ -34,9 +34,9 @@ class b2World;
 @property(nonatomic) BOOL isStatic;
 @property(nonatomic) BOOL canSleep;
 @property(nonatomic) float linearDamping;
-@property(nonatomic, retain) NSDictionary* shapeDef;
+@property(nonatomic, strong) NSDictionary* shapeDef;
 @property(nonatomic) b2World* world;
-@property(nonatomic, assign) id actor;
+@property(nonatomic, unsafe_unretained) id actor;
 
 +(FCPhysics2DBodyDef*)defaultDef;
 

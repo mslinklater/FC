@@ -67,8 +67,7 @@ NSString* kFCLeaderboardEntryKeyScore = @"score";
 
 -(void)dealloc
 {
-	[mEntriesArray release], mEntriesArray = nil;
-	[super dealloc];
+	mEntriesArray = nil;
 }
 
 -(void)setNumEntries:(int)numEntries
@@ -83,7 +82,7 @@ NSString* kFCLeaderboardEntryKeyScore = @"score";
 			for (int i = 0; i < numEntries; i++) {
 				[newArray addObject:[mEntriesArray objectAtIndex:i]];
 			}
-			[mEntriesArray release];	// should be freed now
+				// should be freed now
 			
 			mEntriesArray = newArray;
 			[[FCPersistentData instance] addObject:mEntriesArray forKey:mPersistentKey];
@@ -96,7 +95,6 @@ NSString* kFCLeaderboardEntryKeyScore = @"score";
 {
 	NSDictionary* entryDict = [[NSDictionary alloc] initWithObjectsAndKeys:name, kFCLeaderboardEntryKeyName, [NSNumber numberWithInt:score], kFCLeaderboardEntryKeyScore, nil];
 	[mEntriesArray addObject:entryDict];
-	[entryDict release];
 	
 	// sort	
 	

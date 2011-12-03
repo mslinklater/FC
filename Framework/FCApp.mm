@@ -19,11 +19,15 @@ static FCLuaVM* s_lua;
 {
 	// register system lua hooks
 
-	FCLuaVM* s_lua = [[FCLua instance] coreVM];
+	s_lua = [[FCLua instance] coreVM];
 	
 	[FCPersistentData registerLuaFunctions:s_lua];
+
+#if TARGET_OS_IPHONE
 	[FCAnalytics registerLuaFunctions:s_lua];
 	[FCCaps registerLuaFunctions:s_lua];
+#endif // TARGET_OS_IPHONE
+
 	[FCError registerLuaFunctions:s_lua];
 
 //	[s_lua call:@"PrintTable" withSig:@"tb>", "FCCaps", true];
@@ -36,12 +40,12 @@ static FCLuaVM* s_lua;
 
 +(void)warmBoot
 {
-	[s_lua call:@"App.warmboot" withSig:@""];
+	[s_lua call:@"App.WarmBoot" withSig:@""];
 }
 
 +(void)shutdown
 {
-	[s_lua call:@"App.shutdown" withSig:@""];
+	[s_lua call:@"App.Shutdown" withSig:@""];
 }
 
 +(void)update

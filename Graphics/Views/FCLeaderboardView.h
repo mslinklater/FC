@@ -23,6 +23,7 @@
 #if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 enum FCLeaderboardViewActiveBoard {
 	kFCLeaderboardViewLocal,
@@ -41,11 +42,11 @@ enum FCLeaderboardViewActiveBoard {
 @interface FCLeaderboardView : UIView <UITableViewDelegate, UITableViewDataSource> {
     FCLeaderboardViewActiveBoard mActiveBoard;
 }
-@property(nonatomic, retain) UIButton* localButton;
-@property(nonatomic, retain) UIButton* friendsButton;
-@property(nonatomic, retain) UIButton* worldButton;
-@property(nonatomic, retain) UITableView* tableView;
-@property(nonatomic, assign) id<FCLeaderboardViewDelegate> tableViewDelegate;
+@property(nonatomic, strong) UIButton* localButton;
+@property(nonatomic, strong) UIButton* friendsButton;
+@property(nonatomic, strong) UIButton* worldButton;
+@property(nonatomic, strong) UITableView* tableView;
+@property(nonatomic, unsafe_unretained) id<FCLeaderboardViewDelegate> tableViewDelegate;
 
 @end
 

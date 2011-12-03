@@ -38,11 +38,11 @@
 //	FCLuaVM* _luaVM;
 }
 
-@property(nonatomic, retain) NSMutableDictionary* state;
-@property(nonatomic, retain, readonly) FCXMLData* gameData;
-@property(nonatomic, retain) id gameRoot;
-@property(nonatomic, retain) NSString* localPlayerGameCenterId;
-@property(nonatomic, retain) FCGLView* mainGameView;
+@property(nonatomic, strong) NSMutableDictionary* state;
+@property(nonatomic, strong, readonly) FCXMLData* gameData;
+@property(nonatomic, strong) id gameRoot;
+@property(nonatomic, strong) NSString* localPlayerGameCenterId;
+@property(nonatomic, strong) FCGLView* mainGameView;
 //@property(nonatomic, retain, readonly) FCLuaVM* luaVM;
 
 +(FCGameContext*)instance;

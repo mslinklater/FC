@@ -109,7 +109,6 @@
     [self deleteFramebuffer];    
 	self.context = nil;
     
-    [super dealloc];
 }
 
 - (EAGLContext *)context
@@ -123,8 +122,7 @@
     {
         [self deleteFramebuffer];
         
-        [_context release];
-        _context = [newContext retain];
+        _context = newContext;
         
         [EAGLContext setCurrentContext:nil];
     }
@@ -475,7 +473,7 @@
 	FC_ASSERT(mRenderTarget);
 	FC_ASSERT(!mDisplayLink);
 
-	mDisplayLink = [[CADisplayLink displayLinkWithTarget:mRenderTarget selector:mRenderAction] retain];
+	mDisplayLink = [CADisplayLink displayLinkWithTarget:mRenderTarget selector:mRenderAction];
 	[mDisplayLink setFrameInterval:mFrameInterval];
 	[mDisplayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
@@ -483,7 +481,6 @@
 -(void)stop
 {
 	[mDisplayLink invalidate];
-	[mDisplayLink release];
 	mDisplayLink = nil;
 }
 

@@ -65,7 +65,6 @@
 {
 	delete pWorld; 
 	pWorld = 0;
-	[super dealloc];
 }
 
 -(FCPhysics2DBody*)newBodyWithDef:(FCPhysics2DBodyDef*)def

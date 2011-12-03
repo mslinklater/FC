@@ -80,7 +80,6 @@
 -(void)dealloc
 {
 	glDeleteShader(self.glHandle);
-	[super dealloc];
 }
 
 @end

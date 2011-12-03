@@ -1,12 +1,10 @@
 TODO:
 
-(This stuff should really be tracked as issues on guthub)
+(This stuff should really be tracked as issues on github)
 
-Lua functions with FC prefix
-Lua threads
 Lua driven !
 
-Document
+Document - Doxygen - need a config
 Cean up old chuff that isn't needed - UIView stuff - it's a bit redundant or needs a nicer replacement
 Better OSX support
 Physics, actors etc etc...
@@ -14,5 +12,7 @@ Document resource format and intent
 Unit tests
 ARC support
 Optimisations - not even looked at this yet, although obvious problems shouldn't be present.
+Add analytics to OSX build
+Check OSX framework actually works
 etc.
 

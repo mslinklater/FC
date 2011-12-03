@@ -77,15 +77,14 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 
 -(void)dealloc
 {
-	[mLeaderboardIds release], mLeaderboardIds = nil;
-	[mLeaderboardsDictionary release], mLeaderboardsDictionary = nil;
-	[mScoresDictionary release], mScoresDictionary = nil;
-	[mLeaderboardSet release], mLeaderboardSet = nil;
-	[mLeaderboardScoresDictionary release], mLeaderboardScoresDictionary = nil;
+	mLeaderboardIds = nil;
+	mLeaderboardsDictionary = nil;
+	mScoresDictionary = nil;
+	mLeaderboardSet = nil;
+	mLeaderboardScoresDictionary = nil;
 	
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:kFCNotificationPlayerIDChanged object:nil];
 	
-    [super dealloc];
 }
 
 #pragma mark - Getters
@@ -140,7 +139,7 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 			
 			if ( !([gameCenterId isEqualToString:@"local"] || (gameCenterId == nil)) ) 
 			{
-				GKScore *scoreReporter = [[[GKScore alloc] initWithCategory:leaderboardId] autorelease];
+				GKScore *scoreReporter = [[GKScore alloc] initWithCategory:leaderboardId];
 				scoreReporter.value = totalLeaderboardScore;
 				
 				NSString* blah = [NSString stringWithFormat:@"Pushing %d score to leaderboard %@", totalLeaderboardScore, leaderboardId];
@@ -230,7 +229,6 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 					}
 				}];
 			}
-			[leaderboardRequest release];
 		}
 	}
 }

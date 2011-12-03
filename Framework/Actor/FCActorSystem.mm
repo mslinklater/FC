@@ -133,7 +133,7 @@
 
 	// instantiate actor
 	
-	id actor = [[self actorOfClass:NSClassFromString(actorClass)] retain];
+	id actor = [self actorOfClass:NSClassFromString(actorClass)];
 	
 	actor = [actor initWithDictionary:actorDict body:bodyDict model:modelDict resource:res];
 
@@ -164,7 +164,7 @@
 	
 	[[mClassArraysDictionary valueForKey:actorClass] addObject:actor];
 
-	return [actor autorelease];
+	return actor;
 }
 
 -(void)addJoint:(NSDictionary *)jointDict
@@ -380,7 +380,7 @@
 {
 	if(!actorClass)
 	{
-		UIAlertView *errorView = [[[UIAlertView alloc] initWithTitle:@"ERROR - FCActorSystem actorOfClass" message:@"nil actorClass" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] autorelease];
+		UIAlertView *errorView = [[UIAlertView alloc] initWithTitle:@"ERROR - FCActorSystem actorOfClass" message:@"nil actorClass" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 		[errorView show];
 		return nil;
 	}
@@ -400,7 +400,7 @@
 		[mTapGestureActorsArray addObject:newActor];
 	}
 
-	return [newActor autorelease];
+	return newActor;
 }
 
 -(void)addToDeleteArray:(id)actor

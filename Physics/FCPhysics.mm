@@ -46,7 +46,6 @@
 
 -(void)reset
 {
-	[_twoD release];
 	_twoD = nil;
 	
 }
@@ -76,8 +75,6 @@
 -(void)dealloc
 {
 	[self reset];
-	self.materials = nil;	
-	[super dealloc];
 }
 
 -(void)create2DComponent

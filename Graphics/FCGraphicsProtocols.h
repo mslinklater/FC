@@ -20,6 +20,10 @@
  THE SOFTWARE.
  */
 
+#import <OpenGLES/ES2/gl.h>
+#import <OpenGLES/ES2/glext.h>
+
+#if TARGET_OS_IPHONE
 @protocol FCTextureFileDelegate
 -(void)loadWithContentsOfURL:(NSURL*)url;
 -(GLenum)format;
@@ -28,3 +32,4 @@
 -(GLenum)type;
 -(void*)pixels;
 @end
+#endif

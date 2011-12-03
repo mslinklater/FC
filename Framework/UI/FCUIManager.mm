@@ -62,12 +62,6 @@
 	return self;
 }
 
--(void)dealloc
-{
-	self.navigationController = nil;
-	[managedViewDictionary release];
-	[super dealloc];
-}
 
 #pragma mark - View Management
 
@@ -188,7 +182,7 @@
 		buttonRect.origin.y = def.center.y - ((buttonImage.size.height / scale) * 0.5f);
 	}
 
-	UIButton* button = [[[UIButton alloc] initWithFrame:buttonRect] autorelease];
+	UIButton* button = [[UIButton alloc] initWithFrame:buttonRect];
 	[button setBackgroundImage:buttonImage forState:UIControlStateNormal];
 	
 	if (buttonImage2) 
@@ -230,7 +224,7 @@
 	newTable.backgroundColor = def.color;
 	newTable.separatorStyle = UITableViewCellSeparatorStyleNone;
 	[def.parentView addSubview:newTable];
-	return [newTable autorelease];
+	return newTable;
 }
 
 -(UISwitch*)switchWithDef:(FCUISwitchDef*)def
@@ -265,9 +259,8 @@
 	newLabel.text = NSLocalizedString(def.textString, nil);
 	newLabel.textAlignment = UITextAlignmentRight;
 	newLabel.backgroundColor = [UIColor clearColor];
-	[newLabel release];
 	
-	return [newSwitch autorelease];
+	return newSwitch;
 }
 
 -(UISlider*)sliderWithDef:(FCUISliderDef*)def
@@ -286,7 +279,6 @@
 	UISlider* newSlider = [[UISlider alloc] initWithFrame:sliderRect];
 	[newSlider addTarget:def.target action:def.action forControlEvents:UIControlEventValueChanged];
 	[def.parentView addSubview:newSlider];
-	[newSlider release];
 	newSlider.minimumValue = 0.0f;
 	newSlider.maximumValue = 1.0f;
 	newSlider.value = [[NSUserDefaults standardUserDefaults] floatForKey:def.userDefaultsID];
@@ -298,7 +290,6 @@
 	labelRect.origin.x += labelRect.size.width;
 	UILabel* newLabel = [[UILabel alloc] initWithFrame:labelRect];
 	[def.parentView addSubview:newLabel];
-	[newLabel release];
 	[newLabel setTextAlignment:UITextAlignmentRight];
 	newLabel.text = NSLocalizedString(def.textString, nil);
 	newLabel.backgroundColor = [UIColor clearColor];

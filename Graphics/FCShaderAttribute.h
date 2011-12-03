@@ -20,6 +20,7 @@
  THE SOFTWARE.
  */
 
+#if TARGET_OS_IPHONE
 #import <Foundation/Foundation.h>
 #import <OpenGLES/ES2/gl.h>
 
@@ -36,3 +37,4 @@
 +(id)fcShaderAttribute;
 
 @end
+#endif

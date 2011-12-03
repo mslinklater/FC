@@ -20,18 +20,21 @@
  THE SOFTWARE.
  */
 
+// NOTE: To deprecate ?
+
 #if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 #pragma mark - FCUITableDef
 
 @interface FCUITableDef : NSObject {
 }
 @property(nonatomic) CGRect rect;
-@property(nonatomic,retain) id delegateAndDataSource;
-@property(nonatomic,retain) UIColor* color;
-@property(nonatomic,retain) UIView* parentView;
+@property(nonatomic,strong) id delegateAndDataSource;
+@property(nonatomic,strong) UIColor* color;
+@property(nonatomic,strong) UIView* parentView;
 
 +(FCUITableDef*)def;
 @end

@@ -28,7 +28,7 @@
 
 @interface FCStat : NSObject <NSCoding> {
 }
-@property(nonatomic, retain) NSString* textString;
+@property(nonatomic, strong) NSString* textString;
 @property(nonatomic) int numberValue;
 @end
 
@@ -37,7 +37,7 @@
 @interface FCStats : NSObject {
 	NSMutableDictionary* userStats;
 }
-@property(nonatomic, retain) NSMutableDictionary* userStats;
+@property(nonatomic, strong) NSMutableDictionary* userStats;
 
 +(FCStats*)instance;
 -(void)prepareStatsFromArray:(NSArray*)statsArray withPlayerId:(id)playerId;

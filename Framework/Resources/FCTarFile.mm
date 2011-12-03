@@ -79,7 +79,7 @@ struct FCTarFileEntry
 {
 	self = [super init];
 	if (self) {
-		mFileData = [[NSData dataWithContentsOfMappedFile:filename] retain];
+		mFileData = [NSData dataWithContentsOfMappedFile:filename];
 		if (!mFileData) {
 			FC_FATAL1(@"Cannot open file", filename);
 		}
@@ -119,7 +119,7 @@ struct FCTarFileEntry
 			switch (fileType) {
 				case 0: // Normal file
 					{
-						NSMutableDictionary* entry = [[[NSMutableDictionary alloc] init] autorelease];
+						NSMutableDictionary* entry = [[NSMutableDictionary alloc] init];
 						[entry setValue:[NSNumber numberWithInt:fileSize] forKey:@"size"];
 						[entry setValue:[NSNumber numberWithUnsignedLong:range.location + sizeof(TarFileHeader)] forKey:@"offset"];
 						
@@ -156,11 +156,5 @@ struct FCTarFileEntry
 	return self;
 }
 
--(void)dealloc
-{
-	[mFileData release];
-	[mEntries release];
-	[super dealloc];
-}
 
 @end

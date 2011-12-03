@@ -64,8 +64,7 @@
 
 -(void)dealloc
 {
-	[_shaderManager release]; _shaderManager = nil;
-	[super dealloc];
+	 _shaderManager = nil;
 }
 
 -(void)prebuildShaders

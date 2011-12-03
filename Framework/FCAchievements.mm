@@ -88,7 +88,7 @@
     if (self) {
         mAchievementsState = [[NSMutableDictionary alloc] init];
 		
-		mCheckTimer = [[NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(checkAchievements) userInfo:nil repeats:YES] retain];	
+		mCheckTimer = [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:@selector(checkAchievements) userInfo:nil repeats:YES];	
 		
 		// read achievements from gamedata
 
@@ -105,10 +105,9 @@
 -(void)dealloc
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:kFCNotificationPlayerIDChanged object:nil];
-	[mAchievementsState release], mAchievementsState = nil;
+	mAchievementsState = nil;
 	[mCheckTimer invalidate];
-	[mCheckTimer release], mCheckTimer = nil;
-    [super dealloc];
+	mCheckTimer = nil;
 }
 
 @end

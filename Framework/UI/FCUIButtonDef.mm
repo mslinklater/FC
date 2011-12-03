@@ -43,7 +43,7 @@
 
 +(FCUIButtonDef*)def
 {
-	FCUIButtonDef *def = [[FCUIButtonDef alloc] autorelease];
+	FCUIButtonDef *def = [FCUIButtonDef alloc];
 	
 	def.defaultImage = nil;
 	def.pressedImage = nil;

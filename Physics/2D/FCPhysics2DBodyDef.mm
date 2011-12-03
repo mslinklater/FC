@@ -32,11 +32,6 @@
 @synthesize actor = _actor;
 @synthesize linearDamping = _linearDamping;
 
--(void)dealloc
-{
-	self.shapeDef = nil;
-	[super dealloc];
-}
 
 -(FC::Vector2f)position
 {
@@ -50,7 +45,7 @@
 
 +(FCPhysics2DBodyDef*)defaultDef
 {
-	FCPhysics2DBodyDef* def = [[FCPhysics2DBodyDef alloc] autorelease];
+	FCPhysics2DBodyDef* def = [FCPhysics2DBodyDef alloc];
 	
 	[def setPosition:FC::Vector2f(0.0f, 0.0f)];
 	def.angle = 0.0f;

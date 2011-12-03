@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if TARGET_OS_IPHONE
+
 #import "FCShaderAttribute.h"
 #import "FCGLHelpers.h"
 
@@ -30,7 +32,7 @@
 
 +(id)fcShaderAttribute
 {
-	return [[[FCShaderAttribute alloc] init] autorelease];
+	return [[FCShaderAttribute alloc] init];
 }
 
 -(NSString*)description
@@ -39,3 +41,5 @@
 }
 
 @end
+
+#endif // TARGET_OS_IPHONE

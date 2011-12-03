@@ -46,7 +46,7 @@
 	newDef.target = nil;
 	newDef.action = nil;
 	
-	return [newDef autorelease];
+	return newDef;
 }
 
 -(id)init
@@ -59,10 +59,6 @@
 	return self;
 }
 
--(void)dealloc
-{
-	[super dealloc];
-}
 
 @end
 
