@@ -10,7 +10,6 @@
 		3B140ED614898B8A00864D60 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B140ED514898B8A00864D60 /* Foundation.framework */; };
 		3B140EDC14898B8A00864D60 /* FC.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B140EDB14898B8A00864D60 /* FC.m */; };
 		3B140EE414898B8A00864D60 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B140EE314898B8A00864D60 /* SenTestingKit.framework */; };
-		3B140EE614898B8A00864D60 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B140EE514898B8A00864D60 /* UIKit.framework */; };
 		3B140EE714898B8A00864D60 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B140ED514898B8A00864D60 /* Foundation.framework */; };
 		3B140EEA14898B8A00864D60 /* libFC.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B140ED214898B8A00864D60 /* libFC.a */; };
 		3B140EF014898B8A00864D60 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3B140EEE14898B8A00864D60 /* InfoPlist.strings */; };
@@ -26,7 +25,6 @@
 		3B140FC514898B9E00864D60 /* FCNSMutableDictionary.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F0514898B9E00864D60 /* FCNSMutableDictionary.mm */; };
 		3B140FC614898B9E00864D60 /* FCUIView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F0614898B9E00864D60 /* FCUIView.h */; };
 		3B140FC714898B9E00864D60 /* FCUIView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F0714898B9E00864D60 /* FCUIView.mm */; };
-		3B140FC814898B9E00864D60 /* FC.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F0914898B9E00864D60 /* FC.h */; };
 		3B140FC914898B9E00864D60 /* FCColor.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F0A14898B9E00864D60 /* FCColor.h */; };
 		3B140FCA14898B9E00864D60 /* FCCore.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F0B14898B9E00864D60 /* FCCore.h */; };
 		3B140FCB14898B9E00864D60 /* FCError.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F0C14898B9E00864D60 /* FCError.h */; };
@@ -203,7 +201,6 @@
 		3B140EDB14898B8A00864D60 /* FC.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FC.m; sourceTree = "<group>"; };
 		3B140EE214898B8A00864D60 /* FCTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FCTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B140EE314898B8A00864D60 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
-		3B140EE514898B8A00864D60 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		3B140EED14898B8A00864D60 /* FCTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FCTests-Info.plist"; sourceTree = "<group>"; };
 		3B140EEF14898B8A00864D60 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		3B140EF114898B8A00864D60 /* FCTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FCTests.h; sourceTree = "<group>"; };
@@ -219,7 +216,6 @@
 		3B140F0514898B9E00864D60 /* FCNSMutableDictionary.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCNSMutableDictionary.mm; sourceTree = "<group>"; };
 		3B140F0614898B9E00864D60 /* FCUIView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCUIView.h; sourceTree = "<group>"; };
 		3B140F0714898B9E00864D60 /* FCUIView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCUIView.mm; sourceTree = "<group>"; };
-		3B140F0914898B9E00864D60 /* FC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FC.h; sourceTree = "<group>"; };
 		3B140F0A14898B9E00864D60 /* FCColor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCColor.h; sourceTree = "<group>"; };
 		3B140F0B14898B9E00864D60 /* FCCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCCore.h; sourceTree = "<group>"; };
 		3B140F0C14898B9E00864D60 /* FCError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCError.h; sourceTree = "<group>"; };
@@ -399,7 +395,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3B140EE414898B8A00864D60 /* SenTestingKit.framework in Frameworks */,
-				3B140EE614898B8A00864D60 /* UIKit.framework in Frameworks */,
 				3B140EE714898B8A00864D60 /* Foundation.framework in Frameworks */,
 				3B140EEA14898B8A00864D60 /* libFC.a in Frameworks */,
 			);
@@ -411,7 +406,6 @@
 		3B140EC714898B8A00864D60 = {
 			isa = PBXGroup;
 			children = (
-				3B14106514898BDF00864D60 /* UIKit.framework */,
 				3B140EFC14898B9E00864D60 /* Categories */,
 				3B140F0814898B9E00864D60 /* Core */,
 				3B140F1314898B9E00864D60 /* Debug */,
@@ -444,9 +438,9 @@
 		3B140ED414898B8A00864D60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3B14106514898BDF00864D60 /* UIKit.framework */,
 				3B140ED514898B8A00864D60 /* Foundation.framework */,
 				3B140EE314898B8A00864D60 /* SenTestingKit.framework */,
-				3B140EE514898B8A00864D60 /* UIKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -510,7 +504,6 @@
 		3B140F0814898B9E00864D60 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				3B140F0914898B9E00864D60 /* FC.h */,
 				3B140F0A14898B9E00864D60 /* FCColor.h */,
 				3B140F0B14898B9E00864D60 /* FCCore.h */,
 				3B140F0C14898B9E00864D60 /* FCError.h */,
@@ -829,7 +822,6 @@
 				3B140FC214898B9E00864D60 /* FCNSDictionary.h in Headers */,
 				3B140FC414898B9E00864D60 /* FCNSMutableDictionary.h in Headers */,
 				3B140FC614898B9E00864D60 /* FCUIView.h in Headers */,
-				3B140FC814898B9E00864D60 /* FC.h in Headers */,
 				3B140FC914898B9E00864D60 /* FCColor.h in Headers */,
 				3B140FCA14898B9E00864D60 /* FCCore.h in Headers */,
 				3B140FCB14898B9E00864D60 /* FCError.h in Headers */,
@@ -1262,6 +1254,7 @@
 				3B140EF814898B8A00864D60 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3B140EF914898B8A00864D60 /* Build configuration list for PBXNativeTarget "FCTests" */ = {
 			isa = XCConfigurationList;
@@ -1270,6 +1263,7 @@
 				3B140EFB14898B8A00864D60 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

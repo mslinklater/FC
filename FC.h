@@ -27,10 +27,19 @@
 //  Copyright (c) 2011 CurlyRocket. All rights reserved.
 //
 
-#ifndef HeadPopper_FC_h
-#define HeadPopper_FC_h
+#ifndef FC_h
+#define FC_h
 
-#import "Core/FCCore.h"
-#import "Debug/FCDebug.h"
+#import "FCCore.h"
+
+#import "FCCategories.h"
+#import "FCMaths.h"
+#import "FCTweakables.h"
+#import "FCNotifications.h"
+#import "FCAnalytics.h"
+#import "FCUIManager.h"
+#import "FCPersistentData.h"
+#import "FCViews.h"
+#import "FCMisc.h"
 
 #endif
