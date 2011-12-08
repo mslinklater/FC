@@ -23,10 +23,11 @@
 #if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>
-#import "FCProtocols.h"
+#import <Box2D/Box2D.h>
+
+#import "Core/FCProtocols.h"
 #import "FCPhysics2DBody.h"
 #import "FCPhysics2DBodyDef.h"
-#import <Box2D/Box2D.h>
 
 @interface FCPhysics2D : NSObject <FCGameObjectLifetime, FCGameObjectUpdate> {
     b2World* pWorld;

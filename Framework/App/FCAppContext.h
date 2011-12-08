@@ -25,27 +25,19 @@
 #import <Foundation/Foundation.h>
 #import "FCCaps.h"
 
-@class FCUIManager;
-@class FCResourceManager;
 @class FCXMLData;
-@class FCRenderer;
-@class FCActorSystem;
-@class FCPhysics;
 @class FCGLView;
-//@class FCLuaVM;
 
-@interface FCGameContext : NSObject {
-//	FCLuaVM* _luaVM;
-}
+@interface FCAppContext : NSObject
 
-@property(nonatomic, strong) NSMutableDictionary* state;
 @property(nonatomic, strong, readonly) FCXMLData* gameData;
 @property(nonatomic, strong) id gameRoot;
 @property(nonatomic, strong) NSString* localPlayerGameCenterId;
 @property(nonatomic, strong) FCGLView* mainGameView;
-//@property(nonatomic, retain, readonly) FCLuaVM* luaVM;
 
-+(FCGameContext*)instance;
++(FCAppContext*)instance;
+-(void)setValue:(id)value forKey:(NSString *)key;
+-(id)valueForKey:(NSString *)key;
 
 @end
 

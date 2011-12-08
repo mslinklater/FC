@@ -81,7 +81,7 @@ struct FCTarFileEntry
 	if (self) {
 		mFileData = [NSData dataWithContentsOfMappedFile:filename];
 		if (!mFileData) {
-			FC_FATAL1(@"Cannot open file", filename);
+			FC_FATAL1(@"Cannot open file '%@'", filename);
 		}
 		
 		// parse tar file and build up entries dictionary

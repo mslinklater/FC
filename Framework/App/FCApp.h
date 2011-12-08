@@ -20,13 +20,23 @@
  THE SOFTWARE.
  */
 
-#import "FCXMLData.h"
-#import "FCAppContext.h"
-#import "FCCaps.h"
-#import "FCPersistentData.h"
-#import "FCStats.h"
-#import "FCUserDefaults.h"
-#import "FCNotifications.h"
-#import "FCTweakables.h"
-#import "FCHighScores.h"
-#import "FCCrypto.h"
+#import <Foundation/Foundation.h>
+
+#import "Lua/FCLua.h"
+
+@interface FCApp : NSObject
++(void)coldBootWithViewController:(UIViewController*)vc;
++(void)warmBoot;
++(void)shutdown;
++(void)update;
++(void)startInternalUpdate;
++(void)stopInternalUpdate;
+
++(void)willResignActive;
++(void)didEnterBackground;
++(void)willEnterForeground;
++(void)didBecomeActive;
++(void)willTerminate;
+
++(FCLuaVM*)lua;
+@end

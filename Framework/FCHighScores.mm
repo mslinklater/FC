@@ -27,7 +27,7 @@
 #import "FCCore.h"
 #import "FCHighScores.h"
 #import "FCPersistentData.h"
-#import "FCGameContext.h"
+#import "FCAppContext.h"
 #import "FCNotifications.h"
 
 static NSString* kPersistentDataKey = @"FCHighScores";
@@ -110,7 +110,7 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 	
 	FC_LOG(mScoresDictionary);
 	
-	NSString* gameCenterId = [FCGameContext instance].localPlayerGameCenterId;
+	NSString* gameCenterId = [FCAppContext instance].localPlayerGameCenterId;
 
 //	if ( !([gameCenterId isEqualToString:@"local"] || (gameCenterId == nil)) ) 
 //	{
@@ -176,9 +176,9 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 	
 	// check if logged in
 
-	FC_LOG([FCGameContext instance].localPlayerGameCenterId);
+	FC_LOG([FCAppContext instance].localPlayerGameCenterId);
 
-	NSString* gameCenterId = [FCGameContext instance].localPlayerGameCenterId;
+	NSString* gameCenterId = [FCAppContext instance].localPlayerGameCenterId;
 	
 	if ([gameCenterId isEqualToString:@"local"] || (gameCenterId == nil)) 
 	{

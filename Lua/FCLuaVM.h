@@ -58,7 +58,7 @@ typedef int(*tLuaCallableCFunction)(lua_State*);
 #endif
 
 // Function calling
--(void)call:(NSString*)func withSig:(NSString*)sig, ...;
+-(void)call:(NSString*)func required:(BOOL)required withSig:(NSString*)sig, ...;
 
 // Debug functions
 -(void)dumpStack;

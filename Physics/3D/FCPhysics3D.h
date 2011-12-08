@@ -21,7 +21,8 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "FCProtocols.h"
+
+#import "Core/FCProtocols.h"
 
 @interface FCPhysics3D : NSObject <FCGameObjectLifetime, FCGameObjectUpdate> {
     

@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#import "FCMaths.h"
+#import "Maths/FCMaths.h"
 
 @class FCResource;
 

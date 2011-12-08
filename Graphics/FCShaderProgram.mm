@@ -73,7 +73,7 @@
 				char* infoLog = (char*)malloc(sizeof(char) * infoLen);
 				glGetProgramInfoLog(self.glHandle, infoLen, NULL, infoLog);
 				NSString* errorString = [NSString stringWithFormat:@"%s", infoLog];
-				FC_FATAL1(@"Linking program:", errorString);
+				FC_FATAL1(@"Linking program:%@", errorString);
 				free(infoLog);
 			}
 			
@@ -236,7 +236,7 @@
 
 		default:
 			NSString* uniformType = FCGLStringForEnum(uniform.type);
-			FC_FATAL1(@"unknown uniform type", uniformType);
+			FC_FATAL1(@"unknown uniform type:%@", uniformType);
 			break;
 	}
 }
@@ -264,7 +264,7 @@
 			char* infoLog = (char*)malloc(sizeof(char) * infoLen);
 			glGetProgramInfoLog(self.glHandle, infoLen, NULL, infoLog);
 			NSString* errorString = [NSString stringWithFormat:@"%s", infoLog];
-			FC_FATAL1(@"Validate fail:", errorString);
+			FC_FATAL1(@"Validate fail:%@", errorString);
 			free(infoLog);
 		}		
 	}

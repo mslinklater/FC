@@ -23,7 +23,7 @@
 #if TARGET_OS_IPHONE
 
 #import "FCTweakables.h"
-#import "FCGameContext.h"
+#import "FCAppContext.h"
 #import "FCXMLData.h"
 
 @implementation FCTweakables
@@ -50,7 +50,7 @@
 	{
 		tweakables = [[NSMutableDictionary alloc] init];
 		
-		NSArray* tweakablesArray = [[[FCGameContext instance] gameData] arrayForKeyPath:@"gamedata.tweakables.tweakable"];
+		NSArray* tweakablesArray = [[[FCAppContext instance] gameData] arrayForKeyPath:@"gamedata.tweakables.tweakable"];
 		
 		for( NSDictionary *entry in tweakablesArray )
 		{

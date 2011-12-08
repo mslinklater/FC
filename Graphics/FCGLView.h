@@ -27,8 +27,8 @@
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 
-#import "FCMaths.h"
-#import "FCTypes.h"
+#import "Maths/FCMaths.h"
+#import "Core/FCTypes.h"
 
 @interface FCGLView : UIView
 {

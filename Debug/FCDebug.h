@@ -20,17 +20,11 @@
  THE SOFTWARE.
  */
 
-//
-//  FCDebug.h
-//
-//  Created by Martin Linklater on 03/11/2011.
-//  Copyright (c) 2011 CurlyRocket. All rights reserved.
-//
-
 #ifndef HeadPopper_FCDebug_h
 #define HeadPopper_FCDebug_h
 
 #import "FCPerformanceCounter.h"
 #import "FCRasterView.h"
+#import "FCConnect.h"
 
 #endif

@@ -20,13 +20,9 @@
  THE SOFTWARE.
  */
 
-#import "FCXMLData.h"
-#import "FCAppContext.h"
-#import "FCCaps.h"
-#import "FCPersistentData.h"
-#import "FCStats.h"
-#import "FCUserDefaults.h"
-#import "FCNotifications.h"
-#import "FCTweakables.h"
-#import "FCHighScores.h"
-#import "FCCrypto.h"
+#ifndef FC_FCFramework_h
+#define FC_FCFramework_h
+
+#import "Framework/App/FCApp.h"
+
+#endif

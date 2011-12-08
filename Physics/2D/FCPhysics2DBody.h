@@ -23,8 +23,9 @@
 #if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>
-#import "FCKeys.h"
-#import "FCMaths.h"
+
+#import "Core/FCKeys.h"
+#import "Maths/FCMaths.h"
 
 class b2World;
 class b2Body;

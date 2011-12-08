@@ -134,7 +134,7 @@ static NSString* kUDSuffix = @"_ultra";
 
 	if (path == nil) 
 	{
-		FC_FATAL2(@"File not found", actualResourceName, type);
+		FC_FATAL2(@"File not found %@ %@", actualResourceName, type);
 		return nil;
 	}
 	

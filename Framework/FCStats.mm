@@ -25,7 +25,7 @@
 #import "FCCore.h"
 #import "FCStats.h"
 #import "FCPersistentData.h"
-#import "FCGameContext.h"
+#import "FCAppContext.h"
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -149,7 +149,7 @@ static FCStats* FCStatsInstance = 0;
 
 -(void)incrementKey:(NSString*)key
 {
-	FCStat* thisStat = [[self.userStats objectForKey:[[FCGameContext instance] localPlayerGameCenterId]] objectForKey:key];
+	FCStat* thisStat = [[self.userStats objectForKey:[[FCAppContext instance] localPlayerGameCenterId]] objectForKey:key];
 	thisStat.numberValue++;
 }
 

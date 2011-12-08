@@ -23,7 +23,7 @@
 #if TARGET_OS_IPHONE
 
 #import "FCUIManager.h"
-#import "FCGameContext.h"
+#import "FCAppContext.h"
 #import "FCResourceManager.h"
 
 //----------------------------------------------------------------------------------------------------------------------

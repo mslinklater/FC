@@ -26,7 +26,7 @@
 
 #import "FCCore.h"
 #import "FCAchievements.h"
-#import "FCGameContext.h"
+#import "FCAppContext.h"
 #import "FCXMLData.h"
 #import "FCNotifications.h"
 
@@ -92,7 +92,7 @@
 		
 		// read achievements from gamedata
 
-		mAchievementsDefs = [[[FCGameContext instance] gameData] arrayForKeyPath:@"gamedata.achievements.achievement"];
+		mAchievementsDefs = [[[FCAppContext instance] gameData] arrayForKeyPath:@"gamedata.achievements.achievement"];
 		
 		[self getAchievementsFromServer];
 

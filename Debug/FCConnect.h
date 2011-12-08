@@ -20,13 +20,26 @@
  THE SOFTWARE.
  */
 
-#import "FCXMLData.h"
-#import "FCAppContext.h"
-#import "FCCaps.h"
-#import "FCPersistentData.h"
-#import "FCStats.h"
-#import "FCUserDefaults.h"
-#import "FCNotifications.h"
-#import "FCTweakables.h"
-#import "FCHighScores.h"
-#import "FCCrypto.h"
+#import <Foundation/Foundation.h>
+
+enum eFCConnectErrorCode {
+	kFCConnectCouldNotBindToIPv4Address,
+	kFCConnectCouldNotBindToIPv6Address,
+	kFCConnectNoSocketsAvailable
+};
+
+@interface FCConnect : NSObject <NSNetServiceDelegate> {
+	uint16_t		m_port;
+	uint32_t		m_protocolFamily;
+	CFSocketRef		m_socketRef;
+	NSNetService*	m_netService;
+	NSString*		m_bonjourIdentifier;
+}
+
++(FCConnect*)instance;
+
+-(BOOL)start:(NSError**)error;
+-(BOOL)enableBonjourWithName:(NSString*)name;
+-(void)stop;
+
+@end

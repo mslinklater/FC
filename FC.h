@@ -20,26 +20,24 @@
  THE SOFTWARE.
  */
 
-//
-//  FC.h
-//
-//  Created by Martin Linklater on 03/11/2011.
-//  Copyright (c) 2011 CurlyRocket. All rights reserved.
-//
-
 #ifndef FC_h
 #define FC_h
 
-#import "FCCore.h"
+#import "Core/FCCore.h"
+#import "Categories/FCCategories.h"
+#import "Maths/FCMaths.h"
+#import "Debug/FCDebug.h"
+#import "Framework/FCFramework.h"
+#import "Graphics/FCGraphics.h"
+#import "Lua/FCLua.h"
+#import "Physics/FCPhysics.h"
 
-#import "FCCategories.h"
-#import "FCMaths.h"
-#import "FCTweakables.h"
-#import "FCNotifications.h"
-#import "FCAnalytics.h"
-#import "FCUIManager.h"
-#import "FCPersistentData.h"
-#import "FCViews.h"
-#import "FCMisc.h"
+//#import "FCTweakables.h"
+//#import "FCNotifications.h"
+//#import "FCAnalytics.h"
+//#import "FCUIManager.h"
+//#import "FCPersistentData.h"
+//#import "FCViews.h"
+//#import "FCMisc.h"
 
 #endif

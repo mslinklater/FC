@@ -23,10 +23,10 @@
 #if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>
-#import "FCKeys.h"
-#import "FCProtocols.h"
-#import "FCPhysics2D.h"
-#import "FCPhysics3D.h"
+#import "Core/FCKeys.h"
+#import "Core/FCProtocols.h"
+#import "Physics/2D/FCPhysics2D.h"
+#import "Physics/3D/FCPhysics3D.h"
 
 @interface FCPhysics : NSObject <FCGameObjectLifetime, FCGameObjectUpdate> 
 {

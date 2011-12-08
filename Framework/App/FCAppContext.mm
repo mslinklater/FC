@@ -24,7 +24,7 @@
 
 #import "GameKit/GameKit.h"
 
-#import "FCGameContext.h"
+#import "FCAppContext.h"
 #import "FCXMLData.h"
 #import "FCUIManager.h"
 #import "FCResourceManager.h"
@@ -38,16 +38,18 @@
 #import "FCUserDefaults.h"
 #import "FCAnalytics.h"
 #import "FCNotifications.h"
-//#import "FCLua.h"
 
-@implementation FCGameContext
+@interface FCAppContext() {
+	NSMutableDictionary* m_dict;
+}
+@end
+
+@implementation FCAppContext
 
 @synthesize gameData = _gameData;
-@synthesize state = _state;
 @synthesize localPlayerGameCenterId = _localPlayerGameCenterID;
 @synthesize gameRoot = _gameRoot;
 @synthesize mainGameView = _mainGameView;
-//@synthesize luaVM = _luaVM;
 
 #pragma mark -
 #pragma mark Caps Probing
@@ -61,7 +63,7 @@
 
 -(void)localPlayerGameCenterIdChanged
 {
-	NSArray* statsArray = [[[FCGameContext instance] gameData] arrayForKeyPath:@"gamedata.stats.stat"];
+	NSArray* statsArray = [[[FCAppContext instance] gameData] arrayForKeyPath:@"gamedata.stats.stat"];
 	[[FCStats instance] prepareStatsFromArray:statsArray withPlayerId:self.localPlayerGameCenterId];
 
 	[[NSNotificationCenter defaultCenter] postNotificationName:kFCNotificationPlayerIDChanged object:nil];
@@ -76,6 +78,8 @@
 	if (self) 
 	{
 		// initialise core FC systems
+
+		m_dict = [[NSMutableDictionary alloc] init];
 		
 //		_luaVM = [[FCLua instance] newVM];
 		
@@ -91,7 +95,7 @@
 		
 		[[FCUserDefaults instance] registerDefaults:self.gameData];
 		
-		_state = [[NSMutableDictionary alloc] init];
+//		_device = [[NSMutableDictionary alloc] init];
 		
 		[[FCRenderer instance] addToGatherList:[FCActorSystem instance]];
 		
@@ -131,19 +135,27 @@
 -(void)dealloc
 {
 	_gameData = nil;
-//	[_luaVM release], _luaVM = nil;
-	
+}
+
+-(void)setValue:(id)value forKey:(NSString *)key
+{
+	[m_dict setValue:value forKey:key];
+}
+
+-(id)valueForKey:(NSString *)key
+{
+	return [m_dict valueForKey:key];
 }
 
 #pragma mark -
 #pragma mark Singleton
 
-+(FCGameContext*)instance
++(FCAppContext*)instance
 {
-	static FCGameContext* theInstance = nil;
+	static FCAppContext* theInstance = nil;
 	
 	if (!theInstance) {
-		theInstance = [[FCGameContext alloc] init];
+		theInstance = [[FCAppContext alloc] init];
 	}
 	return theInstance;
 }

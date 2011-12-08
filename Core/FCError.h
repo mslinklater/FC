@@ -21,20 +21,20 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "FCLuaClass.h"
+#import "Lua/FCLuaClass.h"
 
-#define FC_FATAL(n) [FCError fatal:[NSString stringWithFormat:@"%s%s:%d", __FILE__, __FUNCTION__, __LINE__] info:n]
-#define FC_FATAL1(n,m) [FCError fatal1:[NSString stringWithFormat:@"%s%s:%d", __FILE__, __FUNCTION__, __LINE__] info:n arg1:m]
-#define FC_FATAL2(n,m,a) [FCError fatal2:[NSString stringWithFormat:@"%s%s:%d", __FILE__, __FUNCTION__, __LINE__] info:n arg1:m arg2:a]
+#define FC_FATAL(n) [FCError fatal:[NSString stringWithFormat:@"%s %s:%d", __FILE__, __FUNCTION__, __LINE__] info:n]
+#define FC_FATAL1(n,m) [FCError fatal1:[NSString stringWithFormat:@"%s %s:%d", __FILE__, __FUNCTION__, __LINE__] info:n arg1:m]
+#define FC_FATAL2(n,m,a) [FCError fatal2:[NSString stringWithFormat:@"%s %s:%d", __FILE__, __FUNCTION__, __LINE__] info:n arg1:m arg2:a]
 #define FC_HALT [FCError halt]
 
 #if defined (DEBUG)
 
 #define FC_ERROR(n) [FCError error:[NSString stringWithFormat:@"%s%s:%d", __FILE__, __FUNCTION__, __LINE__] info:n]
-#define FC_ERROR1(n,m) [FCError error1:[NSString stringWithFormat:@"%s%s:%d", __FILE__, __FUNCTION__, __LINE__] info:n arg1:m]
-#define FC_ERROR2(n,m,a) [FCError error2:[NSString stringWithFormat:@"%s%s:%d", __FILE__, __FUNCTION__, __LINE__] info:n arg1:m arg2:a]
+#define FC_ERROR1(n,m) [FCError error1:[NSString stringWithFormat:@"%s %s:%d", __FILE__, __FUNCTION__, __LINE__] info:n arg1:m]
+#define FC_ERROR2(n,m,a) [FCError error2:[NSString stringWithFormat:@"%s %s:%d", __FILE__, __FUNCTION__, __LINE__] info:n arg1:m arg2:a]
 #define FC_WARNING(n) [FCError warning:[NSString stringWithFormat:@"%s%s:%d", __FILE__, __FUNCTION__, __LINE__] info:n]
-#define FC_WARNING1(n,m) [FCError warning1:[NSString stringWithFormat:@"%s%s:%d", __FILE__, __FUNCTION__, __LINE__] info:n arg1:m]
+#define FC_WARNING1(n,m) [FCError warning1:[NSString stringWithFormat:@"%s %s:%d", __FILE__, __FUNCTION__, __LINE__] info:n arg1:m]
 #define FC_LOG(n) [FCError log:n]
 #define FC_LOG1(n,m) [FCError log1:n arg1:(m)]
 #define FC_LOG2(n,m,a) [FCError log2:n arg1:(m) arg2:(a)]
@@ -62,6 +62,10 @@
 @interface FCError : NSObject <FCLuaClass> {
 
 }
+//+(void)fatal:(NSString*)location info:(NSString*)errorString;
+//+(void)fatal1:(NSString*)location info:(NSString*)errorString arg1:(id)arg1;
+//+(void)fatal2:(NSString*)location info:(NSString*)errorString arg1:(id)arg1 arg2:(id)arg2;
+
 +(void)fatal:(NSString*)location info:(NSString*)errorString;
 +(void)fatal1:(NSString*)location info:(NSString*)errorString arg1:(id)arg1;
 +(void)fatal2:(NSString*)location info:(NSString*)errorString arg1:(id)arg1 arg2:(id)arg2;

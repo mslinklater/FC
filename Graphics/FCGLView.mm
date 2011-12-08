@@ -206,7 +206,7 @@
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mSuperOffScreenTexture, 0); GLCHECK;
         
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            FC_FATAL1(@"Failed to make complete framebuffer object", FCGLStringForEnum( glCheckFramebufferStatus(GL_FRAMEBUFFER)));
+            FC_FATAL1(@"Failed to make complete framebuffer object '%@'", FCGLStringForEnum( glCheckFramebufferStatus(GL_FRAMEBUFFER)));
     }
 }
 
@@ -245,7 +245,7 @@
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, mNormalColorRenderbuffer); GLCHECK;
         
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            FC_FATAL1(@"Failed to make complete framebuffer object %x", FCGLStringForEnum(glCheckFramebufferStatus(GL_FRAMEBUFFER)) );
+            FC_FATAL1(@"Failed to make complete framebuffer object %@", FCGLStringForEnum(glCheckFramebufferStatus(GL_FRAMEBUFFER)) );
     }
 }
 

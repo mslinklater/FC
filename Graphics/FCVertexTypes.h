@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#import "FCMaths.h"
-#import "FCTypes.h"
+#import "Maths/FCMaths.h"
+#import "Core/FCTypes.h"
 
 namespace FC {
 

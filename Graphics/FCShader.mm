@@ -52,7 +52,7 @@
 
 		_glHandle = glCreateShader( glShaderType );
 		if (self.glHandle == 0) {
-			FC_FATAL1(@"glCreateShader failed", source);
+			FC_FATAL1(@"glCreateShader failed '%@'", source);
 		}
 		
 		glShaderSource(self.glHandle, 1, &shaderStr, NULL);

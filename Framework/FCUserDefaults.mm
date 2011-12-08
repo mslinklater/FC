@@ -23,7 +23,7 @@
 #if TARGET_OS_IPHONE
 
 #import "FCUserDefaults.h"
-#import "FCGameContext.h"
+#import "FCAppContext.h"
 #import "FCXMLData.h"
 
 static FCUserDefaults* pInstance;

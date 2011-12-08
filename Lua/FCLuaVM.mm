@@ -37,20 +37,21 @@ int Lua_LoadScript( lua_State* _state );
 
 void common_LoadScriptForState(NSString* path, lua_State* _state)
 {
-	NSLog(@"Lua: Loading file %@", path);
-	
 	NSString* filePath = [[NSBundle mainBundle] pathForResource:path ofType:@"lua"];
-	
-	FC_ASSERT(filePath != nil);
+
+	if(filePath == nil)
+	{ 
+		FC_FATAL1(@"Cannot load Lua file '%@'", path);
+	}
 	
 	int ret = luaL_loadfile(_state, [filePath UTF8String]);
 	
 	switch (ret) {
 		case LUA_ERRSYNTAX:
-			FC_FATAL1(@"Syntax error on load of Lua file", path);
+			FC_FATAL1(@"Syntax error on load of Lua file '%@'", path);
 			break;			
 		case LUA_ERRMEM:
-			FC_FATAL1(@"Memory error on load of Lua file", path);
+			FC_FATAL1(@"Memory error on load of Lua file '%@'", path);
 			break;			
 		default:
 			break;
@@ -61,13 +62,13 @@ void common_LoadScriptForState(NSString* path, lua_State* _state)
 	switch (ret) {
 		case LUA_ERRRUN:
 			FCLuaCommon_DumpStack(_state);
-			FC_FATAL1(@"Runtime error in Lua file", path);
+			FC_FATAL1(@"Runtime error in Lua file '%@'", path);
 			break;
 		case LUA_ERRMEM:
-			FC_FATAL1(@"Memory error in Lua file", path);
+			FC_FATAL1(@"Memory error in Lua file '%@'", path);
 			break;
 		case LUA_ERRERR:
-			FC_FATAL1(@"Error while running error handling function in Lua file", path);
+			FC_FATAL1(@"Error while running error handling function in Lua file '%@'", path);
 			break;			
 		default:
 			break;
@@ -86,7 +87,8 @@ int Lua_LoadScript( lua_State* _state )
 static int panic (lua_State *L) {
 	(void)L;  /* to avoid warnings */
 	const char* pString = lua_tostring(L, -1);
-	FC_FATAL1(@"PANIC: unprotected error in call to Lua API ", [NSString stringWithCString:pString encoding:NSUTF8StringEncoding]);
+	FCLuaCommon_DumpStack(L);
+	FC_FATAL1(@"PANIC: unprotected error in call to Lua API '%@'", [NSString stringWithCString:pString encoding:NSUTF8StringEncoding]);
 	return 0;
 }
 
@@ -251,7 +253,7 @@ static int panic (lua_State *L) {
 }
 #endif
 
--(void)call:(NSString*)func withSig:(NSString*)sig, ...
+-(void)call:(NSString*)func required:(BOOL)required withSig:(NSString*)sig, ...
 {
 	// NOTE - add specialist sig variations of this if perf becomes a problem
 
@@ -264,6 +266,13 @@ static int panic (lua_State *L) {
 	
 	lua_getglobal(_state, [[components objectAtIndex:0] UTF8String]);
 	
+	if (lua_isnil(_state, -1)) {
+		if (required) {
+			FC_FATAL1(@"Can't find function '%@'", func);
+		} else
+			return;
+	}
+	
 	NSUInteger numComponents = [components count];
 	
 	for (NSUInteger i = 1; i < numComponents; ++i) {
@@ -271,7 +280,10 @@ static int panic (lua_State *L) {
 	}
 
 	if (!lua_isfunction(_state, -1)) {
-		FC_FATAL1(@"Calling a function defined in Lua", func);
+		if (required) {
+			FC_FATAL1(@"Calling a function defined in Lua '%@'", func);
+		} else
+			return;
 	}
 
 	const char* csig = [sig UTF8String];

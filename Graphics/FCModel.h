@@ -23,8 +23,8 @@
 #if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>
-#import "FCMaths.h"
-#import "FCTypes.h"
+#import "Maths/FCMaths.h"
+#import "Core/FCTypes.h"
 
 @class FCResource;
 

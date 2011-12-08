@@ -75,13 +75,15 @@ static int Lua_Log( lua_State* state )
 
 +(void)fatal1:(NSString*)location info:(NSString*)errorString arg1:(id)arg1
 {
-	NSLog(@"FATAL - %@ - %@ %@", location, errorString, arg1);
+	NSString* infoString = [NSString stringWithFormat:errorString, arg1];
+	NSLog(@"FATAL - %@ - %@", location, infoString);
 	[FCError halt];
 }
 
 +(void)fatal2:(NSString*)location info:(NSString*)errorString arg1:(id)arg1 arg2:(id)arg2
 {
-	NSLog(@"FATAL - %@ - %@ %@ %@", location, errorString, arg1, arg2);
+	NSString* infoString = [NSString stringWithFormat:errorString, arg1, arg2];
+	NSLog(@"FATAL - %@ - %@", location, infoString);
 	[FCError halt];
 }
 

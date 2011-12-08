@@ -38,7 +38,7 @@
 		3B140FD314898B9E00864D60 /* FCPerformanceCounter.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F1514898B9E00864D60 /* FCPerformanceCounter.h */; };
 		3B140FD414898B9E00864D60 /* FCPerformanceCounter.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F1614898B9E00864D60 /* FCPerformanceCounter.mm */; };
 		3B140FD514898B9E00864D60 /* FCRasterView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F1714898B9E00864D60 /* FCRasterView.h */; };
-		3B140FD614898B9E00864D60 /* FCRasterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F1814898B9E00864D60 /* FCRasterView.m */; };
+		3B140FD614898B9E00864D60 /* FCRasterView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F1814898B9E00864D60 /* FCRasterView.mm */; };
 		3B140FD714898B9E00864D60 /* FC-Prefix.pch in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F1914898B9E00864D60 /* FC-Prefix.pch */; };
 		3B140FD814898B9E00864D60 /* FC.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F1A14898B9E00864D60 /* FC.h */; };
 		3B140FD914898B9E00864D60 /* FCActor.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F1D14898B9E00864D60 /* FCActor.h */; };
@@ -51,14 +51,10 @@
 		3B140FE014898B9E00864D60 /* FCCaps.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F2614898B9E00864D60 /* FCCaps.mm */; };
 		3B140FE114898B9E00864D60 /* FCAchievements.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F2714898B9E00864D60 /* FCAchievements.h */; };
 		3B140FE214898B9E00864D60 /* FCAchievements.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F2814898B9E00864D60 /* FCAchievements.mm */; };
-		3B140FE314898B9E00864D60 /* FCApp.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F2914898B9E00864D60 /* FCApp.h */; };
-		3B140FE414898B9E00864D60 /* FCApp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F2A14898B9E00864D60 /* FCApp.mm */; };
 		3B140FE514898B9E00864D60 /* FCCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F2B14898B9E00864D60 /* FCCrypto.h */; };
 		3B140FE614898B9E00864D60 /* FCCrypto.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F2C14898B9E00864D60 /* FCCrypto.mm */; };
 		3B140FE714898B9E00864D60 /* FCFont.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F2D14898B9E00864D60 /* FCFont.h */; };
 		3B140FE814898B9E00864D60 /* FCFont.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F2E14898B9E00864D60 /* FCFont.mm */; };
-		3B140FE914898B9E00864D60 /* FCGameContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F2F14898B9E00864D60 /* FCGameContext.h */; };
-		3B140FEA14898B9E00864D60 /* FCGameContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F3014898B9E00864D60 /* FCGameContext.mm */; };
 		3B140FEB14898B9E00864D60 /* FCHighScores.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F3114898B9E00864D60 /* FCHighScores.h */; };
 		3B140FEC14898B9E00864D60 /* FCHighScores.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F3214898B9E00864D60 /* FCHighScores.mm */; };
 		3B140FED14898B9E00864D60 /* FCLeaderboard.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F3314898B9E00864D60 /* FCLeaderboard.h */; };
@@ -129,10 +125,6 @@
 		3B14102E14898B9E00864D60 /* FCVertexTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F7814898B9E00864D60 /* FCVertexTypes.h */; };
 		3B14102F14898B9E00864D60 /* PVRTGlobal.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F7914898B9E00864D60 /* PVRTGlobal.h */; };
 		3B14103014898B9E00864D60 /* PVRTTexture.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F7A14898B9E00864D60 /* PVRTTexture.h */; };
-		3B14103114898B9E00864D60 /* debug.fsh in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F7C14898B9E00864D60 /* debug.fsh */; };
-		3B14103214898B9E00864D60 /* debug.vsh in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F7D14898B9E00864D60 /* debug.vsh */; };
-		3B14103314898B9E00864D60 /* simple.fsh in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F7E14898B9E00864D60 /* simple.fsh */; };
-		3B14103414898B9E00864D60 /* simple.vsh in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F7F14898B9E00864D60 /* simple.vsh */; };
 		3B14103514898B9E00864D60 /* FCTextureFilePVR.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F8114898B9E00864D60 /* FCTextureFilePVR.h */; };
 		3B14103614898B9E00864D60 /* FCTextureFilePVR.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F8214898B9E00864D60 /* FCTextureFilePVR.mm */; };
 		3B14103714898B9E00864D60 /* FCKenBurnsView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F8414898B9E00864D60 /* FCKenBurnsView.h */; };
@@ -181,6 +173,13 @@
 		3B14106214898B9F00864D60 /* FCPhysicsTypes.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140FB914898B9E00864D60 /* FCPhysicsTypes.h */; };
 		3B14106314898B9F00864D60 /* FCPhysicsTypes.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140FBA14898B9E00864D60 /* FCPhysicsTypes.mm */; };
 		3B14106614898BDF00864D60 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B14106514898BDF00864D60 /* UIKit.framework */; };
+		3B4132F81490C60200C3ADF0 /* FCConnect.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B4132F61490C60200C3ADF0 /* FCConnect.h */; };
+		3B4132F91490C60200C3ADF0 /* FCConnect.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B4132F71490C60200C3ADF0 /* FCConnect.mm */; };
+		3BD1F313148C080D002EE1BE /* FCApp.h in Headers */ = {isa = PBXBuildFile; fileRef = 3BD1F30F148C080D002EE1BE /* FCApp.h */; };
+		3BD1F314148C080D002EE1BE /* FCApp.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3BD1F310148C080D002EE1BE /* FCApp.mm */; };
+		3BD1F315148C080D002EE1BE /* FCAppContext.h in Headers */ = {isa = PBXBuildFile; fileRef = 3BD1F311148C080D002EE1BE /* FCAppContext.h */; };
+		3BD1F316148C080D002EE1BE /* FCAppContext.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3BD1F312148C080D002EE1BE /* FCAppContext.mm */; };
+		3BD1F318148C0BD8002EE1BE /* FCFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = 3BD1F317148C0BD8002EE1BE /* FCFramework.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -229,7 +228,7 @@
 		3B140F1514898B9E00864D60 /* FCPerformanceCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCPerformanceCounter.h; sourceTree = "<group>"; };
 		3B140F1614898B9E00864D60 /* FCPerformanceCounter.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCPerformanceCounter.mm; sourceTree = "<group>"; };
 		3B140F1714898B9E00864D60 /* FCRasterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCRasterView.h; sourceTree = "<group>"; };
-		3B140F1814898B9E00864D60 /* FCRasterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FCRasterView.m; sourceTree = "<group>"; };
+		3B140F1814898B9E00864D60 /* FCRasterView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCRasterView.mm; sourceTree = "<group>"; };
 		3B140F1914898B9E00864D60 /* FC-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "FC-Prefix.pch"; path = "../../../FC-Prefix.pch"; sourceTree = "<group>"; };
 		3B140F1A14898B9E00864D60 /* FC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FC.h; path = ../../../FC.h; sourceTree = "<group>"; };
 		3B140F1D14898B9E00864D60 /* FCActor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCActor.h; sourceTree = "<group>"; };
@@ -242,14 +241,10 @@
 		3B140F2614898B9E00864D60 /* FCCaps.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCCaps.mm; sourceTree = "<group>"; };
 		3B140F2714898B9E00864D60 /* FCAchievements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCAchievements.h; sourceTree = "<group>"; };
 		3B140F2814898B9E00864D60 /* FCAchievements.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCAchievements.mm; sourceTree = "<group>"; };
-		3B140F2914898B9E00864D60 /* FCApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCApp.h; sourceTree = "<group>"; };
-		3B140F2A14898B9E00864D60 /* FCApp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCApp.mm; sourceTree = "<group>"; };
 		3B140F2B14898B9E00864D60 /* FCCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCCrypto.h; sourceTree = "<group>"; };
 		3B140F2C14898B9E00864D60 /* FCCrypto.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCCrypto.mm; sourceTree = "<group>"; };
 		3B140F2D14898B9E00864D60 /* FCFont.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCFont.h; sourceTree = "<group>"; };
 		3B140F2E14898B9E00864D60 /* FCFont.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCFont.mm; sourceTree = "<group>"; };
-		3B140F2F14898B9E00864D60 /* FCGameContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCGameContext.h; sourceTree = "<group>"; };
-		3B140F3014898B9E00864D60 /* FCGameContext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCGameContext.mm; sourceTree = "<group>"; };
 		3B140F3114898B9E00864D60 /* FCHighScores.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCHighScores.h; sourceTree = "<group>"; };
 		3B140F3214898B9E00864D60 /* FCHighScores.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCHighScores.mm; sourceTree = "<group>"; };
 		3B140F3314898B9E00864D60 /* FCLeaderboard.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCLeaderboard.h; sourceTree = "<group>"; };
@@ -378,6 +373,14 @@
 		3B140FBB14898B9E00864D60 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../../../README; sourceTree = "<group>"; };
 		3B140FBC14898B9E00864D60 /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO; path = ../../../TODO; sourceTree = "<group>"; };
 		3B14106514898BDF00864D60 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		3B4132F61490C60200C3ADF0 /* FCConnect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCConnect.h; sourceTree = "<group>"; };
+		3B4132F71490C60200C3ADF0 /* FCConnect.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCConnect.mm; sourceTree = "<group>"; };
+		3BD1F30D148C074D002EE1BE /* HISTORY */ = {isa = PBXFileReference; lastKnownFileType = text; name = HISTORY; path = ../../../HISTORY; sourceTree = "<group>"; };
+		3BD1F30F148C080D002EE1BE /* FCApp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCApp.h; sourceTree = "<group>"; };
+		3BD1F310148C080D002EE1BE /* FCApp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCApp.mm; sourceTree = "<group>"; };
+		3BD1F311148C080D002EE1BE /* FCAppContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCAppContext.h; sourceTree = "<group>"; };
+		3BD1F312148C080D002EE1BE /* FCAppContext.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCAppContext.mm; sourceTree = "<group>"; };
+		3BD1F317148C0BD8002EE1BE /* FCFramework.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCFramework.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -406,6 +409,7 @@
 		3B140EC714898B8A00864D60 = {
 			isa = PBXGroup;
 			children = (
+				3BD1F30D148C074D002EE1BE /* HISTORY */,
 				3B140EFC14898B9E00864D60 /* Categories */,
 				3B140F0814898B9E00864D60 /* Core */,
 				3B140F1314898B9E00864D60 /* Debug */,
@@ -525,7 +529,9 @@
 				3B140F1514898B9E00864D60 /* FCPerformanceCounter.h */,
 				3B140F1614898B9E00864D60 /* FCPerformanceCounter.mm */,
 				3B140F1714898B9E00864D60 /* FCRasterView.h */,
-				3B140F1814898B9E00864D60 /* FCRasterView.m */,
+				3B140F1814898B9E00864D60 /* FCRasterView.mm */,
+				3B4132F61490C60200C3ADF0 /* FCConnect.h */,
+				3B4132F71490C60200C3ADF0 /* FCConnect.mm */,
 			);
 			name = Debug;
 			path = ../../../Debug;
@@ -536,17 +542,15 @@
 			children = (
 				3B140F1C14898B9E00864D60 /* Actor */,
 				3B140F2114898B9E00864D60 /* Analytics */,
+				3BD1F30E148C07CE002EE1BE /* App */,
 				3B140F2414898B9E00864D60 /* Caps */,
 				3B140F2714898B9E00864D60 /* FCAchievements.h */,
 				3B140F2814898B9E00864D60 /* FCAchievements.mm */,
-				3B140F2914898B9E00864D60 /* FCApp.h */,
-				3B140F2A14898B9E00864D60 /* FCApp.mm */,
 				3B140F2B14898B9E00864D60 /* FCCrypto.h */,
 				3B140F2C14898B9E00864D60 /* FCCrypto.mm */,
 				3B140F2D14898B9E00864D60 /* FCFont.h */,
 				3B140F2E14898B9E00864D60 /* FCFont.mm */,
-				3B140F2F14898B9E00864D60 /* FCGameContext.h */,
-				3B140F3014898B9E00864D60 /* FCGameContext.mm */,
+				3BD1F317148C0BD8002EE1BE /* FCFramework.h */,
 				3B140F3114898B9E00864D60 /* FCHighScores.h */,
 				3B140F3214898B9E00864D60 /* FCHighScores.mm */,
 				3B140F3314898B9E00864D60 /* FCLeaderboard.h */,
@@ -809,6 +813,17 @@
 			path = 3D;
 			sourceTree = "<group>";
 		};
+		3BD1F30E148C07CE002EE1BE /* App */ = {
+			isa = PBXGroup;
+			children = (
+				3BD1F30F148C080D002EE1BE /* FCApp.h */,
+				3BD1F310148C080D002EE1BE /* FCApp.mm */,
+				3BD1F311148C080D002EE1BE /* FCAppContext.h */,
+				3BD1F312148C080D002EE1BE /* FCAppContext.mm */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -839,10 +854,8 @@
 				3B140FDD14898B9E00864D60 /* FCAnalytics.h in Headers */,
 				3B140FDF14898B9E00864D60 /* FCCaps.h in Headers */,
 				3B140FE114898B9E00864D60 /* FCAchievements.h in Headers */,
-				3B140FE314898B9E00864D60 /* FCApp.h in Headers */,
 				3B140FE514898B9E00864D60 /* FCCrypto.h in Headers */,
 				3B140FE714898B9E00864D60 /* FCFont.h in Headers */,
-				3B140FE914898B9E00864D60 /* FCGameContext.h in Headers */,
 				3B140FEB14898B9E00864D60 /* FCHighScores.h in Headers */,
 				3B140FED14898B9E00864D60 /* FCLeaderboard.h in Headers */,
 				3B140FEF14898B9E00864D60 /* FCMisc.h in Headers */,
@@ -907,6 +920,10 @@
 				3B14105E14898B9F00864D60 /* FCPhysics3D.h in Headers */,
 				3B14106014898B9F00864D60 /* FCPhysics.h in Headers */,
 				3B14106214898B9F00864D60 /* FCPhysicsTypes.h in Headers */,
+				3BD1F313148C080D002EE1BE /* FCApp.h in Headers */,
+				3BD1F315148C080D002EE1BE /* FCAppContext.h in Headers */,
+				3BD1F318148C0BD8002EE1BE /* FCFramework.h in Headers */,
+				3B4132F81490C60200C3ADF0 /* FCConnect.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -955,7 +972,7 @@
 		3B140EC914898B8A00864D60 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = "Curly Rocket Ltd";
 			};
 			buildConfigurationList = 3B140ECC14898B8A00864D60 /* Build configuration list for PBXProject "FC" */;
@@ -1017,16 +1034,14 @@
 				3B140FCC14898B9E00864D60 /* FCError.mm in Sources */,
 				3B140FCE14898B9E00864D60 /* FCKeys.mm in Sources */,
 				3B140FD414898B9E00864D60 /* FCPerformanceCounter.mm in Sources */,
-				3B140FD614898B9E00864D60 /* FCRasterView.m in Sources */,
+				3B140FD614898B9E00864D60 /* FCRasterView.mm in Sources */,
 				3B140FDA14898B9E00864D60 /* FCActor.mm in Sources */,
 				3B140FDC14898B9E00864D60 /* FCActorSystem.mm in Sources */,
 				3B140FDE14898B9E00864D60 /* FCAnalytics.mm in Sources */,
 				3B140FE014898B9E00864D60 /* FCCaps.mm in Sources */,
 				3B140FE214898B9E00864D60 /* FCAchievements.mm in Sources */,
-				3B140FE414898B9E00864D60 /* FCApp.mm in Sources */,
 				3B140FE614898B9E00864D60 /* FCCrypto.mm in Sources */,
 				3B140FE814898B9E00864D60 /* FCFont.mm in Sources */,
-				3B140FEA14898B9E00864D60 /* FCGameContext.mm in Sources */,
 				3B140FEC14898B9E00864D60 /* FCHighScores.mm in Sources */,
 				3B140FEE14898B9E00864D60 /* FCLeaderboard.mm in Sources */,
 				3B140FF114898B9E00864D60 /* FCNotifications.mm in Sources */,
@@ -1059,10 +1074,6 @@
 				3B14102914898B9E00864D60 /* FCTextureFile.mm in Sources */,
 				3B14102B14898B9E00864D60 /* FCTextureManager.mm in Sources */,
 				3B14102D14898B9E00864D60 /* FCVertexDescriptor.mm in Sources */,
-				3B14103114898B9E00864D60 /* debug.fsh in Sources */,
-				3B14103214898B9E00864D60 /* debug.vsh in Sources */,
-				3B14103314898B9E00864D60 /* simple.fsh in Sources */,
-				3B14103414898B9E00864D60 /* simple.vsh in Sources */,
 				3B14103614898B9E00864D60 /* FCTextureFilePVR.mm in Sources */,
 				3B14103814898B9E00864D60 /* FCKenBurnsView.mm in Sources */,
 				3B14103A14898B9E00864D60 /* FCLeaderboardCell.mm in Sources */,
@@ -1084,6 +1095,9 @@
 				3B14105F14898B9F00864D60 /* FCPhysics3D.mm in Sources */,
 				3B14106114898B9F00864D60 /* FCPhysics.mm in Sources */,
 				3B14106314898B9F00864D60 /* FCPhysicsTypes.mm in Sources */,
+				3BD1F314148C080D002EE1BE /* FCApp.mm in Sources */,
+				3BD1F316148C080D002EE1BE /* FCAppContext.mm in Sources */,
+				3B4132F91490C60200C3ADF0 /* FCConnect.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1176,8 +1190,9 @@
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos5.0;
 				SKIP_INSTALL = YES;
-				USER_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = ../../..;
 				VALID_ARCHS = armv7;
 			};
 			name = Debug;
@@ -1199,8 +1214,9 @@
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos5.0;
 				SKIP_INSTALL = YES;
-				USER_HEADER_SEARCH_PATHS = "";
+				USER_HEADER_SEARCH_PATHS = ../../..;
 				VALID_ARCHS = armv7;
 			};
 			name = Release;
