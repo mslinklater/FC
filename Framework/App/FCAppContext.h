@@ -23,7 +23,7 @@
 #if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>
-#import "FCCaps.h"
+#import "FCDevice.h"
 
 @class FCXMLData;
 @class FCGLView;

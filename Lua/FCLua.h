@@ -40,7 +40,7 @@
 -(FCLuaVM*)newVM;
 
 -(unsigned int)newThreadWithVoidFunction:(NSString*)function;
-
+-(void)executeLine:(NSString*)line;
 // thread manager
 // create vm
 // create thread

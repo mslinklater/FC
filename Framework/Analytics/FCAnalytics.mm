@@ -25,7 +25,7 @@
 #import "FCCore.h"
 
 #import "FCAnalytics.h"
-#import "FCCaps.h"
+#import "FCDevice.h"
 #import <GANTracker.h>
 #import "FCLua.h"
 

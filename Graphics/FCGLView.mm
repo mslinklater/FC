@@ -27,7 +27,7 @@
 #import "FCCore.h"
 
 #import "FCGLView.h"
-#import "FCCaps.h"
+#import "FCDevice.h"
 #import "FCGLHelpers.h"
 #import "FCShaderManager.h"
 #import "FCRenderer.h"

@@ -204,6 +204,11 @@ int Lua_KillThread( lua_State* state )
 	return self;
 }
 
+-(void)executeLine:(NSString *)line
+{
+	[m_coreVM executeLine:line];
+}
+
 -(void)dealloc
 {
 #if TARGET_OS_IPHONE

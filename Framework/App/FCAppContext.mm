@@ -28,13 +28,13 @@
 #import "FCXMLData.h"
 #import "FCUIManager.h"
 #import "FCResourceManager.h"
-#import "FCCaps.h"
+#import "FCDevice.h"
 #import "FCRenderer.h"
 #import "FCActorSystem.h"
 #import "FCPhysics.h"
 #import "FCPersistentData.h"
 #import "FCStats.h"
-#import "FCCaps.h"
+#import "FCDevice.h"
 #import "FCUserDefaults.h"
 #import "FCAnalytics.h"
 #import "FCNotifications.h"
@@ -107,7 +107,7 @@
 
 		// game center
 		
-		if ([[FCCaps instance] valueForKey:kFCCapsOSGameCenter] != kFCCapsNotPresent)
+		if ([[FCDevice instance] valueForKey:kFCDeviceOSGameCenter] != kFCDeviceNotPresent)
 		{
 			[[GKLocalPlayer localPlayer] authenticateWithCompletionHandler:^(NSError *error) 
 			{

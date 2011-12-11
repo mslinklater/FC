@@ -22,6 +22,7 @@
 
 #import "FCError.h"
 #import "FCLua.h"
+#import "FCConnect.h"
 
 static int Lua_Fatal( lua_State* state )
 {
@@ -69,21 +70,27 @@ static int Lua_Log( lua_State* state )
 
 +(void)fatal:(NSString*)location info:(NSString*)errorString
 {
-	NSLog(@"FATAL - %@ - %@", location, errorString);
+	NSString* output = [NSString stringWithFormat:@"FATAL - %@ - %@", location, errorString];
+	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
+	NSLog( @"%@", output );
 	[FCError halt];
 }
 
 +(void)fatal1:(NSString*)location info:(NSString*)errorString arg1:(id)arg1
 {
 	NSString* infoString = [NSString stringWithFormat:errorString, arg1];
-	NSLog(@"FATAL - %@ - %@", location, infoString);
+	NSString* output = [NSString stringWithFormat:@"FATAL - %@ - %@", location, infoString];
+	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
+	NSLog(@"%@", output);
 	[FCError halt];
 }
 
 +(void)fatal2:(NSString*)location info:(NSString*)errorString arg1:(id)arg1 arg2:(id)arg2
 {
 	NSString* infoString = [NSString stringWithFormat:errorString, arg1, arg2];
-	NSLog(@"FATAL - %@ - %@", location, infoString);
+	NSString* output = [NSString stringWithFormat:@"FATAL - %@ - %@", location, infoString];
+	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
+	NSLog( @"%@", output );
 	[FCError halt];
 }
 
@@ -91,51 +98,72 @@ static int Lua_Log( lua_State* state )
 
 +(void)error:(NSString*)location info:(NSString*)errorString
 {
-	NSLog(@"ERROR - %@ - %@", location, errorString);	
+	NSString* output = [NSString stringWithFormat:@"ERROR - %@ - %@", location, errorString];
+	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
+	NSLog(@"%@", output);	
 }
 
 +(void)error1:(NSString*)location info:(NSString*)errorString arg1:(id)arg1
 {
-	NSLog(@"ERROR - %@ - %@ %@", location, errorString, arg1);
+	NSString* concat = [NSString stringWithFormat:errorString, arg1];
+	NSString* output = [NSString stringWithFormat:@"ERROR - %@ - %@", location, concat];
+	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
+	NSLog(@"%@", output);
 }
 
 +(void)error2:(NSString*)location info:(NSString*)errorString arg1:(id)arg1 arg2:(id)arg2
 {
-	NSLog(@"ERROR - %@ - %@ %@ %@", location, errorString, arg1, arg2);
+	NSString* concat = [NSString stringWithFormat:errorString, arg1, arg2];
+	NSString* output = [NSString stringWithFormat:@"ERROR - %@ - %@", location, concat];
+	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
+	NSLog(@"%@", output);	
 }
 
 #pragma mark - Warning
 
 +(void)warning:(NSString*)location info:(NSString*)warningString
 {
-	NSLog(@"WARNING - %@ - %@", location, warningString);	
+	NSString* output = [NSString stringWithFormat:@"WARNING - %@ - %@", location, warningString];
+	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
+	NSLog( @"%@", output );	
 }
 
 +(void)warning1:(NSString*)location info:(NSString*)warningString arg1:(id)arg1
 {
-	NSLog(@"WARNING - %@ - %@ %@", location, warningString, arg1);
+	NSString* concat = [NSString stringWithFormat:warningString, arg1];
+	NSString* output = [NSString stringWithFormat:@"WARNING - %@ - %@", location, concat];
+	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
+	NSLog(@"%@", output );
 }
 
 #pragma mark - Log
 
 +(void)log:(id)logItem
 {
-	NSLog(@"%@", logItem);
+	NSString* output = [NSString stringWithFormat:@"%@", logItem];
+	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
+	NSLog( @"%@", output );
 }
 
 +(void)log1:(id)logItem arg1:(id)arg1
 {
-	NSLog( logItem, arg1 );
+	NSString* output = [NSString stringWithFormat:logItem, arg1];
+	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
+	NSLog( @"%@", output );
 }
 
 +(void)log2:(id)logItem arg1:(id)arg1 arg2:(id)arg2
 {
-	NSLog( logItem, arg1, arg2 );
+	NSString* output = [NSString stringWithFormat:logItem, arg1, arg2];
+	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
+	NSLog( @"%@", output );
 }
 
 +(void)log3:(id)logItem arg1:(id)arg1 arg2:(id)arg2 arg3:(id)arg3
 {
-	NSLog( logItem, arg1, arg2, arg3 );
+	NSString* output = [NSString stringWithFormat:logItem, arg1, arg2, arg3];
+	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
+	NSLog( @"%@", output );
 }
 
 +(void)halt

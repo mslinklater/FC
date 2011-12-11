@@ -27,47 +27,46 @@
 
 // enums for caps
 
-extern NSString* kFCCapsTrue;
-extern NSString* kFCCapsFalse;
+extern NSString* kFCDeviceTrue;
+extern NSString* kFCDeviceFalse;
 
-extern NSString* kFCCapsPresent;
-extern NSString* kFCCapsNotPresent;
-extern NSString* kFCCapsUnknown;
+extern NSString* kFCDevicePresent;
+extern NSString* kFCDeviceNotPresent;
+extern NSString* kFCDeviceUnknown;
 
-extern NSString* kFCCapsPlatformPhone;
-extern NSString* kFCCapsPlatformPhoneRetina;
-extern NSString* kFCCapsPlatformPhoneOnPad;
-extern NSString* kFCCapsPlatformPad;
-extern NSString* kFCCapsPlatformPadRetina;
+extern NSString* kFCDevicePlatformPhone;
+extern NSString* kFCDevicePlatformPhoneRetina;
+extern NSString* kFCDevicePlatformPhoneOnPad;
+extern NSString* kFCDevicePlatformPad;
+extern NSString* kFCDevicePlatformPadRetina;
 
 // actual caps
 
-extern NSString* kFCCapsDisplayAspectRatio;
-extern NSString* kFCCapsDisplayLogicalXRes;
-extern NSString* kFCCapsDisplayLogicalYRes;
-extern NSString* kFCCapsDisplayPhysicalXRes;
-extern NSString* kFCCapsDisplayPhysicalYRes;
-extern NSString* kFCCapsDisplayScale;
+extern NSString* kFCDeviceDisplayAspectRatio;
+extern NSString* kFCDeviceDisplayLogicalXRes;
+extern NSString* kFCDeviceDisplayLogicalYRes;
+extern NSString* kFCDeviceDisplayPhysicalXRes;
+extern NSString* kFCDeviceDisplayPhysicalYRes;
+extern NSString* kFCDeviceDisplayScale;
 
-extern NSString* kFCCapsHardwareModelID;
-extern NSString* kFCCapsHardwareModel;
-extern NSString* kFCCapsHardwareUDID;
-extern NSString* kFCCapsHardwareName;
+extern NSString* kFCDeviceHardwareModelID;
+extern NSString* kFCDeviceHardwareModel;
+extern NSString* kFCDeviceHardwareUDID;
+extern NSString* kFCDeviceHardwareName;
 
-//extern NSString* kFCCapsOSMultitaskingSupported;
-extern NSString* kFCCapsOSVersion;
-extern NSString* kFCCapsOSName;
-extern NSString* kFCCapsOSGameCenter;
-extern NSString* kFCCapsPlatform;
-extern NSString* kFCCapsSimulator;
+extern NSString* kFCDeviceOSVersion;
+extern NSString* kFCDeviceOSName;
+extern NSString* kFCDeviceOSGameCenter;
+extern NSString* kFCDevicePlatform;
+extern NSString* kFCDeviceSimulator;
 
-extern NSString* kFCCapsAppPirated;
+extern NSString* kFCDeviceAppPirated;
 
-@interface FCCaps : NSObject <FCLuaClass> {
+@interface FCDevice : NSObject <FCLuaClass> {
 }
 @property(strong, nonatomic,readonly) NSMutableDictionary* caps;
 
-+(FCCaps*)instance;
++(FCDevice*)instance;
 
 -(void)probe;
 -(void)warmProbe;

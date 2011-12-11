@@ -2,7 +2,7 @@
 
 function PrintTable( tbl, recurse )
 	if tbl == nil then
-		FCLog("table is nil")
+		print("table is nil")
 		return
 	end
 	for k,v in pairs(tbl) do
@@ -10,7 +10,7 @@ function PrintTable( tbl, recurse )
 			print("TABLE: " .. k)
 			PrintTable(v, recurse)
 		else
-			print(k,v)
+			print( k, v )
 		end
 	end
 end

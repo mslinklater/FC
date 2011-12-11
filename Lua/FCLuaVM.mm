@@ -48,9 +48,11 @@ void common_LoadScriptForState(NSString* path, lua_State* _state)
 	
 	switch (ret) {
 		case LUA_ERRSYNTAX:
+			FCLuaCommon_DumpStack(_state);
 			FC_FATAL1(@"Syntax error on load of Lua file '%@'", path);
 			break;			
 		case LUA_ERRMEM:
+			FCLuaCommon_DumpStack(_state);
 			FC_FATAL1(@"Memory error on load of Lua file '%@'", path);
 			break;			
 		default:
@@ -129,6 +131,40 @@ static int panic (lua_State *L) {
 -(void)loadScript:(NSString*)path
 {
 	common_LoadScriptForState(path, _state);
+}
+
+-(void)executeLine:(NSString *)line
+{
+	int ret = luaL_loadbuffer(_state, [line UTF8String], [line length], "Injected");
+	
+	switch (ret) {
+		case LUA_ERRSYNTAX:
+			FC_ERROR1(@"Syntax error on load of Lua line '%@'", line);
+			break;			
+		case LUA_ERRMEM:
+			FC_ERROR1(@"Memory error on load of Lua line '%@'", line);
+			break;			
+		default:
+			break;
+	}
+	
+	ret = lua_pcall(_state, 0, 0, 0);
+	
+	switch (ret) {
+		case LUA_ERRRUN:
+			FCLuaCommon_DumpStack(_state);
+			FC_ERROR1(@"Runtime error in Lua line '%@'", line);
+			break;
+		case LUA_ERRMEM:
+			FC_ERROR1(@"Memory error in Lua line '%@'", line);
+			break;
+		case LUA_ERRERR:
+			FC_ERROR1(@"Error while running error handling function in Lua line '%@'", line);
+			break;
+		default:
+			break;
+	}
+
 }
 
 -(void)addStandardLibraries

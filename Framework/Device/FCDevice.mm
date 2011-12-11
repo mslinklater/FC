@@ -27,7 +27,7 @@
 #import "GameKit/GameKit.h"
 
 #import "FCCore.h"
-#import "FCCaps.h"
+#import "FCDevice.h"
 
 #import "FCXMLData.h"
 #import "FCMaths.h"
@@ -37,88 +37,87 @@
 
 static int Lua_Probe( lua_State* lua )
 {
-	[[FCCaps instance] probe];
+	[[FCDevice instance] probe];
 	return 0;
 }
 
 static int Lua_WarmProbe( lua_State* lua )
 {
-	[[FCCaps instance] warmProbe];
+	[[FCDevice instance] warmProbe];
 	return 0;
 }
 
 #pragma mark - Constants
 
-NSString* kFCCapsTrue = @"true";
-NSString* kFCCapsFalse = @"false";
+NSString* kFCDeviceTrue = @"true";
+NSString* kFCDeviceFalse = @"false";
 
-NSString* kFCCapsPresent = @"present";
-NSString* kFCCapsNotPresent = @"not present";
-NSString* kFCCapsUnknown = @"unknown";
+NSString* kFCDevicePresent = @"present";
+NSString* kFCDeviceNotPresent = @"not present";
+NSString* kFCDeviceUnknown = @"unknown";
 
-NSString* kFCCapsPlatformPhone = @"platform_iphone";
-NSString* kFCCapsPlatformPhoneRetina = @"platform_iphone_retina";
-NSString* kFCCapsPlatformPhoneOnPad = @"platform_iphone_on_ipad";
-NSString* kFCCapsPlatformPad = @"platform_ipad";
-NSString* kFCCapsPlatformPadRetina = @"platform_ipad_retina";
+NSString* kFCDevicePlatformPhone = @"platform_iphone";
+NSString* kFCDevicePlatformPhoneRetina = @"platform_iphone_retina";
+NSString* kFCDevicePlatformPhoneOnPad = @"platform_iphone_on_ipad";
+NSString* kFCDevicePlatformPad = @"platform_ipad";
+NSString* kFCDevicePlatformPadRetina = @"platform_ipad_retina";
 
 //------- keys
 
-NSString* kFCCapsDisplayAspectRatio = @"display_aspect_ratio";
-NSString* kFCCapsDisplayLogicalXRes = @"display_logical_xres";
-NSString* kFCCapsDisplayLogicalYRes = @"display_logical_yres";
-NSString* kFCCapsDisplayPhysicalXRes = @"display_physical_xres";
-NSString* kFCCapsDisplayPhysicalYRes = @"display_physical_yres";
-NSString* kFCCapsDisplayScale = @"display_scale";
+NSString* kFCDeviceDisplayAspectRatio = @"display_aspect_ratio";
+NSString* kFCDeviceDisplayLogicalXRes = @"display_logical_xres";
+NSString* kFCDeviceDisplayLogicalYRes = @"display_logical_yres";
+NSString* kFCDeviceDisplayPhysicalXRes = @"display_physical_xres";
+NSString* kFCDeviceDisplayPhysicalYRes = @"display_physical_yres";
+NSString* kFCDeviceDisplayScale = @"display_scale";
 
-NSString* kFCCapsHardwareModelID = @"hardware_model_id";
-NSString* kFCCapsHardwareModel = @"hardware_model";
-NSString* kFCCapsHardwareUDID = @"hardware_udid";
-NSString* kFCCapsHardwareName = @"hardware_name";
+NSString* kFCDeviceHardwareModelID = @"hardware_model_id";
+NSString* kFCDeviceHardwareModel = @"hardware_model";
+NSString* kFCDeviceHardwareUDID = @"hardware_udid";
+NSString* kFCDeviceHardwareName = @"hardware_name";
 
-//NSString* kFCCapsOSMultitaskingSupported = @"os_multitaskingsupported";
-NSString* kFCCapsOSVersion = @"os_version";
-NSString* kFCCapsOSName = @"os_name";
-NSString* kFCCapsOSGameCenter = @"os_gamecenter";
+NSString* kFCDeviceOSVersion = @"os_version";
+NSString* kFCDeviceOSName = @"os_name";
+NSString* kFCDeviceOSGameCenter = @"os_gamecenter";
 
-NSString* kFCCapsPlatform = @"platform";
+NSString* kFCDevicePlatform = @"platform";
 
-NSString* kFCCapsSimulator = @"simulator";
+NSString* kFCDeviceSimulator = @"simulator";
 
-NSString* kFCCapsAppPirated = @"pirated";
+NSString* kFCDeviceAppPirated = @"pirated";
 
 #pragma mark - Implementation
 
-static FCCaps* pInstance;
+static FCDevice* pInstance;
 
-@interface FCCaps() {
+@interface FCDevice() {
 	FCLuaVM* _luaVM;
 }
 @property(nonatomic, strong) FCLuaVM* luaVM;
 @end
 
-@implementation FCCaps
+@implementation FCDevice
 
 @synthesize caps = _caps;
 @synthesize luaVM = _luaVM;
 
 #pragma mark - Singleton
 
-+(FCCaps*)instance
++(FCDevice*)instance
 {
 	if (!pInstance) {
-		pInstance = [[FCCaps alloc] init];
+		pInstance = [[FCDevice alloc] init];
 	}
 	return pInstance;
 }
 
 +(void)registerLuaFunctions:(FCLuaVM *)lua
 {
-	[FCCaps instance].luaVM = lua;
+	[FCDevice instance].luaVM = lua;
 	
-	[lua createGlobalTable:@"FCCaps"];
-	[lua registerCFunction:Lua_Probe as:@"FCCaps.Probe"];
-	[lua registerCFunction:Lua_WarmProbe as:@"FCCaps.WarmProbe"];
+	[lua createGlobalTable:@"FCDevice"];
+	[lua registerCFunction:Lua_Probe as:@"FCDevice.Probe"];
+	[lua registerCFunction:Lua_WarmProbe as:@"FCDevice.WarmProbe"];
 }
 
 #pragma mark - Object Lifetime
@@ -211,19 +210,19 @@ static FCCaps* pInstance;
 {	
 	// get the OS version...
 	
-	[_caps setValue:[UIDevice currentDevice].systemVersion forKey:kFCCapsOSVersion];
+	[_caps setValue:[UIDevice currentDevice].systemVersion forKey:kFCDeviceOSVersion];
 
 	// OS name
 
-	[_caps setValue:[UIDevice currentDevice].systemName forKey:kFCCapsOSName];
+	[_caps setValue:[UIDevice currentDevice].systemName forKey:kFCDeviceOSName];
 
 	// name
 
-	[_caps setValue:[UIDevice currentDevice].name forKey:kFCCapsHardwareName];
+	[_caps setValue:[UIDevice currentDevice].name forKey:kFCDeviceHardwareName];
 
 	// hardware model ID
 	
-	[_caps setValue:[self machine] forKey:kFCCapsHardwareModelID];
+	[_caps setValue:[self machine] forKey:kFCDeviceHardwareModelID];
 	
 	// Check for frameworks
 	
@@ -242,14 +241,14 @@ static FCCaps* pInstance;
 	
 	// push values into caps
 	
-	[_caps setValue:[NSString stringWithFormat:@"%f", scale] forKey:kFCCapsDisplayScale];
-	[_caps setValue:[NSString stringWithFormat:@"%f", aspectRatio] forKey:kFCCapsDisplayAspectRatio];
+	[_caps setValue:[NSString stringWithFormat:@"%f", scale] forKey:kFCDeviceDisplayScale];
+	[_caps setValue:[NSString stringWithFormat:@"%f", aspectRatio] forKey:kFCDeviceDisplayAspectRatio];
 
-	[_caps setValue:[NSString stringWithFormat:@"%f", bounds.size.width] forKey:kFCCapsDisplayLogicalXRes];
-	[_caps setValue:[NSString stringWithFormat:@"%f", bounds.size.height] forKey:kFCCapsDisplayLogicalYRes];
+	[_caps setValue:[NSString stringWithFormat:@"%f", bounds.size.width] forKey:kFCDeviceDisplayLogicalXRes];
+	[_caps setValue:[NSString stringWithFormat:@"%f", bounds.size.height] forKey:kFCDeviceDisplayLogicalYRes];
 
-	[_caps setValue:[NSString stringWithFormat:@"%f", screenSize.width] forKey:kFCCapsDisplayPhysicalXRes];
-	[_caps setValue:[NSString stringWithFormat:@"%f", screenSize.height] forKey:kFCCapsDisplayPhysicalYRes];
+	[_caps setValue:[NSString stringWithFormat:@"%f", screenSize.width] forKey:kFCDeviceDisplayPhysicalXRes];
+	[_caps setValue:[NSString stringWithFormat:@"%f", screenSize.height] forKey:kFCDeviceDisplayPhysicalYRes];
 
 	// work out the the platform designation
 	
@@ -260,23 +259,23 @@ static FCCaps* pInstance;
 		if (scale == 2.0)	// retina
 		{
 			if (bounds.size.width == 320) 
-				[_caps setValue:kFCCapsPlatformPhoneRetina forKey:kFCCapsPlatform];
+				[_caps setValue:kFCDevicePlatformPhoneRetina forKey:kFCDevicePlatform];
 			else
-				[_caps setValue:kFCCapsPlatformPadRetina forKey:kFCCapsPlatform];				
+				[_caps setValue:kFCDevicePlatformPadRetina forKey:kFCDevicePlatform];				
 		}
 		else
 		{
 			if (bounds.size.width == 320) 
-				[_caps setValue:kFCCapsPlatformPhone forKey:kFCCapsPlatform];
+				[_caps setValue:kFCDevicePlatformPhone forKey:kFCDevicePlatform];
 			else
-				[_caps setValue:kFCCapsPlatformPad forKey:kFCCapsPlatform];				
+				[_caps setValue:kFCDevicePlatformPad forKey:kFCDevicePlatform];				
 		}
 	}
 	else
 	{
 		// non-native, so iPhone running on iPad
 		
-		[_caps setValue:kFCCapsPlatformPhoneOnPad forKey:kFCCapsPlatform];		
+		[_caps setValue:kFCDevicePlatformPhoneOnPad forKey:kFCDevicePlatform];		
 	}
 	
 	// Now for some lower level stuff
@@ -291,9 +290,9 @@ static FCCaps* pInstance;
 	// detect if pirated ?
 
 	if ([[[NSBundle mainBundle] infoDictionary] objectForKey: @"SignerIdentity"] == nil) {
-		[_caps setValue:kFCCapsTrue forKey:kFCCapsAppPirated];
+		[_caps setValue:kFCDeviceTrue forKey:kFCDeviceAppPirated];
 	} else {
-		[_caps setValue:kFCCapsFalse forKey:kFCCapsAppPirated];		
+		[_caps setValue:kFCDeviceFalse forKey:kFCDeviceAppPirated];		
 	}
 //	[self dumpToTTY];
 
@@ -308,11 +307,11 @@ static FCCaps* pInstance;
 	 {
 		 if (error == nil)
 		 {
-			 [_caps setValue:kFCCapsPresent forKey:kFCCapsOSGameCenter];
+			 [_caps setValue:kFCDevicePresent forKey:kFCDeviceOSGameCenter];
 		 }
 		 else
 		 {
-			 [_caps setValue:kFCCapsNotPresent forKey:kFCCapsOSGameCenter];
+			 [_caps setValue:kFCDeviceNotPresent forKey:kFCDeviceOSGameCenter];
 		 }
 	 }];
 }
@@ -334,7 +333,7 @@ static FCCaps* pInstance;
 
 -(BOOL)isPresent:(NSString*)key
 {
-	return [[self.caps valueForKey:key] isEqualToString:kFCCapsPresent];	
+	return [[self.caps valueForKey:key] isEqualToString:kFCDevicePresent];	
 }
 
 @end

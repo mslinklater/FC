@@ -38,6 +38,7 @@ typedef int(*tLuaCallableCFunction)(lua_State*);
 @property(nonatomic, readonly) lua_State* state;
 
 -(void)loadScript:(NSString*)path;
+-(void)executeLine:(NSString*)line;
 -(void)addStandardLibraries;
 -(void)createGlobalTable:(NSString*)tableName;
 -(void)registerCFunction:(tLuaCallableCFunction)func as:(NSString*)name;

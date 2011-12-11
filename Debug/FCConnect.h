@@ -28,18 +28,27 @@ enum eFCConnectErrorCode {
 	kFCConnectNoSocketsAvailable
 };
 
-@interface FCConnect : NSObject <NSNetServiceDelegate> {
+@interface FCConnect : NSObject <NSNetServiceDelegate, NSStreamDelegate> {
 	uint16_t		m_port;
 	uint32_t		m_protocolFamily;
 	CFSocketRef		m_socketRef;
 	NSNetService*	m_netService;
 	NSString*		m_bonjourIdentifier;
+	NSInputStream*	m_inputStream;
+	NSOutputStream*	m_outputStream;
+	NSMutableArray*	m_sendQueue;
+	
+	BOOL			_connected;
 }
+@property() BOOL connected;
 
 +(FCConnect*)instance;
 
 -(BOOL)start:(NSError**)error;
 -(BOOL)enableBonjourWithName:(NSString*)name;
 -(void)stop;
+-(void)setInputStream:(NSInputStream*)iStream andOutputStream:(NSOutputStream*)oStream;
 
+-(void)sendNextString;
+-(void)sendString:(NSString*)string;
 @end

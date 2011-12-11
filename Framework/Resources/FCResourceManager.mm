@@ -24,7 +24,7 @@
 
 #import "FCCore.h"
 #import "FCResourceManager.h"
-#import "FCCaps.h"
+#import "FCDevice.h"
 #import "FCTarFile.h"
 #import "FCXMLData.h"
 
@@ -94,12 +94,12 @@ static NSString* kUDSuffix = @"_ultra";
 	{
 		if (!self.suffixImages) 
 		{
-			if ( [[[FCCaps instance] valueForKey:kFCCapsPlatform] isEqualToString:kFCCapsPlatformPad] ||
-				[[[FCCaps instance] valueForKey:kFCCapsPlatform] isEqualToString:kFCCapsPlatformPhoneRetina] ) 
+			if ( [[[FCDevice instance] valueForKey:kFCDevicePlatform] isEqualToString:kFCDevicePlatformPad] ||
+				[[[FCDevice instance] valueForKey:kFCDevicePlatform] isEqualToString:kFCDevicePlatformPhoneRetina] ) 
 			{
 				self.suffixImages = kHDSuffix;
 			}
-			else if( [[[FCCaps instance] valueForKey:kFCCapsPlatform] isEqualToString:kFCCapsPlatformPadRetina] )
+			else if( [[[FCDevice instance] valueForKey:kFCDevicePlatform] isEqualToString:kFCDevicePlatformPadRetina] )
 			{
 				self.suffixImages = kUDSuffix;				
 			}

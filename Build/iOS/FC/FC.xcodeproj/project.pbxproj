@@ -47,8 +47,8 @@
 		3B140FDC14898B9E00864D60 /* FCActorSystem.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F2014898B9E00864D60 /* FCActorSystem.mm */; };
 		3B140FDD14898B9E00864D60 /* FCAnalytics.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F2214898B9E00864D60 /* FCAnalytics.h */; };
 		3B140FDE14898B9E00864D60 /* FCAnalytics.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F2314898B9E00864D60 /* FCAnalytics.mm */; };
-		3B140FDF14898B9E00864D60 /* FCCaps.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F2514898B9E00864D60 /* FCCaps.h */; };
-		3B140FE014898B9E00864D60 /* FCCaps.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F2614898B9E00864D60 /* FCCaps.mm */; };
+		3B140FDF14898B9E00864D60 /* FCDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F2514898B9E00864D60 /* FCDevice.h */; };
+		3B140FE014898B9E00864D60 /* FCDevice.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F2614898B9E00864D60 /* FCDevice.mm */; };
 		3B140FE114898B9E00864D60 /* FCAchievements.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F2714898B9E00864D60 /* FCAchievements.h */; };
 		3B140FE214898B9E00864D60 /* FCAchievements.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3B140F2814898B9E00864D60 /* FCAchievements.mm */; };
 		3B140FE514898B9E00864D60 /* FCCrypto.h in Headers */ = {isa = PBXBuildFile; fileRef = 3B140F2B14898B9E00864D60 /* FCCrypto.h */; };
@@ -237,8 +237,8 @@
 		3B140F2014898B9E00864D60 /* FCActorSystem.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCActorSystem.mm; sourceTree = "<group>"; };
 		3B140F2214898B9E00864D60 /* FCAnalytics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCAnalytics.h; sourceTree = "<group>"; };
 		3B140F2314898B9E00864D60 /* FCAnalytics.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCAnalytics.mm; sourceTree = "<group>"; };
-		3B140F2514898B9E00864D60 /* FCCaps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCCaps.h; sourceTree = "<group>"; };
-		3B140F2614898B9E00864D60 /* FCCaps.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCCaps.mm; sourceTree = "<group>"; };
+		3B140F2514898B9E00864D60 /* FCDevice.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCDevice.h; sourceTree = "<group>"; };
+		3B140F2614898B9E00864D60 /* FCDevice.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCDevice.mm; sourceTree = "<group>"; };
 		3B140F2714898B9E00864D60 /* FCAchievements.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCAchievements.h; sourceTree = "<group>"; };
 		3B140F2814898B9E00864D60 /* FCAchievements.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = FCAchievements.mm; sourceTree = "<group>"; };
 		3B140F2B14898B9E00864D60 /* FCCrypto.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FCCrypto.h; sourceTree = "<group>"; };
@@ -543,7 +543,7 @@
 				3B140F1C14898B9E00864D60 /* Actor */,
 				3B140F2114898B9E00864D60 /* Analytics */,
 				3BD1F30E148C07CE002EE1BE /* App */,
-				3B140F2414898B9E00864D60 /* Caps */,
+				3B140F2414898B9E00864D60 /* Device */,
 				3B140F2714898B9E00864D60 /* FCAchievements.h */,
 				3B140F2814898B9E00864D60 /* FCAchievements.mm */,
 				3B140F2B14898B9E00864D60 /* FCCrypto.h */,
@@ -602,13 +602,13 @@
 			path = Analytics;
 			sourceTree = "<group>";
 		};
-		3B140F2414898B9E00864D60 /* Caps */ = {
+		3B140F2414898B9E00864D60 /* Device */ = {
 			isa = PBXGroup;
 			children = (
-				3B140F2514898B9E00864D60 /* FCCaps.h */,
-				3B140F2614898B9E00864D60 /* FCCaps.mm */,
+				3B140F2514898B9E00864D60 /* FCDevice.h */,
+				3B140F2614898B9E00864D60 /* FCDevice.mm */,
 			);
-			path = Caps;
+			path = Device;
 			sourceTree = "<group>";
 		};
 		3B140F4814898B9E00864D60 /* PersistentData */ = {
@@ -852,7 +852,7 @@
 				3B140FD914898B9E00864D60 /* FCActor.h in Headers */,
 				3B140FDB14898B9E00864D60 /* FCActorSystem.h in Headers */,
 				3B140FDD14898B9E00864D60 /* FCAnalytics.h in Headers */,
-				3B140FDF14898B9E00864D60 /* FCCaps.h in Headers */,
+				3B140FDF14898B9E00864D60 /* FCDevice.h in Headers */,
 				3B140FE114898B9E00864D60 /* FCAchievements.h in Headers */,
 				3B140FE514898B9E00864D60 /* FCCrypto.h in Headers */,
 				3B140FE714898B9E00864D60 /* FCFont.h in Headers */,
@@ -1038,7 +1038,7 @@
 				3B140FDA14898B9E00864D60 /* FCActor.mm in Sources */,
 				3B140FDC14898B9E00864D60 /* FCActorSystem.mm in Sources */,
 				3B140FDE14898B9E00864D60 /* FCAnalytics.mm in Sources */,
-				3B140FE014898B9E00864D60 /* FCCaps.mm in Sources */,
+				3B140FE014898B9E00864D60 /* FCDevice.mm in Sources */,
 				3B140FE214898B9E00864D60 /* FCAchievements.mm in Sources */,
 				3B140FE614898B9E00864D60 /* FCCrypto.mm in Sources */,
 				3B140FE814898B9E00864D60 /* FCFont.mm in Sources */,
