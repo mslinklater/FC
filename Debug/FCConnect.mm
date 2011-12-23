@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if TARGET_OS_IPHONE
+
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
@@ -369,3 +371,5 @@ static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
 }
 
 @end
+
+#endif

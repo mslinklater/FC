@@ -128,9 +128,9 @@ int Lua_KillThread( lua_State* state )
 
 @interface FCLua() {
 	FCLuaVM*				m_coreVM;
-	FCPerformanceCounter*	m_perfCounter;
+//	FCPerformanceCounter*	m_perfCounter;
 #if TARGET_OS_IPHONE
-	CADisplayLink*			m_displayLink;
+//	CADisplayLink*			m_displayLink;
 #endif
 }
 @end
@@ -152,10 +152,8 @@ int Lua_KillThread( lua_State* state )
 	return pInstance;
 }
 
--(void)updateThreads
+-(void)updateThreads:(float)dt
 {
-	float dt = (float)[m_perfCounter secondsValue];
-	[m_perfCounter zero];
 	
 	// update threads
 	NSArray* keys = [self.threadsDict allKeys];
@@ -191,14 +189,14 @@ int Lua_KillThread( lua_State* state )
 		
 		_nextThreadId = 1;
 
-		m_perfCounter = [[FCPerformanceCounter alloc] init];
+//		m_perfCounter = [[FCPerformanceCounter alloc] init];
 		
 		// setup display link
 
 #if TARGET_OS_IPHONE
-		m_displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updateThreads)];
-		[m_displayLink setFrameInterval:1];
-		[m_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+//		m_displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updateThreads)];
+//		[m_displayLink setFrameInterval:1];
+//		[m_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 #endif
 	}
 	return self;
@@ -212,7 +210,7 @@ int Lua_KillThread( lua_State* state )
 -(void)dealloc
 {
 #if TARGET_OS_IPHONE
-	[m_displayLink invalidate];
+//	[m_displayLink invalidate];
 #endif
 	_threadsDict = nil;
 }

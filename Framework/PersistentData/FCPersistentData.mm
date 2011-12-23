@@ -38,6 +38,18 @@ static int lua_LoadData( lua_State* _state )
 	return 0;
 }
 
+static int lua_ClearData( lua_State* _state )
+{
+	[[FCPersistentData instance] clearData];
+	return 0;
+}
+
+static int lua_PrintData( lua_State* _state )
+{
+	[[FCPersistentData instance] printData];
+	return 0;
+}
+
 static int lua_SetBool( lua_State* _state )
 {
 	FC_ASSERT( lua_type(_state, -2) == LUA_TSTRING );
@@ -145,7 +157,7 @@ static int lua_GetNumber( lua_State* _state )
 	{
 		lua_pushnumber(_state, [value doubleValue]);
 	}
-	return 1;	// false, true or nil
+	return 1;
 }
 
 #pragma mark - Implementation
@@ -170,6 +182,8 @@ static int lua_GetNumber( lua_State* _state )
 	[lua createGlobalTable:@"FCPersistentData"];
 	[lua registerCFunction:lua_SaveData as:@"FCPersistentData.SaveData"];
 	[lua registerCFunction:lua_LoadData as:@"FCPersistentData.LoadData"];
+	[lua registerCFunction:lua_ClearData as:@"FCPersistentData.ClearData"];
+	[lua registerCFunction:lua_PrintData as:@"FCPersistentData.PrintData"];
 	[lua registerCFunction:lua_SetBool as:@"FCPersistentData.SetBool"];
 	[lua registerCFunction:lua_GetBool as:@"FCPersistentData.GetBool"];
 	[lua registerCFunction:lua_SetString as:@"FCPersistentData.SetString"];
@@ -213,6 +227,17 @@ static int lua_GetNumber( lua_State* _state )
 {
 	FC_LOG(@"FCPersisteneData:saveData");
 	[NSKeyedArchiver archiveRootObject:self.dataRoot toFile:[self filename]];
+}
+
+-(void)clearData
+{
+	self.dataRoot = [NSMutableDictionary dictionary];
+	[self saveData];
+}
+
+-(void)printData
+{
+	FC_LOG(self.dataRoot);
 }
 
 -(id)objectForKey:(NSString*)key

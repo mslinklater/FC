@@ -20,12 +20,20 @@
  THE SOFTWARE.
  */
 
+#if TARGET_OS_IPHONE
+
 #import <Foundation/Foundation.h>
 
 #import "Lua/FCLua.h"
 
+@class FCPhaseManager;
+
+@protocol FCAppDelegate <NSObject>
+-(void)registerPhasesWithManager:(FCPhaseManager*)manager;
+@end
+
 @interface FCApp : NSObject
-+(void)coldBootWithViewController:(UIViewController*)vc;
++(void)coldBootWithViewController:(UIViewController*)vc delegate:(id<FCAppDelegate>)delegate;
 +(void)warmBoot;
 +(void)shutdown;
 +(void)update;
@@ -40,3 +48,5 @@
 
 +(FCLuaVM*)lua;
 @end
+
+#endif

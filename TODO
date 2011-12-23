@@ -3,6 +3,7 @@ TODO:
 (This stuff should really be tracked as issues on github)
 
 Lua driven !
+Reload Lua files - keep track of all loaded
 
 Document - Doxygen - need a config
 Cean up old chuff that isn't needed - UIView stuff - it's a bit redundant or needs a nicer replacement

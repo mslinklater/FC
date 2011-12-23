@@ -981,7 +981,7 @@
 		3B141069148AC6A500864D60 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 				ORGANIZATIONNAME = "Curly Rocket Ltd";
 			};
 			buildConfigurationList = 3B14106C148AC6A500864D60 /* Build configuration list for PBXProject "FC" */;
@@ -1295,6 +1295,7 @@
 				3B14109F148AC6A500864D60 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		3B1410A0148AC6A500864D60 /* Build configuration list for PBXNativeTarget "FCTests" */ = {
 			isa = XCConfigurationList;
@@ -1303,6 +1304,7 @@
 				3B1410A2148AC6A500864D60 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

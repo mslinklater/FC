@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+// to deprecate - move over to FCConnect
+
 #if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>

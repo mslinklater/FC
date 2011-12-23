@@ -46,6 +46,8 @@
 +(FCPersistentData*)instance;
 -(void)loadData;
 -(void)saveData;
+-(void)clearData;
+-(void)printData;
 
 -(void)addObject:(id)object forKey:(NSString*)key;
 -(id)objectForKey:(NSString*)key;

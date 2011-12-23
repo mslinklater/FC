@@ -20,29 +20,37 @@
  THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
-#import "FCLuaVM.h"
-#import "FCLuaThread.h"
+#import "FCPhase.h"
+#import "FCError.h"
 
-@interface FCLua : NSObject {
-	NSMutableDictionary*	_threadsDict;
-	unsigned int			_nextThreadId;
+@implementation FCPhase
+@synthesize name = _name;
+@synthesize namePath = _namePath;
+@synthesize parent = _parent;
+@synthesize children = _children;
+@synthesize activeChild = _activeChild;
+@synthesize luaTable = _luaTable;
+@synthesize delegate = _delegate;
+@synthesize activateTimer = _activateTimer;
+@synthesize deactivateTimer = _deactivateTimer;
+@synthesize state = _state;
+
+-(id)initWithName:(NSString *)name
+{
+	self = [super init];
+	if (self) {
+		_name = name;
+		_children = [NSMutableDictionary dictionary];
+		_state = kFCPhaseStateInactive;
+	}
+	return self;
 }
-@property(nonatomic, readonly) NSMutableDictionary* threadsDict;
-@property(nonatomic, readonly) unsigned int nextThreadId;
 
-+(FCLua*)instance;
-
--(void)updateThreads:(float)dt;
--(void)incrementNextThreadId;
-
--(FCLuaVM*)coreVM;
--(FCLuaVM*)newVM;
-
--(unsigned int)newThreadWithVoidFunction:(NSString*)function;
--(void)executeLine:(NSString*)line;
-// thread manager
-// create vm
-// create thread
+-(FCPhaseUpdate)update:(float)dt
+{
+	FC_ASSERT([_delegate respondsToSelector:@selector(update:)]);
+	
+	return [_delegate update:dt];
+}
 
 @end

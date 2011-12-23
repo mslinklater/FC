@@ -21,28 +21,24 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "FCLuaVM.h"
-#import "FCLuaThread.h"
+#import "FCPhase.h"
+#import "FCLuaClass.h"
 
-@interface FCLua : NSObject {
-	NSMutableDictionary*	_threadsDict;
-	unsigned int			_nextThreadId;
+@interface FCPhaseManager : NSObject <FCLuaClass> {
+	FCPhase* _rootPhase;
+	NSMutableArray* _phaseQueue;
+	NSMutableArray* _activePhases;
 }
-@property(nonatomic, readonly) NSMutableDictionary* threadsDict;
-@property(nonatomic, readonly) unsigned int nextThreadId;
+@property(nonatomic, strong) FCPhase* rootPhase;
+@property(nonatomic, strong) NSMutableArray* phaseQueue;
+@property(nonatomic, strong) NSMutableArray* activePhases;
 
-+(FCLua*)instance;
++(FCPhaseManager*)instance;
 
--(void)updateThreads:(float)dt;
--(void)incrementNextThreadId;
+-(void)update:(float)dt;
+-(FCPhase*)createPhaseWithName:(NSString*)name;
+-(void)attachPhase:(FCPhase*)phase toParent:(FCPhase*)parentPhase;
 
--(FCLuaVM*)coreVM;
--(FCLuaVM*)newVM;
-
--(unsigned int)newThreadWithVoidFunction:(NSString*)function;
--(void)executeLine:(NSString*)line;
-// thread manager
-// create vm
-// create thread
+-(void)addPhaseToQueue:(NSString*)name;
 
 @end

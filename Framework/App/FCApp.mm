@@ -22,15 +22,25 @@
 
 //#import <UIKit/UIKit.h>
 
+#if TARGET_OS_IPHONE
+
+#import <QuartzCore/QuartzCore.h>
+
+#import "FCCore.h"
 #import "FCApp.h"
 #import "FCPersistentData.h"
 #import "FCAnalytics.h"
 #import "FCDevice.h"
 #import "FCError.h"
 #import "FCConnect.h"
+#import "FCPhaseManager.h"
+#import "FCPerformanceCounter.h"
 
 static FCLuaVM*				s_lua;
 static UIViewController*	s_viewController;
+static id<FCAppDelegate>	s_delegate;
+static FCPerformanceCounter*	s_perfCounter;
+static CADisplayLink*			s_displayLink;
 
 static int lua_HideStatusBar( lua_State* _state )
 {
@@ -47,9 +57,15 @@ static int lua_ShowStatusBar( lua_State* _state )
 
 @implementation FCApp
 
-+(void)coldBootWithViewController:(UIViewController *)vc
++(void)coldBootWithViewController:(UIViewController *)vc delegate:(id<FCAppDelegate>)delegate
 {
 	s_viewController = vc;
+	s_delegate = delegate;
+	s_perfCounter = [[FCPerformanceCounter alloc] init];
+	s_displayLink = [CADisplayLink displayLinkWithTarget:[FCApp class] selector:@selector(update)];
+	[s_displayLink setFrameInterval:1];
+	[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+
 	vc.view.backgroundColor = [UIColor blackColor];
 	
 	// register system lua hooks
@@ -57,6 +73,7 @@ static int lua_ShowStatusBar( lua_State* _state )
 	s_lua = [[FCLua instance] coreVM];
 	
 	[FCPersistentData registerLuaFunctions:s_lua];
+	[FCPhaseManager registerLuaFunctions:s_lua];
 
 #if TARGET_OS_IPHONE
 	[FCAnalytics registerLuaFunctions:s_lua];
@@ -84,17 +101,30 @@ static int lua_ShowStatusBar( lua_State* _state )
 
 +(void)warmBoot
 {
+	[s_delegate registerPhasesWithManager:[FCPhaseManager instance]];
+	
 	[s_lua call:@"App.WarmBoot" required:YES withSig:@""];
 }
 
 +(void)shutdown
 {
+	[s_displayLink invalidate];
+	s_perfCounter = nil;
+	s_delegate = nil;
 	[s_lua call:@"App.Shutdown" required:YES withSig:@""];
+	s_lua = nil;
 }
 
 +(void)update
 {
-	[[FCLua instance] updateThreads];
+	float dt = (float)[s_perfCounter secondsValue];
+		
+	dt = FC::Clamp<float>(dt, 0, 0.1);
+	
+	[s_perfCounter zero];
+
+	[[FCPhaseManager instance] update:dt];
+	[[FCLua instance] updateThreads:dt];
 }
 
 +(void)startInternalUpdate
@@ -129,7 +159,6 @@ static int lua_ShowStatusBar( lua_State* _state )
 	[[FCConnect instance] start:nil];
 	[[FCConnect instance] enableBonjourWithName:@"FCConnect"];
 	[s_lua call:@"App.DidBecomeActive" required:NO withSig:@""];		
-	[[FCPersistentData instance] loadData];
 }
 
 +(void)willTerminate
@@ -143,3 +172,5 @@ static int lua_ShowStatusBar( lua_State* _state )
 }
 
 @end
+
+#endif
