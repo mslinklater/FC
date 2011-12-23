@@ -27,6 +27,7 @@
 void FCLuaCommon_DumpStack( lua_State* _state )
 {
 	NSString* hexAddress = [NSString stringWithFormat:@"0x%08x", _state];
+	FC_UNUSED(hexAddress);
 	FC_LOG1(@"-- FCLuaVM:dumpStack (%@) --", hexAddress);
 	int i;
 	int top = lua_gettop(_state);
@@ -34,6 +35,7 @@ void FCLuaCommon_DumpStack( lua_State* _state )
 	{
 		int t = lua_type(_state, i);
 		int negIndex = -(top - i) -1;
+		FC_UNUSED(negIndex);
 		switch(t)
 		{
 			case LUA_TSTRING:

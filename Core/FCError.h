@@ -27,6 +27,7 @@
 #define FC_FATAL1(n,m) [FCError fatal1:[NSString stringWithFormat:@"%s %s:%d", __FILE__, __FUNCTION__, __LINE__] info:n arg1:m]
 #define FC_FATAL2(n,m,a) [FCError fatal2:[NSString stringWithFormat:@"%s %s:%d", __FILE__, __FUNCTION__, __LINE__] info:n arg1:m arg2:a]
 #define FC_HALT [FCError halt]
+#define FC_UNUSED(n) (void)(n)
 
 #if defined (DEBUG)
 

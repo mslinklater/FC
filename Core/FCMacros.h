@@ -20,8 +20,6 @@
  THE SOFTWARE.
  */
 
-#define FC_UNUSED(n) (void)n
-
 static inline float FCDegToRad( float deg )
 {
 	return deg * 0.017453292519943f;
