@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+// MOVE to Lua ?
+
 #import <Foundation/Foundation.h>
 
 enum FCLeaderboardType {

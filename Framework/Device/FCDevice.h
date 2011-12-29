@@ -71,7 +71,8 @@ extern NSString* kFCDeviceAppPirated;
 -(void)probe;
 -(void)warmProbe;
 
--(void)dumpToTTY;
+-(void)print;
+-(void)getScreenCaps;
 
 -(id)valueForKey:(NSString*)key;
 -(BOOL)valueForKey:(NSString*)key equalTo:(NSString*)key2;

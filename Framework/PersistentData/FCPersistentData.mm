@@ -26,25 +26,25 @@
 
 #pragma mark - Lua Interface
 
-static int lua_SaveData( lua_State* _state )
+static int lua_Save( lua_State* _state )
 {
 	[[FCPersistentData instance] saveData];
 	return 0;
 }
 
-static int lua_LoadData( lua_State* _state )
+static int lua_Load( lua_State* _state )
 {
 	[[FCPersistentData instance] loadData];
 	return 0;
 }
 
-static int lua_ClearData( lua_State* _state )
+static int lua_Clear( lua_State* _state )
 {
 	[[FCPersistentData instance] clearData];
 	return 0;
 }
 
-static int lua_PrintData( lua_State* _state )
+static int lua_Print( lua_State* _state )
 {
 	[[FCPersistentData instance] printData];
 	return 0;
@@ -180,10 +180,10 @@ static int lua_GetNumber( lua_State* _state )
 +(void)registerLuaFunctions:(FCLuaVM*)lua
 {
 	[lua createGlobalTable:@"FCPersistentData"];
-	[lua registerCFunction:lua_SaveData as:@"FCPersistentData.SaveData"];
-	[lua registerCFunction:lua_LoadData as:@"FCPersistentData.LoadData"];
-	[lua registerCFunction:lua_ClearData as:@"FCPersistentData.ClearData"];
-	[lua registerCFunction:lua_PrintData as:@"FCPersistentData.PrintData"];
+	[lua registerCFunction:lua_Save as:@"FCPersistentData.Save"];
+	[lua registerCFunction:lua_Load as:@"FCPersistentData.Load"];
+	[lua registerCFunction:lua_Clear as:@"FCPersistentData.Clear"];
+	[lua registerCFunction:lua_Print as:@"FCPersistentData.Print"];
 	[lua registerCFunction:lua_SetBool as:@"FCPersistentData.SetBool"];
 	[lua registerCFunction:lua_GetBool as:@"FCPersistentData.GetBool"];
 	[lua registerCFunction:lua_SetString as:@"FCPersistentData.SetString"];
@@ -226,7 +226,13 @@ static int lua_GetNumber( lua_State* _state )
 -(void)saveData
 {
 	FC_LOG(@"FCPersisteneData:saveData");
-	[NSKeyedArchiver archiveRootObject:self.dataRoot toFile:[self filename]];
+
+	// threaded
+	
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+		[NSKeyedArchiver archiveRootObject:self.dataRoot toFile:[self filename]];
+	});
+	
 }
 
 -(void)clearData

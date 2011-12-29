@@ -24,7 +24,7 @@
 #import "FCLua.h"
 #import "FCConnect.h"
 
-static int Lua_Fatal( lua_State* state )
+static int lua_Fatal( lua_State* state )
 {
 	const char* location = lua_tostring(state, -2);
 	const char* error = lua_tostring(state, -1);
@@ -32,7 +32,7 @@ static int Lua_Fatal( lua_State* state )
 	return 0;
 }
 
-static int Lua_Error( lua_State* state )
+static int lua_Error( lua_State* state )
 {
 	const char* location = lua_tostring(state, -2);
 	const char* error = lua_tostring(state, -1);
@@ -40,7 +40,7 @@ static int Lua_Error( lua_State* state )
 	return 0;
 }
 
-static int Lua_Warning( lua_State* state )
+static int lua_Warning( lua_State* state )
 {
 	const char* location = lua_tostring(state, -2);
 	const char* error = lua_tostring(state, -1);
@@ -48,7 +48,7 @@ static int Lua_Warning( lua_State* state )
 	return 0;
 }
 
-static int Lua_Log( lua_State* state )
+static int lua_Log( lua_State* state )
 {
 	const char* log = lua_tostring(state, -1);
 	NSString* logString = [NSString stringWithFormat:@"Lua(0x%08x):%s", state, log];
@@ -60,10 +60,10 @@ static int Lua_Log( lua_State* state )
 
 +(void)registerLuaFunctions:(FCLuaVM*)lua
 {
-	[lua registerCFunction:Lua_Fatal as:@"FCFatal"];
-	[lua registerCFunction:Lua_Error as:@"FCError"];
-	[lua registerCFunction:Lua_Warning as:@"FCWarning"];
-	[lua registerCFunction:Lua_Log as:@"FCLog"];
+	[lua registerCFunction:lua_Fatal as:@"FCFatal"];
+	[lua registerCFunction:lua_Error as:@"FCError"];
+	[lua registerCFunction:lua_Warning as:@"FCWarning"];
+	[lua registerCFunction:lua_Log as:@"FCLog"];
 }
 
 #pragma mark - Fatal

@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+// Move func to Lua
+
 #import <Foundation/Foundation.h>
 #import "FCProtocols.h"
 

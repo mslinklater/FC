@@ -83,11 +83,7 @@ int lua_AddPhaseToQueue( lua_State* _state )
 		{
 			FCPhase* firstPhase = [_phaseQueue objectAtIndex:0];
 			
-			if ([firstPhase.delegate respondsToSelector:@selector(willActivate)]) {
-				firstPhase.activateTimer = [firstPhase.delegate willActivate];
-			} else {
-				firstPhase.activateTimer = 0.0;
-			}
+			[firstPhase willActivate];
 			
 			firstPhase.state = kFCPhaseStateActivating;
 			[_activePhases addObject:firstPhase];
@@ -106,20 +102,15 @@ int lua_AddPhaseToQueue( lua_State* _state )
 				break;
 			case kFCPhaseUpdateDeactivate:
 			{
-//				int numActivePhases = [_activePhases count];
 				FCPhase* freshPhase = [_phaseQueue objectAtIndex:0];
 				[_activePhases addObject:freshPhase];
 				[_phaseQueue removeObject:freshPhase];
 				
-				if ([freshPhase.delegate respondsToSelector:@selector(willActivate)]) {
-					freshPhase.activateTimer = [freshPhase.delegate willActivate];
-				}
+				[freshPhase willActivate];
 				
 				freshPhase.state = kFCPhaseStateActivating;
 				
-				if ([freshPhase.delegate respondsToSelector:@selector(willDeactivate)]) {
-					phase.deactivateTimer = [phase.delegate willDeactivate];
-				}
+				[phase willDeactivate];
 				
 				phase.state = kFCPhaseStateDeactivating;
 			}
@@ -134,9 +125,7 @@ int lua_AddPhaseToQueue( lua_State* _state )
 			case kFCPhaseStateActivating:
 				if (phase.activateTimer <= 0.0) {
 					phase.state = kFCPhaseStateUpdating;
-					if ([phase.delegate respondsToSelector:@selector(isNowActive)]) {
-						[phase.delegate isNowActive];
-					}
+					[phase isNowActive];
 				} else {
 					phase.activateTimer -= dt;
 				}
@@ -145,9 +134,7 @@ int lua_AddPhaseToQueue( lua_State* _state )
 			case kFCPhaseStateDeactivating:
 				if (phase.deactivateTimer <= 0.0) {
 					phase.state = kFCPhaseStateInactive;
-					if ([phase.delegate respondsToSelector:@selector(isNowDeactive)]) {
-						[phase.delegate isNowDeactive];
-					}
+					[phase isNowDeactive];
 					[_activePhases removeObject:phase];
 				} else {
 					phase.deactivateTimer -= dt;
@@ -184,9 +171,7 @@ int lua_AddPhaseToQueue( lua_State* _state )
 	
 	[_phaseQueue addObject:thisPhase];
 	
-	if ([thisPhase.delegate respondsToSelector:@selector(wasAddedToQueue)]) {
-		[thisPhase.delegate wasAddedToQueue];
-	}
+	[thisPhase wasAddedToQueue];
 }
 
 @end

@@ -30,6 +30,7 @@
 
 @protocol FCAppDelegate <NSObject>
 -(void)registerPhasesWithManager:(FCPhaseManager*)manager;
+//-(BOOL)shouldRotateToInterfaceOrientation:(UIInterfaceOrientation)orient;
 @end
 
 @interface FCApp : NSObject
@@ -46,6 +47,7 @@
 +(void)didBecomeActive;
 +(void)willTerminate;
 
++(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
 +(FCLuaVM*)lua;
 @end
 

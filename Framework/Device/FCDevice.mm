@@ -35,15 +35,21 @@
 
 #pragma mark - Lua Interface
 
-static int Lua_Probe( lua_State* lua )
+static int lua_Probe( lua_State* lua )
 {
 	[[FCDevice instance] probe];
 	return 0;
 }
 
-static int Lua_WarmProbe( lua_State* lua )
+static int lua_WarmProbe( lua_State* lua )
 {
 	[[FCDevice instance] warmProbe];
+	return 0;
+}
+
+static int lua_Print( lua_State* lua )
+{
+	[[FCDevice instance] print];
 	return 0;
 }
 
@@ -116,8 +122,9 @@ static FCDevice* pInstance;
 	[FCDevice instance].luaVM = lua;
 	
 	[lua createGlobalTable:@"FCDevice"];
-	[lua registerCFunction:Lua_Probe as:@"FCDevice.Probe"];
-	[lua registerCFunction:Lua_WarmProbe as:@"FCDevice.WarmProbe"];
+	[lua registerCFunction:lua_Probe as:@"FCDevice.Probe"];
+	[lua registerCFunction:lua_WarmProbe as:@"FCDevice.WarmProbe"];
+	[lua registerCFunction:lua_Print as:@"FCDevice.Print"];
 }
 
 #pragma mark - Object Lifetime
@@ -127,13 +134,19 @@ static FCDevice* pInstance;
 	self = [super init];
 	if (self) {
 		_caps = [[NSMutableDictionary alloc] init];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenRotateResponder:) name:UIDeviceOrientationDidChangeNotification object:nil];
 	}
 	return self;
 }
 
 -(void)dealloc
 {
-	_caps = nil;
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
+}
+
+-(void)screenRotateResponder:(NSNotification*)note
+{
+	[self getScreenCaps];
 }
 
 #pragma mark - Misc
@@ -206,50 +219,40 @@ static FCDevice* pInstance;
 	return pagesize;
 }
 
--(void)probe
-{	
-	// get the OS version...
-	
-	[_caps setValue:[UIDevice currentDevice].systemVersion forKey:kFCDeviceOSVersion];
-
-	// OS name
-
-	[_caps setValue:[UIDevice currentDevice].systemName forKey:kFCDeviceOSName];
-
-	// name
-
-	[_caps setValue:[UIDevice currentDevice].name forKey:kFCDeviceHardwareName];
-
-	// hardware model ID
-	
-	[_caps setValue:[self machine] forKey:kFCDeviceHardwareModelID];
-	
-	// Check for frameworks
-	
-	// display caps
-
+-(void)getScreenCaps
+{
 	CGFloat scale = [UIScreen mainScreen].scale;
 	CGRect bounds = [UIScreen mainScreen].bounds;
 	CGSize screenSize = [UIScreen mainScreen].currentMode.size;
 	CGFloat aspectRatio = [UIScreen mainScreen].currentMode.pixelAspectRatio;
 	
-	// make all sizes etc portrait here...
+	// bounds are always reported for portrait, so do some swapping if landscape
 
-	if (bounds.size.width > bounds.size.height) {
-		FC::Swap(bounds.size.width, bounds.size.height);
+	if (UIDeviceOrientationIsLandscape( [UIDevice currentDevice].orientation )) 
+	{
+		float temp = bounds.size.height;
+		bounds.size.height = bounds.size.width;
+		bounds.size.width = temp;
 	}
-	
+
+	if (UIDeviceOrientationIsPortrait( [UIDevice currentDevice].orientation )) 
+	{
+		float temp = screenSize.height;
+		screenSize.height = screenSize.width;
+		screenSize.width = temp;
+	}
+
 	// push values into caps
 	
-	[_caps setValue:[NSString stringWithFormat:@"%f", scale] forKey:kFCDeviceDisplayScale];
-	[_caps setValue:[NSString stringWithFormat:@"%f", aspectRatio] forKey:kFCDeviceDisplayAspectRatio];
-
-	[_caps setValue:[NSString stringWithFormat:@"%f", bounds.size.width] forKey:kFCDeviceDisplayLogicalXRes];
-	[_caps setValue:[NSString stringWithFormat:@"%f", bounds.size.height] forKey:kFCDeviceDisplayLogicalYRes];
-
-	[_caps setValue:[NSString stringWithFormat:@"%f", screenSize.width] forKey:kFCDeviceDisplayPhysicalXRes];
-	[_caps setValue:[NSString stringWithFormat:@"%f", screenSize.height] forKey:kFCDeviceDisplayPhysicalYRes];
-
+	[_caps setValue:[NSNumber numberWithFloat:scale] forKey:kFCDeviceDisplayScale];
+	[_caps setValue:[NSNumber numberWithFloat:aspectRatio] forKey:kFCDeviceDisplayAspectRatio];
+	
+	[_caps setValue:[NSNumber numberWithFloat:bounds.size.width] forKey:kFCDeviceDisplayLogicalXRes];
+	[_caps setValue:[NSNumber numberWithFloat:bounds.size.height] forKey:kFCDeviceDisplayLogicalYRes];
+	
+	[_caps setValue:[NSNumber numberWithFloat:screenSize.width] forKey:kFCDeviceDisplayPhysicalXRes];
+	[_caps setValue:[NSNumber numberWithFloat:screenSize.height] forKey:kFCDeviceDisplayPhysicalYRes];
+	
 	// work out the the platform designation
 	
 	if( ((bounds.size.width * scale) == screenSize.width) && ((bounds.size.height * scale) == screenSize.height)) 
@@ -277,6 +280,32 @@ static FCDevice* pInstance;
 		
 		[_caps setValue:kFCDevicePlatformPhoneOnPad forKey:kFCDevicePlatform];		
 	}
+}
+
+-(void)probe
+{	
+	// get the OS version...
+	
+	[_caps setValue:[UIDevice currentDevice].systemVersion forKey:kFCDeviceOSVersion];
+
+	// OS name
+
+	[_caps setValue:[UIDevice currentDevice].systemName forKey:kFCDeviceOSName];
+
+	// name
+
+	[_caps setValue:[UIDevice currentDevice].name forKey:kFCDeviceHardwareName];
+
+	// hardware model ID
+	
+	[_caps setValue:[self machine] forKey:kFCDeviceHardwareModelID];
+	
+	// Check for frameworks
+	
+	// display caps
+
+	[self getScreenCaps];
+	
 	
 	// Now for some lower level stuff
 	
@@ -316,7 +345,7 @@ static FCDevice* pInstance;
 	 }];
 }
 
--(void)dumpToTTY
+-(void)print
 {
 	FC_LOG1(@"Caps - %@", self.caps);
 }

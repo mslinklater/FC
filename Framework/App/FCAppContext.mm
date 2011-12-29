@@ -26,7 +26,7 @@
 
 #import "FCAppContext.h"
 #import "FCXMLData.h"
-#import "FCUIManager.h"
+#import "FCViewManager.h"
 #import "FCResourceManager.h"
 #import "FCDevice.h"
 #import "FCRenderer.h"
@@ -87,7 +87,7 @@
 		
 //		[[FCAnalytics instance] registerSystemValues];
 
-		[FCUIManager instance];
+		[FCViewManager instance];
 
 		[FCResourceManager instance];
 		

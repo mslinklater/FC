@@ -24,7 +24,7 @@
 
 #import "FCError.h"
 
-void FCLuaCommon_DumpStack( lua_State* _state )
+void FCLua_DumpStack( lua_State* _state )
 {
 	NSString* hexAddress = [NSString stringWithFormat:@"0x%08x", _state];
 	FC_UNUSED(hexAddress);
@@ -47,9 +47,55 @@ void FCLuaCommon_DumpStack( lua_State* _state )
 			case LUA_TNUMBER:
 				FC_LOG3(@"(%@/%@) number %@", [NSNumber numberWithInt:i], [NSNumber numberWithInt:negIndex], [NSNumber numberWithDouble:lua_tonumber(_state, i)]);
 				break;
+			case LUA_TLIGHTUSERDATA:
+				FC_LOG2(@"(%@/%@) userdata", [NSNumber numberWithInt:i], [NSNumber numberWithInt:negIndex] );
+				break;
 			default:
 				FC_LOG3(@"(%@/%@) %@", [NSNumber numberWithInt:i], [NSNumber numberWithInt:negIndex], [NSString stringWithUTF8String:lua_typename(_state, t)]);
 				break;
 		}
 	}
+}
+
+double FCLua_GetTableNumber( lua_State* _state, int stackIdx, const char* name )
+{
+	lua_getfield(_state, stackIdx, name);
+
+	FC_ASSERT( lua_isnumber(_state, stackIdx) );
+	
+	double ret = lua_tonumber(_state, stackIdx);
+	lua_pop(_state, 1);
+	return ret;
+}
+
+NSString* FCLua_GetTableString( lua_State* _state, int stackIdx, const char* name )
+{
+	lua_getfield(_state, stackIdx, name);
+	
+	FC_ASSERT( lua_isstring(_state, stackIdx) );
+
+	NSString* ret = [NSString stringWithUTF8String:lua_tostring(_state, stackIdx)];
+	lua_pop(_state, 1);
+	return ret;
+}
+
+BOOL FCLua_GetTableBool( lua_State* _state, int stackIdx, const char* name )
+{
+	lua_getfield(_state, stackIdx, name);
+	
+	FC_ASSERT( lua_isboolean(_state, stackIdx) );
+
+	BOOL ret = lua_toboolean(_state, stackIdx);
+	lua_pop(_state, 1);
+	
+	return ret;
+}
+
+BOOL FCLua_GetTableIsTable( lua_State* _state, int stackIdx, const char* name )
+{
+	lua_getfield(_state, stackIdx, name);
+
+	BOOL ret = lua_istable(_state, stackIdx);
+	lua_pop(_state, 1);
+	return ret;
 }

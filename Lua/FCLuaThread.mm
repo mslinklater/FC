@@ -63,7 +63,7 @@ extern "C" {
 		FC_FATAL1(@"Unknown Lua function", function);
 	}
 	_state = kLuaThreadStateRunning;
-	int ret = lua_resume(_luaState , 0);
+	int ret = lua_resume(_luaState , NULL, 0);
 	switch (ret) {
 		case 0:
 			_state = kLuaThreadStateDying;
@@ -71,19 +71,19 @@ extern "C" {
 		case LUA_YIELD:
 			break;
 		case LUA_ERRRUN:
-			FCLuaCommon_DumpStack(_luaState);
+			FCLua_DumpStack(_luaState);
 			FC_FATAL(@"LUA_ERRRUN");
 			break;
 		case LUA_ERRSYNTAX:
-			FCLuaCommon_DumpStack(_luaState);
+			FCLua_DumpStack(_luaState);
 			FC_FATAL(@"LUA_ERRSYNTAX");
 			break;
 		case LUA_ERRMEM:
-			FCLuaCommon_DumpStack(_luaState);
+			FCLua_DumpStack(_luaState);
 			FC_FATAL(@"LUA_ERRMEM");
 			break;
 		case LUA_ERRERR:
-			FCLuaCommon_DumpStack(_luaState);
+			FCLua_DumpStack(_luaState);
 			FC_FATAL(@"LUA_ERRERR");
 			break;
 		default:
@@ -98,7 +98,7 @@ extern "C" {
 			break;
 		case kLuaThreadStateRunning:
 			{
-				int ret = lua_resume(_luaState , 0);
+				int ret = lua_resume(_luaState , NULL, 0);
 				switch (ret) {
 					case 0:
 						_state = kLuaThreadStateDying;
@@ -106,19 +106,19 @@ extern "C" {
 					case LUA_YIELD:
 						break;
 					case LUA_ERRRUN:
-						FCLuaCommon_DumpStack(_luaState);
+						FCLua_DumpStack(_luaState);
 						FC_FATAL(@"LUA_ERRRUN");
 						break;
 					case LUA_ERRSYNTAX:
-						FCLuaCommon_DumpStack(_luaState);
+						FCLua_DumpStack(_luaState);
 						FC_FATAL(@"LUA_ERRSYNTAX");
 						break;
 					case LUA_ERRMEM:
-						FCLuaCommon_DumpStack(_luaState);
+						FCLua_DumpStack(_luaState);
 						FC_FATAL(@"LUA_ERRMEM");
 						break;
 					case LUA_ERRERR:
-						FCLuaCommon_DumpStack(_luaState);
+						FCLua_DumpStack(_luaState);
 						FC_FATAL(@"LUA_ERRERR");
 						break;
 					default:

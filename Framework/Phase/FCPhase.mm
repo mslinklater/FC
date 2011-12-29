@@ -22,6 +22,7 @@
 
 #import "FCPhase.h"
 #import "FCError.h"
+#import "FCLua.h"
 
 @implementation FCPhase
 @synthesize name = _name;
@@ -34,6 +35,15 @@
 @synthesize activateTimer = _activateTimer;
 @synthesize deactivateTimer = _deactivateTimer;
 @synthesize state = _state;
+@synthesize luaLoaded = _luaLoaded;
+
+@synthesize luaUpdateFunc = _luaUpdateFunc;
+@synthesize luaWasAddedToQueueFunc = _luaWasAddedToQueueFunc;
+@synthesize luaWasRemovedFromQueueFunc = _luaWasRemovedFromQueueFunc;
+@synthesize luaWillActivateFunc = _luaWillActivateFunc;
+@synthesize luaIsNowActiveFunc = _luaIsNowActiveFunc;
+@synthesize luaWillDeactivateFunc = _luaWillDeactivateFunc;
+@synthesize luaIsNowDeactiveFunc = _luaIsNowDeactiveFunc;
 
 -(id)initWithName:(NSString *)name
 {
@@ -42,6 +52,15 @@
 		_name = name;
 		_children = [NSMutableDictionary dictionary];
 		_state = kFCPhaseStateInactive;
+		
+		_luaUpdateFunc = [_name stringByAppendingString:@"Phase.Update"];
+		_luaWasAddedToQueueFunc = [_name stringByAppendingString:@"Phase.WasAddedToQueue"];
+		_luaWasRemovedFromQueueFunc = [_name stringByAppendingString:@"Phase.WasRemovedFromQueue"];
+		_luaWillActivateFunc = [_name stringByAppendingString:@"Phase.WillActivate"];
+		_luaIsNowActiveFunc = [_name stringByAppendingString:@"Phase.IsNowActive"];
+		_luaWillDeactivateFunc = [_name stringByAppendingString:@"Phase.WillDeactivate"];
+		_luaIsNowDeactiveFunc = [_name stringByAppendingString:@"Phase.IsNowDeactive"];
+		_luaLoaded = NO;
 	}
 	return self;
 }
@@ -50,7 +69,72 @@
 {
 	FC_ASSERT([_delegate respondsToSelector:@selector(update:)]);
 	
-	return [_delegate update:dt];
+	FCPhaseUpdate ret = [_delegate update:dt];
+	
+	[[FCLua instance].coreVM call:_luaUpdateFunc required:NO withSig:@""];
+	
+	return ret;
+}
+
+-(void)wasAddedToQueue
+{
+	if (_luaLoaded == NO) 
+	{
+		NSString* path = [_name stringByAppendingString:@"phase"];
+		[[FCLua instance].coreVM loadScriptOptional:path];
+		_luaLoaded = YES;
+	}
+
+	if ([_delegate respondsToSelector:@selector(wasAddedToQueue)]) 
+	{
+		[_delegate wasAddedToQueue];
+		[[FCLua instance].coreVM call:_luaWasAddedToQueueFunc required:NO withSig:@""];
+	}
+}
+
+-(void)wasRemovedFromQueue
+{
+	if ([_delegate respondsToSelector:@selector(wasRemovedFromQueue)]) 
+	{
+		[_delegate wasRemovedFromQueue];		
+		[[FCLua instance].coreVM call:_luaWasRemovedFromQueueFunc required:NO withSig:@""];
+	}
+}
+
+-(void)willActivate
+{
+	if ([_delegate respondsToSelector:@selector(willActivate)]) 
+	{
+		_activateTimer = [_delegate willActivate];
+		[[FCLua instance].coreVM call:_luaWillActivateFunc required:NO withSig:@""];
+	}
+}
+
+-(void)isNowActive
+{
+	if ([_delegate respondsToSelector:@selector(isNowActive)]) 
+	{
+		[_delegate isNowActive];		
+		[[FCLua instance].coreVM call:_luaIsNowActiveFunc required:NO withSig:@""];
+	}
+}
+
+-(void)willDeactivate
+{
+	if ([_delegate respondsToSelector:@selector(willDeactivate)]) 
+	{
+		_deactivateTimer = [_delegate willDeactivate];		
+		[[FCLua instance].coreVM call:_luaWillDeactivateFunc required:NO withSig:@""];
+	}
+}
+
+-(void)isNowDeactive
+{
+	if ([_delegate respondsToSelector:@selector(isNowDeactive)])
+	{
+		[_delegate isNowActive];
+		[[FCLua instance].coreVM call:_luaIsNowDeactiveFunc required:NO withSig:@""];
+	}
 }
 
 @end

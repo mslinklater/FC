@@ -27,13 +27,7 @@
 #import "FCLuaCommon.h"
 #import "FCDebug.h"
 
-unsigned int common_newThreadWithVoidFunction( const char* function );
-int Lua_NewThread( lua_State* state );
-int Lua_WaitThread( lua_State* state );
-int Lua_KillThread( lua_State* state );
-
-
-unsigned int common_newThreadWithVoidFunction( const char* function )
+static unsigned int common_newThreadWithVoidFunction( const char* function )
 {
 	static int s_recurseCount = 0;
 	
@@ -64,7 +58,7 @@ unsigned int common_newThreadWithVoidFunction( const char* function )
 
 #pragma mark - Lua Functions
 
-int Lua_NewThread( lua_State* state )
+static int lua_NewThread( lua_State* state )
 {
 	// TODO - handle passing function as arg instead of string
 	
@@ -82,7 +76,7 @@ int Lua_NewThread( lua_State* state )
 	return 0;
 }
 
-int Lua_WaitThread( lua_State* state )
+static int lua_WaitThread( lua_State* state )
 {
 	// find thread with this state
 	FCLua* instance = [FCLua instance];
@@ -101,7 +95,7 @@ int Lua_WaitThread( lua_State* state )
 	return 0;
 }
 
-int Lua_KillThread( lua_State* state )
+static int lua_KillThread( lua_State* state )
 {
 	if (!lua_isnumber(state, -1)) {
 		FC_FATAL(@"Trying to pass a non-number to thread kill");
@@ -177,27 +171,16 @@ int Lua_KillThread( lua_State* state )
 		
 		// create global thread table
 
-
 		m_coreVM = [[FCLuaVM alloc] init];
 		[m_coreVM addStandardLibraries];
 		[m_coreVM loadScript:@"util"];
 		
 		// register core API
-		[m_coreVM registerCFunction:Lua_NewThread as:@"FCNewThread"];
-		[m_coreVM registerCFunction:Lua_WaitThread as:@"FCWait"];
-		[m_coreVM registerCFunction:Lua_KillThread as:@"FCKillThread"];
+		[m_coreVM registerCFunction:lua_NewThread as:@"FCNewThread"];
+		[m_coreVM registerCFunction:lua_WaitThread as:@"FCWait"];
+		[m_coreVM registerCFunction:lua_KillThread as:@"FCKillThread"];
 		
 		_nextThreadId = 1;
-
-//		m_perfCounter = [[FCPerformanceCounter alloc] init];
-		
-		// setup display link
-
-#if TARGET_OS_IPHONE
-//		m_displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updateThreads)];
-//		[m_displayLink setFrameInterval:1];
-//		[m_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-#endif
 	}
 	return self;
 }

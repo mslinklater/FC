@@ -1,0 +1,42 @@
+FC lua Interface:
+=============
+
+* FCApp
+
++ColdBoot()
++DidBecomeActive()
++DidEnterBackground()
+<bool> SupportsLandscape()
+<bool> SupportsPortrait()
++WarmBoot()
++WillEnterForeground()
++WillResignActive()
++WillTerminate()
+
+*FCDevice
+
+Print()
+Probe()
+WarmProbe()
+
+* FCPersistentData
+
+Clear()
+<bool> GetBool( <string> key )
+<double> GetNumber( <string> key )
+<string> GetString( <string> key )
+Load()
+Print()
+Save()
+SetBool( <string> key, <bool> value)
+SetNumber( <string> key, <double> value)
+SetString( <string> key, <string> value)
+
+* FCPhaseManager
+
+AddPhaseToQueue( <string> phaseName )
+
+* FCViewManager
+
+CreateView
+DestroyView

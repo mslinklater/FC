@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+// DEPRECATE
+
 #if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>

@@ -31,20 +31,20 @@
 
 #pragma mark - Lua Interface
 
-static int Lua_SetAccountId( lua_State* lua )
+static int lua_SetAccountId( lua_State* lua )
 {
 	const char* accountID = lua_tostring(lua, -1);
 	[[FCAnalytics instance] setAccountID:[NSString stringWithUTF8String:accountID]];
 	return 0;
 }
 
-static int Lua_StartSession( lua_State* lua )
+static int lua_StartSession( lua_State* lua )
 {
 	[[FCAnalytics instance] eventStartPlaySession];
 	return 0;
 }
 
-static int Lua_EndSession( lua_State* lua )
+static int lua_EndSession( lua_State* lua )
 {
 	[[FCAnalytics instance] eventEndPlaySession];
 	return 0;
@@ -96,9 +96,9 @@ static const int kVariableAppPirated = 3;
 +(void)registerLuaFunctions:(FCLuaVM *)lua
 {
 	[lua createGlobalTable:@"FCAnalytics"];
-	[lua registerCFunction: Lua_SetAccountId as:@"FCAnalytics.SetAccountID"];
-	[lua registerCFunction: Lua_StartSession as:@"FCAnalytics.StartSession"];
-	[lua registerCFunction: Lua_EndSession as:@"FCAnalytics.EndSession"];
+	[lua registerCFunction: lua_SetAccountId as:@"FCAnalytics.SetAccountID"];
+	[lua registerCFunction: lua_StartSession as:@"FCAnalytics.StartSession"];
+	[lua registerCFunction: lua_EndSession as:@"FCAnalytics.EndSession"];
 }
 
 #pragma mark - Setters
@@ -123,6 +123,8 @@ static const int kVariableAppPirated = 3;
 	self.sessionTime = 0;
 	
 	sessionTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timer) userInfo:nil repeats:YES];
+	
+	[self registerSystemValues];
 }
 
 #pragma mark - Events
@@ -166,50 +168,50 @@ static const int kVariableAppPirated = 3;
 //	}	
 //}
 
-//-(void)registerSystemValues
-//{
-//	NSError* error;
-//	
-//	if (![[GANTracker sharedTracker] trackEvent:@"Device"
-//										 action:@"OSVersion"
-//										  label:[[FCCaps instance] valueForKey:kFCCapsOSVersion]
-//										  value:-1
-//									  withError:&error]) 
-//	{
-//		FC_ERROR(@"Error");
-//		// Handle error here
-//	}
-//
-//	if (![[GANTracker sharedTracker] trackEvent:@"Device"
-//										 action:@"ModelID"
-//										  label:[[FCCaps instance] valueForKey:kFCCapsHardwareModelID]
-//										  value:-1
-//									  withError:&error]) 
-//	{
-//		FC_ERROR(@"Error");
-//		// Handle error here
-//	}
-//
-//	if (![[GANTracker sharedTracker] trackEvent:@"Device"
-//										 action:@"Language"
-//										  label:[[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode]
-//										  value:-1
-//									  withError:&error]) 
-//	{
-//		FC_ERROR(@"Error");
-//		// Handle error here
-//	}
-//
-//	if (![[GANTracker sharedTracker] trackEvent:@"Device"
-//										 action:@"Country"
-//										  label:[[NSLocale currentLocale] objectForKey:NSLocaleCountryCode]
-//										  value:-1
-//									  withError:&error]) 
-//	{
-//		FC_ERROR(@"Error");
-//		// Handle error here
-//	}
-//}
+-(void)registerSystemValues
+{
+	NSError* error;
+	
+	if (![[GANTracker sharedTracker] trackEvent:@"Device"
+										 action:@"OSVersion"
+										  label:[[FCDevice instance] valueForKey:kFCDeviceOSVersion]
+										  value:-1
+									  withError:&error]) 
+	{
+		FC_ERROR(@"Error");
+		// Handle error here
+	}
+
+	if (![[GANTracker sharedTracker] trackEvent:@"Device"
+										 action:@"ModelID"
+										  label:[[FCDevice instance] valueForKey:kFCDeviceHardwareModelID]
+										  value:-1
+									  withError:&error]) 
+	{
+		FC_ERROR(@"Error");
+		// Handle error here
+	}
+
+	if (![[GANTracker sharedTracker] trackEvent:@"Device"
+										 action:@"Language"
+										  label:[[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode]
+										  value:-1
+									  withError:&error]) 
+	{
+		FC_ERROR(@"Error");
+		// Handle error here
+	}
+
+	if (![[GANTracker sharedTracker] trackEvent:@"Device"
+										 action:@"Country"
+										  label:[[NSLocale currentLocale] objectForKey:NSLocaleCountryCode]
+										  value:-1
+									  withError:&error]) 
+	{
+		FC_ERROR(@"Error");
+		// Handle error here
+	}
+}
 
 @end
 

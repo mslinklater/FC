@@ -20,46 +20,10 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#import <Foundation/Foundation.h>
 
-#import "FCUIButtonDef.h"
+#import "FCLuaClass.h"
 
-#pragma mark - FCUIButtonDef
+@interface FCBuild : NSObject <FCLuaClass>
 
-@implementation FCUIButtonDef
-
-@synthesize defaultImage;
-@synthesize pressedImage;
-@synthesize center;
-@synthesize text;
-@synthesize target;
-@synthesize action;
-@synthesize hidden;
-@synthesize parentView;
-@synthesize font;
-@synthesize fontSize;
-@synthesize width;
-@synthesize height;
-
-+(FCUIButtonDef*)def
-{
-	FCUIButtonDef *def = [FCUIButtonDef alloc];
-	
-	def.defaultImage = nil;
-	def.pressedImage = nil;
-	def.center = CGPointMake( 0.0f, 0.0f );
-	def.text = nil;
-	def.target = nil;
-	def.action = nil;
-	def.hidden = NO;
-	def.font = nil;
-	def.fontSize = 0;
-	def.height = 0;
-	def.width = 0;
-	return def;
-}
 @end
-
-#pragma mark - FCUIButton
-
-#endif // TARGET_OS_IPHONE

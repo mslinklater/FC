@@ -28,4 +28,12 @@ extern "C" {
 #import "lualib.h"
 }
 
-extern void FCLuaCommon_DumpStack( lua_State* _state );
+extern void			FCLua_DumpStack( lua_State* _state );
+extern double		FCLua_GetTableNumber( lua_State* _state, int stackIdx, const char* name );
+extern NSString*	FCLua_GetTableString( lua_State* _state, int stackIdx, const char* name );
+extern BOOL			FCLua_GetTableBool( lua_State* _state, int stackIdx, const char* name );
+extern BOOL			FCLua_GetTableIsTable( lua_State* _state, int stackIdx, const char* name );
+
+
+
+

@@ -56,6 +56,15 @@ enum FCPhaseState {
 	float _activateTimer;
 	float _deactivateTimer;
 	FCPhaseState _state;
+	BOOL _luaLoaded;
+	
+	NSString* _luaUpdateFunc;
+	NSString* _luaWasAddedToQueueFunc;
+	NSString* _luaWasRemovedFromQueueFunc;
+	NSString* _luaWillActivateFunc;
+	NSString* _luaIsNowActiveFunc;
+	NSString* _luaWillDeactivateFunc;
+	NSString* _luaIsNowDeactiveFunc;
 }
 @property(nonatomic, strong) NSString* name;
 @property(nonatomic, strong) NSString* namePath;
@@ -67,9 +76,25 @@ enum FCPhaseState {
 @property(nonatomic) float activateTimer;
 @property(nonatomic) float deactivateTimer;
 @property(nonatomic) FCPhaseState state;
+@property(nonatomic, readonly) BOOL luaLoaded;
+
+@property(nonatomic, strong) NSString* luaUpdateFunc;
+@property(nonatomic, strong) NSString* luaWasAddedToQueueFunc;
+@property(nonatomic, strong) NSString* luaWasRemovedFromQueueFunc;
+@property(nonatomic, strong) NSString* luaWillActivateFunc;
+@property(nonatomic, strong) NSString* luaIsNowActiveFunc;
+@property(nonatomic, strong) NSString* luaWillDeactivateFunc;
+@property(nonatomic, strong) NSString* luaIsNowDeactiveFunc;
 
 -(id)initWithName:(NSString*)name;
 
 -(FCPhaseUpdate)update:(float)dt;
+
+-(void)wasAddedToQueue;
+-(void)wasRemovedFromQueue;
+-(void)willActivate;
+-(void)isNowActive;
+-(void)willDeactivate;
+-(void)isNowDeactive;
 
 @end

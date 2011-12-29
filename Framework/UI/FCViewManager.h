@@ -20,36 +20,42 @@
  THE SOFTWARE.
  */
 
-// NOTE: To deprecate ?
+/*
+ 
+ TODO:
 
-#if TARGET_OS_IPHONE
+ textcolor
+ backgroundcolor
+ 
+ */
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+#import "FCLuaClass.h"
 
-#pragma mark - FCUISwitchDef
-
-@interface FCUISwitchDef : NSObject {
-}
-@property(nonatomic,strong) UIView* parentView;
-@property(nonatomic) CGRect rect;
-@property(nonatomic, strong) NSString* userDefaultsID;
-@property(nonatomic, strong) NSString* textString;
-@property(nonatomic, unsafe_unretained) id target;
-@property(nonatomic) SEL action;
-// hidden?
-
-+(FCUISwitchDef*)def;
+@protocol FCManagedView <NSObject>
+-(void)setManagedViewName:(NSString*)name;
+-(NSString*)managedViewName;
 @end
 
-//----------------------------------------------------------------------------------------------------------------------
-
-#pragma mark - FCUISwitch
-
-@interface FCUISwitch : NSObject {
-    
+@interface FCViewManager : NSObject <FCLuaClass> {
+@private
+	UIView* _rootView;
+	NSMutableDictionary* _viewDictionary;
 }
+@property(nonatomic, strong) UIView* rootView;
+@property(nonatomic, strong) NSMutableDictionary* viewDictionary;
 
++(FCViewManager*)instance;
++(void)registerLuaFunctions:(FCLuaVM *)lua;
+
+-(void)add:(UIView*)view as:(NSString*)name;
+-(void)createGroupWith:(NSArray*)names called:(NSString*)groupName;
+-(void)remove:(NSString*)name;
+
+-(void)setView:(NSString*)viewName text:(NSString*)text;
+-(void)setView:(NSString*)viewName textColor:(UIColor*)color;
+-(void)setView:(NSString*)viewName frame:(CGRect)frame over:(float)seconds;
+-(void)setView:(NSString*)viewName alpha:(float)alpha over:(float)seconds;
+-(void)setView:(NSString*)viewName onSelectLuaFunc:(NSString*)funcName;
 @end
 
-#endif // TARGET_OS_IPHONE

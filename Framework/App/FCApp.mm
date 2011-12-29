@@ -20,8 +20,6 @@
  THE SOFTWARE.
  */
 
-//#import <UIKit/UIKit.h>
-
 #if TARGET_OS_IPHONE
 
 #import <QuartzCore/QuartzCore.h>
@@ -35,6 +33,9 @@
 #import "FCConnect.h"
 #import "FCPhaseManager.h"
 #import "FCPerformanceCounter.h"
+#import "FCAnalytics.h"
+#import "FCViewManager.h"
+#import "FCBuild.h"
 
 static FCLuaVM*				s_lua;
 static UIViewController*	s_viewController;
@@ -42,16 +43,50 @@ static id<FCAppDelegate>	s_delegate;
 static FCPerformanceCounter*	s_perfCounter;
 static CADisplayLink*			s_displayLink;
 
-static int lua_HideStatusBar( lua_State* _state )
+static int lua_ShowStatusBar( lua_State* _state )
 {
-	[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
-	s_viewController.view.frame = [[UIScreen mainScreen] bounds];
+	FC_ASSERT( lua_type(_state, -1) == LUA_TBOOLEAN );
+	
+	int visible = lua_toboolean( _state, -1);
+
+	if (visible) {
+		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+	} else {
+		[[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationNone];
+		s_viewController.view.frame = [[UIScreen mainScreen] bounds];
+	}
 	return 0;
 }
 
-static int lua_ShowStatusBar( lua_State* _state )
+static int lua_SetBackgroundColor( lua_State* _state )
 {
-	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+	FC_ASSERT(lua_type(_state, 1) == LUA_TTABLE);
+	
+	double r, g, b, a;
+
+	lua_pushnil(_state);
+	
+	lua_next(_state, -2);
+	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	r = lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+
+	lua_next(_state, -2);
+	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	g = lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+
+	lua_next(_state, -2);
+	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	b = lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+
+	lua_next(_state, -2);
+	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	a = lua_tonumber(_state, -1);
+	
+	s_viewController.view.backgroundColor = [UIColor colorWithRed:r green:g blue:b alpha:a];
+
 	return 0;
 }
 
@@ -75,15 +110,19 @@ static int lua_ShowStatusBar( lua_State* _state )
 	[FCPersistentData registerLuaFunctions:s_lua];
 	[FCPhaseManager registerLuaFunctions:s_lua];
 
+	[FCViewManager instance].rootView = vc.view;
+	[FCViewManager registerLuaFunctions:s_lua];
+	[FCBuild registerLuaFunctions:s_lua];
+
 #if TARGET_OS_IPHONE
 	[FCAnalytics registerLuaFunctions:s_lua];
 	[FCDevice registerLuaFunctions:s_lua];
 #endif // TARGET_OS_IPHONE
 
 	[FCError registerLuaFunctions:s_lua];
-	[s_lua createGlobalTable:@"App"];
-	[s_lua registerCFunction:lua_HideStatusBar as:@"App.HideStatusBar"];
-	[s_lua registerCFunction:lua_ShowStatusBar as:@"App.ShowStatusBar"];
+	[s_lua createGlobalTable:@"FCApp"];
+	[s_lua registerCFunction:lua_ShowStatusBar as:@"FCApp.ShowStatusBar"];
+	[s_lua registerCFunction:lua_SetBackgroundColor as:@"FCApp.SetBackgroundColor"];
 
 //	[s_lua call:@"PrintTable" withSig:@"tb>", "FCCaps", true];
 //	[s_lua call:@"PrintTable" withSig:@"tb>", "FCPersistentData", true];
@@ -91,11 +130,13 @@ static int lua_ShowStatusBar( lua_State* _state )
 
 	[[FCConnect instance] start:nil];
 	[[FCConnect instance] enableBonjourWithName:@"FCConnect"];
+	[[FCDevice instance] probe];
+	[[FCDevice instance] warmProbe];
 	
 	[[FCPersistentData instance] loadData];
 	
 	[s_lua loadScript:@"main"];
-	[s_lua call:@"App.ColdBoot" required:YES withSig:@""];
+	[s_lua call:@"FCApp.ColdBoot" required:YES withSig:@""];
 	[self warmBoot];
 }
 
@@ -103,7 +144,7 @@ static int lua_ShowStatusBar( lua_State* _state )
 {
 	[s_delegate registerPhasesWithManager:[FCPhaseManager instance]];
 	
-	[s_lua call:@"App.WarmBoot" required:YES withSig:@""];
+	[s_lua call:@"FCApp.WarmBoot" required:YES withSig:@""];
 }
 
 +(void)shutdown
@@ -111,7 +152,7 @@ static int lua_ShowStatusBar( lua_State* _state )
 	[s_displayLink invalidate];
 	s_perfCounter = nil;
 	s_delegate = nil;
-	[s_lua call:@"App.Shutdown" required:YES withSig:@""];
+	[s_lua call:@"FCApp.Shutdown" required:YES withSig:@""];
 	s_lua = nil;
 }
 
@@ -140,30 +181,48 @@ static int lua_ShowStatusBar( lua_State* _state )
 +(void)willResignActive
 {
 	[[FCConnect instance] stop];
-	[s_lua call:@"App.WillResignActive" required:NO withSig:@""];
+	[[FCAnalytics instance] eventEndPlaySession];
 	[[FCPersistentData instance] saveData];
+	
+	[s_lua call:@"FCApp.WillResignActive" required:NO withSig:@""];
 }
 
 +(void)didEnterBackground
 {
-	[s_lua call:@"App.DidEnterBackground" required:NO withSig:@""];		
+	[s_lua call:@"FCApp.DidEnterBackground" required:NO withSig:@""];		
 }
 
 +(void)willEnterForeground
 {
-	[s_lua call:@"App.WillEnterForeground" required:NO withSig:@""];	
+	[s_lua call:@"FCApp.WillEnterForeground" required:NO withSig:@""];	
 }
 
 +(void)didBecomeActive
 {
 	[[FCConnect instance] start:nil];
 	[[FCConnect instance] enableBonjourWithName:@"FCConnect"];
-	[s_lua call:@"App.DidBecomeActive" required:NO withSig:@""];		
+	[[FCAnalytics instance] eventStartPlaySession];
+	
+	[s_lua call:@"FCApp.DidBecomeActive" required:NO withSig:@""];		
 }
 
 +(void)willTerminate
 {
-	[s_lua call:@"App.WillTerminate" required:NO withSig:@""];		
+	[[FCAnalytics instance] shutdown];
+	
+	[s_lua call:@"FCApp.WillTerminate" required:NO withSig:@""];		
+}
+
++(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+	BOOL ret = YES;
+	if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
+		[[[FCLua instance] coreVM] call:@"FCApp.SupportsLandscape" required:NO withSig:@">b", &ret];
+	}
+	if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
+		[[[FCLua instance] coreVM] call:@"FCApp.SupportsPortrait" required:NO withSig:@">b", &ret];
+	}
+	return ret;
 }
 
 +(FCLuaVM*)lua

@@ -31,29 +31,43 @@ extern "C" {
 
 #import "FCError.h"
 
-void common_LoadScriptForState(NSString* path, lua_State* _state);
-int Lua_LoadScript( lua_State* _state );
+void common_LoadScriptForState(NSString* path, lua_State* _state, BOOL optional);
 
-
-void common_LoadScriptForState(NSString* path, lua_State* _state)
+void common_LoadScriptForState(NSString* path, lua_State* _state, BOOL optional)
 {
-	NSString* filePath = [[NSBundle mainBundle] pathForResource:path ofType:@"lua"];
+	NSString* filePath = [[NSBundle mainBundle] pathForResource:[path lowercaseString] ofType:@"lua"];
 
 	if(filePath == nil)
 	{ 
-		FC_FATAL1(@"Cannot load Lua file '%@'", path);
+		if (!optional) {
+			FC_FATAL1(@"Cannot load Lua file '%@'", path);
+		} else {
+			return;
+		}
 	}
 	
 	int ret = luaL_loadfile(_state, [filePath UTF8String]);
 	
 	switch (ret) {
 		case LUA_ERRSYNTAX:
-			FCLuaCommon_DumpStack(_state);
+			FCLua_DumpStack(_state);
 			FC_FATAL1(@"Syntax error on load of Lua file '%@'", path);
 			break;			
 		case LUA_ERRMEM:
-			FCLuaCommon_DumpStack(_state);
+			FCLua_DumpStack(_state);
 			FC_FATAL1(@"Memory error on load of Lua file '%@'", path);
+			break;			
+		case LUA_ERRFILE:
+			FCLua_DumpStack(_state);
+			FC_FATAL1(@"File error on load of Lua file '%@'", path);
+			break;			
+		case LUA_ERRERR:
+			FCLua_DumpStack(_state);
+			FC_FATAL1(@"Error on load of Lua file '%@'", path);
+			break;			
+		case LUA_ERRRUN:
+			FCLua_DumpStack(_state);
+			FC_FATAL1(@"Run error on load of Lua file '%@'", path);
 			break;			
 		default:
 			break;
@@ -63,7 +77,7 @@ void common_LoadScriptForState(NSString* path, lua_State* _state)
 	
 	switch (ret) {
 		case LUA_ERRRUN:
-			FCLuaCommon_DumpStack(_state);
+			FCLua_DumpStack(_state);
 			FC_FATAL1(@"Runtime error in Lua file '%@'", path);
 			break;
 		case LUA_ERRMEM:
@@ -77,10 +91,17 @@ void common_LoadScriptForState(NSString* path, lua_State* _state)
 	}
 }
 
-int Lua_LoadScript( lua_State* _state )
+static int lua_LoadScript( lua_State* _state )
 {
 	NSString* path = [NSString stringWithCString:lua_tostring(_state, -1) encoding:NSUTF8StringEncoding];
-	common_LoadScriptForState(path, _state);
+	common_LoadScriptForState(path, _state, NO);
+	return 0;
+}
+
+static int lua_LoadScriptOptional( lua_State* _state )
+{
+	NSString* path = [NSString stringWithCString:lua_tostring(_state, -1) encoding:NSUTF8StringEncoding];
+	common_LoadScriptForState(path, _state, YES);
 	return 0;
 }
 
@@ -89,7 +110,7 @@ int Lua_LoadScript( lua_State* _state )
 static int panic (lua_State *L) {
 	(void)L;  /* to avoid warnings */
 	const char* pString = lua_tostring(L, -1);
-	FCLuaCommon_DumpStack(L);
+	FCLua_DumpStack(L);
 	FC_FATAL1(@"PANIC: unprotected error in call to Lua API '%@'", [NSString stringWithCString:pString encoding:NSUTF8StringEncoding]);
 	return 0;
 }
@@ -116,7 +137,7 @@ static int panic (lua_State *L) {
 		
 		// load core functions
 		
-		[self registerCFunction:Lua_LoadScript as:@"FCLoadScript"];
+		[self registerCFunction:lua_LoadScript as:@"FCLoadScript"];
 	}
 	return self;
 }
@@ -130,7 +151,12 @@ static int panic (lua_State *L) {
 
 -(void)loadScript:(NSString*)path
 {
-	common_LoadScriptForState(path, _state);
+	common_LoadScriptForState(path, _state, NO);
+}
+
+-(void)loadScriptOptional:(NSString*)path
+{
+	common_LoadScriptForState(path, _state, YES);
 }
 
 -(void)executeLine:(NSString *)line
@@ -152,7 +178,7 @@ static int panic (lua_State *L) {
 	
 	switch (ret) {
 		case LUA_ERRRUN:
-			FCLuaCommon_DumpStack(_state);
+			FCLua_DumpStack(_state);
 			FC_ERROR1(@"Runtime error in Lua line '%@'", line);
 			break;
 		case LUA_ERRMEM:
@@ -366,8 +392,9 @@ endargs:
 	
 	
 	if (lua_pcall(_state, narg, nres, 0) != 0) {
-		NSLog(@"ERROR calling '%@': %s", func, lua_tostring(_state, -1));
+		FC_LOG2(@"ERROR calling '%@': %@", func, [NSString stringWithUTF8String:lua_tostring(_state, -1)]);
 		[self dumpCallstack];
+		FC_HALT;
 	}
 	
 	//
@@ -377,28 +404,39 @@ endargs:
 	while (*csig) {
 		switch (*csig++) {
 			case 'd': /* double result */
-				if (!lua_isnumber(_state, nres)) {
-					NSLog(@"ERROR");
-				}
+//				if (!lua_isnumber(_state, nres)) {
+//					NSLog(@"ERROR");
+//				}
+				FC_ASSERT(lua_isnumber(_state, nres));
 				*va_arg(vl, double*) = lua_tonumber(_state, nres);
 				break;
 				
 			case 'i': /* int result */
-				if (!lua_isnumber(_state, nres)) {
-					NSLog(@"ERROR");
-				}
+//				if (!lua_isnumber(_state, nres)) {
+//					NSLog(@"ERROR");
+//				}
+				FC_ASSERT(lua_isnumber(_state, nres));
 				*va_arg(vl, int*) = (int)lua_tointeger(_state, nres);
 				break;
 				
 			case 's': /* string result */
-				if (!lua_isstring(_state, nres)) {
-					NSLog(@"ERROR");
-				}
+//				if (!lua_isstring(_state, nres)) {
+//					NSLog(@"ERROR");
+//				}
+				FC_ASSERT(lua_isstring(_state, nres));
 				*va_arg(vl, const char **) = lua_tostring(_state, nres);
 				break;
-				
+
+			case 'b': /* boolean result */
+//				if (!lua_isboolean(_state, nres)) {
+//					NSLog(@"ERROR");
+//				}
+				FC_ASSERT(lua_isboolean(_state, nres));
+				*va_arg(vl, bool*) = lua_toboolean(_state, nres);
+				break;
+
 			default:
-				NSLog(@"Error");
+				FC_FATAL(@"Unknown Lua function return type" );
 				break;
 		}
 		nres++;
@@ -411,7 +449,7 @@ endargs:
 
 -(void)dumpStack
 {
-	FCLuaCommon_DumpStack( self.state );
+	FCLua_DumpStack( self.state );
 }
 
 -(void)dumpCallstack

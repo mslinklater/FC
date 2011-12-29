@@ -20,23 +20,30 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#import "FCBuild.h"
+#import "FCLua.h"
 
-#import "FCFont.h"
-#import "FCCore.h"
+#pragma mark - Lua methods
 
-@implementation FCFont
-
-+(void)logSystemFonts
+static int lua_Debug( lua_State* _state )
 {
-	FC_LOG(@"Fonts found...");
-	FC_LOG([UIFont familyNames]);
-	for( NSString* familyName in [UIFont familyNames])
-	{
-		FC_LOG2( @"System font: %@ %@", familyName, [UIFont fontNamesForFamilyName:familyName]);
-	}
+#if DEBUG
+	lua_pushboolean(_state, 1);
+#else
+	lua_pushboolean(_state, 0);
+#endif
+	
+	return 1;
+}
+
+#pragma mark - Obj-C
+
+@implementation FCBuild
+
++(void)registerLuaFunctions:(FCLuaVM*)lua
+{
+	[lua createGlobalTable:@"FCBuild"];
+	[lua registerCFunction:lua_Debug as:@"FCBuild.Debug"];
 }
 
 @end
-
-#endif // TARGET_OS_IPHONE

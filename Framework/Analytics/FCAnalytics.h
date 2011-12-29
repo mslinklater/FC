@@ -39,7 +39,7 @@
 
 //----
 
-//-(void)registerSystemValues;
+-(void)registerSystemValues;
 
 -(void)event:(NSString*)event action:(NSString*)action label:(NSString*)label value:(int)value;
 -(void)eventStartPlaySession;
