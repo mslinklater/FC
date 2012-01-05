@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 by Martin Linklater
+ Copyright (C) 2011-2012 by Martin Linklater
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -26,39 +26,34 @@
 namespace FC
 {
 	
-static const float kDegToRad = 0.01745329f;	
-	
-template<class T>
-T Clamp(T input, T min, T max)
-{
-	if (input < min) {
-		return min;
-	} else if (input > max) {
-		return max;
-	} else {
-		return input;
+	static const float kDegToRad = 0.01745329f;	
+		
+	template<class T>
+	void Swap(T& a, T& b)
+	{
+		T temp = a;
+		a = b;
+		b = temp;
 	}
-}
 
-template<class T>
-void Swap(T a, T b)
-{
-	T temp = a;
-	a = b;
-	b = temp;
-}
-
-static float RoundWithTolerance( float in, float tolerance )
-{
-	int div = (int)(in / tolerance);
-	float lower = (float)div * tolerance;
-	float upper = (float)(div + ((in >= 0) ? 1 : -1)) * tolerance;
+	template<class T>
+	void Clamp(T& val, T min, T max)
+	{
+		if (val < min) val = min;
+		if (val > max) val = max;
+	}
 	
-	if (fabsf(in - lower) < fabsf(in - upper)) 
-		return lower;
-	else 
-		return upper;
-}
+	static float RoundWithTolerance( float in, float tolerance )
+	{
+		int div = (int)(in / tolerance);
+		float lower = (float)div * tolerance;
+		float upper = (float)(div + ((in >= 0) ? 1 : -1)) * tolerance;
+		
+		if (fabsf(in - lower) < fabsf(in - upper)) 
+			return lower;
+		else 
+			return upper;
+	}
 }
 
 #endif // _FC_UTILITY_H

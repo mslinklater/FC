@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 by Martin Linklater
+ Copyright (C) 2011-2012 by Martin Linklater
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -90,6 +90,22 @@ static int lua_SetBackgroundColor( lua_State* _state )
 	return 0;
 }
 
+static int lua_ShowGameCenterLeaderboards( lua_State* _state )
+{
+	[FCApp showGameCenterLeaderboard];
+	return 0;
+}
+
+static int lua_LaunchExternalURL( lua_State* _state )
+{
+	FC_ASSERT(lua_type(_state, 1) == LUA_TSTRING);
+	
+	NSString* urlString = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	
+	[FCApp launchExternalURL:urlString];
+	return 0;
+}
+
 @implementation FCApp
 
 +(void)coldBootWithViewController:(UIViewController *)vc delegate:(id<FCAppDelegate>)delegate
@@ -123,6 +139,8 @@ static int lua_SetBackgroundColor( lua_State* _state )
 	[s_lua createGlobalTable:@"FCApp"];
 	[s_lua registerCFunction:lua_ShowStatusBar as:@"FCApp.ShowStatusBar"];
 	[s_lua registerCFunction:lua_SetBackgroundColor as:@"FCApp.SetBackgroundColor"];
+	[s_lua registerCFunction:lua_ShowGameCenterLeaderboards as:@"FCApp.ShowGameCenterLeaderboards"];
+	[s_lua registerCFunction:lua_LaunchExternalURL as:@"FCApp.LaunchExternalURL"];
 
 //	[s_lua call:@"PrintTable" withSig:@"tb>", "FCCaps", true];
 //	[s_lua call:@"PrintTable" withSig:@"tb>", "FCPersistentData", true];
@@ -160,7 +178,7 @@ static int lua_SetBackgroundColor( lua_State* _state )
 {
 	float dt = (float)[s_perfCounter secondsValue];
 		
-	dt = FC::Clamp<float>(dt, 0, 0.1);
+	FC::Clamp<float>(dt, 0, 0.1);
 	
 	[s_perfCounter zero];
 
@@ -228,6 +246,29 @@ static int lua_SetBackgroundColor( lua_State* _state )
 +(FCLuaVM*)lua
 {
 	return s_lua;
+}
+
++(void)showGameCenterLeaderboard
+{
+    GKLeaderboardViewController *leaderboardController = [[GKLeaderboardViewController alloc] init];
+	
+    if (leaderboardController != nil)
+    {
+        leaderboardController.leaderboardDelegate = self;
+        [s_viewController presentModalViewController: leaderboardController animated: YES];
+    }
+}
+
++(void)leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController
+{
+	[s_viewController dismissModalViewControllerAnimated:YES];	
+	
+	// call lua func ?
+}
+
++(void)launchExternalURL:(NSString*)stringURL
+{
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:stringURL]];
 }
 
 @end

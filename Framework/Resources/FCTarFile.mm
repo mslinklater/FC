@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 by Martin Linklater
+ Copyright (C) 2011-2012 by Martin Linklater
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -19,6 +19,8 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+
+// DEPRECATE
 
 #import "FCTarFile.h"
 #import "FCCore.h"

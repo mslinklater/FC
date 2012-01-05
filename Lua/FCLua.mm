@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 by Martin Linklater
+ Copyright (C) 2011-2012 by Martin Linklater
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -122,10 +122,6 @@ static int lua_KillThread( lua_State* state )
 
 @interface FCLua() {
 	FCLuaVM*				m_coreVM;
-//	FCPerformanceCounter*	m_perfCounter;
-#if TARGET_OS_IPHONE
-//	CADisplayLink*			m_displayLink;
-#endif
 }
 @end
 
@@ -148,6 +144,7 @@ static int lua_KillThread( lua_State* state )
 
 -(void)updateThreads:(float)dt
 {
+	// check for stack crawl
 	
 	// update threads
 	NSArray* keys = [self.threadsDict allKeys];
@@ -174,6 +171,7 @@ static int lua_KillThread( lua_State* state )
 		m_coreVM = [[FCLuaVM alloc] init];
 		[m_coreVM addStandardLibraries];
 		[m_coreVM loadScript:@"util"];
+		[m_coreVM loadScript:@"colors"];
 		
 		// register core API
 		[m_coreVM registerCFunction:lua_NewThread as:@"FCNewThread"];

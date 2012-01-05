@@ -20,27 +20,28 @@
  THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
+#import <GameKit/GameKit.h>
+#import "FCGameCenter.h"
+#import "FCLua.h"
 
-@interface FCXMLData : NSObject <NSXMLParserDelegate> {
-	NSMutableArray* mCurrentNodeStack;
-	NSMutableDictionary* mCurrentNode;
-	NSMutableDictionary* mRoot;
+#pragma mark - Lua functions
+
+#pragma mark - Objective-C
+
+@implementation FCGameCenter
+
++(FCGameCenter*)instance
+{
+	static FCGameCenter* pInstance;
+	if (!pInstance) {
+		pInstance = [[FCGameCenter alloc] init];
+	}
+	return pInstance;
 }
 
--(id)initWithData:(NSData*)data;
++(void)registerLuaFunctions:(FCLuaVM *)lua
+{
+	
+}
 
--(id)initWithContentsOfFile:(NSString*)filePath;
-+(FCXMLData*)fcxmlDataWithContentsOfFile:(NSString*)filePath;
-
--(id)initWithContentsOfURL:(NSURL*)url;
-+(FCXMLData*)fcxmlDataWithContentsOfURL:(NSURL*)url;
-
-
--(NSArray*)arrayForKeyPath:(NSString*)keyPath;
--(NSDictionary*)dictionaryForKeyPath:(NSString*)keyPath;
--(NSString*)stringForKeyPath:(NSString*)keyPath;
-
--(BOOL)validate;
 @end
-

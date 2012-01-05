@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 by Martin Linklater
+ Copyright (C) 2011-2012 by Martin Linklater
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -40,5 +40,6 @@
 -(void)attachPhase:(FCPhase*)phase toParent:(FCPhase*)parentPhase;
 
 -(void)addPhaseToQueue:(NSString*)name;
+-(void)deactivatePhase:(NSString*)name;
 
 @end

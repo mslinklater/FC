@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 by Martin Linklater
+ Copyright (C) 2011-2012 by Martin Linklater
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -137,10 +137,17 @@ static int lua_SetAlpha( lua_State* _state )
 static int lua_SetOnSelectLuaFunction( lua_State* _state )
 {
 	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
-	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING );
+	FC_ASSERT( (lua_type(_state, 2) == LUA_TSTRING) || (lua_type(_state, 2) == LUA_TNIL) );
 	
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
-	NSString* funcName = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
+	
+	NSString* funcName;
+	
+	if (lua_type(_state, 2) == LUA_TNIL) {
+		funcName = nil;
+	} else {
+		funcName = [NSString stringWithUTF8String:lua_tostring(_state, 2)];		
+	}
 	
 	[[FCViewManager instance] setView:viewName onSelectLuaFunc:funcName];
 	
@@ -202,9 +209,28 @@ static int lua_SetOnSelectLuaFunction( lua_State* _state )
 	
 }
 
+-(void)removeGroup:(NSString*)groupName
+{
+	
+}
+
 -(void)remove:(NSString*)name
 {
+	FC_ASSERT([_viewDictionary objectForKey:name]);
+	
 	[_viewDictionary removeObjectForKey:name];
+}
+
+-(CGRect)rectForRect:(CGRect)rect containedInView:(UIView*)view;
+{
+	CGRect scaledFrame;
+	scaledFrame.origin.x = view.frame.size.width * rect.origin.x;			
+	scaledFrame.origin.y = view.frame.size.height * rect.origin.y;				
+
+	scaledFrame.size.width = [[[FCDevice instance] valueForKey:kFCDeviceDisplayLogicalXRes] floatValue] * rect.size.width;
+	scaledFrame.size.height = [[[FCDevice instance] valueForKey:kFCDeviceDisplayLogicalYRes] floatValue] * rect.size.height;			
+	
+	return scaledFrame;
 }
 
 -(void)setView:(NSString*)viewName text:(NSString*)text
@@ -254,10 +280,20 @@ static int lua_SetOnSelectLuaFunction( lua_State* _state )
 		CGRect containerFrame = [thisView superview].frame;
 		
 		__block CGRect scaledFrame;
-		scaledFrame.origin.x = containerFrame.size.width * frame.origin.x;
-		scaledFrame.origin.y = containerFrame.size.height * frame.origin.y;
-		scaledFrame.size.width = [[[FCDevice instance] valueForKey:kFCDeviceDisplayLogicalXRes] floatValue] * frame.size.width;
-		scaledFrame.size.height = [[[FCDevice instance] valueForKey:kFCDeviceDisplayLogicalYRes] floatValue] * frame.size.height;
+		scaledFrame.origin.x = containerFrame.size.width * frame.origin.x;			
+		scaledFrame.origin.y = containerFrame.size.height * frame.origin.y;			
+		
+		if (frame.size.width < 0) {
+			scaledFrame.size.width = thisView.frame.size.width;
+		} else {
+			scaledFrame.size.width = [[[FCDevice instance] valueForKey:kFCDeviceDisplayLogicalXRes] floatValue] * frame.size.width;
+		}
+		
+		if (frame.size.height < 0) {
+			scaledFrame.size.height = thisView.frame.size.height;
+		} else {
+			scaledFrame.size.height = [[[FCDevice instance] valueForKey:kFCDeviceDisplayLogicalYRes] floatValue] * frame.size.height;			
+		}
 		
 		[UIView animateWithDuration:seconds animations:^{		
 			NSMethodSignature* sig = [[thisView class] instanceMethodSignatureForSelector:@selector(setFrame:)];		
@@ -275,23 +311,28 @@ static int lua_SetOnSelectLuaFunction( lua_State* _state )
 
 -(void)setView:(NSString*)viewName alpha:(float)alpha over:(float)seconds
 {
-	UIView* thisView = [_viewDictionary valueForKey:viewName];
+	NSArray* components = [viewName componentsSeparatedByString:@","];
 	
-	FC_ASSERT( thisView );
-	
-	if ([thisView respondsToSelector:@selector(setAlpha:)]) 
+	for( NSString* name in components )
 	{
-		[UIView animateWithDuration:seconds animations:^{		
-			NSMethodSignature* sig = [[thisView class] instanceMethodSignatureForSelector:@selector(setAlpha:)];		
-			NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:sig];
-			[invocation setSelector:@selector(setAlpha:)];
-			[invocation setTarget:thisView];
-			[invocation setArgument:(void*)&alpha atIndex:2];
-			[invocation invoke];
-		}];
-	} else {
-		FC_FATAL1(@"Sending 'setAlpha' to a view which does not respond to setAlpha - %@", thisView);
-	}	
+		UIView* thisView = [_viewDictionary valueForKey:[name stringByReplacingOccurrencesOfString:@" " withString:@""]];
+		
+		FC_ASSERT( thisView );
+		
+		if ([thisView respondsToSelector:@selector(setAlpha:)]) 
+		{
+			[UIView animateWithDuration:seconds animations:^{		
+				NSMethodSignature* sig = [[thisView class] instanceMethodSignatureForSelector:@selector(setAlpha:)];		
+				NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:sig];
+				[invocation setSelector:@selector(setAlpha:)];
+				[invocation setTarget:thisView];
+				[invocation setArgument:(void*)&alpha atIndex:2];
+				[invocation invoke];
+			}];
+		} else {
+			FC_FATAL1(@"Sending 'setAlpha' to a view which does not respond to setAlpha - %@", thisView);
+		}			
+	}
 }
 
 -(void)setView:(NSString*)viewName onSelectLuaFunc:(NSString*)funcName

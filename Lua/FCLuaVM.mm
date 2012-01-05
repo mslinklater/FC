@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 by Martin Linklater
+ Copyright (C) 2011-2012 by Martin Linklater
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -336,9 +336,11 @@ static int panic (lua_State *L) {
 	}
 	
 	NSUInteger numComponents = [components count];
+	int numExtraStackPopsNeeded = 0;
 	
 	for (NSUInteger i = 1; i < numComponents; ++i) {
 		lua_getfield(_state, -1, [[components objectAtIndex:i] UTF8String]);
+		numExtraStackPopsNeeded++;
 	}
 
 	if (!lua_isfunction(_state, -1)) {
@@ -390,7 +392,6 @@ endargs:
 	
 	nres = (int)strlen(csig);
 	
-	
 	if (lua_pcall(_state, narg, nres, 0) != 0) {
 		FC_LOG2(@"ERROR calling '%@': %@", func, [NSString stringWithUTF8String:lua_tostring(_state, -1)]);
 		[self dumpCallstack];
@@ -404,33 +405,21 @@ endargs:
 	while (*csig) {
 		switch (*csig++) {
 			case 'd': /* double result */
-//				if (!lua_isnumber(_state, nres)) {
-//					NSLog(@"ERROR");
-//				}
 				FC_ASSERT(lua_isnumber(_state, nres));
 				*va_arg(vl, double*) = lua_tonumber(_state, nres);
 				break;
 				
 			case 'i': /* int result */
-//				if (!lua_isnumber(_state, nres)) {
-//					NSLog(@"ERROR");
-//				}
 				FC_ASSERT(lua_isnumber(_state, nres));
 				*va_arg(vl, int*) = (int)lua_tointeger(_state, nres);
 				break;
 				
 			case 's': /* string result */
-//				if (!lua_isstring(_state, nres)) {
-//					NSLog(@"ERROR");
-//				}
 				FC_ASSERT(lua_isstring(_state, nres));
 				*va_arg(vl, const char **) = lua_tostring(_state, nres);
 				break;
 
 			case 'b': /* boolean result */
-//				if (!lua_isboolean(_state, nres)) {
-//					NSLog(@"ERROR");
-//				}
 				FC_ASSERT(lua_isboolean(_state, nres));
 				*va_arg(vl, bool*) = lua_toboolean(_state, nres);
 				break;
@@ -442,10 +431,17 @@ endargs:
 		nres++;
 	}
 	
+	lua_pop(_state, numExtraStackPopsNeeded);
+	
 	va_end(vl);
 }
 
 #pragma mark - Debug
+
+-(int)getStackSize
+{
+	return lua_gettop(_state);
+}
 
 -(void)dumpStack
 {

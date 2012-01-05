@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 by Martin Linklater
+ Copyright (C) 2011-2012 by Martin Linklater
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -132,7 +132,7 @@
 {
 	if ([_delegate respondsToSelector:@selector(isNowDeactive)])
 	{
-		[_delegate isNowActive];
+		[_delegate isNowDeactive];
 		[[FCLua instance].coreVM call:_luaIsNowDeactiveFunc required:NO withSig:@""];
 	}
 }

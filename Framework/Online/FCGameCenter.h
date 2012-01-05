@@ -21,26 +21,10 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "FCLuaClass.h"
 
-@interface FCXMLData : NSObject <NSXMLParserDelegate> {
-	NSMutableArray* mCurrentNodeStack;
-	NSMutableDictionary* mCurrentNode;
-	NSMutableDictionary* mRoot;
+@interface FCGameCenter : NSObject <FCLuaClass> {
+	
 }
-
--(id)initWithData:(NSData*)data;
-
--(id)initWithContentsOfFile:(NSString*)filePath;
-+(FCXMLData*)fcxmlDataWithContentsOfFile:(NSString*)filePath;
-
--(id)initWithContentsOfURL:(NSURL*)url;
-+(FCXMLData*)fcxmlDataWithContentsOfURL:(NSURL*)url;
-
-
--(NSArray*)arrayForKeyPath:(NSString*)keyPath;
--(NSDictionary*)dictionaryForKeyPath:(NSString*)keyPath;
--(NSString*)stringForKeyPath:(NSString*)keyPath;
-
--(BOOL)validate;
++(FCGameCenter*)instance;
 @end
-

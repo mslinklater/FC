@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 by Martin Linklater
+ Copyright (C) 2011-2012 by Martin Linklater
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -43,6 +43,7 @@ typedef int(*tLuaCallableCFunction)(lua_State*);
 -(void)addStandardLibraries;
 -(void)createGlobalTable:(NSString*)tableName;
 -(void)registerCFunction:(tLuaCallableCFunction)func as:(NSString*)name;
+-(int)getStackSize;
 
 // Get
 -(long)globalNumber:(NSString*)name;

@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 by Martin Linklater
+ Copyright (C) 2011-2012 by Martin Linklater
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -24,9 +24,7 @@
 #import "FCError.h"
 #import "FCLuaVM.h"
 
-int lua_AddPhaseToQueue( lua_State* _state );
-
-int lua_AddPhaseToQueue( lua_State* _state )
+static int lua_AddPhaseToQueue( lua_State* _state )
 {
 	FC_ASSERT( lua_type(_state, -1) == LUA_TSTRING );
 
@@ -37,6 +35,19 @@ int lua_AddPhaseToQueue( lua_State* _state )
 	[[FCPhaseManager instance] addPhaseToQueue:stringPhaseName];
 	
 	return 0;
+}
+
+static int lua_DeactivatePhase( lua_State* _state )
+{
+	FC_ASSERT( lua_type(_state, -1) == LUA_TSTRING );
+	
+	const char* pPhaseName = lua_tostring( _state, -1);
+	
+	NSString* stringPhaseName = [NSString stringWithUTF8String:pPhaseName];
+	
+	[[FCPhaseManager instance] deactivatePhase:stringPhaseName];
+	
+	return 0;	
 }
 
 @implementation FCPhaseManager
@@ -60,6 +71,7 @@ int lua_AddPhaseToQueue( lua_State* _state )
 {	
 	[lua createGlobalTable:@"FCPhaseManager"];
 	[lua registerCFunction:lua_AddPhaseToQueue as:@"FCPhaseManager.AddPhaseToQueue"];
+	[lua registerCFunction:lua_DeactivatePhase as:@"FCPhaseManager.DeactivatePhase"];
 }
 
 -(id)init
@@ -71,6 +83,34 @@ int lua_AddPhaseToQueue( lua_State* _state )
 		_activePhases = [NSMutableArray array];
 	}
 	return self;
+}
+
+-(void)deactivatePhase:(NSString*)name
+{
+	// make sure active phase exists with that name
+	
+	NSArray* activePhasesConst = [_activePhases copy];
+
+	for( FCPhase* phase in activePhasesConst )
+	{
+		if ([phase.name isEqualToString:name]) 
+		{
+			FCPhase* freshPhase = [_phaseQueue objectAtIndex:0];
+			[_activePhases addObject:freshPhase];
+			[_phaseQueue removeObject:freshPhase];
+			
+			[freshPhase willActivate];
+			
+			freshPhase.state = kFCPhaseStateActivating;
+			
+			[phase willDeactivate];
+			
+			phase.state = kFCPhaseStateDeactivating;
+			return;
+		}
+	}
+	
+	FC_FATAL1(@"Phase %@ is not active", name);
 }
 
 -(void)update:(float)dt
@@ -102,17 +142,7 @@ int lua_AddPhaseToQueue( lua_State* _state )
 				break;
 			case kFCPhaseUpdateDeactivate:
 			{
-				FCPhase* freshPhase = [_phaseQueue objectAtIndex:0];
-				[_activePhases addObject:freshPhase];
-				[_phaseQueue removeObject:freshPhase];
-				
-				[freshPhase willActivate];
-				
-				freshPhase.state = kFCPhaseStateActivating;
-				
-				[phase willDeactivate];
-				
-				phase.state = kFCPhaseStateDeactivating;
+				[self deactivatePhase:phase.name];
 			}
 			break;
 			default:

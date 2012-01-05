@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 by Martin Linklater
+ Copyright (C) 2011-2012 by Martin Linklater
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -50,7 +50,9 @@
 
 -(void)add:(UIView*)view as:(NSString*)name;
 -(void)createGroupWith:(NSArray*)names called:(NSString*)groupName;
+-(void)removeGroup:(NSString*)groupName;
 -(void)remove:(NSString*)name;
+-(CGRect)rectForRect:(CGRect)rect containedInView:(UIView*)view;
 
 -(void)setView:(NSString*)viewName text:(NSString*)text;
 -(void)setView:(NSString*)viewName textColor:(UIColor*)color;

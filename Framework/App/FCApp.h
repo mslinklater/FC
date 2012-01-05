@@ -1,5 +1,5 @@
 /*
- Copyright (C) 2011 by Martin Linklater
+ Copyright (C) 2011-2012 by Martin Linklater
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
@@ -23,6 +23,7 @@
 #if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>
+#import <GameKit/GameKit.h>
 
 #import "Lua/FCLua.h"
 
@@ -33,7 +34,7 @@
 //-(BOOL)shouldRotateToInterfaceOrientation:(UIInterfaceOrientation)orient;
 @end
 
-@interface FCApp : NSObject
+@interface FCApp : NSObject <GKLeaderboardViewControllerDelegate>
 +(void)coldBootWithViewController:(UIViewController*)vc delegate:(id<FCAppDelegate>)delegate;
 +(void)warmBoot;
 +(void)shutdown;
@@ -49,6 +50,9 @@
 
 +(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
 +(FCLuaVM*)lua;
+
++(void)showGameCenterLeaderboard;
++(void)launchExternalURL:(NSString*)stringURL;
 @end
 
 #endif
