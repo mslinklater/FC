@@ -35,7 +35,25 @@ void common_LoadScriptForState(NSString* path, lua_State* _state, BOOL optional)
 
 void common_LoadScriptForState(NSString* path, lua_State* _state, BOOL optional)
 {
-	NSString* filePath = [[NSBundle mainBundle] pathForResource:[path lowercaseString] ofType:@"lua"];
+	NSString* filePath;
+	
+	// load via FCConnect - if not, get the binary out the bundle
+
+	// if this is FC source, load from main bundle as plaintext
+
+	if ([path rangeOfString:@"fc_"].location == 0) 
+	{
+		filePath = [[NSBundle mainBundle] pathForResource:[path lowercaseString] ofType:@"lua"];
+	}
+	else
+	{
+#if defined (DEBUG)
+		path = [NSString stringWithFormat:@"lua/%@", path];
+#else
+		path = [NSString stringWithFormat:@"luabin/%@", path];
+#endif
+		filePath = [[NSBundle mainBundle] pathForResource:[path lowercaseString] ofType:@"lua"];		
+	}
 
 	if(filePath == nil)
 	{ 
@@ -222,8 +240,35 @@ static int panic (lua_State *L) {
 	lua_pop(_state, (int)(numComponents - 1));
 }
 
+-(void)removeCFunction:(NSString *)name
+{
+	NSArray* components = [name componentsSeparatedByString:@"."];
+	
+	NSUInteger numComponents = [components count];
+	
+	for (NSUInteger i = 0; i < numComponents - 1; i++) {
+		if (i == 0) {
+			lua_getglobal(_state, [[components objectAtIndex:i] UTF8String]);
+		} else {
+			lua_getfield(_state, -1, [[components objectAtIndex:i] UTF8String]);
+		}
+	}
+	
+	lua_pushnil(_state);
+	
+	if (numComponents == 1) {
+		lua_setglobal(_state, [[components objectAtIndex:numComponents - 1] UTF8String]);
+	} else {
+		lua_setfield(_state, -2, [[components objectAtIndex:numComponents - 1] UTF8String]);
+	}
+	
+	lua_pop(_state, (int)(numComponents - 1));
+}
+
 -(void)createGlobalTable:(NSString*)tableName
 {
+	// need table descent
+	
 	lua_newtable(_state);
 	lua_setglobal(_state, [tableName UTF8String]);
 }
@@ -232,6 +277,8 @@ static int panic (lua_State *L) {
 
 -(long)globalNumber:(NSString*)name
 {
+	// need table descent
+	
 	lua_getglobal(_state, [name UTF8String]);
 	if (!lua_isnumber(_state, -1)) {
 		NSLog(@"ERROR - Global '%@' is not a number", name);
@@ -243,6 +290,8 @@ static int panic (lua_State *L) {
 #if TARGET_OS_IPHONE
 -(UIColor*)globalColor:(NSString*)name
 {
+	// need table descent
+	
 	lua_getglobal(_state, [name UTF8String]);
 	if (!lua_istable(_state, -1)) {
 		NSLog(@"ERROR - Global '%@' is not a color", name);
@@ -286,19 +335,53 @@ static int panic (lua_State *L) {
 
 -(void)setGlobal:(NSString*)global integer:(long)number
 {
+	// need table descent
+	
 	lua_pushinteger(_state, number);
 	lua_setglobal(_state, [global UTF8String]);
 }
 
 -(void)setGlobal:(NSString*)global number:(double)number
 {
+	// need table descent
+	
 	lua_pushnumber(_state, number);
 	lua_setglobal(_state, [global UTF8String]);
+}
+
+-(void)setGlobal:(NSString*)name boolean:(BOOL)value
+{
+	NSArray* components = [name componentsSeparatedByString:@"."];
+	
+	NSUInteger numComponents = [components count];
+	
+	for (NSUInteger i = 0; i < numComponents - 1; i++) {
+		if (i == 0) {
+			lua_getglobal(_state, [[components objectAtIndex:i] UTF8String]);
+		} else {
+			lua_getfield(_state, -1, [[components objectAtIndex:i] UTF8String]);
+		}
+	}
+	
+	lua_pushboolean(_state, value);
+
+	if (numComponents == 1) {
+		lua_setglobal(_state, [[components objectAtIndex:numComponents - 1] UTF8String]);
+	} else {
+		lua_setfield(_state, -2, [[components objectAtIndex:numComponents - 1] UTF8String]);
+	}
+	
+	lua_pop(_state, (int)(numComponents - 1));
+
+//	lua_pushboolean(_state, value);
+//	lua_setglobal(_state, [global UTF8String]);	
 }
 
 #if TARGET_OS_IPHONE
 -(void)setGlobal:(NSString *)global color:(UIColor*)color
 {
+	// need table descent
+	
 	FC_ASSERT( CGColorGetNumberOfComponents(color.CGColor) == 4);
 	
 	const CGFloat* components = CGColorGetComponents(color.CGColor);
@@ -331,8 +414,12 @@ static int panic (lua_State *L) {
 	if (lua_isnil(_state, -1)) {
 		if (required) {
 			FC_FATAL1(@"Can't find function '%@'", func);
-		} else
+		} else {
+			lua_pop(_state, lua_gettop(_state));
+//			FCLua_DumpStack(_state);
+			FC_ASSERT(lua_gettop(_state) == 0);
 			return;
+		}
 	}
 	
 	NSUInteger numComponents = [components count];
@@ -347,7 +434,12 @@ static int panic (lua_State *L) {
 		if (required) {
 			FC_FATAL1(@"Calling a function defined in Lua '%@'", func);
 		} else
+		{
+			lua_pop(_state, lua_gettop(_state));
+//			FCLua_DumpStack(_state);
+			FC_ASSERT(lua_gettop(_state) == 0);
 			return;
+		}
 	}
 
 	const char* csig = [sig UTF8String];
@@ -431,9 +523,14 @@ endargs:
 		nres++;
 	}
 	
-	lua_pop(_state, numExtraStackPopsNeeded);
+//	FCLua_DumpStack(_state);
+	lua_pop(_state, lua_gettop(_state));
 	
+	FC_ASSERT(lua_gettop(_state) == 0);
+
 	va_end(vl);
+	
+	lua_gc( _state, LUA_GCCOLLECT, 0 );
 }
 
 #pragma mark - Debug

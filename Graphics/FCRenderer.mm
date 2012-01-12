@@ -69,7 +69,7 @@
 
 -(void)prebuildShaders
 {
-	[self.shaderManager addProgram:@"debug_debug"];
+//	[self.shaderManager addProgram:@"debug_debug"];
 }
 
 -(void)addToGatherList:(id)obj

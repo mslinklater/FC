@@ -24,7 +24,6 @@
  
  TODO:
 
- textcolor
  backgroundcolor
  
  */
@@ -41,22 +40,30 @@
 @private
 	UIView* _rootView;
 	NSMutableDictionary* _viewDictionary;
+	NSMutableDictionary* _groupDictionary;
 }
 @property(nonatomic, strong) UIView* rootView;
 @property(nonatomic, strong) NSMutableDictionary* viewDictionary;
+@property(nonatomic, strong) NSMutableDictionary* groupDictionary;
 
 +(FCViewManager*)instance;
 +(void)registerLuaFunctions:(FCLuaVM *)lua;
 
 -(void)add:(UIView*)view as:(NSString*)name;
--(void)createGroupWith:(NSArray*)names called:(NSString*)groupName;
--(void)removeGroup:(NSString*)groupName;
 -(void)remove:(NSString*)name;
+
+-(void)createGroup:(NSString*)groupName;
+-(void)removeGroup:(NSString*)groupName;
+-(void)add:(NSString*)name toGroup:(NSString*)groupName;
+-(void)remove:(NSString*)name fromGroup:(NSString*)groupName;
+
 -(CGRect)rectForRect:(CGRect)rect containedInView:(UIView*)view;
 
+// get these working with groups
 -(void)setView:(NSString*)viewName text:(NSString*)text;
 -(void)setView:(NSString*)viewName textColor:(UIColor*)color;
 -(void)setView:(NSString*)viewName frame:(CGRect)frame over:(float)seconds;
+-(CGRect)getViewFrame:(NSString*)viewName;
 -(void)setView:(NSString*)viewName alpha:(float)alpha over:(float)seconds;
 -(void)setView:(NSString*)viewName onSelectLuaFunc:(NSString*)funcName;
 @end

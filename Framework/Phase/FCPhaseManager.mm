@@ -143,6 +143,17 @@ static int lua_DeactivatePhase( lua_State* _state )
 			case kFCPhaseUpdateDeactivate:
 			{
 				[self deactivatePhase:phase.name];
+//				FCPhase* freshPhase = [_phaseQueue objectAtIndex:0];
+//				[_activePhases addObject:freshPhase];
+//				[_phaseQueue removeObjectAtIndex:0];				
+//				[freshPhase willActivate];
+//				
+//				freshPhase.state = kFCPhaseStateActivating;
+//				
+//				[phase willDeactivate];
+//				
+//				phase.state = kFCPhaseStateDeactivating;
+
 			}
 			break;
 			default:

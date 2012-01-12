@@ -30,37 +30,51 @@
 #import "Maths/FCMaths.h"
 #import "Core/FCTypes.h"
 
+//@protocol FCGLViewRenderTarget <NSObject>
+//-(void)render;
+//@end
+
 @interface FCGLView : UIView
 {
 @private
+	NSString* _managedName;
+	FCGLView* __weak _currentLuaTarget;
+	EAGLContext* _context;
+	FC::Vector3f _frustumTranslation;
+	float _fov;
+	float _nearClip;
+	float _farClip;
+	FC::Color4f _clearColor;
+	BOOL _depthBuffer;
+	BOOL _superSampling;
+	float _superSamplingScale;
+	
+	id	_renderTarget;
+	SEL	_renderAction;
+
+	float _aspectRatio;
 	
 	// OpenGL stuff
 	
-    GLint			mFramebufferWidth;
-    GLint			mFramebufferHeight;
-    GLint			mSupersampleBufferWidth;
-    GLint			mSupersampleBufferHeight;
+    GLint			_frameBufferWidth;
+    GLint			_frameBufferHeight;
+    GLint			_supersampleBufferWidth;
+    GLint			_supersampleBufferHeight;
 	
 	// normal (unsupersampled) vars
-    GLuint			mNormalFramebuffer;
-	GLuint			mNormalColorRenderbuffer;
-	GLuint			mNormalDepthRenderbuffer;
+    GLuint			_normalFrameBuffer;
+	GLuint			_normalColorRenderBuffer;
+	GLuint			_normalDepthRenderBuffer;
 	
 	// supersampled vars
-	GLuint			mSuperFramebuffer;
-	GLuint			mSuperColorRenderbuffer;
-	GLuint			mSuperDepthRenderbuffer;
-	GLuint			mSuperOffScreenTexture;		// texture
-	
-	// rendering control values	
-	float		mAspectRatio;
-	
-	CADisplayLink*	mDisplayLink;
-	id				mRenderTarget;
-	SEL				mRenderAction;
-	int				mFrameInterval;
+	GLuint			_superFrameBuffer;
+	GLuint			_superColorRenderBuffer;
+	GLuint			_superDepthRenderBuffer;
+	GLuint			_superOffScreenTexture;		// texture
 }
 
+@property(nonatomic, strong, readonly) NSString* managedName;
+@property(nonatomic, weak) FCGLView* currentLuaTarget;
 @property(nonatomic, strong) EAGLContext *context;
 @property(nonatomic) FC::Vector3f frustumTranslation;
 @property(nonatomic) float fov;
@@ -70,7 +84,25 @@
 @property(nonatomic) BOOL depthBuffer;
 @property(nonatomic) BOOL superSampling;
 @property(nonatomic) float superSamplingScale;
-@property(nonatomic) int interval;
+@property(nonatomic, strong) id renderTarget;
+@property(nonatomic) SEL renderAction;
+@property(nonatomic) float aspectRatio;
+
+@property(nonatomic, readonly) GLint frameBufferWidth;
+@property(nonatomic, readonly) GLint frameBufferHeight;
+@property(nonatomic, readonly) GLint supersampleBufferWidth;
+@property(nonatomic, readonly) GLint supersampleBufferHeight;
+
+@property(nonatomic, readonly) GLuint normalFrameBuffer;
+@property(nonatomic, readonly) GLuint normalColorRenderBuffer;
+@property(nonatomic, readonly) GLuint normalDepthRenderBuffer;
+
+@property(nonatomic, readonly) GLuint superFrameBuffer;
+@property(nonatomic, readonly) GLuint superColorRenderBuffer;
+@property(nonatomic, readonly) GLuint superDepthRenderBuffer;
+@property(nonatomic, readonly) GLuint superOffScreenTexture;
+
+-(id)initWithFrame:(CGRect)aRect name:(NSString*)managedName;
 
 - (void)setFramebuffer;
 - (BOOL)presentFramebuffer;
@@ -81,11 +113,7 @@
 -(void)setProjectionMatrix;
 -(void)clear;
 
--(void)setRenderTarget:(id)target renderAction:(SEL)action frameInterval:(int)interval;
--(void)start;
--(void)stop;
--(BOOL)animating;
-
+-(void)update:(float)dt;
 @end
 
 #endif // TARGET_OS_IPHONE

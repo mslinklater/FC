@@ -35,22 +35,54 @@
 
 #pragma mark - Lua Interface
 
-static int lua_Probe( lua_State* lua )
+static int lua_Probe( lua_State* _state )
 {
+	FC_ASSERT(lua_gettop(_state) == 0);
 	[[FCDevice instance] probe];
 	return 0;
 }
 
-static int lua_WarmProbe( lua_State* lua )
+static int lua_WarmProbe( lua_State* _state )
 {
+	FC_ASSERT(lua_gettop(_state) == 0);
 	[[FCDevice instance] warmProbe];
 	return 0;
 }
 
-static int lua_Print( lua_State* lua )
+static int lua_Print( lua_State* _state )
 {
+	FC_ASSERT(lua_gettop(_state) == 0);
 	[[FCDevice instance] print];
 	return 0;
+}
+
+static int lua_GetDeviceString( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 1);
+	FC_ASSERT(lua_isstring(_state, 1));
+	
+	NSString* key = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+
+	NSString* value = [[FCDevice instance] valueForKey:key];
+
+	lua_pushstring(_state, [value UTF8String]);
+	
+	return 1;
+}
+
+static int lua_GetDeviceNumber( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 1);
+	FC_ASSERT(lua_isstring(_state, 1));
+	
+	NSString* key = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	
+	FC_ASSERT([[[FCDevice instance] valueForKey:key] isKindOfClass:[NSNumber class]]);
+	
+	float value = [[[FCDevice instance] valueForKey:key] floatValue];
+
+	lua_pushnumber(_state, value);
+	return 1;
 }
 
 #pragma mark - Constants
@@ -81,6 +113,8 @@ NSString* kFCDeviceHardwareModelID = @"hardware_model_id";
 NSString* kFCDeviceHardwareModel = @"hardware_model";
 NSString* kFCDeviceHardwareUDID = @"hardware_udid";
 NSString* kFCDeviceHardwareName = @"hardware_name";
+
+NSString* kFCDeviceLocale = @"locale";
 
 NSString* kFCDeviceOSVersion = @"os_version";
 NSString* kFCDeviceOSName = @"os_name";
@@ -125,6 +159,8 @@ static FCDevice* pInstance;
 	[lua registerCFunction:lua_Probe as:@"FCDevice.Probe"];
 	[lua registerCFunction:lua_WarmProbe as:@"FCDevice.WarmProbe"];
 	[lua registerCFunction:lua_Print as:@"FCDevice.Print"];
+	[lua registerCFunction:lua_GetDeviceString as:@"FCDevice.GetString"];
+	[lua registerCFunction:lua_GetDeviceNumber as:@"FCDevice.GetNumber"];
 }
 
 #pragma mark - Object Lifetime
@@ -323,7 +359,11 @@ static FCDevice* pInstance;
 	} else {
 		[_caps setValue:kFCDeviceFalse forKey:kFCDeviceAppPirated];		
 	}
-//	[self dumpToTTY];
+	
+	// Locale
+	
+	NSString* localeCode = [[NSLocale preferredLanguages] objectAtIndex:0];
+	[_caps setValue:localeCode forKey:kFCDeviceLocale];
 
 	return;
 }

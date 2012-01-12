@@ -54,6 +54,8 @@ extern NSString* kFCDeviceHardwareModel;
 extern NSString* kFCDeviceHardwareUDID;
 extern NSString* kFCDeviceHardwareName;
 
+extern NSString* kFCDeviceLocale;
+
 extern NSString* kFCDeviceOSVersion;
 extern NSString* kFCDeviceOSName;
 extern NSString* kFCDeviceOSGameCenter;

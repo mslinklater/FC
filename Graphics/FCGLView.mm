@@ -31,6 +31,59 @@
 #import "FCGLHelpers.h"
 #import "FCShaderManager.h"
 #import "FCRenderer.h"
+#import "FCLua.h"
+
+static NSMutableDictionary* s_glViews;
+static FCGLView* s_currentLuaTarget;
+
+#pragma mark - Lua Functions
+
+static int lua_SetCurrentView( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 1);
+	FC_ASSERT(lua_isstring(_state, 1));
+	
+	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	
+	FC_ASSERT([s_glViews valueForKey:viewName]);
+	
+	s_currentLuaTarget = [s_glViews valueForKey:viewName];
+
+	return 0;
+}
+
+static int lua_SetClearColor( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 1);
+	FC_ASSERT(lua_istable(_state, 1));
+	
+	lua_pushnil(_state);
+	
+	lua_next(_state, -2);
+	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	float r = lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	lua_next(_state, -2);
+	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	float g = lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	lua_next(_state, -2);
+	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	float b = lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	lua_next(_state, -2);
+	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	float a = lua_tonumber(_state, -1);
+	
+	s_currentLuaTarget.clearColor = FC::Color4f( r, g, b, a );
+	
+	return 0;
+}
+
+#pragma mark - ObjC
 
 @interface FCGLView(hidden)
 - (void)createFramebuffer;
@@ -38,6 +91,9 @@
 @end
 
 @implementation FCGLView
+
+@synthesize managedName = _managedName;
+@synthesize currentLuaTarget = _currentLuaTarget;
 
 @synthesize context = _context;
 @synthesize frustumTranslation = _frustumTranslation;
@@ -48,7 +104,24 @@
 @synthesize depthBuffer = _depthBuffer;
 @synthesize superSampling = _superSampling;
 @synthesize superSamplingScale = _superSamplingScale;
-@synthesize interval = _interval;
+@synthesize renderTarget = _renderTarget;
+@synthesize renderAction = _renderAction;
+
+@synthesize aspectRatio = _aspectRatio;
+
+@synthesize frameBufferWidth = _frameBufferWidth;
+@synthesize frameBufferHeight = _frameBufferHeight;
+@synthesize supersampleBufferWidth = _supersampleBufferWidth;
+@synthesize supersampleBufferHeight = _supersampleBufferHeight;
+
+@synthesize normalFrameBuffer = _normalFrameBuffer;
+@synthesize normalDepthRenderBuffer = _normalDepthRenderBuffer;
+@synthesize normalColorRenderBuffer = _normalColorRenderBuffer;
+
+@synthesize superFrameBuffer = _superFrameBuffer;
+@synthesize superColorRenderBuffer = _superColorRenderBuffer;
+@synthesize superDepthRenderBuffer = _superDepthRenderBuffer;
+@synthesize superOffScreenTexture = _superOffScreenTexture;
 
 // You must implement this method
 
@@ -57,10 +130,26 @@
     return [CAEAGLLayer class];
 }
 
--(id)initWithFrame:(CGRect)aRect
+-(id)initWithFrame:(CGRect)aRect name:(NSString*)managedName;
 {
 	self = [super initWithFrame:aRect];
 	if (self) {
+		
+		if (!s_glViews) 
+		{
+			s_glViews = [NSMutableDictionary dictionary];
+			
+			// register C Functions
+			
+			[[FCLua instance].coreVM createGlobalTable:@"GLView"];
+			[[FCLua instance].coreVM registerCFunction:lua_SetCurrentView as:@"GLView.SetCurrent"];
+			[[FCLua instance].coreVM registerCFunction:lua_SetClearColor as:@"GLView.SetClearColor"];
+		}
+
+		FC_ASSERT([s_glViews valueForKey:managedName] == nil);
+		
+		[s_glViews setValue:self forKey:managedName];
+
         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
         
         eaglLayer.opaque = TRUE;
@@ -84,7 +173,7 @@
 
 		// setup some defaults
 		
-		self.clearColor = FC::Color4f(0.0f, 0.0f, 0.0f, 1.0f);
+		self.clearColor = FC::Color4f(0.5f, 0.5f, 0.5f, 1.0f);
 		
 		self.depthBuffer = NO;
 		self.superSampling = NO;
@@ -107,13 +196,14 @@
 //    [context release];
 
     [self deleteFramebuffer];    
-	self.context = nil;
-    
+//	self.context = nil;   
+	
+	[s_glViews removeObjectForKey:_managedName];
 }
 
-- (EAGLContext *)context
+-(void)setCurrentLuaTarget:(FCGLView *)currentLuaTarget
 {
-    return _context;
+	s_currentLuaTarget = currentLuaTarget;
 }
 
 - (void)setContext:(EAGLContext *)newContext
@@ -130,40 +220,40 @@
 
 - (void)createSupersampledFramebuffer
 {
-    if (self.context && !mSuperFramebuffer)
+    if (self.context && !_superFrameBuffer)
     {
         [EAGLContext setCurrentContext:self.context];
         
         // Create normal buffer
-		glGenFramebuffers(1, &mNormalFramebuffer); GLCHECK;
-		glBindFramebuffer(GL_FRAMEBUFFER, mNormalFramebuffer); GLCHECK;
-        glGenRenderbuffers(1, &mNormalColorRenderbuffer); GLCHECK;
-        glBindRenderbuffer(GL_RENDERBUFFER, mNormalColorRenderbuffer); GLCHECK;
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, mNormalColorRenderbuffer); GLCHECK;
+		glGenFramebuffers(1, &_normalFrameBuffer); GLCHECK;
+		glBindFramebuffer(GL_FRAMEBUFFER, _normalFrameBuffer); GLCHECK;
+        glGenRenderbuffers(1, &_normalColorRenderBuffer); GLCHECK;
+        glBindRenderbuffer(GL_RENDERBUFFER, _normalColorRenderBuffer); GLCHECK;
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _normalColorRenderBuffer); GLCHECK;
 		
-		glGenFramebuffers(1, &mSuperFramebuffer); GLCHECK;
-		glBindFramebuffer(GL_FRAMEBUFFER, mSuperFramebuffer); GLCHECK;
+		glGenFramebuffers(1, &_superFrameBuffer); GLCHECK;
+		glBindFramebuffer(GL_FRAMEBUFFER, _superFrameBuffer); GLCHECK;
 
         // Create color render buffer and allocate backing store.
 		
         [self.context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
 		
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &mFramebufferWidth); GLCHECK;
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &mFramebufferHeight); GLCHECK;
+        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_frameBufferWidth); GLCHECK;
+        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_frameBufferHeight); GLCHECK;
         
 		// texture
-		glGenTextures(1, &mSuperOffScreenTexture); GLCHECK;
-		glBindTexture(GL_TEXTURE_2D, mSuperOffScreenTexture); GLCHECK;
+		glGenTextures(1, &_superOffScreenTexture); GLCHECK;
+		glBindTexture(GL_TEXTURE_2D, _superOffScreenTexture); GLCHECK;
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); GLCHECK;
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); GLCHECK;
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); GLCHECK;
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); GLCHECK;
 		
-		mSupersampleBufferWidth = mFramebufferWidth * self.superSamplingScale;
-		mSupersampleBufferHeight = mFramebufferHeight * self.superSamplingScale;
+		_supersampleBufferWidth = _frameBufferWidth * _superSamplingScale;
+		_supersampleBufferHeight = _frameBufferHeight * _superSamplingScale;
 
 		// try
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mSupersampleBufferWidth, mSupersampleBufferHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _supersampleBufferWidth, _supersampleBufferHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 		
 		if (glGetError() != GL_NO_ERROR) {
 			// non POT texture sizes - try to find the smallest POT texture that fits round the frame - We're in MBX land here so keep it lean 8)
@@ -171,16 +261,16 @@
 			int maxTextureWidth = FCGLCapsMaxTextureSize();
 			int maxTextureHeight = FCGLCapsMaxTextureSize();
 			
-			while ((maxTextureWidth/2) > mFramebufferWidth) {
+			while ((maxTextureWidth/2) > _frameBufferWidth) {
 				maxTextureWidth /= 2;
 			}
-			while ((maxTextureHeight/2) > mFramebufferHeight) {
+			while ((maxTextureHeight/2) > _frameBufferHeight) {
 				maxTextureHeight /= 2;
 			}
-			mSupersampleBufferWidth = maxTextureWidth;
-			mSupersampleBufferHeight = maxTextureHeight;
+			_supersampleBufferWidth = maxTextureWidth;
+			_supersampleBufferHeight = maxTextureHeight;
 			
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mSupersampleBufferWidth, mSupersampleBufferHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _supersampleBufferWidth, _supersampleBufferHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
 			if (glGetError() != GL_NO_ERROR) {
 				FC_FATAL(@"can't get supersampling working");
@@ -190,20 +280,20 @@
 		
 		if (self.depthBuffer)
 		{
-			glGenRenderbuffers(1, &mSuperDepthRenderbuffer); GLCHECK;
-			glBindRenderbuffer(GL_RENDERBUFFER, mSuperDepthRenderbuffer); GLCHECK;
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, mSupersampleBufferWidth, mSupersampleBufferHeight); GLCHECK;
-			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, mSuperDepthRenderbuffer); GLCHECK;
+			glGenRenderbuffers(1, &_superDepthRenderBuffer); GLCHECK;
+			glBindRenderbuffer(GL_RENDERBUFFER, _superDepthRenderBuffer); GLCHECK;
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, _supersampleBufferWidth, _supersampleBufferHeight); GLCHECK;
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _superDepthRenderBuffer); GLCHECK;
 		}
 		
-		glGenRenderbuffers(1, &mSuperColorRenderbuffer); GLCHECK;
-		glBindRenderbuffer(GL_RENDERBUFFER, mSuperColorRenderbuffer); GLCHECK;
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8_OES, mSupersampleBufferWidth, mSupersampleBufferHeight);	GLCHECK;
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, mSuperColorRenderbuffer); GLCHECK;
+		glGenRenderbuffers(1, &_superColorRenderBuffer); GLCHECK;
+		glBindRenderbuffer(GL_RENDERBUFFER, _superColorRenderBuffer); GLCHECK;
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8_OES, _supersampleBufferWidth, _supersampleBufferHeight);	GLCHECK;
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _superColorRenderBuffer); GLCHECK;
 		
 		// generate texture and associate it with the FBO
 		
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mSuperOffScreenTexture, 0); GLCHECK;
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _superOffScreenTexture, 0); GLCHECK;
         
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             FC_FATAL1(@"Failed to make complete framebuffer object '%@'", FCGLStringForEnum( glCheckFramebufferStatus(GL_FRAMEBUFFER)));
@@ -214,35 +304,35 @@
 {
 	NSAssert(self.superSampling == NO, @"createNormalFramebuffer when supersampling active");
 		
-    if(self.context && !mNormalFramebuffer)
+    if(self.context && !_normalFrameBuffer)
     {
         [EAGLContext setCurrentContext:self.context];
         
         // Create default framebuffer object.
 		
-		glGenFramebuffers(1, &mNormalFramebuffer); GLCHECK;
-		glBindFramebuffer(GL_FRAMEBUFFER, mNormalFramebuffer); GLCHECK;
+		glGenFramebuffers(1, &_normalFrameBuffer); GLCHECK;
+		glBindFramebuffer(GL_FRAMEBUFFER, _normalFrameBuffer); GLCHECK;
         
         // Create color render buffer and allocate backing store.
-        glGenRenderbuffers(1, &mNormalColorRenderbuffer); GLCHECK;
-        glBindRenderbuffer(GL_RENDERBUFFER, mNormalColorRenderbuffer); GLCHECK;
+        glGenRenderbuffers(1, &_normalColorRenderBuffer); GLCHECK;
+        glBindRenderbuffer(GL_RENDERBUFFER, _normalColorRenderBuffer); GLCHECK;
 		
         [self.context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
 		
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &mFramebufferWidth); GLCHECK;
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &mFramebufferHeight); GLCHECK;
+        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_frameBufferWidth); GLCHECK;
+        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_frameBufferHeight); GLCHECK;
         
 		// Create depth buffer
 		
 		if (self.depthBuffer) 
 		{
-			glGenRenderbuffers(1, &mNormalDepthRenderbuffer); GLCHECK;
-			glBindRenderbuffer(GL_RENDERBUFFER, mNormalDepthRenderbuffer); GLCHECK;
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, mFramebufferWidth, mFramebufferHeight); GLCHECK;
-			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, mNormalDepthRenderbuffer); GLCHECK;
+			glGenRenderbuffers(1, &_normalDepthRenderBuffer); GLCHECK;
+			glBindRenderbuffer(GL_RENDERBUFFER, _normalDepthRenderBuffer); GLCHECK;
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, _frameBufferWidth, _frameBufferHeight); GLCHECK;
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _normalDepthRenderBuffer); GLCHECK;
 		}
 
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, mNormalColorRenderbuffer); GLCHECK;
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _normalColorRenderBuffer); GLCHECK;
         
         if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             FC_FATAL1(@"Failed to make complete framebuffer object %@", FCGLStringForEnum(glCheckFramebufferStatus(GL_FRAMEBUFFER)) );
@@ -255,40 +345,40 @@
     {
         [EAGLContext setCurrentContext:self.context];
         
-        if (mNormalFramebuffer)
+        if (_normalFrameBuffer)
         {
-            glDeleteFramebuffers(1, &mNormalFramebuffer);
-            mNormalFramebuffer = 0;
+            glDeleteFramebuffers(1, &_normalFrameBuffer);
+            _normalFrameBuffer = 0;
         }
-        if (mNormalColorRenderbuffer)
+        if (_normalColorRenderBuffer)
         {
-            glDeleteRenderbuffers(1, &mNormalColorRenderbuffer);
-            mNormalColorRenderbuffer = 0;
+            glDeleteRenderbuffers(1, &_normalColorRenderBuffer);
+            _normalColorRenderBuffer = 0;
         }
-		if( mNormalDepthRenderbuffer )
+		if( _normalDepthRenderBuffer )
 		{
-			glDeleteRenderbuffers(1, &mNormalDepthRenderbuffer);
-			mNormalDepthRenderbuffer = 0;
+			glDeleteRenderbuffers(1, &_normalDepthRenderBuffer);
+			_normalDepthRenderBuffer = 0;
 		}
 
-		if (mSuperOffScreenTexture) {
-			glDeleteTextures(1, &mSuperOffScreenTexture);
-			mSuperOffScreenTexture = 0;
+		if (_superOffScreenTexture) {
+			glDeleteTextures(1, &_superOffScreenTexture);
+			_superOffScreenTexture = 0;
 		}
-		if( mSuperFramebuffer )
+		if( _superFrameBuffer )
 		{
-			glDeleteRenderbuffers(1, &mSuperFramebuffer);
-			mSuperFramebuffer = 0;
+			glDeleteRenderbuffers(1, &_superFrameBuffer);
+			_superFrameBuffer = 0;
 		}
-		if( mSuperColorRenderbuffer )
+		if( _superColorRenderBuffer )
 		{
-			glDeleteRenderbuffers(1, &mSuperColorRenderbuffer);
-			mSuperColorRenderbuffer = 0;
+			glDeleteRenderbuffers(1, &_superColorRenderBuffer);
+			_superColorRenderBuffer = 0;
 		}
-		if( mSuperDepthRenderbuffer )
+		if( _superDepthRenderBuffer )
 		{
-			glDeleteRenderbuffers(1, &mSuperDepthRenderbuffer);
-			mSuperDepthRenderbuffer = 0;
+			glDeleteRenderbuffers(1, &_superDepthRenderBuffer);
+			_superDepthRenderBuffer = 0;
 		}
 	}
 }
@@ -301,27 +391,27 @@
         
 		if (self.superSampling) 
 		{
-			if (!mSuperFramebuffer)
+			if (!_superFrameBuffer)
 				[self createSupersampledFramebuffer];
 			
-			glBindFramebuffer(GL_FRAMEBUFFER, mSuperFramebuffer); GLCHECK;
-			glBindRenderbuffer(GL_RENDERBUFFER, mSuperColorRenderbuffer); GLCHECK;
-			glViewport(0, 0, mSupersampleBufferWidth, mSupersampleBufferHeight); GLCHECK;
+			glBindFramebuffer(GL_FRAMEBUFFER, _superFrameBuffer); GLCHECK;
+			glBindRenderbuffer(GL_RENDERBUFFER, _superColorRenderBuffer); GLCHECK;
+			glViewport(0, 0, _supersampleBufferWidth, _supersampleBufferHeight); GLCHECK;
 		}
 		else
 		{
-			if (!mNormalFramebuffer)
+			if (!_normalFrameBuffer)
 				[self createNormalFramebuffer];
 
-			glBindFramebuffer(GL_FRAMEBUFFER, mNormalFramebuffer); GLCHECK;
-			glViewport(0, 0, mFramebufferWidth, mFramebufferHeight); GLCHECK;
+			glBindFramebuffer(GL_FRAMEBUFFER, _normalFrameBuffer); GLCHECK;
+			glViewport(0, 0, _frameBufferWidth, _frameBufferHeight); GLCHECK;
 		}
 		
 		if (self.depthBuffer) {
 			glEnable(GL_DEPTH_TEST); GLCHECK;
 		}
 
-		mAspectRatio = (float)mFramebufferHeight / (float)mFramebufferWidth;
+		_aspectRatio = (float)_frameBufferHeight / (float)_frameBufferWidth;
     }
 }
 
@@ -357,9 +447,9 @@
 //		if (self.superSampling)
 		if (0) // MSL supersampling
 		{
-			glBindFramebuffer(GL_FRAMEBUFFER, mNormalFramebuffer);
-			glBindRenderbuffer(GL_RENDERBUFFER, mNormalColorRenderbuffer);
-			glViewport(0, 0, mFramebufferWidth, mFramebufferHeight);			
+			glBindFramebuffer(GL_FRAMEBUFFER, _normalFrameBuffer);
+			glBindRenderbuffer(GL_RENDERBUFFER, _normalColorRenderBuffer);
+			glViewport(0, 0, _frameBufferWidth, _frameBufferHeight);			
 
 			glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
@@ -369,7 +459,7 @@
 			glDisable(GL_DEPTH_TEST);
 			glDisable(GL_TEXTURE_2D);
 			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, mSuperOffScreenTexture);
+			glBindTexture(GL_TEXTURE_2D, _superOffScreenTexture);
 			
 			// draw poly
 //			glMatrixMode(GL_PROJECTION);
@@ -396,7 +486,7 @@
 		}
 		else
 		{
-			glBindRenderbuffer(GL_RENDERBUFFER, mNormalColorRenderbuffer);
+			glBindRenderbuffer(GL_RENDERBUFFER, _normalColorRenderBuffer);
 		}
         
         success = [self.context presentRenderbuffer:GL_RENDERBUFFER];
@@ -415,8 +505,8 @@
 {
 	// needs offset
 	
-	int halfScreenWidth = ( (mFramebufferWidth / [UIScreen mainScreen].scale) / 2 );
-	int halfScreenHeight = ( (mFramebufferHeight / [UIScreen mainScreen].scale) / 2 );
+	int halfScreenWidth = ( (_frameBufferWidth / [UIScreen mainScreen].scale) / 2 );
+	int halfScreenHeight = ( (_frameBufferHeight / [UIScreen mainScreen].scale) / 2 );
 	
 	pointIn.x -= halfScreenWidth;
 	pointIn.y -= halfScreenHeight;
@@ -425,7 +515,7 @@
 	// centered now...
 	
 	pointIn.x /= halfScreenWidth / (-self.frustumTranslation.z * self.fov);
-	pointIn.y /= halfScreenHeight / (-self.frustumTranslation.z * (self.fov * mAspectRatio));
+	pointIn.y /= halfScreenHeight / (-self.frustumTranslation.z * (self.fov * _aspectRatio));
 	
 	return FC::Vector2f(pointIn.x, pointIn.y);
 }
@@ -438,7 +528,7 @@
 	
 	// build matrix
 	
-	FC::Matrix4f mat = FC::Matrix4f::Frustum( -self.fov, self.fov, -self.fov * mAspectRatio, self.fov * mAspectRatio, self.nearClip, self.farClip );	
+	FC::Matrix4f mat = FC::Matrix4f::Frustum( -self.fov, self.fov, -self.fov * _aspectRatio, self.fov * _aspectRatio, self.nearClip, self.farClip );	
 	FC::Matrix4f trans = FC::Matrix4f::Translate(self.frustumTranslation.x, self.frustumTranslation.y, self.frustumTranslation.z);
 
 	mat = trans * mat;
@@ -448,7 +538,7 @@
 
 -(void)clear
 {
-	glClearColor(self.clearColor.r, self.clearColor.g, self.clearColor.b, self.clearColor.a);
+	glClearColor(_clearColor.r, _clearColor.g, _clearColor.b, _clearColor.a);
 	
 	if (self.depthBuffer) 
 	{
@@ -460,36 +550,12 @@
 	}
 }
 
--(void)setRenderTarget:(id)target renderAction:(SEL)action frameInterval:(int)interval
+-(void)update:(float)dt
 {
-	mRenderTarget = target;
-	mRenderAction = action;
-	mFrameInterval = interval;
-}
-
--(void)start
-{
-	FC_ASSERT(mRenderAction);
-	FC_ASSERT(mRenderTarget);
-	FC_ASSERT(!mDisplayLink);
-
-	mDisplayLink = [CADisplayLink displayLinkWithTarget:mRenderTarget selector:mRenderAction];
-	[mDisplayLink setFrameInterval:mFrameInterval];
-	[mDisplayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-}
-
--(void)stop
-{
-	[mDisplayLink invalidate];
-	mDisplayLink = nil;
-}
-
--(BOOL)animating
-{
-	if (mDisplayLink)
-		return YES;
-	else
-		return NO;
+	if (_renderAction && _renderTarget) 
+	{
+		[_renderTarget performSelector:_renderAction];
+	}
 }
 
 @end

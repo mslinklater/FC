@@ -37,11 +37,12 @@
 #import "FCViewManager.h"
 #import "FCBuild.h"
 
-static FCLuaVM*				s_lua;
-static UIViewController*	s_viewController;
-static id<FCAppDelegate>	s_delegate;
+static FCLuaVM*					s_lua;
+static UIViewController*		s_viewController;
+static id<FCAppDelegate>		s_delegate;
 static FCPerformanceCounter*	s_perfCounter;
 static CADisplayLink*			s_displayLink;
+static BOOL						s_paused;
 
 static int lua_ShowStatusBar( lua_State* _state )
 {
@@ -106,6 +107,32 @@ static int lua_LaunchExternalURL( lua_State* _state )
 	return 0;
 }
 
+static int lua_MainViewSize( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 0);
+	
+	CGSize size = s_viewController.view.frame.size;
+	
+	lua_pushnumber(_state, size.width);
+	lua_pushnumber(_state, size.height);
+	
+	return 2;
+}
+
+static int lua_PauseGame( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 1);
+	FC_ASSERT(lua_isboolean(_state, 1));
+	
+	if (lua_toboolean(_state, 1)) {
+		[FCApp pause];
+	} else {
+		[FCApp resume];
+	}
+	
+	return 0;
+}
+
 @implementation FCApp
 
 +(void)coldBootWithViewController:(UIViewController *)vc delegate:(id<FCAppDelegate>)delegate
@@ -141,11 +168,11 @@ static int lua_LaunchExternalURL( lua_State* _state )
 	[s_lua registerCFunction:lua_SetBackgroundColor as:@"FCApp.SetBackgroundColor"];
 	[s_lua registerCFunction:lua_ShowGameCenterLeaderboards as:@"FCApp.ShowGameCenterLeaderboards"];
 	[s_lua registerCFunction:lua_LaunchExternalURL as:@"FCApp.LaunchExternalURL"];
+	[s_lua registerCFunction:lua_MainViewSize as:@"FCApp.MainViewSize"];
+	[s_lua registerCFunction:lua_PauseGame as:@"FCApp.Pause"];
 
-//	[s_lua call:@"PrintTable" withSig:@"tb>", "FCCaps", true];
-//	[s_lua call:@"PrintTable" withSig:@"tb>", "FCPersistentData", true];
-//	[s_lua call:@"PrintTable" withSig:@"tb>", "FCAnalytics", true];
-
+	[s_lua setGlobal:@"FCApp.paused" boolean:NO];
+	
 	[[FCConnect instance] start:nil];
 	[[FCConnect instance] enableBonjourWithName:@"FCConnect"];
 	[[FCDevice instance] probe];
@@ -177,23 +204,28 @@ static int lua_LaunchExternalURL( lua_State* _state )
 +(void)update
 {
 	float dt = (float)[s_perfCounter secondsValue];
+	[s_perfCounter zero];
 		
 	FC::Clamp<float>(dt, 0, 0.1);
 	
-	[s_perfCounter zero];
-
-	[[FCPhaseManager instance] update:dt];
 	[[FCLua instance] updateThreads:dt];
+	
+	// update the game systems here...
+	
+	// Keep this as the last update - since render views are updated here.
+	[[FCPhaseManager instance] update:dt];
 }
 
-+(void)startInternalUpdate
++(void)pause
 {
-	
+	s_paused = YES;
+	[[FCLua instance].coreVM setGlobal:@"FCApp.paused" boolean:YES];
 }
 
-+(void)stopInternalUpdate
++(void)resume
 {
-	
+	s_paused = NO;
+	[[FCLua instance].coreVM setGlobal:@"FCApp.paused" boolean:NO];
 }
 
 +(void)willResignActive
@@ -207,7 +239,7 @@ static int lua_LaunchExternalURL( lua_State* _state )
 
 +(void)didEnterBackground
 {
-	[s_lua call:@"FCApp.DidEnterBackground" required:NO withSig:@""];		
+	[s_lua call:@"FCApp.DidEnterBackground" required:NO withSig:@""];
 }
 
 +(void)willEnterForeground
@@ -241,6 +273,11 @@ static int lua_LaunchExternalURL( lua_State* _state )
 		[[[FCLua instance] coreVM] call:@"FCApp.SupportsPortrait" required:NO withSig:@">b", &ret];
 	}
 	return ret;
+}
+
++(CGSize)mainViewSize
+{
+	return s_viewController.view.frame.size;
 }
 
 +(FCLuaVM*)lua

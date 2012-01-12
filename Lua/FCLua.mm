@@ -170,9 +170,9 @@ static int lua_KillThread( lua_State* state )
 
 		m_coreVM = [[FCLuaVM alloc] init];
 		[m_coreVM addStandardLibraries];
-		[m_coreVM loadScript:@"util"];
-		[m_coreVM loadScript:@"colors"];
-		
+		[m_coreVM loadScript:@"fc_util"];
+		[m_coreVM loadScript:@"fc_colors"];
+
 		// register core API
 		[m_coreVM registerCFunction:lua_NewThread as:@"FCNewThread"];
 		[m_coreVM registerCFunction:lua_WaitThread as:@"FCWait"];

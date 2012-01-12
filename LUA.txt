@@ -18,6 +18,7 @@ FC lua Interface:
 Print()
 Probe()
 WarmProbe()
+<string> GetString( <string> )
 
 * FCPersistentData
 

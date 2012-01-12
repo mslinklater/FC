@@ -39,8 +39,8 @@
 +(void)warmBoot;
 +(void)shutdown;
 +(void)update;
-+(void)startInternalUpdate;
-+(void)stopInternalUpdate;
++(void)pause;
++(void)resume;
 
 +(void)willResignActive;
 +(void)didEnterBackground;
@@ -49,6 +49,7 @@
 +(void)willTerminate;
 
 +(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
++(CGSize)mainViewSize;
 +(FCLuaVM*)lua;
 
 +(void)showGameCenterLeaderboard;

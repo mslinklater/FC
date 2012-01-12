@@ -43,6 +43,7 @@ typedef int(*tLuaCallableCFunction)(lua_State*);
 -(void)addStandardLibraries;
 -(void)createGlobalTable:(NSString*)tableName;
 -(void)registerCFunction:(tLuaCallableCFunction)func as:(NSString*)name;
+-(void)removeCFunction:(NSString*)name;
 -(int)getStackSize;
 
 // Get
@@ -55,6 +56,7 @@ typedef int(*tLuaCallableCFunction)(lua_State*);
 // Set
 -(void)setGlobal:(NSString*)global integer:(long)number;
 -(void)setGlobal:(NSString*)global number:(double)number;
+-(void)setGlobal:(NSString*)global boolean:(BOOL)value;
 
 #if TARGET_OS_IPHONE
 -(void)setGlobal:(NSString*)global color:(UIColor*)color;

@@ -81,12 +81,6 @@
 
 		m_dict = [[NSMutableDictionary alloc] init];
 		
-//		_luaVM = [[FCLua instance] newVM];
-		
-//		[[FCCaps instance] probeCaps];
-		
-//		[[FCAnalytics instance] registerSystemValues];
-
 		[FCViewManager instance];
 
 		[FCResourceManager instance];
@@ -94,8 +88,6 @@
 		_gameData = [[FCXMLData alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"gamedata" ofType:@"xml"]];
 		
 		[[FCUserDefaults instance] registerDefaults:self.gameData];
-		
-//		_device = [[NSMutableDictionary alloc] init];
 		
 		[[FCRenderer instance] addToGatherList:[FCActorSystem instance]];
 		
@@ -128,6 +120,8 @@
 		{
 			self.localPlayerGameCenterId = @"local";
 		}
+		
+		[[FCAnalytics instance] registerSystemValues];
 	}
 	return self;
 }

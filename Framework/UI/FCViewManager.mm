@@ -25,6 +25,7 @@
 #import "FCLua.h"
 #import "FCLuaCommon.h"
 #import "FCDevice.h"
+#import "FCApp.h"
 
 #pragma mark - Lua Interface
 
@@ -32,6 +33,7 @@ static int lua_SetText( lua_State* _state )
 {
 	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
 	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING );
+	FC_ASSERT( lua_gettop(_state) == 2);
 	
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	NSString* text = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
@@ -45,7 +47,8 @@ static int lua_SetTextColor( lua_State* _state )
 {
 	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
 	FC_ASSERT( lua_type(_state, 2) == LUA_TTABLE );
-	
+	FC_ASSERT( lua_gettop(_state) == 2);
+
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	
 	lua_pushnil(_state);
@@ -74,10 +77,38 @@ static int lua_SetTextColor( lua_State* _state )
 	return 0;
 }
 
+static int lua_GetFrame( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 1);
+	FC_ASSERT(lua_isstring(_state, 1));
+
+	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	
+	CGRect rect = [[FCViewManager instance] getViewFrame:viewName];
+	
+	lua_newtable(_state);
+	int table = lua_gettop(_state);
+	lua_pushstring(_state, "x");
+	lua_pushnumber(_state, rect.origin.x);
+	lua_settable(_state, table);
+	lua_pushstring(_state, "y");
+	lua_pushnumber(_state, rect.origin.y);
+	lua_settable(_state, table);
+	lua_pushstring(_state, "w");
+	lua_pushnumber(_state, rect.size.width);
+	lua_settable(_state, table);
+	lua_pushstring(_state, "h");
+	lua_pushnumber(_state, rect.size.height);
+	lua_settable(_state, table);
+	
+	return 1;
+}
+
 static int lua_SetFrame( lua_State* _state )
 {
 	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
 	FC_ASSERT( lua_type(_state, 2) == LUA_TTABLE );
+	FC_ASSERT( lua_gettop(_state) <= 3);
 
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	float seconds = 0.0f;
@@ -118,6 +149,7 @@ static int lua_SetAlpha( lua_State* _state )
 {
 	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
 	FC_ASSERT( lua_type(_state, 2) == LUA_TNUMBER );
+	FC_ASSERT( lua_gettop(_state) <= 3);
 	
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	float alpha = lua_tonumber(_state, 2);
@@ -138,6 +170,7 @@ static int lua_SetOnSelectLuaFunction( lua_State* _state )
 {
 	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
 	FC_ASSERT( (lua_type(_state, 2) == LUA_TSTRING) || (lua_type(_state, 2) == LUA_TNIL) );
+	FC_ASSERT( lua_gettop(_state) == 2);
 	
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	
@@ -154,12 +187,53 @@ static int lua_SetOnSelectLuaFunction( lua_State* _state )
 	return 0;
 }
 
+static int lua_CreateGroup( lua_State* _state )
+{
+	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
+	FC_ASSERT( lua_gettop(_state) == 1);
+	NSString* groupName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	[[FCViewManager instance] createGroup:groupName];
+	return 0;
+}
+
+static int lua_RemoveGroup( lua_State* _state )
+{
+	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
+	FC_ASSERT( lua_gettop(_state) == 1);
+	NSString* groupName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	[[FCViewManager instance] removeGroup:groupName];
+	return 0;
+}
+
+static int lua_AddToGroup( lua_State* _state )
+{
+	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
+	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING );
+	FC_ASSERT( lua_gettop(_state) == 2);
+	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	NSString* groupName = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
+	[[FCViewManager instance] add:viewName toGroup:groupName];
+	return 0;
+}
+
+static int lua_RemoveFromGroup( lua_State* _state )
+{
+	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
+	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING );
+	FC_ASSERT( lua_gettop(_state) == 2);
+	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	NSString* groupName = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
+	[[FCViewManager instance] remove:viewName fromGroup:groupName];
+	return 0;
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 
 @implementation FCViewManager
 
 @synthesize rootView = _rootView;
 @synthesize viewDictionary = _viewDictionary;
+@synthesize groupDictionary = _groupDictionary;
 
 #pragma mark - FCSingleton
 
@@ -177,9 +251,14 @@ static int lua_SetOnSelectLuaFunction( lua_State* _state )
 	[lua createGlobalTable:@"FCViewManager"];
 	[lua registerCFunction:lua_SetText as:@"FCViewManager.SetText"];
 	[lua registerCFunction:lua_SetTextColor as:@"FCViewManager.SetTextColor"];
+	[lua registerCFunction:lua_GetFrame as:@"FCViewManager.GetFrame"];
 	[lua registerCFunction:lua_SetFrame as:@"FCViewManager.SetFrame"];
 	[lua registerCFunction:lua_SetAlpha as:@"FCViewManager.SetAlpha"];
 	[lua registerCFunction:lua_SetOnSelectLuaFunction as:@"FCViewManager.SetOnSelectLuaFunction"];
+	[lua registerCFunction:lua_CreateGroup as:@"FCViewManager.CreateGroup"];
+	[lua registerCFunction:lua_RemoveGroup as:@"FCViewManager.RemoveGroup"];
+	[lua registerCFunction:lua_AddToGroup as:@"FCViewManager.AddToGroup"];
+	[lua registerCFunction:lua_RemoveFromGroup as:@"FCViewManager.RemoveFromGroup"];
 }
 
 #pragma mark - Lifetime
@@ -188,7 +267,8 @@ static int lua_SetOnSelectLuaFunction( lua_State* _state )
 {
 	self = [super init];
 	if (self) {
-		_viewDictionary = [[NSMutableDictionary alloc] init];
+		_viewDictionary = [NSMutableDictionary dictionary];
+		_groupDictionary = [NSMutableDictionary dictionary];
 	}
 	return self;
 }
@@ -204,21 +284,55 @@ static int lua_SetOnSelectLuaFunction( lua_State* _state )
 	[_viewDictionary setValue:view forKey:name];
 }
 
--(void)createGroupWith:(NSArray*)names called:(NSString*)groupName
+-(void)remove:(NSString*)name
 {
+	FC_ASSERT([_viewDictionary valueForKey:name]);
 	
+	[_viewDictionary removeObjectForKey:name];
+}
+
+-(void)createGroup:(NSString*)groupName
+{
+	FC_ASSERT([_groupDictionary valueForKey:groupName] == nil);
+	
+	[_groupDictionary setValue:[NSMutableArray array] forKey:groupName];
 }
 
 -(void)removeGroup:(NSString*)groupName
 {
-	
+	FC_ASSERT([_groupDictionary valueForKey:groupName]);
+
+	[_groupDictionary removeObjectForKey:groupName];
 }
 
--(void)remove:(NSString*)name
+-(void)add:(NSString*)name toGroup:(NSString*)groupName
 {
-	FC_ASSERT([_viewDictionary objectForKey:name]);
+	// check group exists
 	
-	[_viewDictionary removeObjectForKey:name];
+	FC_ASSERT([_groupDictionary valueForKey:groupName] != nil);
+
+	// check object not already in array
+
+	FC_ASSERT( [[_groupDictionary valueForKey:groupName] containsObject:name] == NO );
+
+	// add view to group
+	
+	[[_groupDictionary valueForKey:groupName] addObject:groupName];
+}
+
+-(void)remove:(NSString*)name fromGroup:(NSString*)groupName
+{
+	// check group exists
+	
+	FC_ASSERT( [_groupDictionary valueForKey:groupName] != nil );
+	
+	// check object is in array
+
+	FC_ASSERT( [[_groupDictionary valueForKey:groupName] containsObject:name] );
+	
+	// add view to group
+	
+	[[_groupDictionary valueForKey:groupName] removeObject:name];
 }
 
 -(CGRect)rectForRect:(CGRect)rect containedInView:(UIView*)view;
@@ -227,8 +341,10 @@ static int lua_SetOnSelectLuaFunction( lua_State* _state )
 	scaledFrame.origin.x = view.frame.size.width * rect.origin.x;			
 	scaledFrame.origin.y = view.frame.size.height * rect.origin.y;				
 
-	scaledFrame.size.width = [[[FCDevice instance] valueForKey:kFCDeviceDisplayLogicalXRes] floatValue] * rect.size.width;
-	scaledFrame.size.height = [[[FCDevice instance] valueForKey:kFCDeviceDisplayLogicalYRes] floatValue] * rect.size.height;			
+	CGSize mainViewSize = [FCApp mainViewSize];
+
+	scaledFrame.size.width = mainViewSize.width * rect.size.width;
+	scaledFrame.size.height = mainViewSize.height * rect.size.height;			
 	
 	return scaledFrame;
 }
@@ -283,16 +399,18 @@ static int lua_SetOnSelectLuaFunction( lua_State* _state )
 		scaledFrame.origin.x = containerFrame.size.width * frame.origin.x;			
 		scaledFrame.origin.y = containerFrame.size.height * frame.origin.y;			
 		
+		CGSize mainViewSize = [FCApp mainViewSize];
+		
 		if (frame.size.width < 0) {
 			scaledFrame.size.width = thisView.frame.size.width;
 		} else {
-			scaledFrame.size.width = [[[FCDevice instance] valueForKey:kFCDeviceDisplayLogicalXRes] floatValue] * frame.size.width;
+			scaledFrame.size.width = mainViewSize.width * frame.size.width;
 		}
 		
 		if (frame.size.height < 0) {
 			scaledFrame.size.height = thisView.frame.size.height;
 		} else {
-			scaledFrame.size.height = [[[FCDevice instance] valueForKey:kFCDeviceDisplayLogicalYRes] floatValue] * frame.size.height;			
+			scaledFrame.size.height = mainViewSize.height * frame.size.height;			
 		}
 		
 		[UIView animateWithDuration:seconds animations:^{		
@@ -307,6 +425,15 @@ static int lua_SetOnSelectLuaFunction( lua_State* _state )
 		FC_FATAL1(@"Sending 'setFrame' to a view which does not respond to setFrame - %@", thisView);
 	}
 	
+}
+
+-(CGRect)getViewFrame:(NSString*)viewName
+{
+	UIView* thisView = [_viewDictionary valueForKey:viewName];
+	
+	FC_ASSERT(thisView);
+	
+	return thisView.frame;
 }
 
 -(void)setView:(NSString*)viewName alpha:(float)alpha over:(float)seconds
