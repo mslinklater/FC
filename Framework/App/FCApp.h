@@ -31,6 +31,7 @@
 
 @protocol FCAppDelegate <NSObject>
 -(void)registerPhasesWithManager:(FCPhaseManager*)manager;
+-(void)initialiseSystems;
 //-(BOOL)shouldRotateToInterfaceOrientation:(UIInterfaceOrientation)orient;
 @end
 

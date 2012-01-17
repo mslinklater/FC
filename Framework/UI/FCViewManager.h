@@ -38,13 +38,13 @@
 
 @interface FCViewManager : NSObject <FCLuaClass> {
 @private
-	UIView* _rootView;
 	NSMutableDictionary* _viewDictionary;
 	NSMutableDictionary* _groupDictionary;
+	UIView* _rootView;
 }
-@property(nonatomic, strong) UIView* rootView;
 @property(nonatomic, strong) NSMutableDictionary* viewDictionary;
 @property(nonatomic, strong) NSMutableDictionary* groupDictionary;
+@property(nonatomic, strong) UIView* rootView;
 
 +(FCViewManager*)instance;
 +(void)registerLuaFunctions:(FCLuaVM *)lua;
@@ -56,6 +56,11 @@
 -(void)removeGroup:(NSString*)groupName;
 -(void)add:(NSString*)name toGroup:(NSString*)groupName;
 -(void)remove:(NSString*)name fromGroup:(NSString*)groupName;
+
+-(void)sendViewToBack:(NSString*)name;
+-(void)sendViewToFront:(NSString*)name;
+-(void)makeView:(NSString*)name inFrontOf:(NSString*)relativeName;
+-(void)makeView:(NSString*)name behind:(NSString*)relativeName;
 
 -(CGRect)rectForRect:(CGRect)rect containedInView:(UIView*)view;
 

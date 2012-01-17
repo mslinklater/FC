@@ -188,6 +188,7 @@ static int lua_PauseGame( lua_State* _state )
 +(void)warmBoot
 {
 	[s_delegate registerPhasesWithManager:[FCPhaseManager instance]];
+	[s_delegate initialiseSystems];
 	
 	[s_lua call:@"FCApp.WarmBoot" required:YES withSig:@""];
 }

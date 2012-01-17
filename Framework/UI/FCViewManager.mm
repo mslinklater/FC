@@ -335,6 +335,36 @@ static int lua_RemoveFromGroup( lua_State* _state )
 	[[_groupDictionary valueForKey:groupName] removeObject:name];
 }
 
+-(void)addToRoot:(NSString*)name
+{
+	
+}
+
+-(void)removeFromRoot:(NSString*)name
+{
+	
+}
+
+-(void)sendViewToBack:(NSString*)name
+{
+	
+}
+
+-(void)sendViewToFront:(NSString*)name
+{
+	
+}
+
+-(void)makeView:(NSString*)name inFrontOf:(NSString*)relativeName
+{
+	
+}
+
+-(void)makeView:(NSString*)name behind:(NSString*)relativeName
+{
+	
+}
+
 -(CGRect)rectForRect:(CGRect)rect containedInView:(UIView*)view;
 {
 	CGRect scaledFrame;
