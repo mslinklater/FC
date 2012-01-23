@@ -32,27 +32,30 @@
 #import "FCXMLData.h"
 #import "FCMaths.h"
 #import "FCLua.h"
+#import "FCAnalytics.h"
+
+static FCDevice* s_pDevice;
 
 #pragma mark - Lua Interface
 
 static int lua_Probe( lua_State* _state )
 {
 	FC_ASSERT(lua_gettop(_state) == 0);
-	[[FCDevice instance] probe];
+	[s_pDevice probe];
 	return 0;
 }
 
 static int lua_WarmProbe( lua_State* _state )
 {
 	FC_ASSERT(lua_gettop(_state) == 0);
-	[[FCDevice instance] warmProbe];
+	[s_pDevice warmProbe];
 	return 0;
 }
 
 static int lua_Print( lua_State* _state )
 {
 	FC_ASSERT(lua_gettop(_state) == 0);
-	[[FCDevice instance] print];
+	[s_pDevice print];
 	return 0;
 }
 
@@ -63,7 +66,7 @@ static int lua_GetDeviceString( lua_State* _state )
 	
 	NSString* key = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 
-	NSString* value = [[FCDevice instance] valueForKey:key];
+	NSString* value = [s_pDevice valueForKey:key];
 
 	lua_pushstring(_state, [value UTF8String]);
 	
@@ -77,11 +80,17 @@ static int lua_GetDeviceNumber( lua_State* _state )
 	
 	NSString* key = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	
-	FC_ASSERT([[[FCDevice instance] valueForKey:key] isKindOfClass:[NSNumber class]]);
+	FC_ASSERT([[s_pDevice valueForKey:key] isKindOfClass:[NSNumber class]]);
 	
-	float value = [[[FCDevice instance] valueForKey:key] floatValue];
+	float value = [[s_pDevice valueForKey:key] floatValue];
 
 	lua_pushnumber(_state, value);
+	return 1;
+}
+
+static int lua_GetGameCenterID( lua_State* _state )
+{
+	lua_pushstring(_state, [s_pDevice.gameCenterID UTF8String]);
 	return 1;
 }
 
@@ -130,37 +139,25 @@ NSString* kFCDeviceAppPirated = @"pirated";
 
 static FCDevice* pInstance;
 
-@interface FCDevice() {
-	FCLuaVM* _luaVM;
-}
-@property(nonatomic, strong) FCLuaVM* luaVM;
-@end
+//@interface FCDevice() {
+////	FCLuaVM* _luaVM;
+//}
+////@property(nonatomic, strong) FCLuaVM* luaVM;
+//@end
 
 @implementation FCDevice
 
 @synthesize caps = _caps;
-@synthesize luaVM = _luaVM;
+@synthesize gameCenterID = _gameCenterID;
 
 #pragma mark - Singleton
 
 +(FCDevice*)instance
 {
-	if (!pInstance) {
-		pInstance = [[FCDevice alloc] init];
+	if (!s_pDevice) {
+		s_pDevice = [[FCDevice alloc] init];
 	}
-	return pInstance;
-}
-
-+(void)registerLuaFunctions:(FCLuaVM *)lua
-{
-	[FCDevice instance].luaVM = lua;
-	
-	[lua createGlobalTable:@"FCDevice"];
-	[lua registerCFunction:lua_Probe as:@"FCDevice.Probe"];
-	[lua registerCFunction:lua_WarmProbe as:@"FCDevice.WarmProbe"];
-	[lua registerCFunction:lua_Print as:@"FCDevice.Print"];
-	[lua registerCFunction:lua_GetDeviceString as:@"FCDevice.GetString"];
-	[lua registerCFunction:lua_GetDeviceNumber as:@"FCDevice.GetNumber"];
+	return s_pDevice;
 }
 
 #pragma mark - Object Lifetime
@@ -171,6 +168,16 @@ static FCDevice* pInstance;
 	if (self) {
 		_caps = [[NSMutableDictionary alloc] init];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenRotateResponder:) name:UIDeviceOrientationDidChangeNotification object:nil];
+
+		FCLuaVM* lua = [FCLua instance].coreVM;
+		
+		[lua createGlobalTable:@"FCDevice"];
+		[lua registerCFunction:lua_Probe as:@"FCDevice.Probe"];
+		[lua registerCFunction:lua_WarmProbe as:@"FCDevice.WarmProbe"];
+		[lua registerCFunction:lua_Print as:@"FCDevice.Print"];
+		[lua registerCFunction:lua_GetDeviceString as:@"FCDevice.GetString"];
+		[lua registerCFunction:lua_GetDeviceNumber as:@"FCDevice.GetNumber"];
+		[lua registerCFunction:lua_GetGameCenterID as:@"FCDevice.GetGameCenterID"];
 	}
 	return self;
 }
@@ -365,6 +372,10 @@ static FCDevice* pInstance;
 	NSString* localeCode = [[NSLocale preferredLanguages] objectAtIndex:0];
 	[_caps setValue:localeCode forKey:kFCDeviceLocale];
 
+	// game center
+		
+	[[FCAnalytics instance] registerSystemValues];
+
 	return;
 }
 
@@ -377,10 +388,12 @@ static FCDevice* pInstance;
 		 if (error == nil)
 		 {
 			 [_caps setValue:kFCDevicePresent forKey:kFCDeviceOSGameCenter];
+			 _gameCenterID = [[GKLocalPlayer localPlayer] playerID];
 		 }
 		 else
 		 {
 			 [_caps setValue:kFCDeviceNotPresent forKey:kFCDeviceOSGameCenter];
+			 _gameCenterID = @"local";
 		 }
 	 }];
 }

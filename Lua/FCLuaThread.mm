@@ -39,31 +39,36 @@ extern "C" {
 @synthesize sleepTimeRemaining = _sleepTimeRemaining;
 @synthesize threadId = _threadId;
 @synthesize luaState = _luaState;
+@synthesize numResumeArgs = _numResumeArgs;
 
 -(id)initFromState:(lua_State *)state withId:(unsigned int)threadId
 {
 	self = [super init];
 	if (self) {
 		_luaState = lua_newthread(state);
+		
 		char buffer[32];
 		sprintf(&buffer[0], "thread%d", threadId);		
 		lua_setfield(state, LUA_REGISTRYINDEX, &buffer[0]);
 		_state = kLuaThreadStateNew;
 		_sleepTimeRemaining = 0.0;
 		_threadId = threadId;
+
+		_numResumeArgs = lua_gettop(state);	// first one is function name
+		
+		FCLua_DumpStack(state);
+		lua_xmove(state, _luaState, _numResumeArgs);
+		FCLua_DumpStack(_luaState);
 	}
 	return self;
 }
 
 
--(void)runVoidFunction:(NSString *)function
+-(void)resume
 {
-	lua_getglobal(_luaState, [function UTF8String]);
-	if (lua_isnil(_luaState, -1)) {
-		FC_FATAL1(@"Unknown Lua function", function);
-	}
 	_state = kLuaThreadStateRunning;
-	int ret = lua_resume(_luaState , NULL, 0);
+	int ret = lua_resume(_luaState , NULL, _numResumeArgs - 1);
+	_numResumeArgs = 0;
 	switch (ret) {
 		case 0:
 			_state = kLuaThreadStateDying;

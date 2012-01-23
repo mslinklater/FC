@@ -20,34 +20,27 @@
  THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
-#import "FCLuaVM.h"
+#import "FCPhysicsMaterial.h"
 
-enum eLuaThreadState {
-	kLuaThreadStateNew,
-	kLuaThreadStateRunning,
-	kLuaThreadStateSleeping,
-	kLuaThreadStateDying,
-	kLuaThreadStateDead
-};
+@implementation FCPhysicsMaterial
 
-@interface FCLuaThread : NSObject {
-	eLuaThreadState	_state;
-	double			_sleepTimeRemaining;
-	unsigned int	_threadId;
-	lua_State*		_luaState;
-	int				_numResumeArgs;
+@synthesize name = _name;
+@synthesize density = _density;
+@synthesize friction = _friction;
+@synthesize restitution = _restitution;
+
+-(id)init
+{
+	self = [super init];
+	if (self) {
+		_name = @"unknown";
+		
+		// Some reasonable default values
+		_friction = 0.5f;
+		_restitution = 0.5f;
+		_density = 1.0f;
+	}
+	return self;
 }
-@property(nonatomic, readonly) eLuaThreadState state;
-@property(nonatomic, readonly) double sleepTimeRemaining;
-@property(nonatomic, readonly) unsigned int threadId;
-@property(nonatomic, readonly) lua_State* luaState;
-@property(nonatomic, readonly) int numResumeArgs;
-
--(id)initFromState:(lua_State*)state withId:(unsigned int)threadId;
--(void)resume;
--(void)update:(float)dt;
--(void)pause:(float)seconds;
--(void)die;
 
 @end

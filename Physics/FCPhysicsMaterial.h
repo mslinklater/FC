@@ -20,34 +20,16 @@
  THE SOFTWARE.
  */
 
-// DEPRECATE
-
-#if TARGET_OS_IPHONE
-
 #import <Foundation/Foundation.h>
 
-//----------------------------------------------------------------------------------------------------------------------
-
-@interface FCStat : NSObject <NSCoding> {
+@interface FCPhysicsMaterial : NSObject {
+	NSString* _name;
+	float _density;
+	float _restitution;
+	float _friction;
 }
-@property(nonatomic, strong) NSString* textString;
-@property(nonatomic) int numberValue;
+@property(nonatomic, strong) NSString* name;
+@property(nonatomic) float density;
+@property(nonatomic) float restitution;
+@property(nonatomic) float friction;
 @end
-
-//----------------------------------------------------------------------------------------------------------------------
-
-@interface FCStats : NSObject {
-	NSMutableDictionary* userStats;
-}
-@property(nonatomic, strong) NSMutableDictionary* userStats;
-
-+(FCStats*)instance;
--(void)prepareStatsFromArray:(NSArray*)statsArray withPlayerId:(id)playerId;
-
--(void)incrementKey:(NSString*)key;
-
-@end
-
-//----------------------------------------------------------------------------------------------------------------------
-
-#endif // TARGET_OS_IPHONE

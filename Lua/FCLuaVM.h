@@ -42,6 +42,7 @@ typedef int(*tLuaCallableCFunction)(lua_State*);
 -(void)executeLine:(NSString*)line;
 -(void)addStandardLibraries;
 -(void)createGlobalTable:(NSString*)tableName;
+-(void)destroyGlobalTable:(NSString*)tableName;
 -(void)registerCFunction:(tLuaCallableCFunction)func as:(NSString*)name;
 -(void)removeCFunction:(NSString*)name;
 -(int)getStackSize;

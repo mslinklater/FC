@@ -347,12 +347,20 @@ static int lua_RemoveFromGroup( lua_State* _state )
 
 -(void)sendViewToBack:(NSString*)name
 {
+	UIView* thisView = [_viewDictionary valueForKey:name];
 	
+	FC_ASSERT(thisView);
+	
+	[_rootView sendSubviewToBack:thisView];
 }
 
 -(void)sendViewToFront:(NSString*)name
 {
+	UIView* thisView = [_viewDictionary valueForKey:name];
 	
+	FC_ASSERT(thisView);
+	
+	[_rootView bringSubviewToFront:thisView];
 }
 
 -(void)makeView:(NSString*)name inFrontOf:(NSString*)relativeName

@@ -33,7 +33,7 @@
 #import "FCActorSystem.h"
 #import "FCPhysics.h"
 #import "FCPersistentData.h"
-#import "FCStats.h"
+//#import "FCStats.h"
 #import "FCDevice.h"
 #import "FCUserDefaults.h"
 #import "FCAnalytics.h"
@@ -63,8 +63,8 @@
 
 -(void)localPlayerGameCenterIdChanged
 {
-	NSArray* statsArray = [[[FCAppContext instance] gameData] arrayForKeyPath:@"gamedata.stats.stat"];
-	[[FCStats instance] prepareStatsFromArray:statsArray withPlayerId:self.localPlayerGameCenterId];
+//	NSArray* statsArray = [[[FCAppContext instance] gameData] arrayForKeyPath:@"gamedata.stats.stat"];
+//	[[FCStats instance] prepareStatsFromArray:statsArray withPlayerId:self.localPlayerGameCenterId];
 
 	[[NSNotificationCenter defaultCenter] postNotificationName:kFCNotificationPlayerIDChanged object:nil];
 }
@@ -93,35 +93,35 @@
 		
 		[FCPhysics instance];
 		
-		NSArray* statsArray = [self.gameData arrayForKeyPath:@"gamedata.stats.stat"];
+//		NSArray* statsArray = [self.gameData arrayForKeyPath:@"gamedata.stats.stat"];
 		
-		[[FCStats instance] prepareStatsFromArray:statsArray withPlayerId:@"local"];
+//		[[FCStats instance] prepareStatsFromArray:statsArray withPlayerId:@"local"];
 
-		// game center
-		
-		if ([[FCDevice instance] valueForKey:kFCDeviceOSGameCenter] != kFCDeviceNotPresent)
-		{
-			[[GKLocalPlayer localPlayer] authenticateWithCompletionHandler:^(NSError *error) 
-			{
-				if (error == nil)
-				{
-					self.localPlayerGameCenterId = [[GKLocalPlayer localPlayer] playerID];
-//					[[FCCaps instance] setGameCenterAvailable];
-					[self localPlayerGameCenterIdChanged];
-				}
-				else
-				{
-//					[[FCCaps instance] setGameCenterUnavailable];
-					self.localPlayerGameCenterId = @"local";
-				}
-			}];
-		}
-		else
-		{
-			self.localPlayerGameCenterId = @"local";
-		}
-		
-		[[FCAnalytics instance] registerSystemValues];
+//		// game center
+//		
+//		if ([[FCDevice instance] valueForKey:kFCDeviceOSGameCenter] != kFCDeviceNotPresent)
+//		{
+//			[[GKLocalPlayer localPlayer] authenticateWithCompletionHandler:^(NSError *error) 
+//			{
+//				if (error == nil)
+//				{
+//					self.localPlayerGameCenterId = [[GKLocalPlayer localPlayer] playerID];
+////					[[FCCaps instance] setGameCenterAvailable];
+//					[self localPlayerGameCenterIdChanged];
+//				}
+//				else
+//				{
+////					[[FCCaps instance] setGameCenterUnavailable];
+//					self.localPlayerGameCenterId = @"local";
+//				}
+//			}];
+//		}
+//		else
+//		{
+//			self.localPlayerGameCenterId = @"local";
+//		}
+//		
+//		[[FCAnalytics instance] registerSystemValues];
 	}
 	return self;
 }

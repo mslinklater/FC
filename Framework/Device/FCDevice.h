@@ -64,9 +64,12 @@ extern NSString* kFCDeviceSimulator;
 
 extern NSString* kFCDeviceAppPirated;
 
-@interface FCDevice : NSObject <FCLuaClass> {
+@interface FCDevice : NSObject {
+	NSMutableDictionary* _caps;
+	NSString* _gameCenterID;
 }
 @property(strong, nonatomic,readonly) NSMutableDictionary* caps;
+@property(nonatomic, strong, readonly) NSString* gameCenterID;
 
 +(FCDevice*)instance;
 

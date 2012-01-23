@@ -36,6 +36,7 @@
 #import "FCAnalytics.h"
 #import "FCViewManager.h"
 #import "FCBuild.h"
+#import "FCPhysics.h"
 
 static FCLuaVM*					s_lua;
 static UIViewController*		s_viewController;
@@ -140,9 +141,11 @@ static int lua_PauseGame( lua_State* _state )
 	s_viewController = vc;
 	s_delegate = delegate;
 	s_perfCounter = [[FCPerformanceCounter alloc] init];
+	
 	s_displayLink = [CADisplayLink displayLinkWithTarget:[FCApp class] selector:@selector(update)];
 	[s_displayLink setFrameInterval:1];
-	[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+//	[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+	[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
 
 	vc.view.backgroundColor = [UIColor blackColor];
 	
@@ -159,7 +162,6 @@ static int lua_PauseGame( lua_State* _state )
 
 #if TARGET_OS_IPHONE
 	[FCAnalytics registerLuaFunctions:s_lua];
-	[FCDevice registerLuaFunctions:s_lua];
 #endif // TARGET_OS_IPHONE
 
 	[FCError registerLuaFunctions:s_lua];
@@ -179,6 +181,7 @@ static int lua_PauseGame( lua_State* _state )
 	[[FCDevice instance] warmProbe];
 	
 	[[FCPersistentData instance] loadData];
+	[FCPhysics instance];
 	
 	[s_lua loadScript:@"main"];
 	[s_lua call:@"FCApp.ColdBoot" required:YES withSig:@""];
@@ -208,6 +211,16 @@ static int lua_PauseGame( lua_State* _state )
 	[s_perfCounter zero];
 		
 	FC::Clamp<float>(dt, 0, 0.1);
+	
+	float gameTime;
+	
+	if (s_paused) {
+		gameTime = 0.0f;
+	} else {
+		gameTime = dt;
+	}
+			
+	[s_delegate updateRealTime:dt gameTime:gameTime];
 	
 	[[FCLua instance] updateThreads:dt];
 	

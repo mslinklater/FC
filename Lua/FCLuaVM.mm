@@ -273,6 +273,13 @@ static int panic (lua_State *L) {
 	lua_setglobal(_state, [tableName UTF8String]);
 }
 
+-(void)destroyGlobalTable:(NSString*)tableName
+{
+	// need table descent
+	lua_pushnil(_state);
+	lua_setglobal(_state, [tableName UTF8String]);
+}
+
 #pragma mark - Getters
 
 -(long)globalNumber:(NSString*)name
@@ -372,9 +379,6 @@ static int panic (lua_State *L) {
 	}
 	
 	lua_pop(_state, (int)(numComponents - 1));
-
-//	lua_pushboolean(_state, value);
-//	lua_setglobal(_state, [global UTF8String]);	
 }
 
 #if TARGET_OS_IPHONE
@@ -416,7 +420,6 @@ static int panic (lua_State *L) {
 			FC_FATAL1(@"Can't find function '%@'", func);
 		} else {
 			lua_pop(_state, lua_gettop(_state));
-//			FCLua_DumpStack(_state);
 			FC_ASSERT(lua_gettop(_state) == 0);
 			return;
 		}
@@ -436,7 +439,6 @@ static int panic (lua_State *L) {
 		} else
 		{
 			lua_pop(_state, lua_gettop(_state));
-//			FCLua_DumpStack(_state);
 			FC_ASSERT(lua_gettop(_state) == 0);
 			return;
 		}
@@ -523,7 +525,6 @@ endargs:
 		nres++;
 	}
 	
-//	FCLua_DumpStack(_state);
 	lua_pop(_state, lua_gettop(_state));
 	
 	FC_ASSERT(lua_gettop(_state) == 0);

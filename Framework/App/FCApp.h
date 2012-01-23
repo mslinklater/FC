@@ -32,6 +32,7 @@
 @protocol FCAppDelegate <NSObject>
 -(void)registerPhasesWithManager:(FCPhaseManager*)manager;
 -(void)initialiseSystems;
+-(void)updateRealTime:(float)realTime gameTime:(float)gameTime;
 //-(BOOL)shouldRotateToInterfaceOrientation:(UIInterfaceOrientation)orient;
 @end
 

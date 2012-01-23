@@ -27,7 +27,7 @@
 #import "FCLuaCommon.h"
 #import "FCDebug.h"
 
-static unsigned int common_newThreadWithVoidFunction( const char* function )
+static unsigned int common_newThread( lua_State* _state )
 {
 	static int s_recurseCount = 0;
 	
@@ -43,14 +43,14 @@ static unsigned int common_newThreadWithVoidFunction( const char* function )
 		FC_FATAL(@"Too many Lua threads");
 	}
 	
-	FCLuaThread* thread = [[FCLuaThread alloc] initFromState:[[FCLua instance] coreVM].state withId:fcLua.nextThreadId];
+	FCLuaThread* thread = [[FCLuaThread alloc] initFromState:_state withId:fcLua.nextThreadId];
 	
 	[fcLua.threadsDict setObject:thread forKey:[NSNumber numberWithUnsignedInt:fcLua.nextThreadId]];
 	
 	[fcLua incrementNextThreadId];
 	
-	[thread runVoidFunction:[NSString stringWithCString:function encoding:NSUTF8StringEncoding]];
-
+	[thread resume];
+	
 	s_recurseCount--;
 	
 	return thread.threadId;
@@ -58,18 +58,17 @@ static unsigned int common_newThreadWithVoidFunction( const char* function )
 
 #pragma mark - Lua Functions
 
-static int lua_NewThread( lua_State* state )
+static int lua_NewThread( lua_State* _state )
 {
-	// TODO - handle passing function as arg instead of string
+	FCLua_DumpStack(_state);
 	
-	if (lua_isstring(state, 1)) 
+	if (lua_isfunction(_state, 1))
 	{
-		const char* function = lua_tostring(state, -1);
-		lua_pop(state, 1);
-		
-		unsigned int threadId = common_newThreadWithVoidFunction( function );
+		unsigned int threadId = common_newThread( _state );
 
-		lua_pushinteger( state, threadId );
+		lua_settop( _state, 0 );
+		
+		lua_pushinteger( _state, threadId );
 		return 1;
 	}
 	FC_FATAL(@"Creating thread from not a string");
@@ -190,9 +189,6 @@ static int lua_KillThread( lua_State* state )
 
 -(void)dealloc
 {
-#if TARGET_OS_IPHONE
-//	[m_displayLink invalidate];
-#endif
 	_threadsDict = nil;
 }
 
@@ -214,10 +210,5 @@ static int lua_KillThread( lua_State* state )
 }
 
 #pragma mark - Threads
-
--(unsigned int)newThreadWithVoidFunction:(NSString*)function
-{
-	return common_newThreadWithVoidFunction( [function cStringUsingEncoding:NSUTF8StringEncoding] );
-}
 
 @end

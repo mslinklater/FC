@@ -23,18 +23,19 @@
 #if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>
-#import "Core/FCKeys.h"
-#import "Core/FCProtocols.h"
-#import "Physics/2D/FCPhysics2D.h"
-#import "Physics/3D/FCPhysics3D.h"
 
-@interface FCPhysics : NSObject <FCGameObjectLifetime, FCGameObjectUpdate> 
-{
+#import "FCCore.h"
 
+#import "FCPhysics2D.h"
+#import "FCPhysics3D.h"
+#import "FCPhysicsMaterial.h"
+
+@interface FCPhysics : NSObject <FCGameObjectLifetime, FCGameObjectUpdate> {
+	FCPhysics2D* _twoD;
+	NSMutableDictionary* _materials;
 }
-
 @property(strong, nonatomic, readonly) FCPhysics2D* twoD;
-@property(weak, nonatomic, readonly) FCPhysics3D* threeD;
+//@property(weak, nonatomic, readonly) FCPhysics3D* threeD;
 @property(nonatomic, strong) NSMutableDictionary* materials;
 
 +(FCPhysics*)instance;
@@ -43,6 +44,7 @@
 -(void)create3DComponent;
 
 -(void)reset;
+-(void)addMaterial:(FCPhysicsMaterial*)material;
 @end
 
 #endif // TARGET_OS_IPHONE
