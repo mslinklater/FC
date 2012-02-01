@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined(FC_GRAPHICS)
 
 #import "FCCore.h"
 #import "FCRenderer.h"
@@ -32,81 +32,131 @@
 #import "FCProtocols.h"
 #import "FCShaderManager.h"
 #import "FCTextureManager.h"
+#import "FCLua.h"
+#import "FCActorSystem.h"
+
+static NSMutableDictionary* s_renderers;
+static FCRenderer* s_currentLuaTarget;
+
+// set current renderer
+
+static int lua_SetCurrentRenderer( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 1);
+	FC_ASSERT(lua_isstring(_state, 1));
+
+	FCRenderer* rend = [s_renderers valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
+	FC_ASSERT(rend);
+	s_currentLuaTarget = rend;
+	return 0;
+}
+
+// add actor to gather (actor name)
+
+static int lua_AddActorToGather( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 1);
+	FC_ASSERT(lua_isstring(_state, 1));
+	
+	NSString* name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+
+	FCActor* actor = [[FCActorSystem instance].actorNameDictionary valueForKey:name];
+
+	[s_currentLuaTarget addToGatherList:actor];
+	
+	return 0;
+}
+
+// remove actor from gather
+
+static int lua_RemoveActorFromGather( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 1);
+	FC_ASSERT(lua_isstring(_state, 1));
+
+	NSString* name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	
+	FCActor* actor = [[FCActorSystem instance].actorNameDictionary valueForKey:name];
+
+	FC_ASSERT( actor );
+	
+	[s_currentLuaTarget removeFromGatherList:actor];
+	
+	return 0;
+}
 
 @implementation FCRenderer
-@synthesize shaderManager = _shaderManager;
-@synthesize textureManager = _textureManager;
+
+@synthesize name = _name;
+@synthesize models = _models;
+@synthesize gatherList = _gatherList;
 
 #pragma mark - FCSingleton protocol
 
-+(FCRenderer*)instance
-{
-	static FCRenderer* pInstance;
-	
-	if (!pInstance) {
-		pInstance = [[FCRenderer alloc] init];
-	}
-	return pInstance;
-}
-
--(id)init
+-(id)initWithName:(NSString*)name
 {
 	self = [super init];
 	if (self) {
-		mModels = [[NSMutableArray alloc] init];
-		mGatherList = [[NSMutableArray alloc] init];
-		_shaderManager = [[FCShaderManager alloc] init];
-		_textureManager = [[FCTextureManager alloc] init];
+		_name = name;
+		_models = [[NSMutableArray alloc] init];
+		_gatherList = [[NSMutableArray alloc] init];
+		
+		if (!s_renderers) // one off init
+		{
+			s_renderers = [[NSMutableDictionary alloc] init];
+			[[FCLua instance].coreVM createGlobalTable:@"FCRenderer"];
+			[[FCLua instance].coreVM registerCFunction:lua_SetCurrentRenderer as:@"FCRenderer.SetCurrentRenderer"];
+			[[FCLua instance].coreVM registerCFunction:lua_AddActorToGather as:@"FCRenderer.AddActorToGather"];
+			[[FCLua instance].coreVM registerCFunction:lua_RemoveActorFromGather as:@"FCRenderer.RemoveActorFromGather"];
+		}
+		
+		[s_renderers setValue:self forKey:name];
 	}
-	FC_LOG(@"FCRenderer initialised OK");
 	return self;
 }
 
 -(void)dealloc
 {
-	 _shaderManager = nil;
-}
-
--(void)prebuildShaders
-{
-//	[self.shaderManager addProgram:@"debug_debug"];
+	[s_renderers removeObjectForKey:_name];
 }
 
 -(void)addToGatherList:(id)obj
 {
-	[mGatherList addObject:obj];
+	FC_ASSERT([obj conformsToProtocol:@protocol(FCGameObjectRender)]);
+	[_gatherList addObject:obj];
 }
 
 -(void)removeFromGatherList:(id)obj
 {
-	[mGatherList removeObject:obj];
+	FC_ASSERT([obj conformsToProtocol:@protocol(FCGameObjectRender)]);
+	[_gatherList removeObject:obj];
 }
 
 -(void)render
 {
 	// go through gather list and aggregate the arrays
 	
-	[mModels removeAllObjects];
+	[_models removeAllObjects];
 	
 	// gather from objects on the gather list
 	
-	for( id<FCGameObjectRender> obj in mGatherList )
+	for( id<FCGameObjectRender> obj in _gatherList )
 	{
-		[mModels addObjectsFromArray:[obj renderGather]];
+		[_models addObjectsFromArray:[obj renderGather]];
 	}
 
 	// sorting here ?
 
 	// render the models in sorted order
 	
-	for( FCModel* model in mModels )
+	for( FCModel* model in _models )
 	{
 		[model render];
 	}
 
-	[mModels removeAllObjects];
+	[_models removeAllObjects];
 }
 
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_GRAPHICS)

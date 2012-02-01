@@ -20,9 +20,15 @@
  THE SOFTWARE.
  */
 
+#if defined(FC_LUA)
+
 #import <Foundation/Foundation.h>
+
 #import "FCLuaVM.h"
 #import "FCLuaThread.h"
+#import "FCLuaClass.h"
+#import "FCLuaCommon.h"
+#import "FCLuaMemory.h"
 
 @interface FCLua : NSObject {
 	NSMutableDictionary*	_threadsDict;
@@ -42,3 +48,5 @@
 -(void)executeLine:(NSString*)line;
 
 @end
+
+#endif // defined(FC_LUA)

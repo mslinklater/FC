@@ -22,6 +22,8 @@
 
 #import "FCPersistentData.h"
 #import "FCCore.h"
+
+#if defined (FC_LUA)
 #import "FCLua.h"
 
 #pragma mark - Lua Interface
@@ -160,6 +162,8 @@ static int lua_GetNumber( lua_State* _state )
 	return 1;
 }
 
+#endif // defined(FC_LUA)
+
 #pragma mark - Implementation
 
 @implementation FCPersistentData
@@ -177,6 +181,7 @@ static int lua_GetNumber( lua_State* _state )
 	return pInstance;
 }
 
+#if defined (FC_LUA)
 +(void)registerLuaFunctions:(FCLuaVM*)lua
 {
 	[lua createGlobalTable:@"FCPersistentData"];
@@ -191,6 +196,7 @@ static int lua_GetNumber( lua_State* _state )
 	[lua registerCFunction:lua_SetNumber as:@"FCPersistentData.SetNumber"];
 	[lua registerCFunction:lua_GetNumber as:@"FCPersistentData.GetNumber"];
 }
+#endif // defined(FC_LUA)
 
 -(NSString*)filename
 {

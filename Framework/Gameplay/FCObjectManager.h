@@ -20,20 +20,18 @@
  THE SOFTWARE.
  */
 
-// to deprecate - move over to FCConnect
-
-#if TARGET_OS_IPHONE
-
 #import <Foundation/Foundation.h>
-#import "FCProtocols.h"
+#import "FCResource.h"
 
-@interface FCTweakables : NSObject
-{
-	NSMutableDictionary* tweakables;
+@interface FCObjectManager : NSObject {
+	NSMutableDictionary* _nulls;
 }
-+(FCTweakables*)instance;
--(id)valueForKey:(NSString *)key;
+@property(nonatomic, strong) NSMutableDictionary* nulls;
+
++(FCObjectManager*)instance;
+
+-(void)addObjectsFromResource:(FCResource*)resource;
+
+-(void)reset;
 
 @end
-
-#endif // TARGET_OS_IPHONE

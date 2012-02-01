@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined (FC_LUA)
+
 #import "FCLuaThread.h"
 #import "FCError.h"
 #import "FCLuaCommon.h"
@@ -29,10 +31,6 @@ extern "C" {
 #import "lauxlib.h"
 #import "lualib.h"
 }
-
-@interface FCLuaThread() {
-}
-@end
 
 @implementation FCLuaThread
 @synthesize state = _state;
@@ -56,9 +54,7 @@ extern "C" {
 
 		_numResumeArgs = lua_gettop(state);	// first one is function name
 		
-		FCLua_DumpStack(state);
 		lua_xmove(state, _luaState, _numResumeArgs);
-		FCLua_DumpStack(_luaState);
 	}
 	return self;
 }
@@ -190,3 +186,5 @@ extern "C" {
 }
 
 @end
+
+#endif // defined(FC_LUA)

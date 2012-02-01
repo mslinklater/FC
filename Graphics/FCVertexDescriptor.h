@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined(FC_GRAPHICS)
+
 #import <Foundation/Foundation.h>
 
 enum FCVertexDescriptorPropertyType {
@@ -106,3 +108,4 @@ enum FCVertexDescriptorPropertyType {
 
 @end
 
+#endif // defined(FC_GRAPHICS)

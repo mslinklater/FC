@@ -29,27 +29,54 @@
  */
 
 #import <Foundation/Foundation.h>
+
+#if !TARGET_OS_IPHONE
+#import <AppKit/AppKit.h>
+#endif
+
+#if defined (FC_LUA)
 #import "FCLuaClass.h"
+#endif
 
 @protocol FCManagedView <NSObject>
 -(void)setManagedViewName:(NSString*)name;
 -(NSString*)managedViewName;
 @end
 
+#if defined (FC_LUA)
 @interface FCViewManager : NSObject <FCLuaClass> {
+#else
+	@interface FCViewManager : NSObject {
+#endif
 @private
 	NSMutableDictionary* _viewDictionary;
 	NSMutableDictionary* _groupDictionary;
+#if TARGET_OS_IPHONE
 	UIView* _rootView;
+#else
+	NSView* _rootView;
+#endif
 }
 @property(nonatomic, strong) NSMutableDictionary* viewDictionary;
 @property(nonatomic, strong) NSMutableDictionary* groupDictionary;
+	
+#if TARGET_OS_IPHONE
 @property(nonatomic, strong) UIView* rootView;
+#else
+@property(nonatomic, strong) NSView* rootView;
+#endif
 
 +(FCViewManager*)instance;
+#if defined (FC_LUA)
 +(void)registerLuaFunctions:(FCLuaVM *)lua;
+#endif
 
+#if TARGET_OS_IPHONE
 -(void)add:(UIView*)view as:(NSString*)name;
+#else
+-(void)add:(NSView*)view as:(NSString*)name;
+#endif
+	
 -(void)remove:(NSString*)name;
 
 -(void)createGroup:(NSString*)groupName;
@@ -62,14 +89,23 @@
 -(void)makeView:(NSString*)name inFrontOf:(NSString*)relativeName;
 -(void)makeView:(NSString*)name behind:(NSString*)relativeName;
 
+#if TARGET_OS_IPHONE
 -(CGRect)rectForRect:(CGRect)rect containedInView:(UIView*)view;
+#else
+-(CGRect)rectForRect:(CGRect)rect containedInView:(NSView*)view;
+#endif
 
 // get these working with groups
 -(void)setView:(NSString*)viewName text:(NSString*)text;
+#if TARGET_OS_IPHONE
 -(void)setView:(NSString*)viewName textColor:(UIColor*)color;
+#else
+-(void)setView:(NSString*)viewName textColor:(NSColor*)color;
+#endif
 -(void)setView:(NSString*)viewName frame:(CGRect)frame over:(float)seconds;
 -(CGRect)getViewFrame:(NSString*)viewName;
 -(void)setView:(NSString*)viewName alpha:(float)alpha over:(float)seconds;
 -(void)setView:(NSString*)viewName onSelectLuaFunc:(NSString*)funcName;
 @end
+
 

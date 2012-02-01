@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+
 
 #import "FCLeaderboard.h"
 #import "FCPersistentData.h"
@@ -52,7 +52,7 @@ NSString* kFCLeaderboardEntryKeyScore = @"score";
 		
 		// create enpty entries
 		
-		int count = [mEntriesArray count];
+		NSUInteger count = [mEntriesArray count];
 		
 		if (self.numEntries > count) 
 		{
@@ -116,4 +116,4 @@ NSString* kFCLeaderboardEntryKeyScore = @"score";
 
 @end
 
-#endif
+

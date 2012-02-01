@@ -20,36 +20,54 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+// TODO: Needs its own center outside of physics
 
 #import <Foundation/Foundation.h>
 #import "FCMaths.h"
 #import "FCProtocols.h"
 #import "FCModel.h"
 
+#if defined (FC_GRAPHICS)
 @class FCModel;
-@class FCPhysics2DBody;
+#endif
+
 @class FCResource;
+
+#if defined (FC_PHYSICS)
+@class FCPhysics2DBody;
+#endif
 
 @interface FCActor : NSObject <FCActorBase> 
 {
-	FCPhysics2DBody*	mBody2d;
-	FCModel*			mModel;
+	NSString*			_name;
+	NSString*			_id;
+	NSDictionary*		_createDef;
+#if defined (FC_GRAPHICS)
+	FCModel*			_model;
+#endif
+#if defined (FC_PHYSICS)
+	FCPhysics2DBody*	_body2d;
+#endif
 }
-@property(weak, nonatomic, readonly) NSString* Id;
-@property(weak, nonatomic, readonly) NSDictionary* createDef;
+@property(nonatomic, strong) NSString* name;
+@property(nonatomic, strong, readonly) NSString* Id;
+@property(nonatomic, strong, readonly) NSDictionary* createDef;
+#if defined (FC_GRAPHICS)
+@property(nonatomic, strong, readonly) FCModel* model;
+#endif
+#if defined (FC_PHYSICS)
+@property(nonatomic, strong, readonly) FCPhysics2DBody*	body2d;
+#endif
 
 -(id)initWithDictionary:(NSDictionary*)dictionary body:(NSDictionary*)bodyDict model:(NSDictionary*)modelDict resource:(FCResource*)res;
 
--(void)setPosition:(FC::Vector2f)pos;	// TODO: Get these two into a property
+// TODO: Get these two into a property
+-(void)setPosition:(FC::Vector2f)pos;
+-(FC::Vector2f)position;
 
+#if defined (FC_PHYSICS)
 -(void)applyImpulse:(FC::Vector2f)impulse atWorldPos:(FC::Vector2f)pos;
-
 -(FC::Vector2f)getCenter;
--(FCPhysics2DBody*)getPhysics2DBody;
-
--(void)addJoints:(id)jointsDef;
-
+#endif
 @end
 
-#endif // TARGET_OS_IPHONE

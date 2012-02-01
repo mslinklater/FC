@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined(FC_GRAPHICS)
 
 #import <Foundation/Foundation.h>
 #import "FCVertexTypes.h"
@@ -50,6 +50,7 @@
 @property(nonatomic, strong) FCShaderProgram* shaderProgram;
 @property(nonatomic) GLuint vertexBufferHandle;
 @property(nonatomic) GLuint indexBufferHandle;
+@property(nonatomic, readonly) BOOL fixedUp;
 
 -(id)initWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor shaderName:(NSString*)shaderName;
 +(id)fcMeshWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor shaderName:(NSString*)shaderName;
@@ -58,4 +59,4 @@
 -(FC::Vector3us*)pIndexBufferAtIndex:(unsigned short)index;
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_GRAPHICS)

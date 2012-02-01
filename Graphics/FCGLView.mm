@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined(FC_GRAPHICS)
 
 #import <QuartzCore/QuartzCore.h>
 
@@ -184,7 +184,7 @@ static int lua_SetClearColor( lua_State* _state )
 		FCGLLogVersions();
 		FCGLLogCaps();
 		
-		[[FCRenderer instance] prebuildShaders];
+//		[[FCRenderer instance] prebuildShaders];
 	}
 	
 	return self;
@@ -524,7 +524,7 @@ static int lua_SetClearColor( lua_State* _state )
 
 -(void)setProjectionMatrix
 {
-	FCShaderManager* shaderManager = [FCRenderer instance].shaderManager;
+	FCShaderManager* shaderManager = [FCShaderManager instance];
 	FCShaderProgram* program = [shaderManager program:@"debug_debug"];
 	FCShaderUniform* projectionUniform = [program getUniform:@"projection"];
 	
@@ -562,4 +562,4 @@ static int lua_SetClearColor( lua_State* _state )
 
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_GRAPHICS)

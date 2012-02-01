@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined (FC_LUA)
+
 #import <Foundation/Foundation.h>
 #import "FCLuaVM.h"
 
@@ -51,3 +53,5 @@ enum eLuaThreadState {
 -(void)die;
 
 @end
+
+#endif // defined(FC_LUA)

@@ -20,8 +20,6 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
-
 #import <QuartzCore/QuartzCore.h>
 
 #import "FCCore.h"
@@ -37,14 +35,23 @@
 #import "FCViewManager.h"
 #import "FCBuild.h"
 #import "FCPhysics.h"
+#import "FCActorSystem.h"
+#import "FCShaderManager.h"
 
+#if defined (FC_LUA)
 static FCLuaVM*					s_lua;
+#endif
+
+#if TARGET_OS_IPHONE
 static UIViewController*		s_viewController;
+static CADisplayLink*			s_displayLink;
+#endif
+
 static id<FCAppDelegate>		s_delegate;
 static FCPerformanceCounter*	s_perfCounter;
-static CADisplayLink*			s_displayLink;
 static BOOL						s_paused;
 
+#if defined (FC_LUA)
 static int lua_ShowStatusBar( lua_State* _state )
 {
 	FC_ASSERT( lua_type(_state, -1) == LUA_TBOOLEAN );
@@ -134,35 +141,45 @@ static int lua_PauseGame( lua_State* _state )
 	return 0;
 }
 
+#endif // defined(FC_LUA)
+
+#pragma mark - Objective-C Impl
+
 @implementation FCApp
 
+#if TARGET_OS_IPHONE
 +(void)coldBootWithViewController:(UIViewController *)vc delegate:(id<FCAppDelegate>)delegate
+#else
++(void)coldBootWithDelegate:(id<FCAppDelegate>)delegate
+#endif
 {
+#if TARGET_OS_IPHONE
 	s_viewController = vc;
+#endif
 	s_delegate = delegate;
 	s_perfCounter = [[FCPerformanceCounter alloc] init];
 	
+#if TARGET_OS_IPHONE
 	s_displayLink = [CADisplayLink displayLinkWithTarget:[FCApp class] selector:@selector(update)];
 	[s_displayLink setFrameInterval:1];
-//	[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
 
 	vc.view.backgroundColor = [UIColor blackColor];
+	[FCViewManager instance].rootView = vc.view;
+#endif
 	
 	// register system lua hooks
 
+#if defined (FC_LUA)
 	s_lua = [[FCLua instance] coreVM];
 	
 	[FCPersistentData registerLuaFunctions:s_lua];
 	[FCPhaseManager registerLuaFunctions:s_lua];
 
-	[FCViewManager instance].rootView = vc.view;
 	[FCViewManager registerLuaFunctions:s_lua];
 	[FCBuild registerLuaFunctions:s_lua];
 
-#if TARGET_OS_IPHONE
 	[FCAnalytics registerLuaFunctions:s_lua];
-#endif // TARGET_OS_IPHONE
 
 	[FCError registerLuaFunctions:s_lua];
 	[s_lua createGlobalTable:@"FCApp"];
@@ -174,17 +191,26 @@ static int lua_PauseGame( lua_State* _state )
 	[s_lua registerCFunction:lua_PauseGame as:@"FCApp.Pause"];
 
 	[s_lua setGlobal:@"FCApp.paused" boolean:NO];
+#endif
 	
+#if TARGET_OS_IPHONE
 	[[FCConnect instance] start:nil];
 	[[FCConnect instance] enableBonjourWithName:@"FCConnect"];
+#endif
 	[[FCDevice instance] probe];
 	[[FCDevice instance] warmProbe];
 	
 	[[FCPersistentData instance] loadData];
+#if defined (FC_PHYSICS)
 	[FCPhysics instance];
+#endif
+	[FCActorSystem instance];
 	
+//	[[FCShaderManager instance] prebuildShaders];
+#if defined(FC_LUA)
 	[s_lua loadScript:@"main"];
 	[s_lua call:@"FCApp.ColdBoot" required:YES withSig:@""];
+#endif
 	[self warmBoot];
 }
 
@@ -193,16 +219,23 @@ static int lua_PauseGame( lua_State* _state )
 	[s_delegate registerPhasesWithManager:[FCPhaseManager instance]];
 	[s_delegate initialiseSystems];
 	
+#if defined (FC_LUA)
 	[s_lua call:@"FCApp.WarmBoot" required:YES withSig:@""];
+#endif
 }
 
 +(void)shutdown
 {
+#if TARGET_OS_IPHONE
 	[s_displayLink invalidate];
+#endif
 	s_perfCounter = nil;
 	s_delegate = nil;
+	
+#if defined (FC_LUA)
 	[s_lua call:@"FCApp.Shutdown" required:YES withSig:@""];
 	s_lua = nil;
+#endif
 }
 
 +(void)update
@@ -222,9 +255,17 @@ static int lua_PauseGame( lua_State* _state )
 			
 	[s_delegate updateRealTime:dt gameTime:gameTime];
 	
+#if defined (FC_LUA)
 	[[FCLua instance] updateThreads:dt];
+#endif
 	
 	// update the game systems here...
+	
+#if defined (FC_PHYSICS)
+	[[FCPhysics instance] update:dt gameTime:dt];
+#endif
+	
+	[[FCActorSystem instance] update:dt gameTime:dt];
 	
 	// Keep this as the last update - since render views are updated here.
 	[[FCPhaseManager instance] update:dt];
@@ -233,50 +274,71 @@ static int lua_PauseGame( lua_State* _state )
 +(void)pause
 {
 	s_paused = YES;
+#if defined (FC_LUA)
 	[[FCLua instance].coreVM setGlobal:@"FCApp.paused" boolean:YES];
+#endif
 }
 
 +(void)resume
 {
 	s_paused = NO;
+#if defined (FC_LUA)
 	[[FCLua instance].coreVM setGlobal:@"FCApp.paused" boolean:NO];
+#endif
 }
 
 +(void)willResignActive
 {
+#if TARGET_OS_IPHONE
 	[[FCConnect instance] stop];
 	[[FCAnalytics instance] eventEndPlaySession];
+#endif
 	[[FCPersistentData instance] saveData];
 	
+#if defined (FC_LUA)
 	[s_lua call:@"FCApp.WillResignActive" required:NO withSig:@""];
+#endif
 }
 
 +(void)didEnterBackground
 {
+#if defined (FC_LUA)
 	[s_lua call:@"FCApp.DidEnterBackground" required:NO withSig:@""];
+#endif
 }
 
 +(void)willEnterForeground
 {
+#if defined (FC_LUA)
 	[s_lua call:@"FCApp.WillEnterForeground" required:NO withSig:@""];	
+#endif
 }
 
 +(void)didBecomeActive
 {
+#if TARGET_OS_IPHONE
 	[[FCConnect instance] start:nil];
 	[[FCConnect instance] enableBonjourWithName:@"FCConnect"];
 	[[FCAnalytics instance] eventStartPlaySession];
+#endif
 	
+#if defined (FC_LUA)
 	[s_lua call:@"FCApp.DidBecomeActive" required:NO withSig:@""];		
+#endif
 }
 
 +(void)willTerminate
 {
+#if TARGET_OS_IPHONE
 	[[FCAnalytics instance] shutdown];
+#endif
 	
+#if defined (FC_LUA)
 	[s_lua call:@"FCApp.WillTerminate" required:NO withSig:@""];		
+#endif
 }
 
+#if TARGET_OS_IPHONE
 +(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	BOOL ret = YES;
@@ -287,16 +349,6 @@ static int lua_PauseGame( lua_State* _state )
 		[[[FCLua instance] coreVM] call:@"FCApp.SupportsPortrait" required:NO withSig:@">b", &ret];
 	}
 	return ret;
-}
-
-+(CGSize)mainViewSize
-{
-	return s_viewController.view.frame.size;
-}
-
-+(FCLuaVM*)lua
-{
-	return s_lua;
 }
 
 +(void)showGameCenterLeaderboard
@@ -316,12 +368,30 @@ static int lua_PauseGame( lua_State* _state )
 	
 	// call lua func ?
 }
+#endif
+
++(CGSize)mainViewSize
+{
+#if TARGET_OS_IPHONE
+	return s_viewController.view.frame.size;
+#else
+	return CGSizeMake(0, 0);
+#endif
+}
+
+#if defined (FC_LUA)
++(FCLuaVM*)lua
+{
+	return s_lua;
+}
+#endif
+
 
 +(void)launchExternalURL:(NSString*)stringURL
 {
+#if TARGET_OS_IPHONE
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:stringURL]];
+#endif
 }
 
 @end
-
-#endif

@@ -20,9 +20,10 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
 
+#if TARGET_OS_IPHONE
 #import <GameKit/GameKit.h>
+#endif
 
 #import "FCCore.h"
 #import "FCHighScores.h"
@@ -139,6 +140,7 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 			
 			if ( !([gameCenterId isEqualToString:@"local"] || (gameCenterId == nil)) ) 
 			{
+#if TARGET_OS_IPHONE
 				GKScore *scoreReporter = [[GKScore alloc] initWithCategory:leaderboardId];
 				scoreReporter.value = totalLeaderboardScore;
 				
@@ -156,6 +158,7 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 						FC_ERROR(@"Score push with no errors");					
 					}
 				}];				
+#endif
 			}
 		}
 //	}
@@ -200,6 +203,7 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 		
 		for(NSString* leaderboardId in mLeaderboardSet)
 		{
+#if TARGET_OS_IPHONE
 			GKLeaderboard *leaderboardRequest = [[GKLeaderboard alloc] initWithPlayerIDs:[NSArray arrayWithObject:gameCenterId]];
 			if (leaderboardRequest != nil)
 			{
@@ -229,6 +233,7 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 					}
 				}];
 			}
+#endif
 		}
 	}
 }
@@ -252,4 +257,4 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 
 @end
 
-#endif // TARGET_OS_IPHONE
+

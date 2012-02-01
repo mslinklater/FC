@@ -20,13 +20,15 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined(FC_GRAPHICS)
 
 #import <Foundation/Foundation.h>
 #import "FCShaderProgram.h"
 #import "FCShaderUniform.h"
 
 @interface FCShaderManager : NSObject
+
++(FCShaderManager*)instance;
 
 -(FCShader*)addShader:(NSString*)name;
 -(FCShader*)shader:(NSString*)name;
@@ -35,5 +37,5 @@
 -(FCShaderProgram*)program:(NSString*)name;
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_GRAPHICS)
 

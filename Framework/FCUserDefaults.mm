@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+
 
 #import "FCUserDefaults.h"
 #import "FCAppContext.h"
@@ -89,4 +89,4 @@ static FCUserDefaults* pInstance;
 
 @end
 
-#endif // TARGET_OS_IPHONE
+

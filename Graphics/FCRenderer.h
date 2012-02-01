@@ -24,29 +24,26 @@
 		Add perf metrics
  */
 
-#if TARGET_OS_IPHONE
+#if defined(FC_GRAPHICS)
 
 #import <Foundation/Foundation.h>
-
-@class FCShaderManager;
-@class FCTextureManager;
+#import "FCProtocols.h"
 
 @interface FCRenderer : NSObject {
-	NSMutableArray* mModels;
-	NSMutableArray* mGatherList;
+	NSString*		_name;
+	NSMutableArray* _models;
+	NSMutableArray* _gatherList;
 }
-@property(strong, nonatomic, readonly) FCShaderManager* shaderManager;
-@property(strong, nonatomic, readonly) FCTextureManager* textureManager;
+@property(nonatomic, strong, readonly) NSString* name;
+@property(nonatomic, strong, readonly) NSMutableArray* models;
+@property(nonatomic, strong, readonly) NSMutableArray* gatherList;
 
-+(FCRenderer*)instance;
--(id)init;
+-(id)initWithName:(NSString*)name;
 -(void)render;
 
 -(void)addToGatherList:(id)obj;
 -(void)removeFromGatherList:(id)obj;
 
--(void)prebuildShaders;
-
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_GRAPHICS)

@@ -30,10 +30,12 @@ public:
 	Vector2f( float xIn, float yIn ) : x(xIn), y(yIn) {}
 	Vector2f( const Vector2f& vec ) : x(vec.x), y(vec.y) {}
 	
-	Vector2f operator+( Vector2f &v ){ return Vector2f( x + v.x, y + v.y); }
-	Vector2f operator-( Vector2f &v ){ return Vector2f( x - v.x, y - v.y); }
+	Vector2f operator+( const Vector2f &v ){ return Vector2f( x + v.x, y + v.y); }
+	Vector2f operator-( const Vector2f &v ){ return Vector2f( x - v.x, y - v.y); }
 	Vector2f operator*( float mag ){ return Vector2f( x * mag, y * mag ); }
 	Vector2f operator/( float mag ){ return Vector2f( x / mag, y / mag ); }
+	
+	void operator+=( const Vector2f& v ){ x += v.x, y += v.y; }
 	
 	void Zero( void ){ x = y = 0.0f; }
 	void RotateDeg( float degrees )

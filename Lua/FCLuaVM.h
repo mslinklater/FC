@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined (FC_LUA)
+
 #import <Foundation/Foundation.h>
 
 #if TARGET_OS_IPHONE
@@ -50,18 +52,18 @@ typedef int(*tLuaCallableCFunction)(lua_State*);
 // Get
 -(long)globalNumber:(NSString*)name;
 
-#if TARGET_OS_IPHONE
+
 -(UIColor*)globalColor:(NSString*)name;
-#endif
+
 
 // Set
 -(void)setGlobal:(NSString*)global integer:(long)number;
 -(void)setGlobal:(NSString*)global number:(double)number;
 -(void)setGlobal:(NSString*)global boolean:(BOOL)value;
 
-#if TARGET_OS_IPHONE
+
 -(void)setGlobal:(NSString*)global color:(UIColor*)color;
-#endif
+
 
 // Function calling
 -(void)call:(NSString*)func required:(BOOL)required withSig:(NSString*)sig, ...;
@@ -70,3 +72,5 @@ typedef int(*tLuaCallableCFunction)(lua_State*);
 -(void)dumpStack;
 -(void)dumpCallstack;
 @end
+
+#endif // defined(FC_LUA)

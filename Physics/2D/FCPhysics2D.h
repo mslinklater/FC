@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined (FC_PHYSICS)
 
 #import <Foundation/Foundation.h>
 #import <Box2D/Box2D.h>
@@ -29,13 +29,11 @@
 #import "FCPhysics2DBody.h"
 #import "FCPhysics2DBodyDef.h"
 
-@interface FCPhysics2D : NSObject <FCGameObjectLifetime, FCGameObjectUpdate> {
+@interface FCPhysics2D : NSObject <FCGameObjectUpdate> {
     b2World* pWorld;
 	b2Vec2 gravity;
 }
 -(FCPhysics2DBody*)newBodyWithDef:(FCPhysics2DBodyDef*)def;
-
-//-(void*)userDataForObjectAtPosition:(FC::Vector2f)pos;
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_PHYSICS)

@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined (FC_PHYSICS)
+
 #import "FCPhysicsMaterial.h"
 
 @implementation FCPhysicsMaterial
@@ -43,4 +45,11 @@
 	return self;
 }
 
+-(NSString*)description
+{
+	return [NSString stringWithFormat:@"Material:%@ friction:%f restitution:%f density:%f",
+			_name, _friction, _restitution, _density];
+}
 @end
+
+#endif // defined(FC_PHYSICS)

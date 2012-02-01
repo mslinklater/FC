@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined (FC_PHYSICS)
 
 #import "FCPhysics2D.h"
 
@@ -84,4 +84,4 @@
 
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_PHYSICS)

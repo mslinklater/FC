@@ -20,12 +20,16 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
 
 #import <Foundation/Foundation.h>
-#import <GameKit/GameKit.h>
 
+#if TARGET_OS_IPHONE
+#import <GameKit/GameKit.h>
+#endif
+
+#if defined(FC_LUA)
 #import "Lua/FCLua.h"
+#endif
 
 @class FCPhaseManager;
 
@@ -33,11 +37,20 @@
 -(void)registerPhasesWithManager:(FCPhaseManager*)manager;
 -(void)initialiseSystems;
 -(void)updateRealTime:(float)realTime gameTime:(float)gameTime;
-//-(BOOL)shouldRotateToInterfaceOrientation:(UIInterfaceOrientation)orient;
 @end
 
+#if TARGET_OS_IPHONE
 @interface FCApp : NSObject <GKLeaderboardViewControllerDelegate>
+#else
+@interface FCApp : NSObject
+#endif
+
+#if TARGET_OS_IPHONE
 +(void)coldBootWithViewController:(UIViewController*)vc delegate:(id<FCAppDelegate>)delegate;
+#else
++(void)coldBootWithDelegate:(id<FCAppDelegate>)delegate;
+#endif
+
 +(void)warmBoot;
 +(void)shutdown;
 +(void)update;
@@ -50,12 +63,16 @@
 +(void)didBecomeActive;
 +(void)willTerminate;
 
+#if TARGET_OS_IPHONE
 +(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
-+(CGSize)mainViewSize;
-+(FCLuaVM*)lua;
-
 +(void)showGameCenterLeaderboard;
+#endif
+
++(CGSize)mainViewSize;
+
+#if defined(FC_LUA)
++(FCLuaVM*)lua;
+#endif
+
 +(void)launchExternalURL:(NSString*)stringURL;
 @end
-
-#endif

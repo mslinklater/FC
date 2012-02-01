@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined(FC_GRAPHICS)
+
 #import "Maths/FCMaths.h"
 #import "Core/FCTypes.h"
 
@@ -32,3 +34,5 @@ public:
 };
 
 }
+
+#endif // defined(FC_GRAPHICS)

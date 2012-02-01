@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined(FC_GRAPHICS)
+
 #import "FCVertexDescriptor.h"
 #import "FCCore.h"
 
@@ -302,3 +304,5 @@ static NSString* s_nameForProperty[ kFCVertexDescriptorLastProperty ] = {
 #endif
 
 @end
+
+#endif // defined(FC_GRAPHICS)

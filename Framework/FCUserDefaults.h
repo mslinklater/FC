@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+
 
 #import <Foundation/Foundation.h>
 
@@ -35,4 +35,4 @@
 -(void)registerDefaults:(FCXMLData*)gameData;
 @end
 
-#endif // TARGET_OS_IPHONE
+

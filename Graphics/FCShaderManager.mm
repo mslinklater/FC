@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined(FC_GRAPHICS)
 
 #import "FCCore.h"
 #import "FCShaderManager.h"
@@ -35,6 +35,16 @@
 @implementation FCShaderManager
 @synthesize shaders = _shaders;
 @synthesize programs = _programs;
+
++(FCShaderManager*)instance
+{
+	static FCShaderManager* pInstance = 0;
+	
+	if (!pInstance) {
+		pInstance = [[FCShaderManager alloc] init];
+	}
+	return pInstance;
+}
 
 -(id)init
 {
@@ -133,5 +143,5 @@
 
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_GRAPHICS)
 

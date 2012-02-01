@@ -51,11 +51,13 @@ enum FCPhaseState {
 	__weak FCPhase* _parent;
 	NSMutableDictionary* _children;
 	FCPhase* _activeChild;
-	NSString* _luaTable;
 	__weak id<FCPhaseDelegate> _delegate;
 	float _activateTimer;
 	float _deactivateTimer;
 	FCPhaseState _state;
+	
+#if defined (FC_LUA)
+	NSString* _luaTable;
 	BOOL _luaLoaded;
 	
 	NSString* _luaUpdateFunc;
@@ -65,17 +67,20 @@ enum FCPhaseState {
 	NSString* _luaIsNowActiveFunc;
 	NSString* _luaWillDeactivateFunc;
 	NSString* _luaIsNowDeactiveFunc;
+#endif
 }
 @property(nonatomic, strong) NSString* name;
 @property(nonatomic, strong) NSString* namePath;
 @property(nonatomic, weak) FCPhase* parent;
 @property(nonatomic, strong) NSMutableDictionary* children;
 @property(nonatomic, strong) FCPhase* activeChild;
-@property(nonatomic, strong) NSString* luaTable;
 @property(nonatomic, weak) id<FCPhaseDelegate> delegate;
 @property(nonatomic) float activateTimer;
 @property(nonatomic) float deactivateTimer;
 @property(nonatomic) FCPhaseState state;
+
+#if defined (FC_LUA)
+@property(nonatomic, strong) NSString* luaTable;
 @property(nonatomic, readonly) BOOL luaLoaded;
 
 @property(nonatomic, strong) NSString* luaUpdateFunc;
@@ -85,6 +90,7 @@ enum FCPhaseState {
 @property(nonatomic, strong) NSString* luaIsNowActiveFunc;
 @property(nonatomic, strong) NSString* luaWillDeactivateFunc;
 @property(nonatomic, strong) NSString* luaIsNowDeactiveFunc;
+#endif
 
 -(id)initWithName:(NSString*)name;
 

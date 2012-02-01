@@ -21,8 +21,8 @@
  */
 
 #if TARGET_OS_IPHONE
-
 #import "GameKit/GameKit.h"
+#endif
 
 #import "FCAppContext.h"
 #import "FCXMLData.h"
@@ -33,7 +33,6 @@
 #import "FCActorSystem.h"
 #import "FCPhysics.h"
 #import "FCPersistentData.h"
-//#import "FCStats.h"
 #import "FCDevice.h"
 #import "FCUserDefaults.h"
 #import "FCAnalytics.h"
@@ -89,9 +88,11 @@
 		
 		[[FCUserDefaults instance] registerDefaults:self.gameData];
 		
-		[[FCRenderer instance] addToGatherList:[FCActorSystem instance]];
+		//[[FCRenderer instance] addToGatherList:[FCActorSystem instance]];
 		
+#if defined (FC_PHYSICS)
 		[FCPhysics instance];
+#endif
 		
 //		NSArray* statsArray = [self.gameData arrayForKeyPath:@"gamedata.stats.stat"];
 		
@@ -156,4 +157,3 @@
 
 @end
 
-#endif // TARGET_OS_IPHONE

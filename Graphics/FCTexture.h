@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined(FC_GRAPHICS)
+
 #import <Foundation/Foundation.h>
 
 #if TARGET_OS_IPHONE
@@ -38,3 +40,5 @@
 
 -(CGRect)absUVFromRelUV:(CGRect)relUV;
 @end
+
+#endif // defined(FC_GRAPHICS)

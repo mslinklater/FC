@@ -21,9 +21,13 @@
  */
 
 #import "FCBuild.h"
+
+#if defined (FC_LUA)
 #import "FCLua.h"
+#endif
 
 #pragma mark - Lua methods
+#if defined (FC_LUA)
 
 static int lua_Debug( lua_State* _state )
 {
@@ -36,14 +40,18 @@ static int lua_Debug( lua_State* _state )
 	return 1;
 }
 
+#endif
+
 #pragma mark - Obj-C
 
 @implementation FCBuild
 
+#if defined (FC_LUA)
 +(void)registerLuaFunctions:(FCLuaVM*)lua
 {
 	[lua createGlobalTable:@"FCBuild"];
 	[lua registerCFunction:lua_Debug as:@"FCBuild.Debug"];
 }
-
+#endif
 @end
+

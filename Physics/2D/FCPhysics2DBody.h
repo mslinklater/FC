@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined(FC_PHYSICS)
 
 #import <Foundation/Foundation.h>
 
@@ -29,23 +29,30 @@
 
 class b2World;
 class b2Body;
+
 @class FCPhysics2DBodyDef;
 
-@interface FCPhysics2DBody : NSObject {
-@private
-	b2World* pWorld;
-	b2Body* pBody;
+@interface FCPhysics2DBody : NSObject 
+{
+	b2World*		_world;
+	b2Body*			_body;
+//	float			_rotation;
+//	FC::Vector2f	_position;
 }
+@property(nonatomic) b2World* world;
+@property(nonatomic, readonly) b2Body* body;
+@property(nonatomic, readonly) float rotation;
+@property(nonatomic) FC::Vector2f position;
 
 -(id)initWithDef:(FCPhysics2DBodyDef*)def;
 
--(FC::Vector2f)position;
--(void)setPosition:(FC::Vector2f)pos;
+//-(FC::Vector2f)position;
+//-(void)setPosition:(FC::Vector2f)pos;
 
 -(FC::Vector2f)linearVelocity;
 -(void)setLinearVelocity:(FC::Vector2f)newVel;
 
--(b2Body*)b2Body;
+//-(b2Body*)b2Body;
 
 -(void)applyImpulse:(FC::Vector2f)impulse atWorldPos:(FC::Vector2f)pos;
 
@@ -57,4 +64,4 @@ class b2Body;
 -(void)createPulleyJointWith:(FCPhysics2DBody*)otherBody anchor1:(FC::Vector2f)anchor1 anchor2:(FC::Vector2f)anchor2 groundAnchor1:(FC::Vector2f)ground1 groundAnchor2:(FC::Vector2f)ground2 ratio:(float)ratio maxLength1:(float)maxLength1 maxLength2:(float)maxLength2;
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_PHYSICS)

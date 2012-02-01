@@ -149,4 +149,4 @@ static const int kNumMaxFrames = 10;
 
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif

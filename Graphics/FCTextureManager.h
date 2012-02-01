@@ -20,12 +20,14 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined(FC_GRAPHICS)
 
 #import <Foundation/Foundation.h>
 
 @interface FCTextureManager : NSObject <NSXMLParserDelegate>
 
++(FCTextureManager*)instance;
+
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_GRAPHICS)

@@ -20,32 +20,54 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+
 
 #import "FCActorSystem.h"
 #import "FCActor.h"
 #import "FCPhysics.h"
 #import "FCXMLData.h"
 #import "FCResource.h"
+#import "FCCore.h"
+#import "FCLua.h"
+
+static FCActorSystem* s_pInstance;
+
+#pragma mark - Lua Interface
+
+#if defined (FC_LUA)
+static int lua_Reset( lua_State* _state )
+{
+	[s_pInstance reset];
+	return 0;
+}
+#endif
 
 @interface FCActorSystem(hidden)
-//-(id)createActorOfClass:(NSString*)actorClass withDict:(NSDictionary*)dict bodies:(NSArray*)bodies models:(NSArray*)models;
--(id)createActor:(NSDictionary*)actorDict ofClass:(NSString*)actorClass withResource:(FCResource*)res;
+-(id)createActor:(NSDictionary*)actorDict ofClass:(NSString*)actorClass withResource:(FCResource*)res named:(NSString*)name;
+#if defined (FC_PHYSICS)
 -(void)addJoint:(NSDictionary*)jointDict;
+#endif
 @end
 
 @implementation FCActorSystem
+
+@synthesize allActorsArray = _allActorsArray;
+@synthesize updateActorsArray = _updateActorsArray;
+@synthesize renderActorsArray = _renderActorsArray;
+@synthesize tapGestureActorsArray = _tapGestureActorsArray;
+@synthesize deleteList = _deleteList;
+@synthesize classArraysDictionary = _classArraysDictionary;
+@synthesize actorIdDictionary = _actorIdDictionary;
+@synthesize actorNameDictionary = _actorNameDictionary;
 
 #pragma mark - FCSingleton protocol
 
 +(id)instance
 {
-	static FCActorSystem* pInstance;
-	
-	if (!pInstance) {
-		pInstance = [[FCActorSystem alloc] init];
+	if (!s_pInstance) {
+		s_pInstance = [[FCActorSystem alloc] init];
 	}
-	return pInstance;
+	return s_pInstance;
 }
 
 #pragma mark - Object Lifetime
@@ -55,13 +77,19 @@
 	self = [super init];
 	if (self) 
 	{
-		mAllActorsArray = [[NSMutableArray alloc] init];
-		mUpdateActorsArray = [[NSMutableArray alloc] init];
-		mRenderActorsArray = [[NSMutableArray alloc] init];
-		mTapGestureActorsArray = [[NSMutableArray alloc] init];
-		mDeleteList = [[NSMutableArray alloc] init];
-		mClassArraysDictionary = [[NSMutableDictionary alloc] init];
-		mActorIdDictionary = [[NSMutableDictionary alloc] init];
+		_allActorsArray = [[NSMutableArray alloc] init];
+		_updateActorsArray = [[NSMutableArray alloc] init];
+		_renderActorsArray = [[NSMutableArray alloc] init];
+		_tapGestureActorsArray = [[NSMutableArray alloc] init];
+		_deleteList = [[NSMutableArray alloc] init];
+		_classArraysDictionary = [[NSMutableDictionary alloc] init];
+		_actorIdDictionary = [[NSMutableDictionary alloc] init];
+		_actorNameDictionary = [[NSMutableDictionary alloc] init];
+		
+#if defined (FC_LUA)
+		[[FCLua instance].coreVM createGlobalTable:@"FCActorSystem"];
+		[[FCLua instance].coreVM registerCFunction:lua_Reset as:@"FCActorSystem.Reset"];
+#endif
 	}
 
 	return self;
@@ -69,8 +97,11 @@
 
 #pragma mark - New FCR Based methods
 
--(NSArray*)createActorsOfClass:(NSString *)actorClass withResource:(FCResource *)res
+-(NSArray*)createActorsOfClass:(NSString *)actorClass withResource:(FCResource *)res named:(NSString *)name
 {
+	// Test is the actor class type you are requesting actually exists
+	FC_ASSERT(NSClassFromString(actorClass));
+	
 	NSMutableArray* newActors = [NSMutableArray array];
 
 	NSArray* actors = [res.xmlData arrayForKeyPath:@"fcr.scene.actor"];
@@ -79,28 +110,32 @@
 	
 	for(NSDictionary* actorDict in actors)
 	{
-		[newActors addObject:[self createActor:actorDict ofClass:actorClass withResource:res]];
+		[newActors addObject:[self createActor:actorDict ofClass:actorClass withResource:res named:name]];
 	}	
 
 	// add the joints
-
+#if defined (FC_PHYSICS)
+	// REMOVE
 	NSArray* joints = [res.xmlData arrayForKeyPath:@"fcr.physics.joints.joint"];
 
 	for(NSDictionary* jointDict in joints)
 	{
 		[self addJoint:jointDict];
 	}
+#endif
 
 	NSArray* retArray = [NSArray arrayWithArray:newActors];
 	return retArray;
 }
 
--(id)createActor:(NSDictionary*)actorDict ofClass:(NSString *)actorClass withResource:(FCResource *)res
+-(id)createActor:(NSDictionary*)actorDict ofClass:(NSString *)actorClass withResource:(FCResource *)res named:(NSString*)name
 {
 	// get body
 	
 	NSString* bodyId = [actorDict valueForKey:@"body"];	
 	NSArray* bodies = [res.xmlData arrayForKeyPath:@"fcr.physics.bodies.body"];
+	
+	// Find the body associated with this actor
 	
 	NSDictionary* bodyDict = nil;
 	for(NSDictionary* body in bodies)
@@ -143,30 +178,40 @@
 
 	if (actorId) // id is optional
 	{
-		id result = [mActorIdDictionary valueForKey:actorId];
-		
-		if (result == nil) {
-			[mActorIdDictionary setValue:[NSMutableSet setWithObject:actor] forKey:actorId];
-		} else {
-			NSAssert([result isKindOfClass:[NSMutableSet class]], @"id dict does not have set in it");
-			NSMutableSet* set = (NSMutableSet*)result;
-			[set addObject:actor];
-		}
+//		id result = [_actorIdDictionary valueForKey:actorId];
+//		
+//		if (result == nil) {
+//			[_actorIdDictionary setValue:[NSMutableSet setWithObject:actor] forKey:actorId];
+//		} else {
+//			FC_HALT;	// why should we allow non-unique id's ???
+//			NSAssert([result isKindOfClass:[NSMutableSet class]], @"id dict does not have set in it");
+//			NSMutableSet* set = (NSMutableSet*)result;
+//			[set addObject:actor];
+//		}
+		[_actorIdDictionary setValue:actor forKey:actorId];
 	}
 
 	// add to class arrays dictionary
 	
-	if (![mClassArraysDictionary valueForKey:actorClass]) 
+	if (![_classArraysDictionary valueForKey:actorClass]) 
 	{
 		NSMutableArray* classArray = [NSMutableArray array];
-		[mClassArraysDictionary setValue:classArray forKey:actorClass];
+		[_classArraysDictionary setValue:classArray forKey:actorClass];
 	}
 	
-	[[mClassArraysDictionary valueForKey:actorClass] addObject:actor];
+	[[_classArraysDictionary valueForKey:actorClass] addObject:actor];
 
+	// name
+	
+	if (name) {
+		[_actorNameDictionary setValue:actor forKey:name];
+		((FCActor*)actor).name = name;
+	}
+	
 	return actor;
 }
 
+#if defined (FC_PHYSICS)
 -(void)addJoint:(NSDictionary *)jointDict
 {
 	NSString* jointType = [jointDict valueForKey:@"type"];
@@ -174,25 +219,25 @@
 	if ([jointType isEqualToString:@"distance"])	// Distance joint
 	{
 		NSString* bodyId = [jointDict valueForKey:@"bodyId"];
-		NSMutableSet* parentActorSet = [mActorIdDictionary valueForKey:bodyId];
+//		NSMutableSet* parentActorSet = [_actorIdDictionary valueForKey:bodyId];
 		NSString* anchorId = [jointDict valueForKey:@"anchor"];
-		NSMutableSet* anchorActorSet = [mActorIdDictionary valueForKey:anchorId];
+//		NSMutableSet* anchorActorSet = [_actorIdDictionary valueForKey:anchorId];
 		
-		if (([parentActorSet count] == 1) && ([anchorActorSet count] == 1))
-		{
-			FCActor* parentActor = [parentActorSet anyObject];
+//		if (([parentActorSet count] == 1) && ([anchorActorSet count] == 1))
+//		{
+			FCActor* parentActor = [_actorIdDictionary valueForKey:bodyId];
 			
 			NSAssert1([jointDict valueForKey:kFCKeyJointAnchorOffsetX], @"Distance joint requires %@ element", kFCKeyJointAnchorOffsetX);
 			NSAssert1([jointDict valueForKey:kFCKeyJointAnchorOffsetY], @"Distance joint requires %@ element", kFCKeyJointAnchorOffsetY);
 			NSAssert1([jointDict valueForKey:kFCKeyJointOffsetX], @"Distance joint requires %@ element", kFCKeyJointOffsetX);
 			NSAssert1([jointDict valueForKey:kFCKeyJointOffsetY], @"Distance joint requires %@ element", kFCKeyJointOffsetY);
 			
-			FCActor* anchorActor = [anchorActorSet anyObject];
+			FCActor* anchorActor = [_actorIdDictionary valueForKey:anchorId];
 			
 			NSAssert1(anchorActor, @"nil anchor actor found '%@'", [jointDict valueForKey:kFCKeyJointAnchorId]);
 			
-			FCPhysics2DBody* anchorPhysicsBody = [anchorActor getPhysics2DBody];
-			FCPhysics2DBody* parentPhysicsBody = [parentActor getPhysics2DBody];
+			FCPhysics2DBody* anchorPhysicsBody = anchorActor.body2d;
+			FCPhysics2DBody* parentPhysicsBody = parentActor.body2d;
 			FC::Vector2f anchorOffset;
 			anchorOffset.x = [[jointDict valueForKey:kFCKeyJointAnchorOffsetX] floatValue];
 			anchorOffset.y = [[jointDict valueForKey:kFCKeyJointAnchorOffsetY] floatValue];
@@ -202,32 +247,32 @@
 			offset.y = [[jointDict valueForKey:kFCKeyJointOffsetY] floatValue];
 
 			[parentPhysicsBody createDistanceJointWith:anchorPhysicsBody atOffset:offset anchorOffset:anchorOffset];			
-		} 
-		else
-		{
-			NSAssert(0, @"borked distance joint");
-		}
+//		} 
+//		else
+//		{
+//			NSAssert(0, @"borked distance joint");
+//		}
 	} 
 	else if ([jointType isEqualToString:@"revolute"])
 	{
 		NSString* bodyId = [jointDict valueForKey:@"bodyId"];
-		NSMutableSet* parentActorSet = [mActorIdDictionary valueForKey:bodyId];
+//		NSMutableSet* parentActorSet = [_actorIdDictionary valueForKey:bodyId];
 		NSString* anchorId = [jointDict valueForKey:@"anchor"];
-		NSMutableSet* anchorActorSet = [mActorIdDictionary valueForKey:anchorId];
+//		NSMutableSet* anchorActorSet = [_actorIdDictionary valueForKey:anchorId];
 		
-		if (([parentActorSet count] == 1) && ([anchorActorSet count] == 1))
-		{
-			FCActor* parentActor = [parentActorSet anyObject];
+//		if (([parentActorSet count] == 1) && ([anchorActorSet count] == 1))
+//		{
+			FCActor* parentActor = [_actorIdDictionary valueForKey:bodyId];
 			
 			NSAssert1([jointDict valueForKey:kFCKeyJointAnchorOffsetX], @"Distance joint requires %@ element", kFCKeyJointAnchorOffsetX);
 			NSAssert1([jointDict valueForKey:kFCKeyJointAnchorOffsetY], @"Distance joint requires %@ element", kFCKeyJointAnchorOffsetY);
 			
-			FCActor* anchorActor = [anchorActorSet anyObject];
+			FCActor* anchorActor = [_actorIdDictionary valueForKey:anchorId];
 			
 			NSAssert1(anchorActor, @"nil anchor actor found '%@'", [jointDict valueForKey:kFCKeyJointAnchorId]);
 			
-			FCPhysics2DBody* anchorPhysicsBody = [anchorActor getPhysics2DBody];
-			FCPhysics2DBody* parentPhysicsBody = [parentActor getPhysics2DBody];
+			FCPhysics2DBody* anchorPhysicsBody = anchorActor.body2d;
+			FCPhysics2DBody* parentPhysicsBody = parentActor.body2d;
 			
 			FC::Vector2f anchorOffset;
 			anchorOffset.x = [[jointDict valueForKey:kFCKeyJointAnchorOffsetX] floatValue];
@@ -252,32 +297,32 @@
 			}
 			
 			[parentPhysicsBody createRevoluteJointWith:anchorPhysicsBody atOffset:anchorOffset motorSpeed:speed maxTorque:torque lowerAngle:min upperAngle:max];
-		} 
-		else
-		{
-			NSAssert(0, @"borked revolute joint");
-		}		
+//		} 
+//		else
+//		{
+//			NSAssert(0, @"borked revolute joint");
+//		}		
 	}
 	else if ([jointType isEqualToString:@"prismatic"])
 	{
 		NSString* bodyId = [jointDict valueForKey:@"bodyId"];
-		NSMutableSet* parentActorSet = [mActorIdDictionary valueForKey:bodyId];
+//		NSMutableSet* parentActorSet = [_actorIdDictionary valueForKey:bodyId];
 		NSString* anchorId = [jointDict valueForKey:@"anchor"];
-		NSMutableSet* anchorActorSet = [mActorIdDictionary valueForKey:anchorId];
+//		NSMutableSet* anchorActorSet = [_actorIdDictionary valueForKey:anchorId];
 		
-		if (([parentActorSet count] == 1) && ([anchorActorSet count] == 1))
-		{
-			FCActor* parentActor = [parentActorSet anyObject];
+//		if (([parentActorSet count] == 1) && ([anchorActorSet count] == 1))
+//		{
+			FCActor* parentActor = [_actorIdDictionary valueForKey:bodyId];
 			
 			NSAssert1([jointDict valueForKey:kFCKeyJointAnchorOffsetX], @"Distance joint requires %@ element", kFCKeyJointAnchorOffsetX);
 			NSAssert1([jointDict valueForKey:kFCKeyJointAnchorOffsetY], @"Distance joint requires %@ element", kFCKeyJointAnchorOffsetY);
 			
-			FCActor* anchorActor = [anchorActorSet anyObject];
+			FCActor* anchorActor = [_actorIdDictionary valueForKey:anchorId];
 			
 			NSAssert1(anchorActor, @"nil anchor actor found '%@'", [jointDict valueForKey:kFCKeyJointAnchorId]);
 			
-			FCPhysics2DBody* anchorPhysicsBody = [anchorActor getPhysics2DBody];
-			FCPhysics2DBody* parentPhysicsBody = [parentActor getPhysics2DBody];
+			FCPhysics2DBody* anchorPhysicsBody = anchorActor.body2d;
+			FCPhysics2DBody* parentPhysicsBody = parentActor.body2d;
 			
 			FC::Vector2f anchorOffset;
 			anchorOffset.x = [[jointDict valueForKey:kFCKeyJointAnchorOffsetX] floatValue];
@@ -308,23 +353,23 @@
 			FC::Vector2f axis( sin(angle), cos(angle) );
 			
 			[parentPhysicsBody createPrismaticJointWith:anchorPhysicsBody axis:axis motorSpeed:speed maxForce:force lowerTranslation:min upperTranslation:max];
-		} 
-		else
-		{
-			NSAssert(0, @"borked prismatic joint");
-		}
+//		} 
+//		else
+//		{
+//			NSAssert(0, @"borked prismatic joint");
+//		}
 	}
 	else if ([jointType isEqualToString:@"pulley"])
 	{
 		NSString* body1Id = [jointDict valueForKey:@"bodyId"];
-		NSMutableSet* body1ActorSet = [mActorIdDictionary valueForKey:body1Id];
+//		NSMutableSet* body1ActorSet = [_actorIdDictionary valueForKey:body1Id];
 		NSString* body2Id = [jointDict valueForKey:@"anchor2body"];
-		NSMutableSet* body2ActorSet = [mActorIdDictionary valueForKey:body2Id];
+//		NSMutableSet* body2ActorSet = [_actorIdDictionary valueForKey:body2Id];
 		
-		if (([body1ActorSet count] == 1) && ([body2ActorSet count] == 1))
-		{
-			FCActor* body1Actor = [body1ActorSet anyObject];
-			FCActor* body2Actor = [body2ActorSet anyObject];
+//		if (([body1ActorSet count] == 1) && ([body2ActorSet count] == 1))
+//		{
+			FCActor* body1Actor = [_actorIdDictionary valueForKey:body1Id];
+			FCActor* body2Actor = [_actorIdDictionary valueForKey:body2Id];
 			
 			NSAssert([jointDict valueForKey:@"length1"], @"Pulley joint requires 'length1' element");
 			NSAssert([jointDict valueForKey:@"length2"], @"Pulley joint requires 'length2' element");
@@ -337,8 +382,8 @@
 			NSAssert([jointDict valueForKey:@"anchor2OffsetX"], @"Pulley joint requires 'anchor2OffsetX' element");
 			NSAssert([jointDict valueForKey:@"anchor2OffsetY"], @"Pulley joint requires 'anchor2OffsetY' element");
 						
-			FCPhysics2DBody* body1PhysicsBody = [body1Actor getPhysics2DBody];
-			FCPhysics2DBody* body2PhysicsBody = [body2Actor getPhysics2DBody];
+			FCPhysics2DBody* body1PhysicsBody = body1Actor.body2d;
+			FCPhysics2DBody* body2PhysicsBody = body2Actor.body2d;
 			
 			FC::Vector2f anchor1;
 			anchor1.x = [[jointDict valueForKey:@"anchor1OffsetX"] floatValue];
@@ -361,17 +406,18 @@
 			float ratio = [[jointDict valueForKey:@"ratio"] floatValue];
 			
 			[body1PhysicsBody createPulleyJointWith:body2PhysicsBody anchor1:anchor1 anchor2:anchor2 groundAnchor1:ground1 groundAnchor2:ground2 ratio:ratio maxLength1:length1 maxLength2:length2];
-		} 
-		else
-		{
-			NSAssert(0, @"borked prismatic joint");
-		}
+//		} 
+//		else
+//		{
+//			NSAssert(0, @"borked prismatic joint");
+//		}
 	}
 	else 
 	{
 		NSAssert1(0, @"unknown joint type %@", jointType);
 	}
 }
+#endif
 
 #pragma mark - Old stuff
 #pragma mark -
@@ -380,68 +426,77 @@
 {
 	if(!actorClass)
 	{
+#if TARGET_OS_IPHONE
 		UIAlertView *errorView = [[UIAlertView alloc] initWithTitle:@"ERROR - FCActorSystem actorOfClass" message:@"nil actorClass" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
 		[errorView show];
+#endif
 		return nil;
 	}
 	
 	id newActor = [actorClass alloc];
-	[mAllActorsArray addObject:newActor];
+	[_allActorsArray addObject:newActor];
 
 	if ([newActor needsUpdate]) {
-		[mUpdateActorsArray addObject:newActor];
+		FC_ASSERT([newActor conformsToProtocol:@protocol(FCGameObjectUpdate) ]);
+		[_updateActorsArray addObject:newActor];
 	}
 	
 	if ([newActor needsRender]) {
-		[mRenderActorsArray addObject:newActor];
+		FC_ASSERT([newActor conformsToProtocol:@protocol(FCGameObjectRender) ]);
+		[_renderActorsArray addObject:newActor];
 	}
 
 	if ([newActor respondsToTapGesture]) {
-		[mTapGestureActorsArray addObject:newActor];
+		[_tapGestureActorsArray addObject:newActor];
 	}
 
 	return newActor;
 }
 
--(void)addToDeleteArray:(id)actor
+-(void)addToDeleteArray:(FCActor*)actor
 {
-	[mDeleteList addObject:actor];
+	[_deleteList addObject:actor];
 }
 
--(void)removeActor:(id)actor
+-(void)removeActor:(FCActor*)actor
 {
 	if (((FCActor*)actor).Id) 
 	{
 		NSString* Id = ((FCActor*)actor).Id;
-		NSMutableSet* actorSet = [mActorIdDictionary valueForKey:Id];
-		[actorSet removeObject:actor];
+//		id actorSet = [_actorIdDictionary valueForKey:Id];
+//		[actorSet removeObject:actor];
+		[_actorIdDictionary removeObjectForKey:Id];
 	}
 
 	if ([actor needsUpdate]) {
-		[mUpdateActorsArray removeObject:actor];
+		[_updateActorsArray removeObject:actor];
 	}
 
 	if ([actor needsRender]) {
-		[mRenderActorsArray removeObject:actor];
+		[_renderActorsArray removeObject:actor];
 	}
 
 	if ([actor respondsToTapGesture]) {
-		[mTapGestureActorsArray removeObject:actor];
+		[_tapGestureActorsArray removeObject:actor];
 	}
 
-	[mAllActorsArray removeObject:actor];
+	[_allActorsArray removeObject:actor];
 	
-	[[mClassArraysDictionary valueForKey:NSStringFromClass([actor class])] removeObject:actor];	
+	[[_classArraysDictionary valueForKey:NSStringFromClass([actor class])] removeObject:actor];
+	
+	if (actor.name) {
+		[_actorNameDictionary removeObjectForKey:actor.name];
+	}
 }
 
 -(NSArray*)getActorsOfClass:(NSString*)actorClass
 {
-	return [mClassArraysDictionary valueForKey:actorClass];
+	return [_classArraysDictionary valueForKey:actorClass];
 }
 
--(NSMutableSet*)actorsWithId:(NSString *)Id
+-(id)actorWithId:(NSString *)Id
 {
-	return [mActorIdDictionary valueForKey:Id];
+	return [_actorIdDictionary valueForKey:Id];
 }
 
 #pragma mark -
@@ -452,14 +507,9 @@
 	[self removeAllActors];
 }
 
--(void)destroy
-{
-	[self removeAllActors];
-}
-
 -(void)removeAllActors
 {
-	NSArray* actorsArray = [NSArray arrayWithArray:mAllActorsArray];
+	NSArray* actorsArray = [NSArray arrayWithArray:_allActorsArray];
 	
 	for (FCActor* actor in actorsArray)
 	{
@@ -473,44 +523,39 @@
 {	
 	// remove actors on delete list
 	
-	for( FCActor* deleteActor in mDeleteList )
+	for( FCActor* deleteActor in _deleteList )
 	{
 		[self removeActor:deleteActor];
 	}
 
-	[mDeleteList removeAllObjects];
+	[_deleteList removeAllObjects];
 	
 	// update active actors
 	
-	for( FCActor* actor in mUpdateActorsArray )
+	for( FCActor* actor in _updateActorsArray )
 	{
 		[actor update:gameTime];
 	}
-}
-
--(NSArray*)getUpdateActors
-{
-	return mUpdateActorsArray;
 }
 
 #pragma mark - GameObjectRender methods
 
 -(NSArray*)renderGather
 {
-	return mRenderActorsArray;
+	return _renderActorsArray;
 }
 
 -(FCActor*)actorAtPosition:(FC::Vector2f)pos
 {
 	FCActor* ret = nil;
 	
-	NSMutableArray* candidates = [NSMutableArray arrayWithCapacity:[mTapGestureActorsArray count]];
+	NSMutableArray* candidates = [NSMutableArray arrayWithCapacity:[_tapGestureActorsArray count]];
 	
 	// Find candidates using radius checks
 	
-	for( FCActor* actor in mTapGestureActorsArray )
+	for( FCActor* actor in _tapGestureActorsArray )
 	{
-		FC::Vector2f actorPos = [actor getCenter];
+		FC::Vector2f actorPos = actor.position;
 		if ([actor radius] >= FC::Distance(actorPos, pos)) 
 		{
 			[candidates addObject:actor];
@@ -533,5 +578,5 @@
 
 @end
 
-#endif // TARGET_OS_IPHONE
+
 

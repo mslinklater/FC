@@ -21,9 +21,11 @@
  */
 
 #import "FCError.h"
-#import "FCLua.h"
 #import "FCConnect.h"
 
+#import "FCLua.h"
+
+#if defined (FC_LUA)
 static int lua_Fatal( lua_State* state )
 {
 	const char* location = lua_tostring(state, -2);
@@ -55,9 +57,11 @@ static int lua_Log( lua_State* state )
 	[FCError log:logString];	
 	return 0;
 }
+#endif // defined(FC_LUA)
 
 @implementation FCError
 
+#if defined (FC_LUA)
 +(void)registerLuaFunctions:(FCLuaVM*)lua
 {
 	[lua registerCFunction:lua_Fatal as:@"FCFatal"];
@@ -65,6 +69,7 @@ static int lua_Log( lua_State* state )
 	[lua registerCFunction:lua_Warning as:@"FCWarning"];
 	[lua registerCFunction:lua_Log as:@"FCLog"];
 }
+#endif
 
 #pragma mark - Fatal
 
@@ -82,6 +87,7 @@ static int lua_Log( lua_State* state )
 {
 	NSString* infoString = [NSString stringWithFormat:errorString, arg1];
 	NSString* output = [NSString stringWithFormat:@"FATAL - %@ - %@", location, infoString];
+
 #if TARGET_OS_IPHONE
 	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
 #endif
@@ -93,6 +99,7 @@ static int lua_Log( lua_State* state )
 {
 	NSString* infoString = [NSString stringWithFormat:errorString, arg1, arg2];
 	NSString* output = [NSString stringWithFormat:@"FATAL - %@ - %@", location, infoString];
+
 #if TARGET_OS_IPHONE
 	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
 #endif
@@ -105,6 +112,7 @@ static int lua_Log( lua_State* state )
 +(void)error:(NSString*)location info:(NSString*)errorString
 {
 	NSString* output = [NSString stringWithFormat:@"ERROR - %@ - %@", location, errorString];
+
 #if TARGET_OS_IPHONE
 	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
 #endif
@@ -115,6 +123,7 @@ static int lua_Log( lua_State* state )
 {
 	NSString* concat = [NSString stringWithFormat:errorString, arg1];
 	NSString* output = [NSString stringWithFormat:@"ERROR - %@ - %@", location, concat];
+
 #if TARGET_OS_IPHONE
 	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
 #endif
@@ -125,6 +134,7 @@ static int lua_Log( lua_State* state )
 {
 	NSString* concat = [NSString stringWithFormat:errorString, arg1, arg2];
 	NSString* output = [NSString stringWithFormat:@"ERROR - %@ - %@", location, concat];
+
 #if TARGET_OS_IPHONE
 	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
 #endif
@@ -146,6 +156,7 @@ static int lua_Log( lua_State* state )
 {
 	NSString* concat = [NSString stringWithFormat:warningString, arg1];
 	NSString* output = [NSString stringWithFormat:@"WARNING - %@ - %@", location, concat];
+
 #if TARGET_OS_IPHONE
 	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
 #endif
@@ -157,6 +168,7 @@ static int lua_Log( lua_State* state )
 +(void)log:(id)logItem
 {
 	NSString* output = [NSString stringWithFormat:@"%@", logItem];
+
 #if TARGET_OS_IPHONE
 	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
 #endif
@@ -166,6 +178,7 @@ static int lua_Log( lua_State* state )
 +(void)log1:(id)logItem arg1:(id)arg1
 {
 	NSString* output = [NSString stringWithFormat:logItem, arg1];
+
 #if TARGET_OS_IPHONE
 	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
 #endif
@@ -175,6 +188,7 @@ static int lua_Log( lua_State* state )
 +(void)log2:(id)logItem arg1:(id)arg1 arg2:(id)arg2
 {
 	NSString* output = [NSString stringWithFormat:logItem, arg1, arg2];
+
 #if TARGET_OS_IPHONE
 	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
 #endif
@@ -184,6 +198,7 @@ static int lua_Log( lua_State* state )
 +(void)log3:(id)logItem arg1:(id)arg1 arg2:(id)arg2 arg3:(id)arg3
 {
 	NSString* output = [NSString stringWithFormat:logItem, arg1, arg2, arg3];
+
 #if TARGET_OS_IPHONE
 	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
 #endif

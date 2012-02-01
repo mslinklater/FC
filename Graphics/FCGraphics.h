@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined(FC_GRAPHICS)
+
 #include "PVRTGlobal.h"
 #include "PVRTTexture.h"
 
@@ -38,3 +40,5 @@
 #import "FCTextureFile.h"
 #import "FCTextureManager.h"
 #import "FCVertexTypes.h"
+
+#endif

@@ -60,7 +60,11 @@
 
 #endif
 
+#if defined (FC_LUA)
 @interface FCError : NSObject <FCLuaClass> {
+#else
+@interface FCError : NSObject {
+#endif
 
 }
 //+(void)fatal:(NSString*)location info:(NSString*)errorString;

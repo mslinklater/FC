@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined (FC_GRAPHICS)
 
 #import "FCError.h"
 #import "FCGLHelpers.h"
@@ -315,4 +315,4 @@ void FCGLLogState( void )
 	FC_LOG1(@"Max Texture Size:%@", entry );
 }
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_GRAPHICS)

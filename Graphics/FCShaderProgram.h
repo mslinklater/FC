@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined(FC_GRAPHICS)
 
 #import <Foundation/Foundation.h>
 #import <OpenGLES/ES2/gl.h>
@@ -31,14 +31,18 @@
 
 @interface FCShaderProgram : NSObject
 {
-	NSDictionary* __weak _attributes;
-	NSDictionary* __weak _uniforms;
+	GLuint _glHandle;
+	FCShader* _vertexShader;
+	FCShader* _fragmentShader;
+	NSDictionary* _attributes;
+	NSDictionary* _uniforms;
+	FCVertexDescriptor* _requiredVertexDescriptor;
 }
 @property(nonatomic, readonly) GLuint glHandle;
-@property(weak, nonatomic, readonly) FCShader* vertexShader;
-@property(weak, nonatomic, readonly) FCShader* fragmentShader;
-@property(nonatomic, readonly) NSDictionary* uniforms;
-@property(nonatomic, readonly) NSDictionary* attributes;
+@property(nonatomic, strong, readonly) FCShader* vertexShader;
+@property(nonatomic, strong, readonly) FCShader* fragmentShader;
+@property(nonatomic, strong, readonly) NSDictionary* uniforms;
+@property(nonatomic, strong, readonly) NSDictionary* attributes;
 @property(nonatomic, strong) FCVertexDescriptor* requiredVertexDescriptor;
 
 -(id)initWithVertex:(FCShader*)vertexShader andFragment:(FCShader*)fragmentShader;
@@ -51,5 +55,5 @@
 
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_GRAPHICS)
 

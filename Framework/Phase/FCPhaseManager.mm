@@ -22,6 +22,8 @@
 
 #import "FCPhaseManager.h"
 #import "FCError.h"
+
+#if defined (FC_LUA)
 #import "FCLuaVM.h"
 
 static int lua_AddPhaseToQueue( lua_State* _state )
@@ -50,6 +52,8 @@ static int lua_DeactivatePhase( lua_State* _state )
 	return 0;	
 }
 
+#endif // defined(FC_LUA)
+
 @implementation FCPhaseManager
 @synthesize rootPhase = _rootPhase;
 @synthesize phaseQueue = _phaseQueue;
@@ -67,12 +71,14 @@ static int lua_DeactivatePhase( lua_State* _state )
 	return pInstance;
 }
 
+#if defined (FC_LUA)
 +(void)registerLuaFunctions:(FCLuaVM *)lua
 {	
 	[lua createGlobalTable:@"FCPhaseManager"];
 	[lua registerCFunction:lua_AddPhaseToQueue as:@"FCPhaseManager.AddPhaseToQueue"];
 	[lua registerCFunction:lua_DeactivatePhase as:@"FCPhaseManager.DeactivatePhase"];
 }
+#endif
 
 -(id)init
 {
@@ -143,17 +149,6 @@ static int lua_DeactivatePhase( lua_State* _state )
 			case kFCPhaseUpdateDeactivate:
 			{
 				[self deactivatePhase:phase.name];
-//				FCPhase* freshPhase = [_phaseQueue objectAtIndex:0];
-//				[_activePhases addObject:freshPhase];
-//				[_phaseQueue removeObjectAtIndex:0];				
-//				[freshPhase willActivate];
-//				
-//				freshPhase.state = kFCPhaseStateActivating;
-//				
-//				[phase willDeactivate];
-//				
-//				phase.state = kFCPhaseStateDeactivating;
-
 			}
 			break;
 			default:

@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined (FC_LUA)
+
 #import "FCLuaVM.h"
 #import "FCLuaMemory.h"
 #import "FCLuaCommon.h"
@@ -267,17 +269,48 @@ static int panic (lua_State *L) {
 
 -(void)createGlobalTable:(NSString*)tableName
 {
-	// need table descent
+	NSArray* components = [tableName componentsSeparatedByString:@"."];
+	
+	NSUInteger numComponents = [components count];
+	
+	for (NSUInteger i = 0; i < numComponents - 1; i++) {
+		if (i == 0) {
+			lua_getglobal(_state, [[components objectAtIndex:i] UTF8String]);
+		} else {
+			lua_getfield(_state, -1, [[components objectAtIndex:i] UTF8String]);
+		}
+	}
 	
 	lua_newtable(_state);
-	lua_setglobal(_state, [tableName UTF8String]);
+	
+	if (numComponents == 1) {
+		lua_setglobal(_state, [[components objectAtIndex:numComponents - 1] UTF8String]);
+	} else {
+		lua_setfield(_state, -2, [[components objectAtIndex:numComponents - 1] UTF8String]);
+	}
 }
 
 -(void)destroyGlobalTable:(NSString*)tableName
 {
-	// need table descent
+	NSArray* components = [tableName componentsSeparatedByString:@"."];
+	
+	NSUInteger numComponents = [components count];
+	
+	for (NSUInteger i = 0; i < numComponents - 1; i++) {
+		if (i == 0) {
+			lua_getglobal(_state, [[components objectAtIndex:i] UTF8String]);
+		} else {
+			lua_getfield(_state, -1, [[components objectAtIndex:i] UTF8String]);
+		}
+	}
+	
 	lua_pushnil(_state);
-	lua_setglobal(_state, [tableName UTF8String]);
+	
+	if (numComponents == 1) {
+		lua_setglobal(_state, [[components objectAtIndex:numComponents - 1] UTF8String]);
+	} else {
+		lua_setfield(_state, -2, [[components objectAtIndex:numComponents - 1] UTF8String]);
+	}
 }
 
 #pragma mark - Getters
@@ -294,7 +327,7 @@ static int panic (lua_State *L) {
 	return lua_tointeger(_state, -1);
 }
 
-#if TARGET_OS_IPHONE
+
 -(UIColor*)globalColor:(NSString*)name
 {
 	// need table descent
@@ -336,7 +369,7 @@ static int panic (lua_State *L) {
 	lua_pop(_state, 1);
 	return [UIColor colorWithRed:red green:green blue:blue alpha:alpha];
 }
-#endif
+
 
 #pragma mark - Setters
 
@@ -381,7 +414,7 @@ static int panic (lua_State *L) {
 	lua_pop(_state, (int)(numComponents - 1));
 }
 
-#if TARGET_OS_IPHONE
+
 -(void)setGlobal:(NSString *)global color:(UIColor*)color
 {
 	// need table descent
@@ -400,7 +433,7 @@ static int panic (lua_State *L) {
 	lua_setfield(_state, -2, "a");
 	lua_setglobal(_state, [global UTF8String]);
 }
-#endif
+
 
 -(void)call:(NSString*)func required:(BOOL)required withSig:(NSString*)sig, ...
 {
@@ -562,3 +595,6 @@ endargs:
 }
 
 @end
+
+#endif // defined(FC_LUA)
+

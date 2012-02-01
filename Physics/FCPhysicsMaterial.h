@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined (FC_PHYSICS)
+
 #import <Foundation/Foundation.h>
 
 @interface FCPhysicsMaterial : NSObject {
@@ -33,3 +35,5 @@
 @property(nonatomic) float restitution;
 @property(nonatomic) float friction;
 @end
+
+#endif // defined(FC_PHYSICS)

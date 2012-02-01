@@ -20,8 +20,6 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
-
 #import <Foundation/Foundation.h>
 #import "FCDevice.h"
 
@@ -41,4 +39,3 @@
 
 @end
 
-#endif // TARGET_OS_IPHONE

@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined(FC_GRAPHICS)
 
 #import <Foundation/Foundation.h>
 #import <OpenGLES/EAGL.h>
@@ -54,4 +54,4 @@ extern GLint FCGLCapsMaxTextureSize( void );
 #define GLCHECK
 #endif
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_GRAPHICS)

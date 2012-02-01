@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined (FC_LUA)
+
 #import <QuartzCore/QuartzCore.h>
 
 #import "FCLua.h"
@@ -60,8 +62,6 @@ static unsigned int common_newThread( lua_State* _state )
 
 static int lua_NewThread( lua_State* _state )
 {
-	FCLua_DumpStack(_state);
-	
 	if (lua_isfunction(_state, 1))
 	{
 		unsigned int threadId = common_newThread( _state );
@@ -212,3 +212,5 @@ static int lua_KillThread( lua_State* state )
 #pragma mark - Threads
 
 @end
+
+#endif // defined(FC_LUA)

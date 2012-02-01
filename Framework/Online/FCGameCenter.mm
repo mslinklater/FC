@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if TARGET_OS_IPHONE
+
 #import <GameKit/GameKit.h>
 #import "FCGameCenter.h"
 #import "FCLua.h"
@@ -45,3 +47,5 @@
 }
 
 @end
+
+#endif // TARGET_OS_IPHONE

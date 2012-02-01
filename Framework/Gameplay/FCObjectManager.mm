@@ -20,7 +20,55 @@
  THE SOFTWARE.
  */
 
-//#import "FCLeaderboardView.h"
-#import "FCQuartzButton.h"
-#import "FCKenBurnsView.h"
-#import "FCPerfbarView.h"
+#import "FCObjectManager.h"
+#import "FCXMLData.h"
+#import "FCTypes.h"
+
+static FCObjectManager* s_pInstance;
+
+#pragma mark - Lua Interface
+
+@implementation FCObjectManager
+
+@synthesize nulls = _nulls;
+
++(FCObjectManager*)instance
+{
+	if (!s_pInstance) {
+		s_pInstance = [[FCObjectManager alloc] init];
+	}
+	return s_pInstance;
+}
+
+-(id)init
+{
+	self = [super init];
+	if (self) {
+		_nulls = [NSMutableDictionary dictionary];
+	}
+	return self;
+}
+
+-(void)addObjectsFromResource:(FCResource*)resource
+{
+	// add nulls
+	NSArray* gameplayObjects = [resource.xmlData arrayForKeyPath:@"fcr.gameplay.game"];
+
+	for( NSDictionary* obj in gameplayObjects )
+	{
+		NSString* objType = [obj valueForKey:kFCKeyType];
+		
+		if ([objType isEqualToString:kFCKeyNull]) {
+			NSString* nullName = [[obj valueForKey:kFCKeyName] stringByReplacingOccurrencesOfString:@"_g_" withString:@""];
+			[_nulls setValue:obj forKey:nullName];
+		}
+		// etc
+	}
+}
+
+-(void)reset
+{
+	_nulls = [NSMutableDictionary dictionary];
+}
+
+@end

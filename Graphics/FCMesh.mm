@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined (FC_GRAPHICS)
 
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/gl.h>
@@ -62,7 +62,7 @@
 		_vertexDescriptor = vertexDescriptor;
 		_pVertexBuffer = 0;
 		_pIndexBuffer = 0;
-		self.shaderProgram = [[FCRenderer instance].shaderManager program:shaderName];
+		_shaderProgram = [[FCShaderManager instance] program:shaderName];
 	}
 	return self;
 }
@@ -168,4 +168,4 @@
 
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_GRAPHICS)

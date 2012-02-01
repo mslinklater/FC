@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined (FC_PHYSICS)
 
 #import <Box2D/Box2D.h>
 
@@ -38,10 +38,14 @@
 
 @implementation FCPhysics2DBody
 
--(void)setWorld:(b2World*)world
-{
-	pWorld = world;
-}
+@synthesize world = _world;
+@synthesize body = _body;
+//@synthesize rotation = _rotation;
+
+//-(void)setWorld:(b2World*)world
+//{
+//	pWorld = world;
+//}
 
 -(id)initWithDef:(FCPhysics2DBodyDef*)def
 {
@@ -56,7 +60,7 @@
 
 -(void)dealloc
 {
-	pWorld->DestroyBody(pBody);
+	_world->DestroyBody(_body);
 }
 
 -(void)createBodyFromDef:(FCPhysics2DBodyDef *)def
@@ -89,9 +93,9 @@
 		b2def.type = b2_dynamicBody;
 	}
 	
-	pWorld = def.world;
+	_world = def.world;
 	
-	pBody = pWorld->CreateBody( &b2def );
+	_body = _world->CreateBody( &b2def );
 }
 
 -(void)createFixturesFromDef:(FCPhysics2DBodyDef*)def
@@ -108,23 +112,20 @@
 	
 	for (NSDictionary* fixture in fixtures) 
 	{
-		NSAssert( [fixture valueForKey:kFCKeyType], @"undefined fixture type");
-		
 		NSString* type = [fixture valueForKey:kFCKeyType];
+		FC_ASSERT(type);
 
 		b2FixtureDef fixtureDef;
 		
-		NSString* material = [fixture valueForKey:@"material"];
+		NSString* materialString = [fixture valueForKey:kFCKeyMaterial];
+		FC_ASSERT(materialString);
 
-		NSAssert(material, @"ERROR - fixture without a material");
+		FCPhysicsMaterial* material = [[FCPhysics instance].materials valueForKey:materialString];
+		FC_ASSERT(material);
 		
-		NSDictionary* materialDict = [[[FCPhysics instance] materials] valueForKey:material];
-
-		NSAssert(materialDict, @"nil materialDict");
-		
-		fixtureDef.density = [[materialDict valueForKey:kFCKeyDensity] floatValue];
-		fixtureDef.friction = [[materialDict valueForKey:kFCKeyFriction] floatValue];
-		fixtureDef.restitution = [[materialDict valueForKey:kFCKeyRestitution] floatValue];
+		fixtureDef.density = material.density;
+		fixtureDef.friction = material.friction;
+		fixtureDef.restitution = material.restitution;
 		fixtureDef.userData = (__bridge void*)def.actor;
 				
 		if ([type isEqualToString:kFCKeyCircle]) 
@@ -136,7 +137,7 @@
 			circlePos.y = [[fixture valueForKey:kFCKeyOffsetY] floatValue];
 			shape.m_p = circlePos;
 			fixtureDef.shape = &shape;
-			pBody->CreateFixture( &fixtureDef );
+			_body->CreateFixture( &fixtureDef );
 		}
 		else if ([type isEqualToString:kFCKeyRectangle]) 
 		{
@@ -152,7 +153,7 @@
 						   rectanglePos, rectangleAngle);
 			
 			fixtureDef.shape = &shape;
-			pBody->CreateFixture( &fixtureDef );
+			_body->CreateFixture( &fixtureDef );
 		}
 		else if ([type isEqualToString:kFCKeyPolygon]) 
 		{
@@ -177,7 +178,7 @@
 			
 			
 			fixtureDef.shape = &shape;
-			pBody->CreateFixture( &fixtureDef );
+			_body->CreateFixture( &fixtureDef );
 			
 			delete [] verts;
 		}
@@ -190,30 +191,30 @@
 //	[physicsData release];
 }
 
--(b2Body*)b2Body
-{
-	return pBody;
-}
+//-(b2Body*)b2Body
+//{
+//	return pBody;
+//}
 
 #pragma mark - Position
 
 -(FC::Vector2f)position
 {
-	const b2Vec2 pos = pBody->GetPosition();
+	const b2Vec2 pos = _body->GetPosition();
 
 	return FC::Vector2f(pos.x, pos.y);
 }
 
 -(void)setPosition:(FC::Vector2f)newPos
 {
-	pBody->SetTransform( b2Vec2( newPos.x, newPos.y ), 0.0f );
+	_body->SetTransform( b2Vec2( newPos.x, newPos.y ), 0.0f );
 }
 
 #pragma mark - Velocity
 
 -(FC::Vector2f)linearVelocity
 {
-	b2Vec2 vel = pBody->GetLinearVelocity();
+	b2Vec2 vel = _body->GetLinearVelocity();
 	return FC::Vector2f( vel.x, vel.y );
 }
 
@@ -222,7 +223,7 @@
 	b2Vec2 vel;
 	vel.x = newVel.x;
 	vel.y = newVel.y;
-	pBody->SetLinearVelocity( vel );
+	_body->SetLinearVelocity( vel );
 }
 
 -(void)applyImpulse:(FC::Vector2f)impulse atWorldPos:(FC::Vector2f)pos
@@ -235,26 +236,26 @@
 	b2Pos.x = pos.x;
 	b2Pos.y = pos.y;
 	
-	pBody->ApplyLinearImpulse( b2Imp, b2Pos );
+	_body->ApplyLinearImpulse( b2Imp, b2Pos );
 }
 
 -(float)rotation
 {
-	return pBody->GetAngle();
+	return _body->GetAngle();
 }
 
 #pragma mark - Create Joints
 
 -(void)createRevoluteJointWith:(FCPhysics2DBody*)anchorBody atOffset:(FC::Vector2f)anchorOffset motorSpeed:(float)motorSpeed maxTorque:(float)maxToque lowerAngle:(float)lower upperAngle:(float)upper
 {
-	b2Body* pAnchorB2Body = [anchorBody b2Body];
+	b2Body* pAnchorB2Body = anchorBody.body;
 	
 	b2Vec2 offset;	//= pAnchorB2Body->GetWorldCenter();
 	offset.x = anchorOffset.x;
 	offset.y = anchorOffset.y;
 	
 	b2RevoluteJointDef jointDef;
-	jointDef.Initialize(pAnchorB2Body, pBody, offset);
+	jointDef.Initialize(pAnchorB2Body, _body, offset);
 	
 	if ((motorSpeed != kFCInvalidFloat) && (maxToque != kFCInvalidFloat)) {
 		jointDef.enableMotor = true;
@@ -268,19 +269,19 @@
 		jointDef.upperAngle = upper;
 	}
 	
-	pWorld->CreateJoint(&jointDef);
+	_world->CreateJoint(&jointDef);
 }
 
 -(void)createPrismaticJointWith:(FCPhysics2DBody*)anchorBody axis:(FC::Vector2f)axis motorSpeed:(float)motorSpeed maxForce:(float)maxForce lowerTranslation:(float)lower upperTranslation:(float)upper
 {
-	b2Body* pAnchorB2Body = [anchorBody b2Body];
+	b2Body* pAnchorB2Body = anchorBody.body;
 
 	b2Vec2 b2axis;
 	b2axis.x = axis.x;
 	b2axis.y = axis.y;
 	
 	b2PrismaticJointDef jointDef;
-	jointDef.Initialize( pAnchorB2Body, pBody, pAnchorB2Body->GetWorldCenter(), b2axis);
+	jointDef.Initialize( pAnchorB2Body, _body, pAnchorB2Body->GetWorldCenter(), b2axis);
 	
 	if ((motorSpeed != kFCInvalidFloat) && (maxForce != kFCInvalidFloat)) 
 	{
@@ -296,12 +297,12 @@
 		jointDef.upperTranslation = upper;
 	}
 
-	pWorld->CreateJoint( &jointDef );
+	_world->CreateJoint( &jointDef );
 }
 
 -(void)createDistanceJointWith:(FCPhysics2DBody*)anchorBody atOffset:(FC::Vector2f)offset anchorOffset:(FC::Vector2f)anchorOffset
 {
-	b2Body* pAnchorB2Body = [anchorBody b2Body];
+	b2Body* pAnchorB2Body = anchorBody.body;
 	
 	b2Vec2 b2AnchorOffset;	//= pAnchorB2Body->GetWorldCenter();
 	b2AnchorOffset.x = anchorOffset.x;
@@ -312,26 +313,26 @@
 	b2Offset.y = offset.y;
 
 	b2DistanceJointDef jointDef;
-	jointDef.Initialize(pBody, pAnchorB2Body, b2Offset, b2AnchorOffset);
+	jointDef.Initialize(_body, pAnchorB2Body, b2Offset, b2AnchorOffset);
 	jointDef.collideConnected = true;
-	pWorld->CreateJoint(&jointDef);
+	_world->CreateJoint(&jointDef);
 }
 
 -(void)createPulleyJointWith:(FCPhysics2DBody*)otherBody anchor1:(FC::Vector2f)anchor1 anchor2:(FC::Vector2f)anchor2 groundAnchor1:(FC::Vector2f)ground1 groundAnchor2:(FC::Vector2f)ground2 ratio:(float)ratio maxLength1:(float)maxLength1 maxLength2:(float)maxLength2
 {
-	b2Body* pBody2 = [otherBody b2Body];
+	b2Body* pBody2 = otherBody.body;
 	
 	b2PulleyJointDef jointDef;
 	
 	b2Vec2 b2Anchor1( anchor1.x, anchor1.y );
-	b2Anchor1 += pBody->GetWorldCenter();
+	b2Anchor1 += _body->GetWorldCenter();
 	b2Vec2 b2Anchor2( anchor2.x, anchor2.y );
 	b2Anchor2 += pBody2->GetWorldCenter();
 	
 	b2Vec2 b2Ground1( ground1.x, ground1.y );
 	b2Vec2 b2Ground2( ground2.x, ground2.y );
 	
-	jointDef.Initialize( pBody, pBody2, b2Ground1, b2Ground2, b2Anchor1, b2Anchor2, ratio );
+	jointDef.Initialize( _body, pBody2, b2Ground1, b2Ground2, b2Anchor1, b2Anchor2, ratio );
 	
 	if (maxLength1 != kFCInvalidFloat) {
 		jointDef.maxLengthA = maxLength1;
@@ -340,7 +341,7 @@
 		jointDef.maxLengthB = maxLength2;
 	}
 
-	pWorld->CreateJoint( &jointDef );	
+	_world->CreateJoint( &jointDef );	
 }
 
 #pragma mark - Debugging
@@ -353,4 +354,4 @@
 
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_PHYSICS)

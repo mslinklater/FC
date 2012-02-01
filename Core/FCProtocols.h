@@ -40,10 +40,10 @@
 
 @end
 
-@protocol FCGameObjectLifetime
--(void)reset;
--(void)destroy;
-@end
+//@protocol FCGameObjectLifetime
+//-(void)reset;
+//-(void)destroy;
+//@end
 
 @protocol FCGameObjectUpdate
 -(void)update:(float)realTime gameTime:(float)gameTime;

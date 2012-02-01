@@ -20,14 +20,19 @@
  THE SOFTWARE.
  */
 
+
+
 #import "FCViewManager.h"
 #import "FCError.h"
-#import "FCLua.h"
-#import "FCLuaCommon.h"
 #import "FCDevice.h"
 #import "FCApp.h"
 
 #pragma mark - Lua Interface
+
+#if defined (FC_LUA)
+
+#import "FCLua.h"
+#import "FCLuaCommon.h"
 
 static int lua_SetText( lua_State* _state )
 {
@@ -227,6 +232,8 @@ static int lua_RemoveFromGroup( lua_State* _state )
 	return 0;
 }
 
+#endif // defined(FC_LUA)
+
 //----------------------------------------------------------------------------------------------------------------------
 
 @implementation FCViewManager
@@ -246,6 +253,7 @@ static int lua_RemoveFromGroup( lua_State* _state )
 	return pInstance;
 }
 
+#if defined (FC_LUA)
 +(void)registerLuaFunctions:(FCLuaVM *)lua
 {
 	[lua createGlobalTable:@"FCViewManager"];
@@ -260,6 +268,7 @@ static int lua_RemoveFromGroup( lua_State* _state )
 	[lua registerCFunction:lua_AddToGroup as:@"FCViewManager.AddToGroup"];
 	[lua registerCFunction:lua_RemoveFromGroup as:@"FCViewManager.RemoveFromGroup"];
 }
+#endif // defined(FC_LUA)
 
 #pragma mark - Lifetime
 
@@ -273,7 +282,11 @@ static int lua_RemoveFromGroup( lua_State* _state )
 	return self;
 }
 
+#if TARGET_OS_IPHONE
 -(void)add:(UIView*)view as:(NSString*)name
+#else
+-(void)add:(NSView*)view as:(NSString*)name
+#endif
 {
 	FC_ASSERT([_viewDictionary valueForKey:name] == nil);
 	
@@ -347,20 +360,24 @@ static int lua_RemoveFromGroup( lua_State* _state )
 
 -(void)sendViewToBack:(NSString*)name
 {
+#if TARGET_OS_IPHONE
 	UIView* thisView = [_viewDictionary valueForKey:name];
 	
 	FC_ASSERT(thisView);
 	
 	[_rootView sendSubviewToBack:thisView];
+#endif
 }
 
 -(void)sendViewToFront:(NSString*)name
 {
+#if TARGET_OS_IPHONE
 	UIView* thisView = [_viewDictionary valueForKey:name];
 	
 	FC_ASSERT(thisView);
 	
 	[_rootView bringSubviewToFront:thisView];
+#endif
 }
 
 -(void)makeView:(NSString*)name inFrontOf:(NSString*)relativeName
@@ -373,7 +390,11 @@ static int lua_RemoveFromGroup( lua_State* _state )
 	
 }
 
+#if TARGET_OS_IPHONE
 -(CGRect)rectForRect:(CGRect)rect containedInView:(UIView*)view;
+#else
+-(CGRect)rectForRect:(CGRect)rect containedInView:(NSView*)view;
+#endif
 {
 	CGRect scaledFrame;
 	scaledFrame.origin.x = view.frame.size.width * rect.origin.x;			
@@ -389,43 +410,71 @@ static int lua_RemoveFromGroup( lua_State* _state )
 
 -(void)setView:(NSString*)viewName text:(NSString*)text
 {
+#if TARGET_OS_IPHONE
 	UIView* thisView = [_viewDictionary valueForKey:viewName];
+#else
+	NSView* thisView = [_viewDictionary valueForKey:viewName];
+#endif
 
 	FC_ASSERT( thisView );
-	
-	if ([thisView respondsToSelector:@selector(setText:)]) {
+
+#if defined (DEBUG)
+	if ([thisView respondsToSelector:@selector(setText:)]) 
+#endif
+	{
 		NSMethodSignature* sig = [[thisView class] instanceMethodSignatureForSelector:@selector(setText:)];		
 		NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:sig];
 		[invocation setSelector:@selector(setText:)];
 		[invocation setTarget:thisView];
 		[invocation setArgument:&text atIndex:2];
 		[invocation invoke];
-	} else {
+	} 
+#if defined (DEBUG)
+	else 
+	{
 		FC_FATAL1(@"Sending 'setText' to a view which does not respond to setText - %@", thisView);
 	}
+#endif
 }
 
+#if TARGET_OS_IPHONE
 -(void)setView:(NSString*)viewName textColor:(UIColor*)color
+#else
+-(void)setView:(NSString*)viewName textColor:(NSColor*)color
+#endif
 {
-	UIView* thisView = [_viewDictionary valueForKey:viewName];
+	NSArray* components = [viewName componentsSeparatedByString:@","];
 	
-	FC_ASSERT( thisView );
-	
-	if ([thisView respondsToSelector:@selector(setTextColor:)]) {
-		NSMethodSignature* sig = [[thisView class] instanceMethodSignatureForSelector:@selector(setTextColor:)];		
-		NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:sig];
-		[invocation setSelector:@selector(setTextColor:)];
-		[invocation setTarget:thisView];
-		[invocation setArgument:&color atIndex:2];
-		[invocation invoke];
-	} else {
-		FC_FATAL1(@"Sending 'setTextColor' to a view which does not respond to setTextColor - %@", thisView);
-	}	
+	for( NSString* name in components )
+	{
+#if TARGET_OS_IPHONE
+		UIView* thisView = [_viewDictionary valueForKey:[name stringByReplacingOccurrencesOfString:@" " withString:@""]];
+#else
+		NSView* thisView = [_viewDictionary valueForKey:[name stringByReplacingOccurrencesOfString:@" " withString:@""]];
+#endif
+		
+		FC_ASSERT( thisView );
+		
+		if ([thisView respondsToSelector:@selector(setTextColor:)]) {
+			NSMethodSignature* sig = [[thisView class] instanceMethodSignatureForSelector:@selector(setTextColor:)];		
+			NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:sig];
+			[invocation setSelector:@selector(setTextColor:)];
+			[invocation setTarget:thisView];
+			[invocation setArgument:&color atIndex:2];
+			[invocation invoke];
+		} else {
+			FC_FATAL1(@"Sending 'setTextColor' to a view which does not respond to setTextColor - %@", thisView);
+		}	
+	}
 }
 
 -(void)setView:(NSString*)viewName frame:(CGRect)frame over:(float)seconds
 {
+#if TARGET_OS_IPHONE
 	UIView* thisView = [_viewDictionary valueForKey:viewName];
+#else
+	NSView* thisView = [_viewDictionary valueForKey:viewName];
+#endif
 	
 	FC_ASSERT( thisView );
 	
@@ -451,6 +500,7 @@ static int lua_RemoveFromGroup( lua_State* _state )
 			scaledFrame.size.height = mainViewSize.height * frame.size.height;			
 		}
 		
+#if TARGET_OS_IPHONE
 		[UIView animateWithDuration:seconds animations:^{		
 			NSMethodSignature* sig = [[thisView class] instanceMethodSignatureForSelector:@selector(setFrame:)];		
 			NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:sig];
@@ -459,6 +509,7 @@ static int lua_RemoveFromGroup( lua_State* _state )
 			[invocation setArgument:(void*)&scaledFrame atIndex:2];
 			[invocation invoke];
 		}];
+#endif
 	} else {
 		FC_FATAL1(@"Sending 'setFrame' to a view which does not respond to setFrame - %@", thisView);
 	}
@@ -467,7 +518,11 @@ static int lua_RemoveFromGroup( lua_State* _state )
 
 -(CGRect)getViewFrame:(NSString*)viewName
 {
+#if TARGET_OS_IPHONE
 	UIView* thisView = [_viewDictionary valueForKey:viewName];
+#else
+	NSView* thisView = [_viewDictionary valueForKey:viewName];
+#endif
 	
 	FC_ASSERT(thisView);
 	
@@ -480,12 +535,17 @@ static int lua_RemoveFromGroup( lua_State* _state )
 	
 	for( NSString* name in components )
 	{
+#if TARGET_OS_IPHONE
 		UIView* thisView = [_viewDictionary valueForKey:[name stringByReplacingOccurrencesOfString:@" " withString:@""]];
+#else
+		NSView* thisView = [_viewDictionary valueForKey:[name stringByReplacingOccurrencesOfString:@" " withString:@""]];
+#endif
 		
 		FC_ASSERT( thisView );
 		
 		if ([thisView respondsToSelector:@selector(setAlpha:)]) 
 		{
+#if TARGET_OS_IPHONE
 			[UIView animateWithDuration:seconds animations:^{		
 				NSMethodSignature* sig = [[thisView class] instanceMethodSignatureForSelector:@selector(setAlpha:)];		
 				NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:sig];
@@ -494,6 +554,7 @@ static int lua_RemoveFromGroup( lua_State* _state )
 				[invocation setArgument:(void*)&alpha atIndex:2];
 				[invocation invoke];
 			}];
+#endif
 		} else {
 			FC_FATAL1(@"Sending 'setAlpha' to a view which does not respond to setAlpha - %@", thisView);
 		}			
@@ -502,7 +563,11 @@ static int lua_RemoveFromGroup( lua_State* _state )
 
 -(void)setView:(NSString*)viewName onSelectLuaFunc:(NSString*)funcName
 {
+#if TARGET_OS_IPHONE
 	UIView* thisView = [_viewDictionary valueForKey:viewName];
+#else
+	NSView* thisView = [_viewDictionary valueForKey:viewName];
+#endif
 	
 	FC_ASSERT( thisView );
 	
@@ -524,3 +589,6 @@ static int lua_RemoveFromGroup( lua_State* _state )
 #pragma mark - View Management
 
 @end
+
+
+

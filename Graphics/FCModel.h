@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined(FC_GRAPHICS)
 
 #import <Foundation/Foundation.h>
 #import "Maths/FCMaths.h"
@@ -45,8 +45,8 @@
 -(void)render;
 
 -(id)initWithModel:(NSDictionary*)modelDict resource:(FCResource*)res;
--(id)initWithPhysicsBody:(NSDictionary*)bodyDict;
+-(id)initWithPhysicsBody:(NSDictionary*)bodyDict;// actorXOffset:(float)actorX actorYOffset:(float)actorY;
 
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_GRAPHICS)

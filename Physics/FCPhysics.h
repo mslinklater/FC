@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined(FC_PHYSICS)
 
 #import <Foundation/Foundation.h>
 
@@ -30,21 +30,19 @@
 #import "FCPhysics3D.h"
 #import "FCPhysicsMaterial.h"
 
-@interface FCPhysics : NSObject <FCGameObjectLifetime, FCGameObjectUpdate> {
+@interface FCPhysics : NSObject <FCGameObjectUpdate> {
 	FCPhysics2D* _twoD;
 	NSMutableDictionary* _materials;
 }
 @property(strong, nonatomic, readonly) FCPhysics2D* twoD;
-//@property(weak, nonatomic, readonly) FCPhysics3D* threeD;
 @property(nonatomic, strong) NSMutableDictionary* materials;
 
 +(FCPhysics*)instance;
 
--(void)create2DComponent;
--(void)create3DComponent;
+-(void)create2DSystem;
 
 -(void)reset;
--(void)addMaterial:(FCPhysicsMaterial*)material;
+-(void)setMaterial:(FCPhysicsMaterial*)material;
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_PHYSICS)

@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined(FC_GRAPHICS)
 
 #import <Foundation/Foundation.h>
 #import <OpenGLES/ES2/gl.h>
@@ -30,10 +30,12 @@ enum eShaderType {
 	kShaderTypeVertex
 };
 
-@interface FCShader : NSObject
+@interface FCShader : NSObject {
+	GLuint _glHandle;
+}
 @property(nonatomic, readonly) GLuint glHandle;
 
 -(id)initType:(eShaderType)type withSource:(NSString*)source;
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_GRAPHICS)

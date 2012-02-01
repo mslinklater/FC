@@ -22,8 +22,15 @@
 
 #import <Foundation/Foundation.h>
 
+#if defined (FC_LUA)
 #import "FCLuaClass.h"
+#endif
 
+#if defined (FC_LUA)
 @interface FCBuild : NSObject <FCLuaClass>
+#else
+@interface FCBuild : NSObject
+#endif
 
 @end
+

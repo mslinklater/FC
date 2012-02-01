@@ -28,8 +28,11 @@ NSString* kFCKeyAtlas = @"atlas";
 NSString* kFCKeyName = @"name";
 NSString* kFCKeySize = @"size";
 
+NSString* kFCKeyNull = @"null";
+
 // Physics
 
+NSString* kFCKeyMaterial = @"material";
 NSString* kFCKeyPhysics = @"physics";
 NSString* kFCKeyDensity = @"density";
 NSString* kFCKeyFriction = @"friction";
@@ -78,6 +81,9 @@ NSString* kFCKeyOffset = @"offset";
 NSString* kFCKeyOffsetX = @"offsetX";
 NSString* kFCKeyOffsetY = @"offsetY";
 NSString* kFCKeyOffsetZ = @"offsetZ";
+NSString* kFCKeyRotationX = @"rotationX";
+NSString* kFCKeyRotationY = @"rotationY";
+NSString* kFCKeyRotationZ = @"rotationZ";
 NSString* kFCKeyAngle = @"angle";
 NSString* kFCKeyRadius = @"radius";
 NSString* kFCKeyShape = @"shape";
@@ -126,6 +132,8 @@ NSString* kFCKeyOutput = @"output";
 NSString* kFCKeyBinaryPayload = @"binarypayload";
 NSString* kFCKeyTextures = @"textures";
 NSString* kFCKeyGameplay = @"gameplay";
+NSString* kFCKeyGame = @"game";
 NSString* kFCKeyModels = @"models";
 NSString* kFCKeyBuffers = @"buffers";
 NSString* kFCKeyMesh = @"mesh";
+NSString* kFCKeyCamera = @"camera";

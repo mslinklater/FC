@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined (FC_PHYSICS)
+
 #import "FCPhysics2DBodyDef.h"
 #import "FCKeys.h"
 
@@ -28,26 +30,27 @@
 @synthesize isStatic = _isStatic;
 @synthesize shapeDef = _shapeDef;
 @synthesize canSleep = _canSleep;
+@synthesize linearDamping = _linearDamping;
 @synthesize world = _world;
 @synthesize actor = _actor;
-@synthesize linearDamping = _linearDamping;
+@synthesize position = _position;
 
-
--(FC::Vector2f)position
-{
-	return mPosition;
-}
-
--(void)setPosition:(FC::Vector2f)newPos
-{
-	mPosition = newPos;
-}
+//-(FC::Vector2f)position
+//{
+//	return mPosition;
+//}
+//
+//-(void)setPosition:(FC::Vector2f)newPos
+//{
+//	mPosition = newPos;
+//}
 
 +(FCPhysics2DBodyDef*)defaultDef
 {
 	FCPhysics2DBodyDef* def = [FCPhysics2DBodyDef alloc];
 	
-	[def setPosition:FC::Vector2f(0.0f, 0.0f)];
+//	[def setPosition:FC::Vector2f(0.0f, 0.0f)];
+	def.position = FC::Vector2f(0.0f, 0.0f);
 	def.angle = 0.0f;
 	def.actor = nil;
 	def.isStatic = NO;
@@ -61,14 +64,16 @@
 -(NSString*)description
 {
 	NSMutableString* ret = [NSMutableString stringWithString:@"FCPhysics2DBody:"];
-	[ret appendFormat:@"pos %f, %f\n", mPosition.x, mPosition.y];
-	[ret appendFormat:@"rot %f\n", self.angle];
-	[ret appendFormat:@"linear damping %f\n", self.linearDamping];
-	[ret appendFormat:@"static %@\n", (self.isStatic) ? @"yes" : @"no"];
-	[ret appendFormat:@"can sleep %@\n", (self.canSleep) ? @"yes" : @"no"];
-	[ret appendFormat:@"shapeDef %@\n", self.shapeDef];
-	[ret appendFormat:@"actor %@\n", self.actor];
+	[ret appendFormat:@"pos %f, %f\n", _position.x, _position.y];
+	[ret appendFormat:@"rot %f\n", _angle];
+	[ret appendFormat:@"linear damping %f\n", _linearDamping];
+	[ret appendFormat:@"static %@\n", (_isStatic) ? @"yes" : @"no"];
+	[ret appendFormat:@"can sleep %@\n", (_canSleep) ? @"yes" : @"no"];
+	[ret appendFormat:@"shapeDef %@\n", _shapeDef];
+	[ret appendFormat:@"actor %@\n", _actor];
 	return ret;
 }
 
 @end
+
+#endif // defined(FC_PHYSICS)

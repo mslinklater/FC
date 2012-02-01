@@ -20,43 +20,56 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+
 
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
+//#import <UIKit/UIKit.h>
 #import "FCProtocols.h"
 #import "FCActor.h"
 
 @class FCResource;
 
-@interface FCActorSystem : NSObject <FCGameObjectUpdate, FCGameObjectLifetime, FCGameObjectRender> {
-	NSMutableArray *mAllActorsArray;
-	NSMutableArray *mUpdateActorsArray;
-	NSMutableArray *mRenderActorsArray;
-	NSMutableArray *mTapGestureActorsArray;
-	NSMutableArray *mDeleteList;
+@interface FCActorSystem : NSObject <FCGameObjectUpdate, FCGameObjectRender> {
+	NSMutableArray* _allActorsArray;
+	NSMutableArray* _updateActorsArray;
+	NSMutableArray* _renderActorsArray;
+	NSMutableArray* _tapGestureActorsArray;
+	NSMutableArray* _deleteList;
 	
-	NSMutableDictionary *mClassArraysDictionary;
-	NSMutableDictionary *mActorIdDictionary;
+	NSMutableDictionary* _classArraysDictionary;
+	NSMutableDictionary* _actorIdDictionary;
+	NSMutableDictionary* _actorNameDictionary;
+	// actor name dict
 }
+@property(nonatomic, strong) NSMutableArray* allActorsArray;
+@property(nonatomic, strong) NSMutableArray* updateActorsArray;
+@property(nonatomic, strong) NSMutableArray* renderActorsArray;
+@property(nonatomic, strong) NSMutableArray* tapGestureActorsArray;
+@property(nonatomic, strong) NSMutableArray* deleteList;
+@property(nonatomic, strong) NSMutableDictionary* classArraysDictionary;
+@property(nonatomic, strong) NSMutableDictionary* actorIdDictionary;
+@property(nonatomic, strong) NSMutableDictionary* actorNameDictionary;
+
 +(FCActorSystem*)instance;
 
 -(id)init;
 -(id)actorOfClass:(Class)actorClass;
--(NSMutableSet*)actorsWithId:(NSString*)Id;
--(void)addToDeleteArray:(id)actor;
--(void)removeActor:(id)actor;
+-(id)actorWithId:(NSString*)Id;
+-(void)addToDeleteArray:(FCActor*)actor;
+-(void)removeActor:(FCActor*)actor;
 -(void)removeAllActors;
+-(void)reset;
 
--(NSArray*)getUpdateActors;
 -(NSArray*)getActorsOfClass:(NSString*)actorClass;
 
 -(FCActor*)actorAtPosition:(FC::Vector2f)pos;
 
 // new stuff
 
--(NSArray*)createActorsOfClass:(NSString*)actorClass withResource:(FCResource*)res;
+-(NSArray*)createActorsOfClass:(NSString*)actorClass 
+				  withResource:(FCResource*)res
+						 named:(NSString*)name;
 
 @end
 
-#endif // TARGET_OS_IPHONE
+

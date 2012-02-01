@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined(FC_PHYSICS)
+
 #import <Foundation/Foundation.h>
 
 #import "Maths/FCMaths.h"
@@ -28,8 +30,14 @@ class b2World;
 
 @interface FCPhysics2DBodyDef : NSObject 
 {
-	FC::Vector2f mPosition;
-	id mActor;
+	float			_angle;
+	BOOL			_isStatic;
+	BOOL			_canSleep;
+	float			_linearDamping;
+	NSDictionary*	_shapeDef;
+	b2World*		_world;
+	id __weak		_actor;
+	FC::Vector2f	_position;
 }
 @property(nonatomic) float angle;
 @property(nonatomic) BOOL isStatic;
@@ -37,12 +45,15 @@ class b2World;
 @property(nonatomic) float linearDamping;
 @property(nonatomic, strong) NSDictionary* shapeDef;
 @property(nonatomic) b2World* world;
-@property(nonatomic, unsafe_unretained) id actor;
+@property(nonatomic, weak) id actor;
+@property(nonatomic) FC::Vector2f position;
 
 +(FCPhysics2DBodyDef*)defaultDef;
 
--(FC::Vector2f)position;
--(void)setPosition:(FC::Vector2f)newPos;
+//-(FC::Vector2f)position;
+//-(void)setPosition:(FC::Vector2f)newPos;
+
 -(NSString*)description;
 @end
 
+#endif // defined(FC_PHYSICS)

@@ -20,16 +20,30 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined (FC_PHYSICS)
 
 #import "FCPhysics.h"
 #import "FCLua.h"
+#import "FCObjectManager.h"
+#import "FCActorSystem.h"
 
 static FCPhysics* s_pPhysics = 0;
 
 #pragma mark - Lua Interface
 
-static int lua_AddMaterial( lua_State* _state )
+static int lua_Reset( lua_State* _state )
+{
+	[s_pPhysics reset];
+	return 0;
+}
+
+static int lua_Create2DSystem( lua_State* _state )
+{
+	[s_pPhysics create2DSystem];
+	return 0;
+}
+
+static int lua_SetMaterial( lua_State* _state )
 {
 	// FCPhysics.AddMaterial( "normal", { friction = 0.5, resitiution = 0.6, density = 1} )
 	
@@ -37,7 +51,7 @@ static int lua_AddMaterial( lua_State* _state )
 	FC_ASSERT(lua_isstring(_state, 1));
 	FC_ASSERT(lua_istable(_state, 2));
 	
-	// get string
+	// get string and components
 	
 	FCPhysicsMaterial* material = [[FCPhysicsMaterial alloc] init];
 	
@@ -61,8 +75,66 @@ static int lua_AddMaterial( lua_State* _state )
 	}
 	lua_pop(_state, 1);
 
-	
 	lua_settop(_state, 0);
+
+	// set it
+	
+	[s_pPhysics setMaterial:material];
+	
+	return 0;
+}
+
+static int lua_2DAddDistanceJoint( lua_State* _state )
+{
+	
+	FCLua_DumpStack(_state);
+	
+	FC_ASSERT(lua_gettop(_state) >= 4);
+	FC_ASSERT(lua_isstring(_state, 1));
+	
+	NSString* obj1Name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	NSString* obj2Name;
+	FC::Vector2f obj1Pos;
+	FC::Vector2f obj2Pos;
+	
+	int obj2NameStackPos;
+
+	FCLua_DumpStack(_state);
+
+	if (lua_isnumber(_state, 2)) 
+	{
+		obj2NameStackPos = 4;
+		obj1Pos.x = lua_tonumber(_state, 2);
+		obj1Pos.y = lua_tonumber(_state, 3);
+		FCActor* actor = [[FCActorSystem instance] actorWithId:obj1Name];
+		obj1Pos += actor.position;
+	} 
+	else 
+	{
+		obj2NameStackPos = 3;
+		NSDictionary* null = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
+		obj1Pos.x = [[null valueForKey:kFCKeyOffsetX] floatValue];
+		obj1Pos.y = [[null valueForKey:kFCKeyOffsetY] floatValue];
+	}
+
+	FC_ASSERT(lua_isstring(_state, obj2NameStackPos));
+	obj2Name = [NSString stringWithUTF8String:lua_tostring(_state, obj2NameStackPos)];
+
+	if (lua_isnumber(_state, obj2NameStackPos+1)) 
+	{
+		obj2Pos.x = lua_tonumber(_state, obj2NameStackPos+1);
+		obj2Pos.y = lua_tonumber(_state, obj2NameStackPos+2);
+		// add actor 2 position
+		FCActor* actor = [[FCActorSystem instance] actorWithId:obj2Name];
+		obj2Pos += actor.position;
+	} 
+	else 
+	{
+		NSDictionary* null = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, obj2NameStackPos+1)]];
+		obj2Pos.x = [[null valueForKey:kFCKeyOffsetX] floatValue];
+		obj2Pos.y = [[null valueForKey:kFCKeyOffsetY] floatValue];
+	}
+	
 	return 0;
 }
 
@@ -71,7 +143,6 @@ static int lua_AddMaterial( lua_State* _state )
 @implementation FCPhysics
 
 @synthesize twoD = _twoD;
-//@synthesize threeD = _threeD;
 @synthesize materials = _materials;
 
 #pragma mark - FCSingleton protocol
@@ -91,9 +162,16 @@ static int lua_AddMaterial( lua_State* _state )
 	{
 		// Register Lua functions
 		
-		[[FCLua instance].coreVM createGlobalTable:@"FCPhysics"];
-		[[FCLua instance].coreVM registerCFunction:lua_AddMaterial as:@"FCPhysics.AddMaterial"];
+		[[FCLua instance].coreVM createGlobalTable:@"FCPhysics"];		
+		[[FCLua instance].coreVM createGlobalTable:@"FCPhysics.TwoD"];		
 		
+		[[FCLua instance].coreVM registerCFunction:lua_Create2DSystem	as:@"FCPhysics.Create2DSystem"];
+		[[FCLua instance].coreVM registerCFunction:lua_Reset			as:@"FCPhysics.Reset"];
+		[[FCLua instance].coreVM registerCFunction:lua_SetMaterial		as:@"FCPhysics.SetMaterial"];
+
+		// 2D
+		[[FCLua instance].coreVM registerCFunction:lua_2DAddDistanceJoint as:@"FCPhysics.TwoD.AddDistanceJoint"];
+
 		_materials = [[NSMutableDictionary alloc] init];
 	}
 	return self;
@@ -109,7 +187,9 @@ static int lua_AddMaterial( lua_State* _state )
 
 -(void)update:(float)realTime gameTime:(float)gameTime
 {
-	
+	if (_twoD) {
+		[_twoD update:realTime gameTime:gameTime];
+	}
 }
 
 #pragma mark - FCGameObjectLifetime protocol
@@ -117,7 +197,7 @@ static int lua_AddMaterial( lua_State* _state )
 -(void)reset
 {
 	_twoD = nil;
-	_materials = nil;
+	_materials = [[NSMutableDictionary alloc] init];
 }
 
 -(void)destroy
@@ -127,20 +207,22 @@ static int lua_AddMaterial( lua_State* _state )
 
 #pragma mark - Misc
 
--(void)addMaterial:(FCPhysicsMaterial *)material
+-(void)setMaterial:(FCPhysicsMaterial *)material
 {
-	FC_ASSERT([_materials valueForKey:material.name] == nil);
+	[_materials setValue:material forKey:material.name];
 }
 
--(void)create2DComponent
+-(void)create2DSystem
 {
 	_twoD = [[FCPhysics2D alloc] init];	
 }
 
--(void)create3DComponent
+-(NSString*)description
 {
-	
+	return [NSString stringWithFormat:@"%@", _materials];
 }
+
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_PHYSICS)
+

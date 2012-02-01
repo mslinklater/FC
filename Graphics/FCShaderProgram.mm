@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined(FC_GRAPHICS)
 
 #import "FCShaderProgram.h"
 #import "FCShader.h"
@@ -53,6 +53,9 @@
 		_glHandle = glCreateProgram();
 		
 		FC_ASSERT( self.glHandle );
+		
+		_vertexShader = vertexShader;
+		_fragmentShader = fragmentShader;
 		
 		glAttachShader(self.glHandle, vertexShader.glHandle);
 		glAttachShader(self.glHandle, fragmentShader.glHandle);
@@ -322,5 +325,5 @@
 
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_GRAPHICS)
 

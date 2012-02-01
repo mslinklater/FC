@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+
 
 #import "FCCore.h"
 #import "FCResourceManager.h"
@@ -168,4 +168,4 @@ static NSString* kUDSuffix = @"_ultra";
 
 @end
 
-#endif // TARGET_OS_IPHONE
+

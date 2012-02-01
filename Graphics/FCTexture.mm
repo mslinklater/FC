@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined(FC_GRAPHICS)
+
 #import "FCTexture.h"
 
 @implementation FCTexture
@@ -58,3 +60,5 @@
 #endif
 
 @end
+
+#endif // defined(FC_GRAPHICS)

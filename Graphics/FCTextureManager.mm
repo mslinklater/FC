@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined (FC_GRAPHICS)
 
 #import "FCTextureManager.h"
 #import "FCTextureFile.h"
@@ -37,6 +37,16 @@
 @synthesize textures = _textures;
 @synthesize textureFiles = _textureFiles;
 @synthesize currentTextureFile = _currentTextureFile;
+
++(FCTextureManager*)instance;
+{
+	static FCTextureManager* pInstance = 0;
+	if( !pInstance )
+	{
+		pInstance = [[FCTextureManager alloc] init];
+	}
+	return pInstance;
+}
 
 -(id)init
 {
@@ -117,4 +127,4 @@
 
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_GRAPHICS)

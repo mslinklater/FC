@@ -20,23 +20,34 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+
 
 #include <sys/types.h>
 #include <sys/sysctl.h>
+
+#if TARGET_OS_IPHONE
 #import "GameKit/GameKit.h"
+#endif
 
 #import "FCCore.h"
 #import "FCDevice.h"
 
 #import "FCXMLData.h"
 #import "FCMaths.h"
+
+#if defined (FC_LUA)
 #import "FCLua.h"
+#endif
+
+#if TARGET_OS_IPHONE
 #import "FCAnalytics.h"
+#endif
 
 static FCDevice* s_pDevice;
 
 #pragma mark - Lua Interface
+
+#if defined (FC_LUA)
 
 static int lua_Probe( lua_State* _state )
 {
@@ -93,6 +104,8 @@ static int lua_GetGameCenterID( lua_State* _state )
 	lua_pushstring(_state, [s_pDevice.gameCenterID UTF8String]);
 	return 1;
 }
+
+#endif // defined(FC_LUA)
 
 #pragma mark - Constants
 
@@ -167,8 +180,12 @@ static FCDevice* pInstance;
 	self = [super init];
 	if (self) {
 		_caps = [[NSMutableDictionary alloc] init];
+		
+#if TARGET_OS_IPHONE
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(screenRotateResponder:) name:UIDeviceOrientationDidChangeNotification object:nil];
+#endif
 
+#if defined (FC_LUA)
 		FCLuaVM* lua = [FCLua instance].coreVM;
 		
 		[lua createGlobalTable:@"FCDevice"];
@@ -178,19 +195,24 @@ static FCDevice* pInstance;
 		[lua registerCFunction:lua_GetDeviceString as:@"FCDevice.GetString"];
 		[lua registerCFunction:lua_GetDeviceNumber as:@"FCDevice.GetNumber"];
 		[lua registerCFunction:lua_GetGameCenterID as:@"FCDevice.GetGameCenterID"];
+#endif // defined(FC_LUA)
 	}
 	return self;
 }
 
 -(void)dealloc
 {
+#if TARGET_OS_IPHONE
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIDeviceOrientationDidChangeNotification object:nil];
+#endif
 }
 
+#if TARGET_OS_IPHONE
 -(void)screenRotateResponder:(NSNotification*)note
 {
 	[self getScreenCaps];
 }
+#endif
 
 #pragma mark - Misc
 
@@ -264,6 +286,7 @@ static FCDevice* pInstance;
 
 -(void)getScreenCaps
 {
+#if TARGET_OS_IPHONE
 	CGFloat scale = [UIScreen mainScreen].scale;
 	CGRect bounds = [UIScreen mainScreen].bounds;
 	CGSize screenSize = [UIScreen mainScreen].currentMode.size;
@@ -323,12 +346,13 @@ static FCDevice* pInstance;
 		
 		[_caps setValue:kFCDevicePlatformPhoneOnPad forKey:kFCDevicePlatform];		
 	}
+#endif
 }
 
 -(void)probe
 {	
 	// get the OS version...
-	
+#if TARGET_OS_IPHONE
 	[_caps setValue:[UIDevice currentDevice].systemVersion forKey:kFCDeviceOSVersion];
 
 	// OS name
@@ -338,7 +362,7 @@ static FCDevice* pInstance;
 	// name
 
 	[_caps setValue:[UIDevice currentDevice].name forKey:kFCDeviceHardwareName];
-
+#endif
 	// hardware model ID
 	
 	[_caps setValue:[self machine] forKey:kFCDeviceHardwareModelID];
@@ -373,16 +397,18 @@ static FCDevice* pInstance;
 	[_caps setValue:localeCode forKey:kFCDeviceLocale];
 
 	// game center
-		
-	[[FCAnalytics instance] registerSystemValues];
 
+#if TARGET_OS_IPHONE
+	[[FCAnalytics instance] registerSystemValues];
+#endif
 	return;
 }
 
 -(void)warmProbe
 {
-	// Singed into game center
+	// Signed into game center
 	
+#if TARGET_OS_IPHONE
 	[[GKLocalPlayer localPlayer] authenticateWithCompletionHandler:^(NSError *error) 
 	 {
 		 if (error == nil)
@@ -396,6 +422,7 @@ static FCDevice* pInstance;
 			 _gameCenterID = @"local";
 		 }
 	 }];
+#endif
 }
 
 -(void)print
@@ -420,4 +447,4 @@ static FCDevice* pInstance;
 
 @end
 
-#endif // TARGET_OS_IPHONE
+

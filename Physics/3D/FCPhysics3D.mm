@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined (FC_PHYSICS)
+
 #import "FCPhysics3D.h"
 
 @implementation FCPhysics3D
@@ -52,5 +54,6 @@
 	return self;
 }
 
-
 @end
+
+#endif // defined(FC_PHYSICS)

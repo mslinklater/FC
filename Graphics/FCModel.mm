@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined(FC_GRAPHICS)
 
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/gl.h>
@@ -74,7 +74,7 @@ static NSString* s_debugShaderName = @"debug_debug";
 	debugColor = col;
 }
 
--(id)initWithPhysicsBody:(NSDictionary *)bodyDict
+-(id)initWithPhysicsBody:(NSDictionary *)bodyDict //actorXOffset:(float)actorX actorYOffset:(float)actorY
 {
 	self = [super init];
 	if (self) {
@@ -94,12 +94,15 @@ static NSString* s_debugShaderName = @"debug_debug";
 		{
 			NSString* type = [fixture valueForKey:@"type"];
 			
+			float fixtureX = [[fixture valueForKey:kFCKeyOffsetX] floatValue];// + actorX;
+			float fixtureY = [[fixture valueForKey:kFCKeyOffsetY] floatValue];// + actorY;
+			
 			if ([type isEqualToString:@"rectangle"]) 
 			{
 				// rectangle
 				NSMutableDictionary* debugDict = [[NSMutableDictionary alloc] init];
-				[debugDict setValue:[fixture valueForKey:kFCKeyOffsetX] forKey:kFCKeyOffsetX];
-				[debugDict setValue:[fixture valueForKey:kFCKeyOffsetY] forKey:kFCKeyOffsetY];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureX] forKey:kFCKeyOffsetX];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureY] forKey:kFCKeyOffsetY];
 				[debugDict setValue:[fixture valueForKey:@"xSize"] forKey:kFCKeyXSize];
 				[debugDict setValue:[fixture valueForKey:@"ySize"] forKey:kFCKeyYSize];
 				
@@ -110,8 +113,8 @@ static NSString* s_debugShaderName = @"debug_debug";
 			{
 				// circle
 				NSMutableDictionary* debugDict = [[NSMutableDictionary alloc] init];
-				[debugDict setValue:[fixture valueForKey:kFCKeyOffsetX] forKey:kFCKeyOffsetX];
-				[debugDict setValue:[fixture valueForKey:kFCKeyOffsetY] forKey:kFCKeyOffsetY];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureX] forKey:kFCKeyOffsetX];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureY] forKey:kFCKeyOffsetY];
 				[debugDict setValue:[fixture valueForKey:@"radius"] forKey:kFCKeyRadius];
 				
 				[self addDebugCircle:debugDict];
@@ -128,8 +131,8 @@ static NSString* s_debugShaderName = @"debug_debug";
 				
 				[debugDict setValue:[NSString stringWithFormat:@"%d", numVerts] forKey:kFCKeyNumVertices];
 				[debugDict setValue:[fixture valueForKey:@"verts"] forKey:@"verts"];
-				[debugDict setValue:[fixture valueForKey:kFCKeyOffsetX] forKey:kFCKeyOffsetX];
-				[debugDict setValue:[fixture valueForKey:kFCKeyOffsetY] forKey:kFCKeyOffsetY];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureX] forKey:kFCKeyOffsetX];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureY] forKey:kFCKeyOffsetY];
 				
 				[self addDebugPolygon:debugDict];
 				
@@ -171,7 +174,7 @@ static NSString* s_debugShaderName = @"debug_debug";
 			FCVertexDescriptor* resourceVertexDescriptor = [FCVertexDescriptor vertexDescriptorWithVertexFormatString:vertexFormatString 
 																									   andUniformDict:mesh];
 			
-			FCShaderProgram* shaderProgram = [[FCRenderer instance].shaderManager program:shaderProgramName];
+			FCShaderProgram* shaderProgram = [[FCShaderManager instance] program:shaderProgramName];
 			FCVertexDescriptor* shaderVertexDescriptor = shaderProgram.requiredVertexDescriptor;
 			
 			if ([resourceVertexDescriptor canSatisfy:shaderVertexDescriptor]) {
@@ -275,6 +278,7 @@ static NSString* s_debugShaderName = @"debug_debug";
 		
 	for (FCMesh* mesh in self.meshes) 
 	{
+//		FC_ASSERT1( mesh.fixedUp , @"Trying to render a mesh that isn't fixed up");
 		FCShaderUniform* uniform = [mesh.shaderProgram getUniform:@"modelview"];		
 		[mesh.shaderProgram setUniformValue:uniform to:&mat size:sizeof(mat)];
 
@@ -428,4 +432,4 @@ static NSString* s_debugShaderName = @"debug_debug";
 
 @end
 
-#endif // TARGET_OS_IPHONE
+#endif // defined(FC_GRAPHICS)
