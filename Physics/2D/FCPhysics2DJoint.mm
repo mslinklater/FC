@@ -20,38 +20,14 @@
  THE SOFTWARE.
  */
 
-#if defined(FC_PHYSICS)
+#import "FCPhysics2DJoint.h"
 
-#import <Foundation/Foundation.h>
+#pragma mark - FCPhysics2DJoint
 
-#import "Maths/FCMaths.h"
-
-class b2World;
-
-@interface FCPhysics2DBodyDef : NSObject 
-{
-	float			_angle;
-	BOOL			_isStatic;
-	BOOL			_canSleep;
-	float			_linearDamping;
-	NSDictionary*	_shapeDef;
-	b2World*		_world;
-	id __weak		_actor;
-	FC::Vector2f	_position;
-}
-@property(nonatomic, readonly, strong) NSString* name;
-@property(nonatomic) float angle;
-@property(nonatomic) BOOL isStatic;
-@property(nonatomic) BOOL canSleep;
-@property(nonatomic) float linearDamping;
-@property(nonatomic, strong) NSDictionary* shapeDef;
-@property(nonatomic) b2World* world;
-@property(nonatomic, weak) id actor;
-@property(nonatomic) FC::Vector2f position;
-
-+(FCPhysics2DBodyDef*)defaultDef;
-
--(NSString*)description;
+@implementation FCPhysics2DJoint
 @end
 
-#endif // defined(FC_PHYSICS)
+#pragma mark - FCPhysics2DJointCreateDef
+
+@implementation FCPhysics2DJointCreateDef
+@end

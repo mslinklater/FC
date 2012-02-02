@@ -25,15 +25,29 @@
 #import <Foundation/Foundation.h>
 #import <Box2D/Box2D.h>
 
-#import "Core/FCProtocols.h"
+#import "FCCore.h"
 #import "FCPhysics2DBody.h"
 #import "FCPhysics2DBodyDef.h"
+#import "FCPhysics2DJoint.h"
 
 @interface FCPhysics2D : NSObject <FCGameObjectUpdate> {
-    b2World* pWorld;
-	b2Vec2 gravity;
+    b2World*				_world;
+	b2Vec2					_gravity;
+	NSMutableDictionary*	_joints;
+	NSMutableDictionary*	_bodiesByNameDict;
+	FCHandle				mNextHandle;
 }
+@property(nonatomic) b2World* world;
+@property(nonatomic) b2Vec2 gravity;
+@property(nonatomic, strong) NSMutableDictionary* joints;
+@property(nonatomic, strong) NSMutableDictionary* bodiesByNameDict;
+
 -(FCPhysics2DBody*)newBodyWithDef:(FCPhysics2DBodyDef*)def;
+-(void)destroyBody:(FCPhysics2DBody*)body;
+
+-(FCPhysics2DBody*)bodyWithName:(NSString*)name;
+
+-(FCHandle)createJoint:(FCPhysics2DJointCreateDef*)def;
 @end
 
 #endif // defined(FC_PHYSICS)

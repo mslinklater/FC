@@ -135,6 +135,10 @@ static int lua_2DAddDistanceJoint( lua_State* _state )
 		obj2Pos.y = [[null valueForKey:kFCKeyOffsetY] floatValue];
 	}
 	
+	// call through to OBJ-C
+
+	
+	
 	return 0;
 }
 
@@ -163,14 +167,14 @@ static int lua_2DAddDistanceJoint( lua_State* _state )
 		// Register Lua functions
 		
 		[[FCLua instance].coreVM createGlobalTable:@"FCPhysics"];		
-		[[FCLua instance].coreVM createGlobalTable:@"FCPhysics.TwoD"];		
+//		[[FCLua instance].coreVM createGlobalTable:@"FCPhysics.TwoD"];		
 		
 		[[FCLua instance].coreVM registerCFunction:lua_Create2DSystem	as:@"FCPhysics.Create2DSystem"];
 		[[FCLua instance].coreVM registerCFunction:lua_Reset			as:@"FCPhysics.Reset"];
 		[[FCLua instance].coreVM registerCFunction:lua_SetMaterial		as:@"FCPhysics.SetMaterial"];
 
 		// 2D
-		[[FCLua instance].coreVM registerCFunction:lua_2DAddDistanceJoint as:@"FCPhysics.TwoD.AddDistanceJoint"];
+//		[[FCLua instance].coreVM registerCFunction:lua_2DAddDistanceJoint as:@"FCPhysics.TwoD.AddDistanceJoint"];
 
 		_materials = [[NSMutableDictionary alloc] init];
 	}

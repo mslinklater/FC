@@ -26,36 +26,26 @@
 
 @implementation FCPhysics2D
 
-#pragma mark - FCGameObjectLifetime protocol
+@synthesize world = _world;
+@synthesize gravity = _gravity;
+@synthesize joints = _joints;
+@synthesize bodiesByNameDict = _bodiesByNameDict;
 
--(void)reset
-{
-    
-}
-
--(void)destroy
-{
-    
-}
-
-#pragma mark - FCGameObjectUpdate protocol
-
--(void)update:(float)realTime gameTime:(float)gameTime
-{
-    pWorld->Step( gameTime, 6, 2 );
-//	pWorld->ClearForces();
-}
+#pragma mark - Object Lifecycle
 
 -(id)init
 {
 	self = [super init];
 	if (self) 
 	{
-		gravity = b2Vec2( 0.0f, -9.8f );
+		mNextHandle = 0;
+		_joints = [NSMutableDictionary dictionary];
 		
-		if (!pWorld) 
+		_gravity = b2Vec2( 0.0f, -9.8f );
+		
+		if (!_world) 
 		{
-			pWorld = new b2World( gravity, true );
+			_world = new b2World( _gravity, true );
 		}
 	}
 	return self;
@@ -63,24 +53,45 @@
 
 -(void)dealloc
 {
-	delete pWorld; 
-	pWorld = 0;
+	delete _world; 
+	_world = 0;
+}
+
+#pragma mark - FCGameObjectUpdate protocol
+
+-(void)update:(float)realTime gameTime:(float)gameTime
+{
+    _world->Step( gameTime, 6, 2 );
+//	pWorld->ClearForces();
 }
 
 -(FCPhysics2DBody*)newBodyWithDef:(FCPhysics2DBodyDef*)def
 {
-	def.world = pWorld;
+	def.world = _world;
 
 	FCPhysics2DBody* newBody = [[FCPhysics2DBody alloc] initWithDef:def];
 
+	[_bodiesByNameDict setValue:newBody forKey:newBody.name];
+	
 	return newBody;
 }
 
-//-(void*)userDataForObjectAtPosition:(FC::Vector2f)pos
-//{
-//	
-//	return 0;
-//}
+-(void)destroyBody:(FCPhysics2DBody*)body
+{
+	[_bodiesByNameDict setValue:nil forKey:body.name];
+}
+
+-(FCPhysics2DBody*)bodyWithName:(NSString*)name
+{
+	return [_bodiesByNameDict valueForKey:name];
+}
+
+#pragma mark - Joints
+
+-(FCHandle)createJoint:(FCPhysics2DJointCreateDef*)def
+{
+	return (FCHandle)mNextHandle++;
+}
 
 @end
 

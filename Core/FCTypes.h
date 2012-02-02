@@ -22,3 +22,5 @@
 
 #import "FCColor.h"
 #import "FCKeys.h"
+
+typedef unsigned int FCHandle;

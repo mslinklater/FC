@@ -38,20 +38,16 @@
 
 @implementation FCPhysics2DBody
 
+@synthesize name = _name;
 @synthesize world = _world;
 @synthesize body = _body;
-//@synthesize rotation = _rotation;
-
-//-(void)setWorld:(b2World*)world
-//{
-//	pWorld = world;
-//}
 
 -(id)initWithDef:(FCPhysics2DBodyDef*)def
 {
 	self = [super init];
 	if (self) 
 	{
+		_name = def.name;
 		[self createBodyFromDef:def];
 		[self createFixturesFromDef:def];
 	}
@@ -100,8 +96,6 @@
 
 -(void)createFixturesFromDef:(FCPhysics2DBodyDef*)def
 {
-//	NSArray* fixtures = [physicsData arrayForKeyPath:@"physics2d.fixtures.fixture"];
-
 	NSArray* fixtures;
 	
 	if ([[def.shapeDef valueForKey:@"fixture"] isKindOfClass:[NSDictionary class]]) {
@@ -187,14 +181,7 @@
 			NSAssert1( 0, @"Unknown physics fixture type %@", type);
 		}
 	}
-
-//	[physicsData release];
 }
-
-//-(b2Body*)b2Body
-//{
-//	return pBody;
-//}
 
 #pragma mark - Position
 
@@ -238,6 +225,8 @@
 	
 	_body->ApplyLinearImpulse( b2Imp, b2Pos );
 }
+
+#pragma mark = Rotation
 
 -(float)rotation
 {

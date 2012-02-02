@@ -43,6 +43,9 @@
 
 -(void)reset;
 -(void)setMaterial:(FCPhysicsMaterial*)material;
+
+//-(FCHandle)addDistanceJoint2D
+
 @end
 
 #endif // defined(FC_PHYSICS)

@@ -26,6 +26,8 @@
 #import "FCKeys.h"
 
 @implementation FCPhysics2DBodyDef
+
+@synthesize name = _name;
 @synthesize angle = _angle;
 @synthesize isStatic = _isStatic;
 @synthesize shapeDef = _shapeDef;
@@ -35,21 +37,10 @@
 @synthesize actor = _actor;
 @synthesize position = _position;
 
-//-(FC::Vector2f)position
-//{
-//	return mPosition;
-//}
-//
-//-(void)setPosition:(FC::Vector2f)newPos
-//{
-//	mPosition = newPos;
-//}
-
 +(FCPhysics2DBodyDef*)defaultDef
 {
 	FCPhysics2DBodyDef* def = [FCPhysics2DBodyDef alloc];
 	
-//	[def setPosition:FC::Vector2f(0.0f, 0.0f)];
 	def.position = FC::Vector2f(0.0f, 0.0f);
 	def.angle = 0.0f;
 	def.actor = nil;
@@ -72,6 +63,11 @@
 	[ret appendFormat:@"shapeDef %@\n", _shapeDef];
 	[ret appendFormat:@"actor %@\n", _actor];
 	return ret;
+}
+
+-(NSString*)name
+{
+	return [_shapeDef valueForKey:kFCKeyId];
 }
 
 @end

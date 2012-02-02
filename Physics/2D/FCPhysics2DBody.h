@@ -34,11 +34,11 @@ class b2Body;
 
 @interface FCPhysics2DBody : NSObject 
 {
+	NSString*		_name;
 	b2World*		_world;
 	b2Body*			_body;
-//	float			_rotation;
-//	FC::Vector2f	_position;
 }
+@property(nonatomic, strong) NSString* name;
 @property(nonatomic) b2World* world;
 @property(nonatomic, readonly) b2Body* body;
 @property(nonatomic, readonly) float rotation;
@@ -46,17 +46,12 @@ class b2Body;
 
 -(id)initWithDef:(FCPhysics2DBodyDef*)def;
 
-//-(FC::Vector2f)position;
-//-(void)setPosition:(FC::Vector2f)pos;
-
 -(FC::Vector2f)linearVelocity;
 -(void)setLinearVelocity:(FC::Vector2f)newVel;
 
-//-(b2Body*)b2Body;
-
 -(void)applyImpulse:(FC::Vector2f)impulse atWorldPos:(FC::Vector2f)pos;
 
--(float)rotation;
+//-(float)rotation;
 
 -(void)createRevoluteJointWith:(FCPhysics2DBody*)anchorBody atOffset:(FC::Vector2f)anchorOffset motorSpeed:(float)motorSpeed maxTorque:(float)maxToque lowerAngle:(float)lower upperAngle:(float)upper;
 -(void)createDistanceJointWith:(FCPhysics2DBody*)anchorBody atOffset:(FC::Vector2f)offset anchorOffset:(FC::Vector2f)anchorOffset;
