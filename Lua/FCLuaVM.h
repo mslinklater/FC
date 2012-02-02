@@ -32,6 +32,7 @@ extern "C" {
 	#include <lua.h>
 }
 
+class luaL_Reg;
 typedef int(*tLuaCallableCFunction)(lua_State*);
 
 @interface FCLuaVM : NSObject {
@@ -47,6 +48,7 @@ typedef int(*tLuaCallableCFunction)(lua_State*);
 -(void)destroyGlobalTable:(NSString*)tableName;
 -(void)registerCFunction:(tLuaCallableCFunction)func as:(NSString*)name;
 -(void)removeCFunction:(NSString*)name;
+//-(void)newLib:(luaL_Reg*)functions as:(NSString*)name;
 -(int)getStackSize;
 
 // Get

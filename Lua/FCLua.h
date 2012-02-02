@@ -39,7 +39,7 @@
 
 +(FCLua*)instance;
 
--(void)updateThreads:(float)dt;
+-(void)updateThreadsRealTime:(float)dt gameTime:(float)dt;
 -(void)incrementNextThreadId;
 
 -(FCLuaVM*)coreVM;

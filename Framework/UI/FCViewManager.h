@@ -24,7 +24,15 @@
  
  TODO:
 
- backgroundcolor
+ fov
+ frustum translation
+ nearclip
+ farclip
+ 
+ _gameView.fov = 0.4f;
+ _gameView.frustumTranslation = FC::Vector3f( 0, 0, -18.0f );
+ _gameView.nearClip = 1.0f;
+ _gameView.farClip = 100.0f;
  
  */
 

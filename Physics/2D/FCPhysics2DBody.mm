@@ -235,77 +235,77 @@
 
 #pragma mark - Create Joints
 
--(void)createRevoluteJointWith:(FCPhysics2DBody*)anchorBody atOffset:(FC::Vector2f)anchorOffset motorSpeed:(float)motorSpeed maxTorque:(float)maxToque lowerAngle:(float)lower upperAngle:(float)upper
-{
-	b2Body* pAnchorB2Body = anchorBody.body;
-	
-	b2Vec2 offset;	//= pAnchorB2Body->GetWorldCenter();
-	offset.x = anchorOffset.x;
-	offset.y = anchorOffset.y;
-	
-	b2RevoluteJointDef jointDef;
-	jointDef.Initialize(pAnchorB2Body, _body, offset);
-	
-	if ((motorSpeed != kFCInvalidFloat) && (maxToque != kFCInvalidFloat)) {
-		jointDef.enableMotor = true;
-		jointDef.motorSpeed = motorSpeed;
-		jointDef.maxMotorTorque = maxToque;
-	}
+//-(void)createRevoluteJointWith:(FCPhysics2DBody*)anchorBody atOffset:(FC::Vector2f)anchorOffset motorSpeed:(float)motorSpeed maxTorque:(float)maxToque lowerAngle:(float)lower upperAngle:(float)upper
+//{
+//	b2Body* pAnchorB2Body = anchorBody.body;
+//	
+//	b2Vec2 offset;	//= pAnchorB2Body->GetWorldCenter();
+//	offset.x = anchorOffset.x;
+//	offset.y = anchorOffset.y;
+//	
+//	b2RevoluteJointDef jointDef;
+//	jointDef.Initialize(pAnchorB2Body, _body, offset);
+//	
+//	if ((motorSpeed != kFCInvalidFloat) && (maxToque != kFCInvalidFloat)) {
+//		jointDef.enableMotor = true;
+//		jointDef.motorSpeed = motorSpeed;
+//		jointDef.maxMotorTorque = maxToque;
+//	}
+//
+//	if ((lower != kFCInvalidFloat) && (upper != kFCInvalidFloat)) {
+//		jointDef.enableLimit = true;
+//		jointDef.lowerAngle = lower;
+//		jointDef.upperAngle = upper;
+//	}
+//	
+//	_world->CreateJoint(&jointDef);
+//}
 
-	if ((lower != kFCInvalidFloat) && (upper != kFCInvalidFloat)) {
-		jointDef.enableLimit = true;
-		jointDef.lowerAngle = lower;
-		jointDef.upperAngle = upper;
-	}
-	
-	_world->CreateJoint(&jointDef);
-}
+//-(void)createPrismaticJointWith:(FCPhysics2DBody*)anchorBody axis:(FC::Vector2f)axis motorSpeed:(float)motorSpeed maxForce:(float)maxForce lowerTranslation:(float)lower upperTranslation:(float)upper
+//{
+//	b2Body* pAnchorB2Body = anchorBody.body;
+//
+//	b2Vec2 b2axis;
+//	b2axis.x = axis.x;
+//	b2axis.y = axis.y;
+//	
+//	b2PrismaticJointDef jointDef;
+//	jointDef.Initialize( pAnchorB2Body, _body, pAnchorB2Body->GetWorldCenter(), b2axis);
+//	
+//	if ((motorSpeed != kFCInvalidFloat) && (maxForce != kFCInvalidFloat)) 
+//	{
+//		jointDef.enableMotor = true;
+//		jointDef.maxMotorForce = maxForce;
+//		jointDef.motorSpeed = motorSpeed;
+//	}
+//
+//	if ((lower != kFCInvalidFloat) && (upper != kFCInvalidFloat)) 
+//	{
+//		jointDef.enableLimit = true;
+//		jointDef.lowerTranslation = lower;
+//		jointDef.upperTranslation = upper;
+//	}
+//
+//	_world->CreateJoint( &jointDef );
+//}
 
--(void)createPrismaticJointWith:(FCPhysics2DBody*)anchorBody axis:(FC::Vector2f)axis motorSpeed:(float)motorSpeed maxForce:(float)maxForce lowerTranslation:(float)lower upperTranslation:(float)upper
-{
-	b2Body* pAnchorB2Body = anchorBody.body;
-
-	b2Vec2 b2axis;
-	b2axis.x = axis.x;
-	b2axis.y = axis.y;
-	
-	b2PrismaticJointDef jointDef;
-	jointDef.Initialize( pAnchorB2Body, _body, pAnchorB2Body->GetWorldCenter(), b2axis);
-	
-	if ((motorSpeed != kFCInvalidFloat) && (maxForce != kFCInvalidFloat)) 
-	{
-		jointDef.enableMotor = true;
-		jointDef.maxMotorForce = maxForce;
-		jointDef.motorSpeed = motorSpeed;
-	}
-
-	if ((lower != kFCInvalidFloat) && (upper != kFCInvalidFloat)) 
-	{
-		jointDef.enableLimit = true;
-		jointDef.lowerTranslation = lower;
-		jointDef.upperTranslation = upper;
-	}
-
-	_world->CreateJoint( &jointDef );
-}
-
--(void)createDistanceJointWith:(FCPhysics2DBody*)anchorBody atOffset:(FC::Vector2f)offset anchorOffset:(FC::Vector2f)anchorOffset
-{
-	b2Body* pAnchorB2Body = anchorBody.body;
-	
-	b2Vec2 b2AnchorOffset;	//= pAnchorB2Body->GetWorldCenter();
-	b2AnchorOffset.x = anchorOffset.x;
-	b2AnchorOffset.y = anchorOffset.y;
-
-	b2Vec2 b2Offset;	//= pBody->GetWorldCenter();
-	b2Offset.x = offset.x;
-	b2Offset.y = offset.y;
-
-	b2DistanceJointDef jointDef;
-	jointDef.Initialize(_body, pAnchorB2Body, b2Offset, b2AnchorOffset);
-	jointDef.collideConnected = true;
-	_world->CreateJoint(&jointDef);
-}
+//-(void)createDistanceJointWith:(FCPhysics2DBody*)anchorBody atOffset:(FC::Vector2f)offset anchorOffset:(FC::Vector2f)anchorOffset
+//{
+//	b2Body* pAnchorB2Body = anchorBody.body;
+//	
+//	b2Vec2 b2AnchorOffset;	//= pAnchorB2Body->GetWorldCenter();
+//	b2AnchorOffset.x = anchorOffset.x;
+//	b2AnchorOffset.y = anchorOffset.y;
+//
+//	b2Vec2 b2Offset;	//= pBody->GetWorldCenter();
+//	b2Offset.x = offset.x;
+//	b2Offset.y = offset.y;
+//
+//	b2DistanceJointDef jointDef;
+//	jointDef.Initialize(_body, pAnchorB2Body, b2Offset, b2AnchorOffset);
+//	jointDef.collideConnected = true;
+//	_world->CreateJoint(&jointDef);
+//}
 
 -(void)createPulleyJointWith:(FCPhysics2DBody*)otherBody anchor1:(FC::Vector2f)anchor1 anchor2:(FC::Vector2f)anchor2 groundAnchor1:(FC::Vector2f)ground1 groundAnchor2:(FC::Vector2f)ground2 ratio:(float)ratio maxLength1:(float)maxLength1 maxLength2:(float)maxLength2
 {

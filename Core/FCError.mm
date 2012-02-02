@@ -20,12 +20,15 @@
  THE SOFTWARE.
  */
 
+#if !TARGET_OS_IPHONE
+#import <AppKit/AppKit.h>
+#endif
+
 #import "FCError.h"
 #import "FCConnect.h"
 
-#import "FCLua.h"
-
 #if defined (FC_LUA)
+#import "FCLua.h"
 static int lua_Fatal( lua_State* state )
 {
 	const char* location = lua_tostring(state, -2);
@@ -73,38 +76,48 @@ static int lua_Log( lua_State* state )
 
 #pragma mark - Fatal
 
-+(void)fatal:(NSString*)location info:(NSString*)errorString
++(void)fatalCommon:(NSString*)output
 {
-	NSString* output = [NSString stringWithFormat:@"FATAL - %@ - %@", location, errorString];
 #if TARGET_OS_IPHONE
 	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
 #endif
-	NSLog( @"%@", output );
-	[FCError halt];
+	NSLog(@"%@", output);
+#if TARGET_OS_MAC
+//	NSAlert* alert = [NSAlert alertWithError:[NSError errorWithDomain:output code:0 userInfo:nil]];
+//	[alert runModal];
+#endif
+	[FCError halt];	
+}
+
++(void)fatal:(NSString*)location info:(NSString*)errorString
+{
+	NSString* output = [NSString stringWithFormat:@"FATAL - %@ - %@", location, errorString];
+	[FCError fatalCommon:output];
+//#if TARGET_OS_IPHONE
+//	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
+//#endif
+//	NSLog( @"%@", output );
+//	[FCError halt];
 }
 
 +(void)fatal1:(NSString*)location info:(NSString*)errorString arg1:(id)arg1
 {
 	NSString* infoString = [NSString stringWithFormat:errorString, arg1];
 	NSString* output = [NSString stringWithFormat:@"FATAL - %@ - %@", location, infoString];
-
-#if TARGET_OS_IPHONE
-	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
-#endif
-	NSLog(@"%@", output);
-	[FCError halt];
+	[FCError fatalCommon:output];
 }
 
 +(void)fatal2:(NSString*)location info:(NSString*)errorString arg1:(id)arg1 arg2:(id)arg2
 {
 	NSString* infoString = [NSString stringWithFormat:errorString, arg1, arg2];
 	NSString* output = [NSString stringWithFormat:@"FATAL - %@ - %@", location, infoString];
+	[FCError fatalCommon:output];
 
-#if TARGET_OS_IPHONE
-	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
-#endif
-	NSLog( @"%@", output );
-	[FCError halt];
+//#if TARGET_OS_IPHONE
+//	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
+//#endif
+//	NSLog( @"%@", output );
+//	[FCError halt];
 }
 
 #pragma mark - Error

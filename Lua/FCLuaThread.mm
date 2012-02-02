@@ -34,7 +34,8 @@ extern "C" {
 
 @implementation FCLuaThread
 @synthesize state = _state;
-@synthesize sleepTimeRemaining = _sleepTimeRemaining;
+@synthesize sleepRealTimeRemaining = _sleepRealTimeRemaining;
+@synthesize sleepGameTimeRemaining = _sleepGameTimeRemaining;
 @synthesize threadId = _threadId;
 @synthesize luaState = _luaState;
 @synthesize numResumeArgs = _numResumeArgs;
@@ -49,7 +50,8 @@ extern "C" {
 		sprintf(&buffer[0], "thread%d", threadId);		
 		lua_setfield(state, LUA_REGISTRYINDEX, &buffer[0]);
 		_state = kLuaThreadStateNew;
-		_sleepTimeRemaining = 0.0;
+		_sleepRealTimeRemaining = 0.0;
+		_sleepGameTimeRemaining = 0.0;
 		_threadId = threadId;
 
 		_numResumeArgs = lua_gettop(state);	// first one is function name
@@ -92,7 +94,7 @@ extern "C" {
 	}
 }
 
--(void)update:(float)dt
+-(void)updateRealTime:(float)dt gameTime:(float)gt
 {
 	switch (self.state) {
 		case kLuaThreadStateNew:
@@ -130,8 +132,15 @@ extern "C" {
 			break;
 		case kLuaThreadStateSleeping:
 			{
-				_sleepTimeRemaining -= dt;
-				if (_sleepTimeRemaining <= 0.0) {
+				if (_sleepRealTimeRemaining > 0.0f) {
+					_sleepRealTimeRemaining -= dt;
+				}
+				
+				if (_sleepGameTimeRemaining > 0.0f) {
+					_sleepGameTimeRemaining -= gt;
+				}
+				
+				if( (_sleepRealTimeRemaining <= 0.0) && (_sleepGameTimeRemaining <= 0.0)){
 					_state = kLuaThreadStateRunning;
 				}
 			}
@@ -155,9 +164,15 @@ extern "C" {
 	_state = kLuaThreadStateDying;
 }
 
--(void)pause:(float)seconds
+-(void)pauseRealTime:(float)seconds
 {
-	_sleepTimeRemaining = (float)seconds;
+	_sleepRealTimeRemaining = (float)seconds;
+	_state = kLuaThreadStateSleeping;
+}
+
+-(void)pauseGameTime:(float)seconds
+{
+	_sleepGameTimeRemaining = (float)seconds;
 	_state = kLuaThreadStateSleeping;
 }
 

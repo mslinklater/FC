@@ -40,6 +40,7 @@
 +(FCPhysics*)instance;
 
 -(void)create2DSystem;
+//-(void)destroy2DSystem;
 
 -(void)reset;
 -(void)setMaterial:(FCPhysicsMaterial*)material;

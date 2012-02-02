@@ -35,21 +35,24 @@ enum eLuaThreadState {
 
 @interface FCLuaThread : NSObject {
 	eLuaThreadState	_state;
-	double			_sleepTimeRemaining;
+	double			_sleepRealTimeRemaining;
+	double			_sleepGameTimeRemaining;
 	unsigned int	_threadId;
 	lua_State*		_luaState;
 	int				_numResumeArgs;
 }
 @property(nonatomic, readonly) eLuaThreadState state;
-@property(nonatomic, readonly) double sleepTimeRemaining;
+@property(nonatomic, readonly) double sleepRealTimeRemaining;
+@property(nonatomic, readonly) double sleepGameTimeRemaining;
 @property(nonatomic, readonly) unsigned int threadId;
 @property(nonatomic, readonly) lua_State* luaState;
 @property(nonatomic, readonly) int numResumeArgs;
 
 -(id)initFromState:(lua_State*)state withId:(unsigned int)threadId;
 -(void)resume;
--(void)update:(float)dt;
--(void)pause:(float)seconds;
+-(void)updateRealTime:(float)dt gameTime:(float)gt;
+-(void)pauseRealTime:(float)seconds;
+-(void)pauseGameTime:(float)seconds;
 -(void)die;
 
 @end

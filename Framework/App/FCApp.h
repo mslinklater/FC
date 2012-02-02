@@ -56,6 +56,7 @@
 +(void)update;
 +(void)pause;
 +(void)resume;
++(void)setUpdateFrequency:(int)fps;
 
 +(void)willResignActive;
 +(void)didEnterBackground;

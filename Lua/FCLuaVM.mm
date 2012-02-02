@@ -267,6 +267,12 @@ static int panic (lua_State *L) {
 	lua_pop(_state, (int)(numComponents - 1));
 }
 
+//-(void)newLib:(luaL_Reg *)functions as:(NSString*)name
+//{
+//	luaL_
+////	luaL_newlib(_state, functions);
+//}
+
 -(void)createGlobalTable:(NSString*)tableName
 {
 	NSArray* components = [tableName componentsSeparatedByString:@"."];

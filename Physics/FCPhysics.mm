@@ -84,64 +84,6 @@ static int lua_SetMaterial( lua_State* _state )
 	return 0;
 }
 
-static int lua_2DAddDistanceJoint( lua_State* _state )
-{
-	
-	FCLua_DumpStack(_state);
-	
-	FC_ASSERT(lua_gettop(_state) >= 4);
-	FC_ASSERT(lua_isstring(_state, 1));
-	
-	NSString* obj1Name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
-	NSString* obj2Name;
-	FC::Vector2f obj1Pos;
-	FC::Vector2f obj2Pos;
-	
-	int obj2NameStackPos;
-
-	FCLua_DumpStack(_state);
-
-	if (lua_isnumber(_state, 2)) 
-	{
-		obj2NameStackPos = 4;
-		obj1Pos.x = lua_tonumber(_state, 2);
-		obj1Pos.y = lua_tonumber(_state, 3);
-		FCActor* actor = [[FCActorSystem instance] actorWithId:obj1Name];
-		obj1Pos += actor.position;
-	} 
-	else 
-	{
-		obj2NameStackPos = 3;
-		NSDictionary* null = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
-		obj1Pos.x = [[null valueForKey:kFCKeyOffsetX] floatValue];
-		obj1Pos.y = [[null valueForKey:kFCKeyOffsetY] floatValue];
-	}
-
-	FC_ASSERT(lua_isstring(_state, obj2NameStackPos));
-	obj2Name = [NSString stringWithUTF8String:lua_tostring(_state, obj2NameStackPos)];
-
-	if (lua_isnumber(_state, obj2NameStackPos+1)) 
-	{
-		obj2Pos.x = lua_tonumber(_state, obj2NameStackPos+1);
-		obj2Pos.y = lua_tonumber(_state, obj2NameStackPos+2);
-		// add actor 2 position
-		FCActor* actor = [[FCActorSystem instance] actorWithId:obj2Name];
-		obj2Pos += actor.position;
-	} 
-	else 
-	{
-		NSDictionary* null = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, obj2NameStackPos+1)]];
-		obj2Pos.x = [[null valueForKey:kFCKeyOffsetX] floatValue];
-		obj2Pos.y = [[null valueForKey:kFCKeyOffsetY] floatValue];
-	}
-	
-	// call through to OBJ-C
-
-	
-	
-	return 0;
-}
-
 #pragma mark - ObjC
 
 @implementation FCPhysics
@@ -167,14 +109,10 @@ static int lua_2DAddDistanceJoint( lua_State* _state )
 		// Register Lua functions
 		
 		[[FCLua instance].coreVM createGlobalTable:@"FCPhysics"];		
-//		[[FCLua instance].coreVM createGlobalTable:@"FCPhysics.TwoD"];		
 		
 		[[FCLua instance].coreVM registerCFunction:lua_Create2DSystem	as:@"FCPhysics.Create2DSystem"];
 		[[FCLua instance].coreVM registerCFunction:lua_Reset			as:@"FCPhysics.Reset"];
 		[[FCLua instance].coreVM registerCFunction:lua_SetMaterial		as:@"FCPhysics.SetMaterial"];
-
-		// 2D
-//		[[FCLua instance].coreVM registerCFunction:lua_2DAddDistanceJoint as:@"FCPhysics.TwoD.AddDistanceJoint"];
 
 		_materials = [[NSMutableDictionary alloc] init];
 	}
@@ -200,6 +138,7 @@ static int lua_2DAddDistanceJoint( lua_State* _state )
 
 -(void)reset
 {
+	[_twoD prepareForDealloc];
 	_twoD = nil;
 	_materials = [[NSMutableDictionary alloc] init];
 }
@@ -220,6 +159,12 @@ static int lua_2DAddDistanceJoint( lua_State* _state )
 {
 	_twoD = [[FCPhysics2D alloc] init];	
 }
+
+//-(void)destroy2DSystem
+//{
+//	[_twoD prepareForDealloc];
+//	_twoD = nil;
+//}
 
 -(NSString*)description
 {

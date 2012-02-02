@@ -55,7 +55,7 @@ static int lua_SetCurrentView( lua_State* _state )
 static int lua_SetClearColor( lua_State* _state )
 {
 	FC_ASSERT(lua_gettop(_state) == 1);
-	FC_ASSERT(lua_istable(_state, 1));
+	FC_ASSERT(lua_type(_state, 1) == LUA_TTABLE);
 	
 	lua_pushnil(_state);
 	
@@ -77,8 +77,46 @@ static int lua_SetClearColor( lua_State* _state )
 	lua_next(_state, -2);
 	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
 	float a = lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
 	
 	s_currentLuaTarget.clearColor = FC::Color4f( r, g, b, a );
+	
+	return 0;
+}
+
+static int lua_SetFOV( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 1);
+	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
+	
+	s_currentLuaTarget.fov = lua_tonumber(_state, 1);
+	
+	return 0;
+}
+
+static int lua_SetNearFarClip( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 2);
+	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
+	FC_ASSERT(lua_type(_state, 2) == LUA_TNUMBER);
+	
+	s_currentLuaTarget.nearClip = lua_tonumber(_state, 1);
+	s_currentLuaTarget.farClip = lua_tonumber(_state, 2);
+	
+	return 0;
+}
+
+static int lua_SetFrustumTranslation( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 3);
+	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
+	FC_ASSERT(lua_type(_state, 2) == LUA_TNUMBER);
+	FC_ASSERT(lua_type(_state, 3) == LUA_TNUMBER);
+
+	s_currentLuaTarget.frustumTranslation = FC::Vector3f(
+														 lua_tonumber(_state, 1),
+														 lua_tonumber(_state, 2),
+														 lua_tonumber(_state, 3) );
 	
 	return 0;
 }
@@ -144,6 +182,9 @@ static int lua_SetClearColor( lua_State* _state )
 			[[FCLua instance].coreVM createGlobalTable:@"GLView"];
 			[[FCLua instance].coreVM registerCFunction:lua_SetCurrentView as:@"GLView.SetCurrent"];
 			[[FCLua instance].coreVM registerCFunction:lua_SetClearColor as:@"GLView.SetClearColor"];
+			[[FCLua instance].coreVM registerCFunction:lua_SetFOV as:@"GLView.SetFOV"];
+			[[FCLua instance].coreVM registerCFunction:lua_SetNearFarClip as:@"GLView.SetNearFarClip"];
+			[[FCLua instance].coreVM registerCFunction:lua_SetFrustumTranslation as:@"GLView.SetFrustumTranslation"];
 		}
 
 		FC_ASSERT([s_glViews valueForKey:managedName] == nil);

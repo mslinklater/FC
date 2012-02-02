@@ -586,6 +586,7 @@ static int lua_RemoveFromGroup( lua_State* _state )
 
 }
 
+
 #pragma mark - View Management
 
 @end

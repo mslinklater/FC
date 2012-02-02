@@ -85,7 +85,26 @@ static int lua_WaitThread( lua_State* state )
 		FCLuaThread* thread = [instance.threadsDict objectForKey:key];
 		if (state == thread.luaState) {
 			double time = lua_tonumber(state, 1);
-			[thread pause:time];
+			[thread pauseRealTime:time];
+			int yieldVal = lua_yield(state, 0);
+			return yieldVal;
+		}
+	}
+	FC_FATAL(@"Cannot find thread");
+	return 0;
+}
+
+static int lua_WaitGameThread( lua_State* state )
+{
+	// find thread with this state
+	FCLua* instance = [FCLua instance];
+	NSArray* keys = [instance.threadsDict allKeys];
+	for( id key in keys )
+	{
+		FCLuaThread* thread = [instance.threadsDict objectForKey:key];
+		if (state == thread.luaState) {
+			double time = lua_tonumber(state, 1);
+			[thread pauseGameTime:time];
 			int yieldVal = lua_yield(state, 0);
 			return yieldVal;
 		}
@@ -141,7 +160,7 @@ static int lua_KillThread( lua_State* state )
 	return pInstance;
 }
 
--(void)updateThreads:(float)dt
+-(void)updateThreadsRealTime:(float)dt gameTime:(float)gt
 {
 	// check for stack crawl
 	
@@ -150,7 +169,9 @@ static int lua_KillThread( lua_State* state )
 	for( id key in keys ) 
 	{
 		FCLuaThread* thread = [self.threadsDict objectForKey:key];
-		[thread update:dt];
+		
+		[thread updateRealTime:dt gameTime:gt];
+		
 		if (thread.state == kLuaThreadStateDead) {
 			[self.threadsDict removeObjectForKey:key];
 		}
@@ -175,6 +196,7 @@ static int lua_KillThread( lua_State* state )
 		// register core API
 		[m_coreVM registerCFunction:lua_NewThread as:@"FCNewThread"];
 		[m_coreVM registerCFunction:lua_WaitThread as:@"FCWait"];
+		[m_coreVM registerCFunction:lua_WaitGameThread as:@"FCWaitGame"];
 		[m_coreVM registerCFunction:lua_KillThread as:@"FCKillThread"];
 		
 		_nextThreadId = 1;

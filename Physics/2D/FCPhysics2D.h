@@ -42,12 +42,21 @@
 @property(nonatomic, strong) NSMutableDictionary* joints;
 @property(nonatomic, strong) NSMutableDictionary* bodiesByNameDict;
 
+-(void)prepareForDealloc;
+
 -(FCPhysics2DBody*)newBodyWithDef:(FCPhysics2DBodyDef*)def;
 -(void)destroyBody:(FCPhysics2DBody*)body;
 
 -(FCPhysics2DBody*)bodyWithName:(NSString*)name;
 
 -(FCHandle)createJoint:(FCPhysics2DJointCreateDef*)def;
+
+-(void)setRevoluteJoint:(FCHandle)handle motorEnabled:(BOOL)enabled torque:(float)torque speed:(float)speed;
+-(void)setRevoluteJoint:(FCHandle)handle limitsEnabled:(BOOL)enabled min:(float)min max:(float)max;
+
+-(void)setPrismaticJoint:(FCHandle)handle motorEnabled:(BOOL)enabled force:(float)force speed:(float)speed;
+-(void)setPrismaticJoint:(FCHandle)handle limitsEnabled:(BOOL)enabled min:(float)min max:(float)max;
+
 @end
 
 #endif // defined(FC_PHYSICS)

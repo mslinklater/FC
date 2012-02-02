@@ -141,6 +141,17 @@ static int lua_PauseGame( lua_State* _state )
 	return 0;
 }
 
+static int lua_SetUpdateFrequency( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 1);
+	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
+	
+	[FCApp setUpdateFrequency:lua_tointeger(_state, 1)];
+	
+	return 0;
+}
+
+
 #endif // defined(FC_LUA)
 
 #pragma mark - Objective-C Impl
@@ -162,7 +173,7 @@ static int lua_PauseGame( lua_State* _state )
 #if TARGET_OS_IPHONE
 	s_displayLink = [CADisplayLink displayLinkWithTarget:[FCApp class] selector:@selector(update)];
 	[s_displayLink setFrameInterval:1];
-	[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+	[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 
 	vc.view.backgroundColor = [UIColor blackColor];
 	[FCViewManager instance].rootView = vc.view;
@@ -182,6 +193,7 @@ static int lua_PauseGame( lua_State* _state )
 	[FCAnalytics registerLuaFunctions:s_lua];
 
 	[FCError registerLuaFunctions:s_lua];
+
 	[s_lua createGlobalTable:@"FCApp"];
 	[s_lua registerCFunction:lua_ShowStatusBar as:@"FCApp.ShowStatusBar"];
 	[s_lua registerCFunction:lua_SetBackgroundColor as:@"FCApp.SetBackgroundColor"];
@@ -189,7 +201,8 @@ static int lua_PauseGame( lua_State* _state )
 	[s_lua registerCFunction:lua_LaunchExternalURL as:@"FCApp.LaunchExternalURL"];
 	[s_lua registerCFunction:lua_MainViewSize as:@"FCApp.MainViewSize"];
 	[s_lua registerCFunction:lua_PauseGame as:@"FCApp.Pause"];
-
+	[s_lua registerCFunction:lua_SetUpdateFrequency as:@"FCApp.SetUpdateFrequency"];
+	
 	[s_lua setGlobal:@"FCApp.paused" boolean:NO];
 #endif
 	
@@ -206,7 +219,6 @@ static int lua_PauseGame( lua_State* _state )
 #endif
 	[FCActorSystem instance];
 	
-//	[[FCShaderManager instance] prebuildShaders];
 #if defined(FC_LUA)
 	[s_lua loadScript:@"main"];
 	[s_lua call:@"FCApp.ColdBoot" required:YES withSig:@""];
@@ -238,37 +250,86 @@ static int lua_PauseGame( lua_State* _state )
 #endif
 }
 
++(void)setUpdateFrequency:(int)fps
+{
+	[s_displayLink invalidate];
+	s_displayLink = nil;
+	
+	s_displayLink = [CADisplayLink displayLinkWithTarget:[FCApp class] selector:@selector(update)];
+	[s_displayLink setFrameInterval:60 / fps];
+	[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+}
+
 +(void)update
 {
+	static int fps = 0;
+	static float seconds = 0.0f;
+
+	FCPerformanceCounter* localCounter = [[FCPerformanceCounter alloc] init];
+	[localCounter zero];
+	
+	static float pauseSmooth = 0.0f;
 	float dt = (float)[s_perfCounter secondsValue];
 	[s_perfCounter zero];
+
 		
+	
 	FC::Clamp<float>(dt, 0, 0.1);
 	
 	float gameTime;
 	
 	if (s_paused) {
-		gameTime = 0.0f;
+		pauseSmooth += (0.0f - pauseSmooth) * dt * 5;
 	} else {
-		gameTime = dt;
+		pauseSmooth += (1.0f - pauseSmooth) * dt * 5;
 	}
-			
+
+	if (pauseSmooth < 0.05f)
+		gameTime = 0.0f;
+	else
+		gameTime = dt * pauseSmooth;
+	
 	[s_delegate updateRealTime:dt gameTime:gameTime];
 	
 #if defined (FC_LUA)
-	[[FCLua instance] updateThreads:dt];
+	[[FCLua instance] updateThreadsRealTime:dt gameTime:gameTime];
 #endif
 	
 	// update the game systems here...
 	
 #if defined (FC_PHYSICS)
-	[[FCPhysics instance] update:dt gameTime:dt];
+	[[FCPhysics instance] update:dt gameTime:gameTime];
 #endif
 	
-	[[FCActorSystem instance] update:dt gameTime:dt];
+	[[FCActorSystem instance] update:dt gameTime:gameTime];
 	
 	// Keep this as the last update - since render views are updated here.
 	[[FCPhaseManager instance] update:dt];
+
+	float elapsed = [localCounter secondsValue];
+	
+	seconds += dt;
+	if (seconds >= 1.0f) {
+//		NSLog(@"fps: %d - %f", fps, 1.0f / elapsed);
+		
+		
+		if (fps < 55) {
+			[s_displayLink invalidate];
+			s_displayLink = nil;
+			s_displayLink = [CADisplayLink displayLinkWithTarget:[FCApp class] selector:@selector(update)];
+			[s_displayLink setFrameInterval:1];
+			[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+		}
+		
+		seconds = 0.0f;
+		fps = 0;
+	} else {
+		fps++;
+	}
+
+	
+	
+	
 }
 
 +(void)pause
