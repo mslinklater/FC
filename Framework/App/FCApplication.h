@@ -40,9 +40,9 @@
 @end
 
 #if TARGET_OS_IPHONE
-@interface FCApp : NSObject <GKLeaderboardViewControllerDelegate>
+@interface FCApplication : NSObject <GKLeaderboardViewControllerDelegate>
 #else
-@interface FCApp : NSObject
+@interface FCApplication : NSObject
 #endif
 
 #if TARGET_OS_IPHONE

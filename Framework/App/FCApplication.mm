@@ -23,7 +23,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "FCCore.h"
-#import "FCApp.h"
+#import "FCApplication.h"
 #import "FCPersistentData.h"
 #import "FCAnalytics.h"
 #import "FCDevice.h"
@@ -37,6 +37,7 @@
 #import "FCPhysics.h"
 #import "FCActorSystem.h"
 #import "FCShaderManager.h"
+#import "FCFacebook.h"
 
 #if defined (FC_LUA)
 static FCLuaVM*					s_lua;
@@ -101,7 +102,7 @@ static int lua_SetBackgroundColor( lua_State* _state )
 
 static int lua_ShowGameCenterLeaderboards( lua_State* _state )
 {
-	[FCApp showGameCenterLeaderboard];
+	[FCApplication showGameCenterLeaderboard];
 	return 0;
 }
 
@@ -111,7 +112,7 @@ static int lua_LaunchExternalURL( lua_State* _state )
 	
 	NSString* urlString = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	
-	[FCApp launchExternalURL:urlString];
+	[FCApplication launchExternalURL:urlString];
 	return 0;
 }
 
@@ -133,9 +134,9 @@ static int lua_PauseGame( lua_State* _state )
 	FC_ASSERT(lua_isboolean(_state, 1));
 	
 	if (lua_toboolean(_state, 1)) {
-		[FCApp pause];
+		[FCApplication pause];
 	} else {
-		[FCApp resume];
+		[FCApplication resume];
 	}
 	
 	return 0;
@@ -146,7 +147,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	FC_ASSERT(lua_gettop(_state) == 1);
 	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
 	
-	[FCApp setUpdateFrequency:lua_tointeger(_state, 1)];
+	[FCApplication setUpdateFrequency:lua_tointeger(_state, 1)];
 	
 	return 0;
 }
@@ -156,7 +157,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 
 #pragma mark - Objective-C Impl
 
-@implementation FCApp
+@implementation FCApplication
 
 #if TARGET_OS_IPHONE
 +(void)coldBootWithViewController:(UIViewController *)vc delegate:(id<FCAppDelegate>)delegate
@@ -171,7 +172,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	s_perfCounter = [[FCPerformanceCounter alloc] init];
 	
 #if TARGET_OS_IPHONE
-	s_displayLink = [CADisplayLink displayLinkWithTarget:[FCApp class] selector:@selector(update)];
+	s_displayLink = [CADisplayLink displayLinkWithTarget:[FCApplication class] selector:@selector(update)];
 	[s_displayLink setFrameInterval:1];
 	[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 
@@ -209,6 +210,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 #if TARGET_OS_IPHONE
 	[[FCConnect instance] start:nil];
 	[[FCConnect instance] enableBonjourWithName:@"FCConnect"];
+	
+	[FCFacebook instance];
 #endif
 	[[FCDevice instance] probe];
 	[[FCDevice instance] warmProbe];
@@ -255,7 +258,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	[s_displayLink invalidate];
 	s_displayLink = nil;
 	
-	s_displayLink = [CADisplayLink displayLinkWithTarget:[FCApp class] selector:@selector(update)];
+	s_displayLink = [CADisplayLink displayLinkWithTarget:[FCApplication class] selector:@selector(update)];
 	[s_displayLink setFrameInterval:60 / fps];
 	[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
@@ -306,7 +309,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	// Keep this as the last update - since render views are updated here.
 	[[FCPhaseManager instance] update:dt];
 
-	float elapsed = [localCounter secondsValue];
+//	float elapsed = [localCounter secondsValue];
 	
 	seconds += dt;
 	if (seconds >= 1.0f) {
@@ -316,7 +319,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 		if (fps < 55) {
 			[s_displayLink invalidate];
 			s_displayLink = nil;
-			s_displayLink = [CADisplayLink displayLinkWithTarget:[FCApp class] selector:@selector(update)];
+			s_displayLink = [CADisplayLink displayLinkWithTarget:[FCApplication class] selector:@selector(update)];
 			[s_displayLink setFrameInterval:1];
 			[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 		}
@@ -326,10 +329,6 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	} else {
 		fps++;
 	}
-
-	
-	
-	
 }
 
 +(void)pause

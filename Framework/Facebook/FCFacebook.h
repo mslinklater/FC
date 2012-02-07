@@ -21,21 +21,28 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "FBConnect.h"
 
-namespace FC {
-	
-	class Color4f {
-	public:
-		Color4f(){}
-		Color4f( float rIn, float gIn, float bIn, float aIn ) : r(rIn), g(gIn), b(bIn), a(aIn) {}
-		Color4f( const Color4f& col ) : r(col.r), g(col.g), b(col.b), a(col.a) {}
-		
-		void Zero( void ){ r = g = b = a = 0.0f; }
-		
-		float	r;
-		float	g;
-		float	b;
-		float	a;
-	};
+enum eFacebookLoginStatus {
+	kOffline,
+	kLoggingIn,
+	kLoggedIn,
+	kLoggingOut
+};
+
+@interface FCFacebook : NSObject <FBSessionDelegate> {
+	Facebook* _facebook;
+	NSString* _appId;
+	eFacebookLoginStatus _loginStatus;
 }
+@property(nonatomic, strong) Facebook* facebook;
+@property(nonatomic, strong) NSString* appId;
+@property(nonatomic, readonly) eFacebookLoginStatus loginStatus;
 
++(FCFacebook*)instance;
+-(id)init;
+-(void)connectWithAppId:(NSString*)appId;
+-(void)login;
+-(void)logout;
+
+@end

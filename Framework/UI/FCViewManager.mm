@@ -25,7 +25,7 @@
 #import "FCViewManager.h"
 #import "FCError.h"
 #import "FCDevice.h"
-#import "FCApp.h"
+#import "FCApplication.h"
 
 #pragma mark - Lua Interface
 
@@ -400,7 +400,7 @@ static int lua_RemoveFromGroup( lua_State* _state )
 	scaledFrame.origin.x = view.frame.size.width * rect.origin.x;			
 	scaledFrame.origin.y = view.frame.size.height * rect.origin.y;				
 
-	CGSize mainViewSize = [FCApp mainViewSize];
+	CGSize mainViewSize = [FCApplication mainViewSize];
 
 	scaledFrame.size.width = mainViewSize.width * rect.size.width;
 	scaledFrame.size.height = mainViewSize.height * rect.size.height;			
@@ -486,7 +486,7 @@ static int lua_RemoveFromGroup( lua_State* _state )
 		scaledFrame.origin.x = containerFrame.size.width * frame.origin.x;			
 		scaledFrame.origin.y = containerFrame.size.height * frame.origin.y;			
 		
-		CGSize mainViewSize = [FCApp mainViewSize];
+		CGSize mainViewSize = [FCApplication mainViewSize];
 		
 		if (frame.size.width < 0) {
 			scaledFrame.size.width = thisView.frame.size.width;

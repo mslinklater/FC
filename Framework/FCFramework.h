@@ -23,6 +23,6 @@
 #ifndef FC_FCFramework_h
 #define FC_FCFramework_h
 
-#import "Framework/App/FCApp.h"
+#import "Framework/App/FCApplication.h"
 
 #endif

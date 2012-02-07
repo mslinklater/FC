@@ -30,10 +30,6 @@
 #import "Maths/FCMaths.h"
 #import "Core/FCTypes.h"
 
-//@protocol FCGLViewRenderTarget <NSObject>
-//-(void)render;
-//@end
-
 @interface FCGLView : UIView
 {
 @private
