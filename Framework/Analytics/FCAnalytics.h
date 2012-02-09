@@ -27,26 +27,18 @@
 #import "FCProtocols.h"
 #import "FCLuaClass.h"
 
-@interface FCAnalytics : NSObject <FCLuaClass> {
-    int _sessionTime;
-	NSTimer* sessionTimer;
+@interface FCAnalytics : NSObject {
+	NSMutableDictionary* _currentTimedEvents;
+	FCHandle _nextHandle;
 }
-@property(nonatomic, strong) NSString* accountID;
-@property(nonatomic) int sessionTime;
+@property(nonatomic, strong) NSMutableDictionary* currentTimedEvents;
+@property(nonatomic) FCHandle nextHandle;
 
 +(FCAnalytics*)instance;
--(void)shutdown;
 
-//----
-
--(void)registerSystemValues;
-
--(void)event:(NSString*)event action:(NSString*)action label:(NSString*)label value:(int)value;
--(void)eventStartPlaySession;
--(void)eventEndPlaySession;
-
-//-(void)gameLevelPlayed:(NSString*)levelInfo;
-
+-(void)registerEvent:(NSString*)event;
+-(FCHandle)beginTimedEvent:(NSString*)event;
+-(void)endTimedEvent:(FCHandle)hEvent;
 @end
 
 #endif // TARGET_OS_IPHONE

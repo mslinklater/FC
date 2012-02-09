@@ -38,7 +38,7 @@
 #import "FCRenderer.h"
 #import "FCVertexDescriptor.h"
 
-static 	FC::Color4f	debugColor( 1.0f, 1.0f, 1.0f, 1.0f );
+static 	FC::Color4f	s_whiteColor( 1.0f, 1.0f, 1.0f, 1.0f );
 static int kNumCircleSegments = 16;
 static FCVertexDescriptor* s_debugMeshVertexDescriptor;
 static NSString* s_debugShaderName = @"debug_debug";
@@ -46,9 +46,9 @@ static NSString* s_debugShaderName = @"debug_debug";
 #pragma mark - Private interface
 
 @interface FCModel(hidden)
--(void)addDebugCircle:(NSDictionary*)def;
--(void)addDebugRectangle:(NSDictionary*)def;
--(void)addDebugPolygon:(NSDictionary*)def;
+-(void)addDebugCircle:(NSDictionary*)def color:(UIColor*)debugColor;
+-(void)addDebugRectangle:(NSDictionary*)def color:(UIColor*)debugColor;
+-(void)addDebugPolygon:(NSDictionary*)def color:(UIColor*)debugColor;
 @end
 
 #pragma mark - Public interface
@@ -71,10 +71,11 @@ static NSString* s_debugShaderName = @"debug_debug";
 
 +(void)setDebugColor:(FC::Color4f)col
 {
-	debugColor = col;
+	FC_ASSERT(0);
+//	debugColor = col;
 }
 
--(id)initWithPhysicsBody:(NSDictionary *)bodyDict //actorXOffset:(float)actorX actorYOffset:(float)actorY
+-(id)initWithPhysicsBody:(NSDictionary *)bodyDict color:(UIColor*)color	//actorXOffset:(float)actorX actorYOffset:(float)actorY
 {
 	self = [super init];
 	if (self) {
@@ -106,8 +107,7 @@ static NSString* s_debugShaderName = @"debug_debug";
 				[debugDict setValue:[fixture valueForKey:@"xSize"] forKey:kFCKeyXSize];
 				[debugDict setValue:[fixture valueForKey:@"ySize"] forKey:kFCKeyYSize];
 				
-				[self addDebugRectangle:debugDict];
-				
+				[self addDebugRectangle:debugDict color:color];
 			} 
 			else if([type isEqualToString:@"circle"]) 
 			{
@@ -117,8 +117,7 @@ static NSString* s_debugShaderName = @"debug_debug";
 				[debugDict setValue:[NSNumber numberWithFloat:fixtureY] forKey:kFCKeyOffsetY];
 				[debugDict setValue:[fixture valueForKey:@"radius"] forKey:kFCKeyRadius];
 				
-				[self addDebugCircle:debugDict];
-				
+				[self addDebugCircle:debugDict color:color];				
 			} 
 			else if([type isEqualToString:@"polygon"]) 
 			{
@@ -134,8 +133,7 @@ static NSString* s_debugShaderName = @"debug_debug";
 				[debugDict setValue:[NSNumber numberWithFloat:fixtureX] forKey:kFCKeyOffsetX];
 				[debugDict setValue:[NSNumber numberWithFloat:fixtureY] forKey:kFCKeyOffsetY];
 				
-				[self addDebugPolygon:debugDict];
-				
+				[self addDebugPolygon:debugDict color:color];
 			}
 		}
 	}
@@ -286,7 +284,7 @@ static NSString* s_debugShaderName = @"debug_debug";
 	}
 }
 
--(void)addDebugCircle:(NSDictionary*)def
+-(void)addDebugCircle:(NSDictionary*)def color:(UIColor*)debugColor
 {
 	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:s_debugMeshVertexDescriptor shaderName:s_debugShaderName];
 	[self.meshes addObject:mesh];
@@ -318,7 +316,13 @@ static NSString* s_debugShaderName = @"debug_debug";
 		pVert->z = center.z;		
 	}
 
-	mesh.colorUniform = debugColor;
+	if (debugColor) {
+		float red, green, blue, alpha;
+		[debugColor getRed:&red green:&green blue:&blue alpha:&alpha];
+		mesh.colorUniform = FC::Color4f( red, green, blue, alpha );
+	}
+	else
+		mesh.colorUniform = s_whiteColor;
 	
 	FC::Vector3us* pIndex;
 	
@@ -337,7 +341,7 @@ static NSString* s_debugShaderName = @"debug_debug";
 
 }
 
--(void)addDebugRectangle:(NSDictionary*)def
+-(void)addDebugRectangle:(NSDictionary*)def color:(UIColor *)debugColor
 {
 	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:s_debugMeshVertexDescriptor shaderName:s_debugShaderName];
 	[self.meshes addObject:mesh];
@@ -374,7 +378,15 @@ static NSString* s_debugShaderName = @"debug_debug";
 	pVert->y = center.y + size.y * 1.0f;
 	pVert->z = center.z;
 	
-	mesh.colorUniform = debugColor;
+//	mesh.colorUniform = debugColor;
+
+	if (debugColor) {
+		float red, green, blue, alpha;
+		[debugColor getRed:&red green:&green blue:&blue alpha:&alpha];
+		mesh.colorUniform = FC::Color4f( red, green, blue, alpha );
+	}
+	else
+		mesh.colorUniform = s_whiteColor;
 
 	FC::Vector3us* pIndex;
 	
@@ -388,7 +400,7 @@ static NSString* s_debugShaderName = @"debug_debug";
 	pIndex->z = 3;
 }
 
--(void)addDebugPolygon:(NSDictionary*)def
+-(void)addDebugPolygon:(NSDictionary*)def color:(UIColor *)debugColor
 {
 	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:s_debugMeshVertexDescriptor shaderName:s_debugShaderName];
 	[self.meshes addObject:mesh];
@@ -417,7 +429,16 @@ static NSString* s_debugShaderName = @"debug_debug";
 		pVert->z = 0.0f;
 	}	
 
-	mesh.colorUniform = debugColor;
+//	mesh.colorUniform = debugColor;
+	if (debugColor) {
+		float red, green, blue, alpha;
+		[debugColor getRed:&red green:&green blue:&blue alpha:&alpha];
+		mesh.colorUniform = FC::Color4f( red, green, blue, alpha );
+	}
+	else
+	{
+		mesh.colorUniform = s_whiteColor;
+	}
 
 	FC::Vector3us* pIndex;
 	

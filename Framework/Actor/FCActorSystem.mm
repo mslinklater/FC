@@ -58,7 +58,8 @@ static int lua_Reset( lua_State* _state )
 @synthesize deleteList = _deleteList;
 @synthesize classArraysDictionary = _classArraysDictionary;
 @synthesize actorIdDictionary = _actorIdDictionary;
-@synthesize actorNameDictionary = _actorNameDictionary;
+@synthesize actorHandleDictionary = _actorHandleDictionary;
+@synthesize nextHandle = _nextHandle;
 
 #pragma mark - FCSingleton protocol
 
@@ -77,6 +78,8 @@ static int lua_Reset( lua_State* _state )
 	self = [super init];
 	if (self) 
 	{
+		_nextHandle = 1;
+		
 		_allActorsArray = [[NSMutableArray alloc] init];
 		_updateActorsArray = [[NSMutableArray alloc] init];
 		_renderActorsArray = [[NSMutableArray alloc] init];
@@ -84,7 +87,7 @@ static int lua_Reset( lua_State* _state )
 		_deleteList = [[NSMutableArray alloc] init];
 		_classArraysDictionary = [[NSMutableDictionary alloc] init];
 		_actorIdDictionary = [[NSMutableDictionary alloc] init];
-		_actorNameDictionary = [[NSMutableDictionary alloc] init];
+		_actorHandleDictionary = [[NSMutableDictionary alloc] init];
 		
 #if defined (FC_LUA)
 		[[FCLua instance].coreVM createGlobalTable:@"FCActorSystem"];
@@ -112,17 +115,6 @@ static int lua_Reset( lua_State* _state )
 	{
 		[newActors addObject:[self createActor:actorDict ofClass:actorClass withResource:res named:name]];
 	}	
-
-	// add the joints
-#if defined (FC_PHYSICS)
-	// REMOVE
-//	NSArray* joints = [res.xmlData arrayForKeyPath:@"fcr.physics.joints.joint"];
-//
-//	for(NSDictionary* jointDict in joints)
-//	{
-//		[self addJoint:jointDict];
-//	}
-#endif
 
 	NSArray* retArray = [NSArray arrayWithArray:newActors];
 	return retArray;
@@ -171,23 +163,14 @@ static int lua_Reset( lua_State* _state )
 	id actor = [self actorOfClass:NSClassFromString(actorClass)];
 	
 	actor = [actor initWithDictionary:actorDict body:bodyDict model:modelDict resource:res];
+	((FCActor*)actor).handle = _nextHandle++;
 
 	// some more checks etc
-	
+
 	NSString* actorId = [actorDict valueForKey:@"id"];
 
 	if (actorId) // id is optional
 	{
-//		id result = [_actorIdDictionary valueForKey:actorId];
-//		
-//		if (result == nil) {
-//			[_actorIdDictionary setValue:[NSMutableSet setWithObject:actor] forKey:actorId];
-//		} else {
-//			FC_HALT;	// why should we allow non-unique id's ???
-//			NSAssert([result isKindOfClass:[NSMutableSet class]], @"id dict does not have set in it");
-//			NSMutableSet* set = (NSMutableSet*)result;
-//			[set addObject:actor];
-//		}
 		[_actorIdDictionary setValue:actor forKey:actorId];
 	}
 
@@ -201,12 +184,9 @@ static int lua_Reset( lua_State* _state )
 	
 	[[_classArraysDictionary valueForKey:actorClass] addObject:actor];
 
-	// name
-	
-	if (name) {
-		[_actorNameDictionary setValue:actor forKey:name];
-		((FCActor*)actor).name = name;
-	}
+	// handle
+
+	[_actorHandleDictionary setObject:actor forKey:[NSNumber numberWithInt:((FCActor*)actor).handle]];
 	
 	return actor;
 }
@@ -255,8 +235,6 @@ static int lua_Reset( lua_State* _state )
 	if (((FCActor*)actor).Id) 
 	{
 		NSString* Id = ((FCActor*)actor).Id;
-//		id actorSet = [_actorIdDictionary valueForKey:Id];
-//		[actorSet removeObject:actor];
 		[_actorIdDictionary removeObjectForKey:Id];
 	}
 
@@ -276,9 +254,7 @@ static int lua_Reset( lua_State* _state )
 	
 	[[_classArraysDictionary valueForKey:NSStringFromClass([actor class])] removeObject:actor];
 	
-	if (actor.name) {
-		[_actorNameDictionary removeObjectForKey:actor.name];
-	}
+	[_actorHandleDictionary removeObjectForKey:[NSNumber numberWithInt:actor.handle]];
 }
 
 -(NSArray*)getActorsOfClass:(NSString*)actorClass
@@ -289,6 +265,11 @@ static int lua_Reset( lua_State* _state )
 -(id)actorWithId:(NSString *)Id
 {
 	return [_actorIdDictionary valueForKey:Id];
+}
+
+-(id)actorWithHandle:(FCHandle)handle
+{
+	return [_actorHandleDictionary objectForKey:[NSNumber numberWithInt:handle]];
 }
 
 #pragma mark -
@@ -315,7 +296,7 @@ static int lua_Reset( lua_State* _state )
 	
 	[_classArraysDictionary removeAllObjects];
 	[_actorIdDictionary removeAllObjects];
-	[_actorNameDictionary removeAllObjects];
+	[_actorHandleDictionary removeAllObjects];
 }
 
 #pragma mark - GameObjectUpdate methods
@@ -346,36 +327,36 @@ static int lua_Reset( lua_State* _state )
 	return _renderActorsArray;
 }
 
--(FCActor*)actorAtPosition:(FC::Vector2f)pos
-{
-	FCActor* ret = nil;
-	
-	NSMutableArray* candidates = [NSMutableArray arrayWithCapacity:[_tapGestureActorsArray count]];
-	
-	// Find candidates using radius checks
-	
-	for( FCActor* actor in _tapGestureActorsArray )
-	{
-		FC::Vector2f actorPos = actor.position;
-		if ([actor radius] >= FC::Distance(actorPos, pos)) 
-		{
-			[candidates addObject:actor];
-		}
-	}
-	
-	// do proper check by asking actor if pos is within bounds
-	
-	for( FCActor* actor in candidates )
-	{
-		if ([actor posWithinBounds:pos]) 
-		{
-			ret = actor;
-			break;
-		}
-	}
-	
-	return ret;
-}
+//-(FCActor*)actorAtPosition:(FC::Vector2f)pos
+//{
+//	FCActor* ret = nil;
+//	
+//	NSMutableArray* candidates = [NSMutableArray arrayWithCapacity:[_tapGestureActorsArray count]];
+//	
+//	// Find candidates using radius checks
+//	
+//	for( FCActor* actor in _tapGestureActorsArray )
+//	{
+//		FC::Vector2f actorPos = actor.position;
+//		if ([actor radius] >= FC::Distance(actorPos, pos)) 
+//		{
+//			[candidates addObject:actor];
+//		}
+//	}
+//	
+//	// do proper check by asking actor if pos is within bounds
+//	
+//	for( FCActor* actor in candidates )
+//	{
+//		if ([actor posWithinBounds:pos]) 
+//		{
+//			ret = actor;
+//			break;
+//		}
+//	}
+//	
+//	return ret;
+//}
 
 @end
 

@@ -191,7 +191,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	[FCViewManager registerLuaFunctions:s_lua];
 	[FCBuild registerLuaFunctions:s_lua];
 
-	[FCAnalytics registerLuaFunctions:s_lua];
+//	[FCAnalytics registerLuaFunctions:s_lua];
 
 	[FCError registerLuaFunctions:s_lua];
 
@@ -212,6 +212,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	[[FCConnect instance] enableBonjourWithName:@"FCConnect"];
 	
 	[FCFacebook instance];
+	[FCAnalytics instance];
 #endif
 	[[FCDevice instance] probe];
 	[[FCDevice instance] warmProbe];
@@ -317,11 +318,11 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 		
 		
 		if (fps < 55) {
-			[s_displayLink invalidate];
-			s_displayLink = nil;
-			s_displayLink = [CADisplayLink displayLinkWithTarget:[FCApplication class] selector:@selector(update)];
-			[s_displayLink setFrameInterval:1];
-			[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+//			[s_displayLink invalidate];
+//			s_displayLink = nil;
+//			s_displayLink = [CADisplayLink displayLinkWithTarget:[FCApplication class] selector:@selector(update)];
+//			[s_displayLink setFrameInterval:1];
+//			[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 		}
 		
 		seconds = 0.0f;
@@ -351,7 +352,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 {
 #if TARGET_OS_IPHONE
 	[[FCConnect instance] stop];
-	[[FCAnalytics instance] eventEndPlaySession];
+//	[[FCAnalytics instance] eventEndPlaySession];
 #endif
 	[[FCPersistentData instance] saveData];
 	
@@ -379,7 +380,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 #if TARGET_OS_IPHONE
 	[[FCConnect instance] start:nil];
 	[[FCConnect instance] enableBonjourWithName:@"FCConnect"];
-	[[FCAnalytics instance] eventStartPlaySession];
+//	[[FCAnalytics instance] eventStartPlaySession];
 #endif
 	
 #if defined (FC_LUA)
@@ -390,7 +391,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 +(void)willTerminate
 {
 #if TARGET_OS_IPHONE
-	[[FCAnalytics instance] shutdown];
+//	[[FCAnalytics instance] shutdown];
 #endif
 	
 #if defined (FC_LUA)

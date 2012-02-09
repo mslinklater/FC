@@ -192,6 +192,34 @@ static int lua_SetOnSelectLuaFunction( lua_State* _state )
 	return 0;
 }
 
+static int lua_SetImage( lua_State* _state )
+{
+	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
+	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING );
+	FC_ASSERT( lua_gettop(_state) <= 3);
+	
+	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	NSString* imageName = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
+	
+	[[FCViewManager instance] setView:viewName image:imageName];
+	
+	return 0;
+}
+
+static int lua_SetURL( lua_State* _state )
+{
+	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
+	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING );
+	FC_ASSERT( lua_gettop(_state) <= 3);
+	
+	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	NSString* url = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
+	
+	[[FCViewManager instance] setView:viewName url:url];
+	
+	return 0;
+}
+
 static int lua_CreateGroup( lua_State* _state )
 {
 	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
@@ -263,6 +291,9 @@ static int lua_RemoveFromGroup( lua_State* _state )
 	[lua registerCFunction:lua_SetFrame as:@"FCViewManager.SetFrame"];
 	[lua registerCFunction:lua_SetAlpha as:@"FCViewManager.SetAlpha"];
 	[lua registerCFunction:lua_SetOnSelectLuaFunction as:@"FCViewManager.SetOnSelectLuaFunction"];
+	[lua registerCFunction:lua_SetImage as:@"FCViewManager.SetImage"];
+	[lua registerCFunction:lua_SetURL as:@"FCViewManager.SetURL"];
+	
 	[lua registerCFunction:lua_CreateGroup as:@"FCViewManager.CreateGroup"];
 	[lua registerCFunction:lua_RemoveGroup as:@"FCViewManager.RemoveGroup"];
 	[lua registerCFunction:lua_AddToGroup as:@"FCViewManager.AddToGroup"];
@@ -586,6 +617,54 @@ static int lua_RemoveFromGroup( lua_State* _state )
 
 }
 
+-(void)setView:(NSString*)viewName image:(NSString *)imageName
+{
+#if TARGET_OS_IPHONE
+	UIView* thisView = [_viewDictionary valueForKey:viewName];
+#else
+	NSView* thisView = [_viewDictionary valueForKey:viewName];
+#endif
+	
+	FC_ASSERT( thisView );
+	
+	if ([thisView respondsToSelector:@selector(setImage:)]) 
+	{
+		NSMethodSignature* sig = [[thisView class] instanceMethodSignatureForSelector:@selector(setImage:)];
+		NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:sig];
+		[invocation setSelector:@selector(setImage:)];
+		[invocation setTarget:thisView];
+		[invocation setArgument:&imageName atIndex:2];
+		[invocation invoke];
+		
+	} else {
+		FC_FATAL1(@"Sending 'setImage' to a view which does not respond to setImage - %@", thisView);
+	}	
+	
+}
+
+-(void)setView:(NSString*)viewName url:(NSString *)url
+{
+#if TARGET_OS_IPHONE
+	UIView* thisView = [_viewDictionary valueForKey:viewName];
+#else
+	NSView* thisView = [_viewDictionary valueForKey:viewName];
+#endif
+	
+	FC_ASSERT( thisView );
+	
+	if ([thisView respondsToSelector:@selector(setURL:)]) 
+	{
+		NSMethodSignature* sig = [[thisView class] instanceMethodSignatureForSelector:@selector(setURL:)];
+		NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:sig];
+		[invocation setSelector:@selector(setURL:)];
+		[invocation setTarget:thisView];
+		[invocation setArgument:&url atIndex:2];
+		[invocation invoke];
+		
+	} else {
+		FC_FATAL1(@"Sending 'setURL' to a view which does not respond to setURL - %@", thisView);
+	}	
+}
 
 #pragma mark - View Management
 

@@ -38,7 +38,7 @@
 
 @implementation FCPhysics2DBody
 
-@synthesize name = _name;
+@synthesize Id = _Id;
 @synthesize world = _world;
 @synthesize body = _body;
 
@@ -47,7 +47,7 @@
 	self = [super init];
 	if (self) 
 	{
-		_name = def.name;
+		_Id = def.Id;
 		[self createBodyFromDef:def];
 		[self createFixturesFromDef:def];
 	}

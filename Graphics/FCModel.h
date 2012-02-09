@@ -45,7 +45,7 @@
 -(void)render;
 
 -(id)initWithModel:(NSDictionary*)modelDict resource:(FCResource*)res;
--(id)initWithPhysicsBody:(NSDictionary*)bodyDict;// actorXOffset:(float)actorX actorYOffset:(float)actorY;
+-(id)initWithPhysicsBody:(NSDictionary*)bodyDict color:(UIColor*)color;// actorXOffset:(float)actorX actorYOffset:(float)actorY;
 
 @end
 

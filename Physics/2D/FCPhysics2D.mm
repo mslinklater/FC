@@ -38,8 +38,8 @@ static int lua_CreateDistanceJoint( lua_State* _state )
 	
 	FCPhysics2DDistanceJointCreateDef* def = [[FCPhysics2DDistanceJointCreateDef alloc] init];
 
-	NSString* body1Name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
-	def.body1 = [s_pInstance bodyWithName:body1Name];
+	NSString* body1Id = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	def.body1 = [s_pInstance bodyWithId:body1Id];
 	
 	FC_ASSERT(def.body1);
 	
@@ -63,8 +63,8 @@ static int lua_CreateDistanceJoint( lua_State* _state )
 	
 	FC_ASSERT(lua_isstring(_state, obj2NameStackPos));
 	
-	NSString* body2Name = [NSString stringWithUTF8String:lua_tostring(_state, obj2NameStackPos)];
-	def.body2 = [s_pInstance bodyWithName:body2Name];
+	NSString* body2Id = [NSString stringWithUTF8String:lua_tostring(_state, obj2NameStackPos)];
+	def.body2 = [s_pInstance bodyWithId:body2Id];
 	
 	FC_ASSERT(def.body2);
 	
@@ -98,9 +98,9 @@ static int lua_CreateRevoluteJoint( lua_State* _state )
 	
 	FCPhysics2DRevoluteJointCreateDef* def = [[FCPhysics2DRevoluteJointCreateDef alloc] init];
 	
-	def.body1 = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
+	def.body1 = [s_pInstance bodyWithId:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
 	FC_ASSERT(def.body1);
-	def.body2 = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
+	def.body2 = [s_pInstance bodyWithId:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
 	FC_ASSERT(def.body2);
 	
 	if (lua_isnumber(_state, 3)) {
@@ -130,9 +130,9 @@ static int lua_CreatePrismaticJoint( lua_State* _state )
 	
 	FCPhysics2DPrismaticJointCreateDef* def = [[FCPhysics2DPrismaticJointCreateDef alloc] init];
 	
-	def.body1 = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
+	def.body1 = [s_pInstance bodyWithId:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
 	FC_ASSERT(def.body1);
-	def.body2 = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
+	def.body2 = [s_pInstance bodyWithId:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
 	FC_ASSERT(def.body2);
 	
 	NSDictionary* null = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 3)]];
@@ -163,9 +163,9 @@ static int lua_CreatePulleyJoint( lua_State* _state )
 	
 	FCPhysics2DPulleyJointCreateDef* def = [[FCPhysics2DPulleyJointCreateDef alloc] init];
 	
-	def.body1 = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
+	def.body1 = [s_pInstance bodyWithId:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
 	FC_ASSERT(def.body1);
-	def.body2 = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
+	def.body2 = [s_pInstance bodyWithId:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
 	FC_ASSERT(def.body2);
 
 	NSDictionary* groundAnchor1 = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 3)]];
@@ -280,7 +280,7 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 @synthesize world = _world;
 @synthesize gravity = _gravity;
 @synthesize joints = _joints;
-@synthesize bodiesByNameDict = _bodiesByNameDict;
+@synthesize bodiesByIdDict = _bodiesByIdDict;
 
 #pragma mark - Object Lifecycle
 
@@ -295,7 +295,7 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 	if (self) 
 	{
 		s_pInstance = self;
-		_bodiesByNameDict = [NSMutableDictionary dictionary];
+		_bodiesByIdDict = [NSMutableDictionary dictionary];
 		
 #if defined (FC_LUA)
 		[[FCLua instance].coreVM createGlobalTable:@"FCPhysics2D"];
@@ -327,7 +327,7 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 {
 	s_pInstance = nil;
 	_joints = nil;
-	_bodiesByNameDict = nil;
+	_bodiesByIdDict = nil;
 	delete _world; 
 	_world = 0;
 }
@@ -348,19 +348,19 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 
 	FCPhysics2DBody* newBody = [[FCPhysics2DBody alloc] initWithDef:def];
 
-	[_bodiesByNameDict setValue:newBody forKey:newBody.name];
+	[_bodiesByIdDict setValue:newBody forKey:newBody.Id];
 	
 	return newBody;
 }
 
 -(void)destroyBody:(FCPhysics2DBody*)body
 {
-	[_bodiesByNameDict setValue:nil forKey:body.name];
+	[_bodiesByIdDict setValue:nil forKey:body.Id];
 }
 
--(FCPhysics2DBody*)bodyWithName:(NSString*)name
+-(FCPhysics2DBody*)bodyWithId:(NSString*)Id
 {
-	return [_bodiesByNameDict valueForKey:name];
+	return [_bodiesByIdDict valueForKey:Id];
 }
 
 #pragma mark - Joints

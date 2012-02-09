@@ -399,7 +399,7 @@ static FCDevice* pInstance;
 	// game center
 
 #if TARGET_OS_IPHONE
-	[[FCAnalytics instance] registerSystemValues];
+//	[[FCAnalytics instance] registerSystemValues];
 #endif
 	return;
 }

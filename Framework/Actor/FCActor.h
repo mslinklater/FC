@@ -39,8 +39,9 @@
 
 @interface FCActor : NSObject <FCActorBase> 
 {
+	FCHandle			_handle;
 	NSString*			_name;
-	NSString*			_id;
+	NSString*			_id;			// deprecate
 	NSDictionary*		_createDef;
 #if defined (FC_GRAPHICS)
 	FCModel*			_model;
@@ -49,6 +50,7 @@
 	FCPhysics2DBody*	_body2d;
 #endif
 }
+@property(nonatomic) FCHandle handle;
 @property(nonatomic, strong) NSString* name;
 @property(nonatomic, strong, readonly) NSString* Id;
 @property(nonatomic, strong, readonly) NSDictionary* createDef;

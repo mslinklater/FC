@@ -34,11 +34,11 @@ class b2Body;
 
 @interface FCPhysics2DBody : NSObject 
 {
-	NSString*		_name;
+	NSString*		_Id;
 	b2World*		_world;
 	b2Body*			_body;
 }
-@property(nonatomic, strong) NSString* name;
+@property(nonatomic, strong) NSString* Id;
 @property(nonatomic) b2World* world;
 @property(nonatomic, readonly) b2Body* body;
 @property(nonatomic, readonly) float rotation;

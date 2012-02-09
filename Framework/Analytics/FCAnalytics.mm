@@ -20,197 +20,111 @@
  THE SOFTWARE.
  */
 
+
 #if TARGET_OS_IPHONE
 
 #import "FCCore.h"
 
 #import "FCAnalytics.h"
-#import "FCDevice.h"
-#import <GANTracker.h>
-#import "FCLua.h"
+#import "FlurryAnalytics.h"
 
 #pragma mark - Lua Interface
 
-static int lua_SetAccountId( lua_State* lua )
+#if defined (FC_LUA)
+
+#import "FCLua.h"
+
+static int lua_RegisterEvent( lua_State* _state )
 {
-	const char* accountID = lua_tostring(lua, -1);
-	[[FCAnalytics instance] setAccountID:[NSString stringWithUTF8String:accountID]];
+	FC_ASSERT(lua_gettop(_state) == 1);
+	FC_ASSERT(lua_type(_state, 1) == LUA_TSTRING);
+	
+	[[FCAnalytics instance] registerEvent:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
+	
 	return 0;
 }
 
-static int lua_StartSession( lua_State* lua )
+static int lua_BeginTimedEvent( lua_State* _state )
 {
-	[[FCAnalytics instance] eventStartPlaySession];
+	FC_ASSERT(lua_gettop(_state) == 1);
+	FC_ASSERT(lua_type(_state, 1) == LUA_TSTRING);
+
+	FCHandle handle = [[FCAnalytics instance] beginTimedEvent:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
+	
+	lua_pushinteger(_state, handle);
+	
+	return 1;
+}
+
+static int lua_EndTimedEvent( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 1);
+	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
+	
+	[[FCAnalytics instance] endTimedEvent:(FCHandle)lua_tointeger(_state, 1)];
+	
 	return 0;
 }
 
-static int lua_EndSession( lua_State* lua )
-{
-	[[FCAnalytics instance] eventEndPlaySession];
-	return 0;
-}
+#endif
 
 //----------------------------------------------------------------------------------------------------------------------
 
 @implementation FCAnalytics
-
-static const int kVariableScopeVisitor = 1;
-static const int kVariableScopeSession = 2;
-static const int kVariableScopePage = 3;
-
-static const int kVariableOSVersion = 1;
-static const int kVariableDeviceType = 2;
-static const int kVariableAppPirated = 3;
-
-@synthesize accountID = _accountID;
-@synthesize sessionTime = _sessionTime;
+@synthesize currentTimedEvents = _currentTimedEvents;
+@synthesize nextHandle = _nextHandle;
 
 #pragma mark - FCSingleton
 
 +(FCAnalytics*)instance
 {
 	static FCAnalytics* pInstance;
-	if (!pInstance) {
+	if (!pInstance) 
+	{
 		pInstance = [[FCAnalytics alloc] init];
+
+#if defined (FC_LUA)
+		[[FCLua instance].coreVM createGlobalTable:@"FCAnalytics"];
+		[[FCLua instance].coreVM registerCFunction:lua_RegisterEvent as:@"FCAnalytics.RegisterEvent"];
+		[[FCLua instance].coreVM registerCFunction:lua_BeginTimedEvent as:@"FCAnalytics.BeginTimedEvent"];
+		[[FCLua instance].coreVM registerCFunction:lua_EndTimedEvent as:@"FCAnalytics.EndTimedEvent"];
+#endif // FC_LUA
+		
 	}
 	return pInstance;
 }
 
-#pragma mark - Object Lifecycle
 
 -(id)init
 {
 	self = [super init];
 	if (self) {
-		// blah
+		_currentTimedEvents = [NSMutableDictionary dictionary];
 	}
 	return self;
 }
 
-
--(void)shutdown
+-(void)registerEvent:(NSString *)event
 {
-	[[GANTracker sharedTracker] stopTracker];
+	[FlurryAnalytics logEvent:event];
 }
 
-+(void)registerLuaFunctions:(FCLuaVM *)lua
+-(FCHandle)beginTimedEvent:(NSString*)event
 {
-	[lua createGlobalTable:@"FCAnalytics"];
-	[lua registerCFunction: lua_SetAccountId as:@"FCAnalytics.SetAccountID"];
-	[lua registerCFunction: lua_StartSession as:@"FCAnalytics.StartSession"];
-	[lua registerCFunction: lua_EndSession as:@"FCAnalytics.EndSession"];
+	[FlurryAnalytics logEvent:event timed:YES];
+	[_currentTimedEvents setObject:event forKey:[NSNumber numberWithInt:_nextHandle]];
+	return _nextHandle++;
 }
 
-#pragma mark - Setters
-
--(void)timer
+-(void)endTimedEvent:(FCHandle)hEvent
 {
-	self.sessionTime++;
-}
-
--(void)setAccountID:(NSString *)accountID
-{
-	NSAssert( _accountID == nil, @"Setting analytics account more than once");
+	NSNumber* key = [NSNumber numberWithInt:hEvent];
 	
-	_accountID = accountID;
+	FC_ASSERT(key);
 	
-	[[GANTracker sharedTracker] startTrackerWithAccountID:accountID
-										   dispatchPeriod:1
-												 delegate:nil];
-	
-	// register system variables
-	
-	self.sessionTime = 0;
-	
-	sessionTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(timer) userInfo:nil repeats:YES];
-	
-	[self registerSystemValues];
-}
-
-#pragma mark - Events
-
--(void)event:(NSString*)event action:(NSString*)action label:(NSString*)label value:(int)value
-{
-	NSError* error;
-	
-	if (![[GANTracker sharedTracker] trackEvent:event
-										 action:action
-										  label:label
-										  value:value
-									  withError:&error]) 
-	{
-		FC_ERROR(@"Error");
-	}	
-}
-
--(void)eventStartPlaySession
-{
-	[self event:@"Game" action:@"StartPlaySession" label:@"Start" value:-1];
-}
-
--(void)eventEndPlaySession
-{
-	[self event:@"Game" action:@"PlaySessionDuration" label:@"End" value:self.sessionTime];
-}
-
-//-(void)gameLevelPlayed:(NSString*)levelInfo
-//{
-//	NSError* error;
-//	
-//	if (![[GANTracker sharedTracker] trackEvent:@"Game"
-//										 action:@"LevelPlayed"
-//										  label:levelInfo
-//										  value:-1
-//									  withError:&error]) 
-//	{
-//		FC_ERROR(@"Error");
-//		// Handle error here
-//	}	
-//}
-
--(void)registerSystemValues
-{
-	NSError* error;
-	
-	if (![[GANTracker sharedTracker] trackEvent:@"Device"
-										 action:@"OSVersion"
-										  label:[[FCDevice instance] valueForKey:kFCDeviceOSVersion]
-										  value:-1
-									  withError:&error]) 
-	{
-		FC_ERROR(@"Error");
-		// Handle error here
-	}
-
-	if (![[GANTracker sharedTracker] trackEvent:@"Device"
-										 action:@"ModelID"
-										  label:[[FCDevice instance] valueForKey:kFCDeviceHardwareModelID]
-										  value:-1
-									  withError:&error]) 
-	{
-		FC_ERROR(@"Error");
-		// Handle error here
-	}
-
-	if (![[GANTracker sharedTracker] trackEvent:@"Device"
-										 action:@"Language"
-										  label:[[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode]
-										  value:-1
-									  withError:&error]) 
-	{
-		FC_ERROR(@"Error");
-		// Handle error here
-	}
-
-	if (![[GANTracker sharedTracker] trackEvent:@"Device"
-										 action:@"Country"
-										  label:[[NSLocale currentLocale] objectForKey:NSLocaleCountryCode]
-										  value:-1
-									  withError:&error]) 
-	{
-		FC_ERROR(@"Error");
-		// Handle error here
-	}
+	NSString* eventName = [_currentTimedEvents objectForKey:key];
+	[_currentTimedEvents removeObjectForKey:key];
+	[FlurryAnalytics endTimedEvent:eventName withParameters:nil];
 }
 
 @end

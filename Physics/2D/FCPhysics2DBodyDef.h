@@ -39,7 +39,7 @@ class b2World;
 	id __weak		_actor;
 	FC::Vector2f	_position;
 }
-@property(nonatomic, readonly, strong) NSString* name;
+@property(nonatomic, readonly, strong) NSString* Id;
 @property(nonatomic) float angle;
 @property(nonatomic) BOOL isStatic;
 @property(nonatomic) BOOL canSleep;

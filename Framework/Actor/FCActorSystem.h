@@ -37,8 +37,9 @@
 	
 	NSMutableDictionary* _classArraysDictionary;
 	NSMutableDictionary* _actorIdDictionary;
-	NSMutableDictionary* _actorNameDictionary;
+	NSMutableDictionary* _actorHandleDictionary;
 	// actor name dict
+	FCHandle			_nextHandle;
 }
 @property(nonatomic, strong) NSMutableArray* allActorsArray;
 @property(nonatomic, strong) NSMutableArray* updateActorsArray;
@@ -47,13 +48,16 @@
 @property(nonatomic, strong) NSMutableArray* deleteList;
 @property(nonatomic, strong) NSMutableDictionary* classArraysDictionary;
 @property(nonatomic, strong) NSMutableDictionary* actorIdDictionary;
-@property(nonatomic, strong) NSMutableDictionary* actorNameDictionary;
+@property(nonatomic, strong) NSMutableDictionary* actorHandleDictionary;
+@property(nonatomic, readonly) FCHandle nextHandle;
 
 +(FCActorSystem*)instance;
 
 -(id)init;
 -(id)actorOfClass:(Class)actorClass;
 -(id)actorWithId:(NSString*)Id;
+-(id)actorWithHandle:(FCHandle)handle;
+
 -(void)addToDeleteArray:(FCActor*)actor;
 -(void)removeActor:(FCActor*)actor;
 -(void)removeAllActors;
@@ -61,8 +65,7 @@
 
 -(NSArray*)getActorsOfClass:(NSString*)actorClass;
 
--(FCActor*)actorAtPosition:(FC::Vector2f)pos;
-
+//-(FCActor*)actorAtPosition:(FC::Vector2f)pos;
 // new stuff
 
 -(NSArray*)createActorsOfClass:(NSString*)actorClass 

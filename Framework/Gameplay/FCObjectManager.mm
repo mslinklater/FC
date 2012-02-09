@@ -59,8 +59,8 @@ static FCObjectManager* s_pInstance;
 		NSString* objType = [obj valueForKey:kFCKeyType];
 		
 		if ([objType isEqualToString:kFCKeyNull]) {
-			NSString* nullName = [[obj valueForKey:kFCKeyName] stringByReplacingOccurrencesOfString:@"_g_" withString:@""];
-			[_nulls setValue:obj forKey:nullName];
+			NSString* nullId = [[obj valueForKey:kFCKeyName] stringByReplacingOccurrencesOfString:@"_g_" withString:@""];
+			[_nulls setValue:obj forKey:nullId];
 		}
 		// etc
 	}

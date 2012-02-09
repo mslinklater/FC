@@ -114,6 +114,8 @@
 -(CGRect)getViewFrame:(NSString*)viewName;
 -(void)setView:(NSString*)viewName alpha:(float)alpha over:(float)seconds;
 -(void)setView:(NSString*)viewName onSelectLuaFunc:(NSString*)funcName;
+-(void)setView:(NSString *)viewName image:(NSString*)imageName;
+-(void)setView:(NSString *)viewName url:(NSString*)url;
 @end
 
 

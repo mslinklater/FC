@@ -35,6 +35,7 @@
 
 @implementation FCActor
 
+@synthesize handle = _handle;
 @synthesize name = _name;
 @synthesize createDef = _createDef;
 @synthesize Id = _id;
@@ -98,7 +99,8 @@
 			{
 				// physics but no model so build a physics mode
 				
-				_model = [[FCModel alloc] initWithPhysicsBody:bodyDict];
+				NSMutableDictionary* dict = res.userData;
+				_model = [[FCModel alloc] initWithPhysicsBody:bodyDict color:[dict valueForKey:kFCKeyColor]];
 			}
 		}
 #endif // defined(FC_GRAPHICS)

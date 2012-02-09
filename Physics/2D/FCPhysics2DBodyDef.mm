@@ -27,7 +27,7 @@
 
 @implementation FCPhysics2DBodyDef
 
-@synthesize name = _name;
+@synthesize Id = _Id;
 @synthesize angle = _angle;
 @synthesize isStatic = _isStatic;
 @synthesize shapeDef = _shapeDef;
@@ -65,7 +65,7 @@
 	return ret;
 }
 
--(NSString*)name
+-(NSString*)Id
 {
 	return [_shapeDef valueForKey:kFCKeyId];
 }
