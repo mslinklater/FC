@@ -136,4 +136,19 @@ static FCFacebook* s_pInstance;
 	_loginStatus = kOffline;
 }
 
+- (void)fbDidNotLogin:(BOOL)cancelled
+{
+	_loginStatus = kOffline;
+}
+
+- (void)fbDidExtendToken:(NSString*)accessToken expiresAt:(NSDate*)expiresAt
+{
+	
+}
+
+- (void)fbSessionInvalidated
+{
+	_loginStatus = kOffline;
+}
+
 @end

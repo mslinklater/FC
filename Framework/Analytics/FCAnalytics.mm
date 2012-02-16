@@ -100,6 +100,7 @@ static int lua_EndTimedEvent( lua_State* _state )
 	self = [super init];
 	if (self) {
 		_currentTimedEvents = [NSMutableDictionary dictionary];
+		_nextHandle = kFCHandleFirstValid;
 	}
 	return self;
 }

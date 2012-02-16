@@ -43,6 +43,8 @@
 static FCLuaVM*					s_lua;
 #endif
 
+static FCHandle	s_sessionActiveAnalyticsHandle = kFCHandleInvalid;
+
 #if TARGET_OS_IPHONE
 static UIViewController*		s_viewController;
 static CADisplayLink*			s_displayLink;
@@ -102,7 +104,7 @@ static int lua_SetBackgroundColor( lua_State* _state )
 
 static int lua_ShowGameCenterLeaderboards( lua_State* _state )
 {
-	[FCApplication showGameCenterLeaderboard];
+	[[FCApplication instance] showGameCenterLeaderboard];
 	return 0;
 }
 
@@ -112,7 +114,7 @@ static int lua_LaunchExternalURL( lua_State* _state )
 	
 	NSString* urlString = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	
-	[FCApplication launchExternalURL:urlString];
+	[[FCApplication instance] launchExternalURL:urlString];
 	return 0;
 }
 
@@ -134,9 +136,9 @@ static int lua_PauseGame( lua_State* _state )
 	FC_ASSERT(lua_isboolean(_state, 1));
 	
 	if (lua_toboolean(_state, 1)) {
-		[FCApplication pause];
+		[[FCApplication instance] pause];
 	} else {
-		[FCApplication resume];
+		[[FCApplication instance] resume];
 	}
 	
 	return 0;
@@ -147,7 +149,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	FC_ASSERT(lua_gettop(_state) == 1);
 	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
 	
-	[FCApplication setUpdateFrequency:lua_tointeger(_state, 1)];
+	[[FCApplication instance] setUpdateFrequency:lua_tointeger(_state, 1)];
 	
 	return 0;
 }
@@ -159,10 +161,28 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 
 @implementation FCApplication
 
++(FCApplication*)instance
+{
+	static FCApplication* pInstance;
+	if (!pInstance) {
+		pInstance = [[FCApplication alloc] init];
+	}
+	return pInstance;
+}
+
+-(id)init
+{
+	self = [super init];
+	if (self) {
+		// blah
+	}
+	return self;
+}
+
 #if TARGET_OS_IPHONE
-+(void)coldBootWithViewController:(UIViewController *)vc delegate:(id<FCAppDelegate>)delegate
+-(void)coldBootWithViewController:(UIViewController *)vc delegate:(id<FCAppDelegate>)delegate
 #else
-+(void)coldBootWithDelegate:(id<FCAppDelegate>)delegate
+-(void)coldBootWithDelegate:(id<FCAppDelegate>)delegate
 #endif
 {
 #if TARGET_OS_IPHONE
@@ -172,7 +192,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	s_perfCounter = [[FCPerformanceCounter alloc] init];
 	
 #if TARGET_OS_IPHONE
-	s_displayLink = [CADisplayLink displayLinkWithTarget:[FCApplication class] selector:@selector(update)];
+	s_displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(update)];
 	[s_displayLink setFrameInterval:1];
 	[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 
@@ -230,7 +250,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	[self warmBoot];
 }
 
-+(void)warmBoot
+-(void)warmBoot
 {
 	[s_delegate registerPhasesWithManager:[FCPhaseManager instance]];
 	[s_delegate initialiseSystems];
@@ -240,7 +260,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 #endif
 }
 
-+(void)shutdown
+-(void)shutdown
 {
 #if TARGET_OS_IPHONE
 	[s_displayLink invalidate];
@@ -254,17 +274,17 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 #endif
 }
 
-+(void)setUpdateFrequency:(int)fps
+-(void)setUpdateFrequency:(int)fps
 {
 	[s_displayLink invalidate];
 	s_displayLink = nil;
 	
-	s_displayLink = [CADisplayLink displayLinkWithTarget:[FCApplication class] selector:@selector(update)];
+	s_displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(update)];
 	[s_displayLink setFrameInterval:60 / fps];
 	[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
 
-+(void)update
+-(void)update
 {
 	static int fps = 0;
 	static float seconds = 0.0f;
@@ -320,7 +340,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 		if (fps < 55) {
 //			[s_displayLink invalidate];
 //			s_displayLink = nil;
-//			s_displayLink = [CADisplayLink displayLinkWithTarget:[FCApplication class] selector:@selector(update)];
+//			s_displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(update)];
 //			[s_displayLink setFrameInterval:1];
 //			[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 		}
@@ -332,7 +352,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	}
 }
 
-+(void)pause
+-(void)pause
 {
 	s_paused = YES;
 #if defined (FC_LUA)
@@ -340,7 +360,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 #endif
 }
 
-+(void)resume
+-(void)resume
 {
 	s_paused = NO;
 #if defined (FC_LUA)
@@ -348,11 +368,15 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 #endif
 }
 
-+(void)willResignActive
+-(void)willResignActive
 {
 #if TARGET_OS_IPHONE
 	[[FCConnect instance] stop];
-//	[[FCAnalytics instance] eventEndPlaySession];
+	
+	FC_ASSERT(s_sessionActiveAnalyticsHandle != kFCHandleInvalid);
+	
+	[[FCAnalytics instance] endTimedEvent:s_sessionActiveAnalyticsHandle];
+	s_sessionActiveAnalyticsHandle = kFCHandleInvalid;
 #endif
 	[[FCPersistentData instance] saveData];
 	
@@ -361,26 +385,29 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 #endif
 }
 
-+(void)didEnterBackground
+-(void)didEnterBackground
 {
 #if defined (FC_LUA)
 	[s_lua call:@"FCApp.DidEnterBackground" required:NO withSig:@""];
 #endif
 }
 
-+(void)willEnterForeground
+-(void)willEnterForeground
 {
 #if defined (FC_LUA)
 	[s_lua call:@"FCApp.WillEnterForeground" required:NO withSig:@""];	
 #endif
 }
 
-+(void)didBecomeActive
+-(void)didBecomeActive
 {
 #if TARGET_OS_IPHONE
 	[[FCConnect instance] start:nil];
 	[[FCConnect instance] enableBonjourWithName:@"FCConnect"];
-//	[[FCAnalytics instance] eventStartPlaySession];
+	
+	FC_ASSERT(s_sessionActiveAnalyticsHandle == kFCHandleInvalid);
+	
+	s_sessionActiveAnalyticsHandle = [[FCAnalytics instance] beginTimedEvent:@"playSessionTime"];
 #endif
 	
 #if defined (FC_LUA)
@@ -388,7 +415,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 #endif
 }
 
-+(void)willTerminate
+-(void)willTerminate
 {
 #if TARGET_OS_IPHONE
 //	[[FCAnalytics instance] shutdown];
@@ -400,7 +427,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 }
 
 #if TARGET_OS_IPHONE
-+(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	BOOL ret = YES;
 	if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
@@ -412,7 +439,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	return ret;
 }
 
-+(void)showGameCenterLeaderboard
+-(void)showGameCenterLeaderboard
 {
     GKLeaderboardViewController *leaderboardController = [[GKLeaderboardViewController alloc] init];
 	
@@ -423,7 +450,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
     }
 }
 
-+(void)leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController
+-(void)leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController
 {
 	[s_viewController dismissModalViewControllerAnimated:YES];	
 	
@@ -431,7 +458,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 }
 #endif
 
-+(CGSize)mainViewSize
+-(CGSize)mainViewSize
 {
 #if TARGET_OS_IPHONE
 	return s_viewController.view.frame.size;
@@ -441,14 +468,14 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 }
 
 #if defined (FC_LUA)
-+(FCLuaVM*)lua
+-(FCLuaVM*)lua
 {
 	return s_lua;
 }
 #endif
 
 
-+(void)launchExternalURL:(NSString*)stringURL
+-(void)launchExternalURL:(NSString*)stringURL
 {
 #if TARGET_OS_IPHONE
 	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:stringURL]];

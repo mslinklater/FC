@@ -24,3 +24,6 @@
 #import "FCKeys.h"
 
 typedef unsigned int FCHandle;
+
+static const FCHandle kFCHandleInvalid = 0;
+static const FCHandle kFCHandleFirstValid = 1;

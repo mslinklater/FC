@@ -188,6 +188,8 @@ static int lua_Reset( lua_State* _state )
 
 	[_actorHandleDictionary setObject:actor forKey:[NSNumber numberWithInt:((FCActor*)actor).handle]];
 	
+	NSLog(@"numActors %d", [_allActorsArray count]);
+	
 	return actor;
 }
 
@@ -326,37 +328,6 @@ static int lua_Reset( lua_State* _state )
 {
 	return _renderActorsArray;
 }
-
-//-(FCActor*)actorAtPosition:(FC::Vector2f)pos
-//{
-//	FCActor* ret = nil;
-//	
-//	NSMutableArray* candidates = [NSMutableArray arrayWithCapacity:[_tapGestureActorsArray count]];
-//	
-//	// Find candidates using radius checks
-//	
-//	for( FCActor* actor in _tapGestureActorsArray )
-//	{
-//		FC::Vector2f actorPos = actor.position;
-//		if ([actor radius] >= FC::Distance(actorPos, pos)) 
-//		{
-//			[candidates addObject:actor];
-//		}
-//	}
-//	
-//	// do proper check by asking actor if pos is within bounds
-//	
-//	for( FCActor* actor in candidates )
-//	{
-//		if ([actor posWithinBounds:pos]) 
-//		{
-//			ret = actor;
-//			break;
-//		}
-//	}
-//	
-//	return ret;
-//}
 
 @end
 

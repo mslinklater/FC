@@ -45,35 +45,37 @@
 @interface FCApplication : NSObject
 #endif
 
++(FCApplication*)instance;
+
 #if TARGET_OS_IPHONE
-+(void)coldBootWithViewController:(UIViewController*)vc delegate:(id<FCAppDelegate>)delegate;
+-(void)coldBootWithViewController:(UIViewController*)vc delegate:(id<FCAppDelegate>)delegate;
 #else
-+(void)coldBootWithDelegate:(id<FCAppDelegate>)delegate;
+-(void)coldBootWithDelegate:(id<FCAppDelegate>)delegate;
 #endif
 
-+(void)warmBoot;
-+(void)shutdown;
-+(void)update;
-+(void)pause;
-+(void)resume;
-+(void)setUpdateFrequency:(int)fps;
+-(void)warmBoot;
+-(void)shutdown;
+-(void)update;
+-(void)pause;
+-(void)resume;
+-(void)setUpdateFrequency:(int)fps;
 
-+(void)willResignActive;
-+(void)didEnterBackground;
-+(void)willEnterForeground;
-+(void)didBecomeActive;
-+(void)willTerminate;
+-(void)willResignActive;
+-(void)didEnterBackground;
+-(void)willEnterForeground;
+-(void)didBecomeActive;
+-(void)willTerminate;
 
 #if TARGET_OS_IPHONE
-+(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
-+(void)showGameCenterLeaderboard;
+-(BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation;
+-(void)showGameCenterLeaderboard;
 #endif
 
-+(CGSize)mainViewSize;
+-(CGSize)mainViewSize;
 
 #if defined(FC_LUA)
-+(FCLuaVM*)lua;
+-(FCLuaVM*)lua;
 #endif
 
-+(void)launchExternalURL:(NSString*)stringURL;
+-(void)launchExternalURL:(NSString*)stringURL;
 @end

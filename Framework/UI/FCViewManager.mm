@@ -431,7 +431,7 @@ static int lua_RemoveFromGroup( lua_State* _state )
 	scaledFrame.origin.x = view.frame.size.width * rect.origin.x;			
 	scaledFrame.origin.y = view.frame.size.height * rect.origin.y;				
 
-	CGSize mainViewSize = [FCApplication mainViewSize];
+	CGSize mainViewSize = [[FCApplication instance] mainViewSize];
 
 	scaledFrame.size.width = mainViewSize.width * rect.size.width;
 	scaledFrame.size.height = mainViewSize.height * rect.size.height;			
@@ -450,7 +450,7 @@ static int lua_RemoveFromGroup( lua_State* _state )
 	FC_ASSERT( thisView );
 
 #if defined (DEBUG)
-	if ([thisView respondsToSelector:@selector(setText:)]) 
+	if ([thisView respondsToSelector:@selector(setText:)])
 #endif
 	{
 		NSMethodSignature* sig = [[thisView class] instanceMethodSignatureForSelector:@selector(setText:)];		
@@ -517,7 +517,7 @@ static int lua_RemoveFromGroup( lua_State* _state )
 		scaledFrame.origin.x = containerFrame.size.width * frame.origin.x;			
 		scaledFrame.origin.y = containerFrame.size.height * frame.origin.y;			
 		
-		CGSize mainViewSize = [FCApplication mainViewSize];
+		CGSize mainViewSize = [[FCApplication instance] mainViewSize];
 		
 		if (frame.size.width < 0) {
 			scaledFrame.size.width = thisView.frame.size.width;

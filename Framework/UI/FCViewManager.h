@@ -59,6 +59,7 @@
 @private
 	NSMutableDictionary* _viewDictionary;
 	NSMutableDictionary* _groupDictionary;
+		
 #if TARGET_OS_IPHONE
 	UIView* _rootView;
 #else

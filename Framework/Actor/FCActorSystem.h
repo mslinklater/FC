@@ -65,9 +65,6 @@
 
 -(NSArray*)getActorsOfClass:(NSString*)actorClass;
 
-//-(FCActor*)actorAtPosition:(FC::Vector2f)pos;
-// new stuff
-
 -(NSArray*)createActorsOfClass:(NSString*)actorClass 
 				  withResource:(FCResource*)res
 						 named:(NSString*)name;
