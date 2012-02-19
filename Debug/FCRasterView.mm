@@ -60,8 +60,8 @@ static const int kNumMaxFrames = 10;
     if (self) {
         mPerformanceCounter = [[FCPerformanceCounter alloc] init];
 		mEntries = [[NSMutableArray alloc] init];
-		maxTime = 0.0f;
-		maxCount = 0;
+		mMaxTime = 0.0f;
+		mMaxCount = 0;
 		mMaxEntries = [[NSArray alloc] init];
     }
     return self;
@@ -118,14 +118,14 @@ static const int kNumMaxFrames = 10;
 		CGContextFillRect(c, thisRect);
 	}
 
-	if ((currentPos > maxTime) || (maxCount > 50) ){
+	if ((currentPos > mMaxTime) || (mMaxCount > 50) ){
 		mMaxEntries = [mEntries copy];
-		maxTime = currentPos;
-		maxCount = 0;
+		mMaxTime = currentPos;
+		mMaxCount = 0;
 	}
 	else
 	{
-		maxCount++;
+		mMaxCount++;
 	}
 
 	thisRect.origin.x = rect.size.width / 2;

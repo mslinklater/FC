@@ -27,5 +27,8 @@ NSString* kFCNotificationQuit = @"FCN_Quit";
 NSString* kFCNotificationRestart = @"FCN_Restart";
 NSString* kFCNotificationRetry = @"FCN_Retry";
 
+NSString* kFCNotificationPause = @"FCN_Pause";
+NSString* kFCNotificationResume = @"FCN_Resume";
+
 NSString* kFCNotificationPlayerIDChanged = @"FCN_PlayerIDChanged";
 NSString* kFCNotificationHighScoresChanged = @"FCN_HighScoresChanged";

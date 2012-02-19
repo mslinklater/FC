@@ -72,6 +72,7 @@
 #endif
 
 -(CGSize)mainViewSize;
+-(UIViewController*)rootViewController;
 
 #if defined(FC_LUA)
 -(FCLuaVM*)lua;

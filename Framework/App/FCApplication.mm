@@ -38,6 +38,7 @@
 #import "FCActorSystem.h"
 #import "FCShaderManager.h"
 #import "FCFacebook.h"
+#import "FCTwitter.h"
 
 #if defined (FC_LUA)
 static FCLuaVM*					s_lua;
@@ -233,6 +234,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	
 	[FCFacebook instance];
 	[FCAnalytics instance];
+	[FCTwitter instance];
 #endif
 	[[FCDevice instance] probe];
 	[[FCDevice instance] warmProbe];
@@ -358,6 +360,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 #if defined (FC_LUA)
 	[[FCLua instance].coreVM setGlobal:@"FCApp.paused" boolean:YES];
 #endif
+	[[NSNotificationCenter defaultCenter] postNotificationName:kFCNotificationPause object:nil];
 }
 
 -(void)resume
@@ -366,6 +369,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 #if defined (FC_LUA)
 	[[FCLua instance].coreVM setGlobal:@"FCApp.paused" boolean:NO];
 #endif
+	[[NSNotificationCenter defaultCenter] postNotificationName:kFCNotificationResume object:nil];
 }
 
 -(void)willResignActive
@@ -474,6 +478,10 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 }
 #endif
 
+-(UIViewController*)rootViewController
+{
+	return s_viewController;
+}
 
 -(void)launchExternalURL:(NSString*)stringURL
 {

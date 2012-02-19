@@ -199,10 +199,6 @@ static int lua_KillThread( lua_State* state )
 		lua_setglobal([m_coreVM state], "DEBUG");
 		
 		[m_coreVM loadScript:@"fc_core"];		
-		[m_coreVM loadScript:@"fc_util"];
-		[m_coreVM loadScript:@"fc_colors"];
-		[m_coreVM loadScript:@"fc_set"];
-		[m_coreVM loadScript:@"fc_vector"];
 
 		// register core API
 		[m_coreVM registerCFunction:lua_NewThread as:@"FCNewThread"];

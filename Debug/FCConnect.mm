@@ -179,7 +179,7 @@ static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
 			}
 		}
 		
-		NSData* addr = (__bridge NSData*)CFSocketCopyAddress(m_socketRef);
+		NSData* addr = (__bridge_transfer NSData*)CFSocketCopyAddress(m_socketRef);
 		memcpy(&addr6, [addr bytes], [addr length]);
 		m_port = ntohs( addr6.sin6_port );
 	}
@@ -204,7 +204,7 @@ static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
 			return NO;
 		}
 		
-		NSData* addr = (__bridge NSData*)CFSocketCopyAddress(m_socketRef);
+		NSData* addr = (__bridge_transfer NSData*)CFSocketCopyAddress(m_socketRef);
 		memcpy(&addr4, [addr bytes], [addr length]);
 		m_port = ntohs(addr4.sin_port);
 	}

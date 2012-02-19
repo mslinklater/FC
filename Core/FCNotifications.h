@@ -27,5 +27,8 @@ extern NSString* kFCNotificationQuit;
 extern NSString* kFCNotificationRestart;
 extern NSString* kFCNotificationRetry;
 
+extern NSString* kFCNotificationPause;
+extern NSString* kFCNotificationResume;
+
 extern NSString* kFCNotificationPlayerIDChanged;
 extern NSString* kFCNotificationHighScoresChanged;

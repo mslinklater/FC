@@ -20,10 +20,20 @@
  THE SOFTWARE.
  */
 
-#import "FCTypes.h"
-#import "FCKeys.h"
-#import "FCMacros.h"
-#import "FCError.h"
-#import "FCColor.h"
-#import "FCProtocols.h"
-#import "FCNotifications.h"
+#import <Foundation/Foundation.h>
+
+@class TWTweetComposeViewController;
+
+@interface FCTwitter : NSObject {
+	TWTweetComposeViewController* _vc;
+}
+@property(nonatomic, readonly) TWTweetComposeViewController* vc;
+
++(FCTwitter*)instance;
+
+-(BOOL)canTweet;
+-(BOOL)tweetWithText:(NSString*)text;
+//-(BOOL)addPicture:(id)picture;
+-(BOOL)addHyperlink:(NSString*)hyperlink;
+-(void)send;
+@end

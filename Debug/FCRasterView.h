@@ -30,9 +30,9 @@
 @interface FCRasterView : UIView {
 	FCPerformanceCounter* mPerformanceCounter;
 	NSMutableArray* mEntries;
-	NSArray* mMaxEntries;
-	float maxTime;
-	int maxCount;
+	NSArray*	mMaxEntries;
+	float		mMaxTime;
+	uint32_t	mMaxCount;
 }
 
 -(void)frameStart;
