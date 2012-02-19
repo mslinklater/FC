@@ -4,7 +4,6 @@ FCRandom = {}
 FCRandom.__index = FCRandom
 
 function FCRandom.New( seed )
-	print("this is the new new")
 	local ret = {}
 	
 	if seed == nil then
