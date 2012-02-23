@@ -69,12 +69,6 @@ static NSString* s_debugShaderName = @"debug_debug";
 	s_debugMeshVertexDescriptor.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec4;
 }
 
-+(void)setDebugColor:(FC::Color4f)col
-{
-	FC_ASSERT(0);
-//	debugColor = col;
-}
-
 -(id)initWithPhysicsBody:(NSDictionary *)bodyDict color:(UIColor*)color	//actorXOffset:(float)actorX actorYOffset:(float)actorY
 {
 	self = [super init];
@@ -281,6 +275,14 @@ static NSString* s_debugShaderName = @"debug_debug";
 		[mesh.shaderProgram setUniformValue:uniform to:&mat size:sizeof(mat)];
 
 		[mesh render];
+	}
+}
+
+-(void)setDebugMeshColor:(FC::Color4f)color
+{
+	for( FCMesh* mesh in _meshes )
+	{
+		mesh.colorUniform = color;
 	}
 }
 

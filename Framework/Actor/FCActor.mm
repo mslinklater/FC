@@ -143,6 +143,12 @@
 #endif
 }
 
+-(void)setDebugModelColor:(FC::Color4f)color
+{
+	[_model setDebugMeshColor:color];
+	return;
+}
+
 -(FC::Vector2f)position
 {
 #if defined (FC_PHYSICS)

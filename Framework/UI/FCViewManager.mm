@@ -36,9 +36,9 @@
 
 static int lua_SetText( lua_State* _state )
 {
+	FC_ASSERT( lua_gettop(_state) == 2);
 	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
 	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING );
-	FC_ASSERT( lua_gettop(_state) == 2);
 	
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	NSString* text = [NSString stringWithUTF8String:lua_tostring(_state, 2)];

@@ -188,8 +188,6 @@ static int lua_Reset( lua_State* _state )
 
 	[_actorHandleDictionary setObject:actor forKey:[NSNumber numberWithInt:((FCActor*)actor).handle]];
 	
-	NSLog(@"numActors %d", [_allActorsArray count]);
-	
 	return actor;
 }
 

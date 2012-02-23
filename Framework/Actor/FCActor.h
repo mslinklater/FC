@@ -67,6 +67,8 @@
 -(void)setPosition:(FC::Vector2f)pos;
 -(FC::Vector2f)position;
 
+-(void)setDebugModelColor:(FC::Color4f)color;
+
 #if defined (FC_PHYSICS)
 -(void)applyImpulse:(FC::Vector2f)impulse atWorldPos:(FC::Vector2f)pos;
 -(FC::Vector2f)getCenter;

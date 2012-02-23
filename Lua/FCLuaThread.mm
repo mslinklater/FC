@@ -142,6 +142,7 @@ extern "C" {
 				
 				if( (_sleepRealTimeRemaining <= 0.0) && (_sleepGameTimeRemaining <= 0.0)){
 					_state = kLuaThreadStateRunning;
+					[self updateRealTime:dt gameTime:gt];
 				}
 			}
 			break;
@@ -166,13 +167,13 @@ extern "C" {
 
 -(void)pauseRealTime:(float)seconds
 {
-	_sleepRealTimeRemaining = (float)seconds;
+	_sleepRealTimeRemaining += (float)seconds;
 	_state = kLuaThreadStateSleeping;
 }
 
 -(void)pauseGameTime:(float)seconds
 {
-	_sleepGameTimeRemaining = (float)seconds;
+	_sleepGameTimeRemaining += (float)seconds;
 	_state = kLuaThreadStateSleeping;
 }
 
