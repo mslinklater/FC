@@ -23,9 +23,14 @@
 // TODO: Needs its own center outside of physics
 
 #import <Foundation/Foundation.h>
-#import "FCMaths.h"
-#import "FCProtocols.h"
-#import "FCModel.h"
+
+#import "FCActorSystem.h"
+
+#import "FCCore.h"
+//#import "FCMaths.h"
+//#import "FCProtocols.h"
+//#import "FCModel.h"
+#import "FCGraphics.h"
 
 #if defined (FC_GRAPHICS)
 @class FCModel;

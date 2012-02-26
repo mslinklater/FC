@@ -24,7 +24,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "Maths/FCMaths.h"
+#import "FCCore.h"
 
 class b2World;
 

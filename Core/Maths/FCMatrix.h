@@ -23,7 +23,7 @@
 #import <Foundation/Foundation.h>
 #import <math.h>
 #import "Core/FCError.h"
-#import "Maths/FCVector.h"
+#import "Core/Maths/FCVector.h"
 
 namespace FC {
 	

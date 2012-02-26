@@ -20,24 +20,9 @@
  THE SOFTWARE.
  */
 
-#ifndef FC_h
-#define FC_h
+#ifndef CR1_FCGameplay_h
+#define CR1_FCGameplay_h
 
-#import "Core/FCCore.h"
-#import "Categories/FCCategories.h"
-#import "Maths/FCMaths.h"
-#import "Debug/FCDebug.h"
-#import "Framework/FCFramework.h"
-#import "Graphics/FCGraphics.h"
-#import "Lua/FCLua.h"
-#import "Physics/FCPhysics.h"
-
-//#import "FCTweakables.h"
-//#import "FCNotifications.h"
-//#import "FCAnalytics.h"
-//#import "FCUIManager.h"
-//#import "FCPersistentData.h"
-//#import "FCViews.h"
-//#import "FCMisc.h"
+#import "FCObjectManager.h"
 
 #endif

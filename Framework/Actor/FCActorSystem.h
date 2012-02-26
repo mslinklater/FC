@@ -20,13 +20,13 @@
  THE SOFTWARE.
  */
 
-
-
 #import <Foundation/Foundation.h>
-#import "FCProtocols.h"
+
+#import "FCCore.h"
+
 #import "FCActor.h"
 
-@class FCResource;
+@class FCActor;
 
 @interface FCActorSystem : NSObject <FCGameObjectUpdate, FCGameObjectRender> {
 	NSMutableArray* _allActorsArray;

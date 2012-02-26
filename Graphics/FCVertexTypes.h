@@ -22,8 +22,7 @@
 
 #if defined(FC_GRAPHICS)
 
-#import "Maths/FCMaths.h"
-#import "Core/FCTypes.h"
+#import "FCCore.h"
 
 namespace FC {
 

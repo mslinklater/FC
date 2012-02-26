@@ -24,8 +24,10 @@
 
 #import <Foundation/Foundation.h>
 
-#import "FCProtocols.h"
-#import "FCLuaClass.h"
+#import "FCCore.h"
+#import "FCLua.h"
+
+#import "FlurryAnalytics.h"
 
 @interface FCAnalytics : NSObject {
 	NSMutableDictionary* _currentTimedEvents;

@@ -27,3 +27,7 @@
 #import "FCColor.h"
 #import "FCProtocols.h"
 #import "FCNotifications.h"
+
+#import "FCMaths.h"
+#import "FCCategories.h"
+#import "FCDebug.h"

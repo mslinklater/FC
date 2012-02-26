@@ -20,38 +20,11 @@
  THE SOFTWARE.
  */
 
-#if defined(FC_GRAPHICS)
+#ifndef CR1_FCOnline_h
+#define CR1_FCOnline_h
 
-#import <Foundation/Foundation.h>
-#import <OpenGLES/EAGL.h>
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
-#import "FCVector.h"
+#import "FCFacebook.h"
+#import "FCGameCenter.h"
+#import "FCTwitter.h"
 
-extern void FCGLCheckErrors( void );
-
-extern void FCGLLogVersions( void );
-extern void FCGLLogCaps( void );
-extern void FCGLLogState( void );
-
-extern NSString* FCGLStringForEnum( GLenum thisEnum);
-
-// Vendor stuff
-
-extern NSString* FCGLQueryVendor( void );
-extern NSString* FCGLQueryVersion( void );
-extern NSString* FCGLQueryRenderer( void );
-extern NSString* FCGLQueryShadingLanguageVersion( void );
-extern NSArray* FCGLQueryExtensions( void );
-
-// Caps
-
-extern GLint FCGLCapsMaxTextureSize( void );
-
-#if defined (DEBUG)
-#define GLCHECK FCGLCheckErrors()
-#else
-#define GLCHECK
 #endif
-
-#endif // defined(FC_GRAPHICS)

@@ -23,8 +23,8 @@
 #if defined(FC_GRAPHICS)
 
 #import <Foundation/Foundation.h>
-#import "Maths/FCMaths.h"
-#import "Core/FCTypes.h"
+
+#import "FCCore.h"
 
 @class FCResource;
 

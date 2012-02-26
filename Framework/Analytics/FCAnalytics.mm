@@ -26,7 +26,6 @@
 #import "FCCore.h"
 
 #import "FCAnalytics.h"
-#import "FlurryAnalytics.h"
 
 #pragma mark - Lua Interface
 

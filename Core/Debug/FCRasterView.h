@@ -20,9 +20,10 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
 
+#if TARGET_OS_IPHONE
 #import <Foundation/Foundation.h>
+
 #import <UIKit/UIKit.h>
 
 @class FCPerformanceCounter;
@@ -39,4 +40,4 @@
 -(void)tagColour:(UIColor*)color;
 @end
 
-#endif
+#endif // TARGET_OS_IPHONE

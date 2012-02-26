@@ -24,8 +24,7 @@
 
 #import "FCPhysics.h"
 #import "FCLua.h"
-#import "FCObjectManager.h"
-#import "FCActorSystem.h"
+#import "FCFramework.h"
 
 static FCPhysics* s_pPhysics = 0;
 

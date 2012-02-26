@@ -23,8 +23,10 @@
 #if defined (FC_PHYSICS)
 
 #import "FCPhysics2D.h"
-#import "FCObjectManager.h"
+//#import "FCObjectManager.h"
 #import "FCPhysics2DJoint.h"
+
+#import "FCFramework.h"
 
 static FCPhysics2D* s_pInstance = 0;
 
