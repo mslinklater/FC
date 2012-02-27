@@ -220,6 +220,38 @@ static int lua_SetURL( lua_State* _state )
 	return 0;
 }
 
+static int lua_CreateView( lua_State* _state )
+{
+	FC_ASSERT( lua_gettop(_state) > 1 );
+	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING);
+	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING);
+	
+	NSString* name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	NSString* className = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
+
+	NSString* parent = nil;
+	
+	if (lua_gettop(_state) > 2) {
+		FC_ASSERT( lua_type(_state, 3) == LUA_TSTRING );
+		parent = [NSString stringWithUTF8String:lua_tostring(_state, 3)];
+	}
+
+	[[FCViewManager instance] createView:name asClass:className withParent:parent];
+	
+	return 0;
+}
+
+static int lua_DestroyView( lua_State* _state )
+{
+	FC_ASSERT( lua_gettop(_state) == 1 );
+	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
+	
+	NSString* name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	
+	[[FCViewManager instance] destroyView:name];
+	return 0;
+}
+
 static int lua_CreateGroup( lua_State* _state )
 {
 	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
@@ -260,6 +292,44 @@ static int lua_RemoveFromGroup( lua_State* _state )
 	return 0;
 }
 
+static int lua_SetViewPropertyToInteger( lua_State* _state )
+{
+	FC_ASSERT( lua_gettop(_state) == 3);
+	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING);
+	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING);
+	FC_ASSERT( lua_type(_state, 3) == LUA_TNUMBER);
+	
+	NSString* name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	NSString* property = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
+	NSNumber* value = [NSNumber numberWithInt:lua_tointeger(_state, 3)];
+
+	[[FCViewManager instance] setView:name property:property to:value];
+	
+	return 0;
+}
+
+static int lua_SetViewPropertyToString( lua_State* _state )
+{
+	FC_ASSERT( lua_gettop(_state) == 3);
+	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING);
+	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING);
+	FC_ASSERT( lua_type(_state, 3) == LUA_TSTRING);
+	
+	NSString* name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	NSString* property = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
+	NSString* value = [NSString stringWithUTF8String:lua_tostring(_state, 3)];
+	
+	[[FCViewManager instance] setView:name property:property to:value];
+	
+	return 0;
+}
+
+static int lua_PrintViews( lua_State* _state )
+{
+	[[FCViewManager instance] printViews];
+	return 0;
+}
+
 #endif // defined(FC_LUA)
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -293,11 +363,18 @@ static int lua_RemoveFromGroup( lua_State* _state )
 	[lua registerCFunction:lua_SetOnSelectLuaFunction as:@"FCViewManager.SetOnSelectLuaFunction"];
 	[lua registerCFunction:lua_SetImage as:@"FCViewManager.SetImage"];
 	[lua registerCFunction:lua_SetURL as:@"FCViewManager.SetURL"];
-	
+
+	[lua registerCFunction:lua_CreateView as:@"FCViewManager.CreateView"];
+	[lua registerCFunction:lua_DestroyView as:@"FCViewManager.DestroyView"];
+
 	[lua registerCFunction:lua_CreateGroup as:@"FCViewManager.CreateGroup"];
 	[lua registerCFunction:lua_RemoveGroup as:@"FCViewManager.RemoveGroup"];
 	[lua registerCFunction:lua_AddToGroup as:@"FCViewManager.AddToGroup"];
 	[lua registerCFunction:lua_RemoveFromGroup as:@"FCViewManager.RemoveFromGroup"];
+
+	[lua registerCFunction:lua_PrintViews as:@"FCViewManager.PrintViews"];
+	[lua registerCFunction:lua_SetViewPropertyToInteger as:@"FCViewManager.SetViewPropertyToInteger"];
+	[lua registerCFunction:lua_SetViewPropertyToString as:@"FCViewManager.SetViewPropertyToString"];
 }
 #endif // defined(FC_LUA)
 
@@ -311,6 +388,50 @@ static int lua_RemoveFromGroup( lua_State* _state )
 		_groupDictionary = [NSMutableDictionary dictionary];
 	}
 	return self;
+}
+
+-(void)printViewsUnder:(UIView*)rootView withTab:(int)tab
+{
+	for( UIView* subView in _rootView.subviews )
+	{
+		CGRect frame = subView.frame;
+		float alpha = subView.alpha;
+		id<FCManagedView> managedView = (id<FCManagedView>)subView;
+		
+		NSString* line = [NSString stringWithFormat:@"n: %@ f(%f %f %f %f) a:%f", [managedView managedViewName],
+						  frame.origin.x, frame.origin.y, frame.size.width, frame.size.height, alpha];
+
+//		[self printViewsUnder:subView withTab:0];
+		
+		FC_LOG(line);
+	}	
+}
+
+-(void)printViews
+{
+	[self printViewsUnder:_rootView withTab:0];
+	
+}
+
+-(void)createView:(NSString *)name asClass:(NSString *)className withParent:(NSString *)parentView
+{
+	FC_ASSERT(NSClassFromString(className));
+	
+	UIView* thisView = [[NSClassFromString(className) alloc] initWithFrame:CGRectMake(0, 0, 0, 0)];
+	[self add:thisView as:name];
+	
+	if (parentView) {
+		[[_viewDictionary valueForKey:parentView] addSubview:thisView];
+	} else {
+		[_rootView addSubview:thisView];
+	}
+}
+
+-(void)destroyView:(NSString *)name
+{
+	UIView* thisView = [_viewDictionary valueForKey:name];
+	[thisView removeFromSuperview];
+	[_viewDictionary removeObjectForKey:name];
 }
 
 #if TARGET_OS_IPHONE
@@ -333,6 +454,11 @@ static int lua_RemoveFromGroup( lua_State* _state )
 	FC_ASSERT([_viewDictionary valueForKey:name]);
 	
 	[_viewDictionary removeObjectForKey:name];
+}
+
+-(UIView*)viewNamed:(NSString*)name
+{
+	return [_viewDictionary valueForKey:name];
 }
 
 -(void)createGroup:(NSString*)groupName
@@ -566,6 +692,8 @@ static int lua_RemoveFromGroup( lua_State* _state )
 	
 	for( NSString* name in components )
 	{
+		
+		
 #if TARGET_OS_IPHONE
 		UIView* thisView = [_viewDictionary valueForKey:[name stringByReplacingOccurrencesOfString:@" " withString:@""]];
 #else
@@ -573,7 +701,7 @@ static int lua_RemoveFromGroup( lua_State* _state )
 #endif
 		
 		FC_ASSERT( thisView );
-		
+
 		if ([thisView respondsToSelector:@selector(setAlpha:)]) 
 		{
 #if TARGET_OS_IPHONE
@@ -664,6 +792,19 @@ static int lua_RemoveFromGroup( lua_State* _state )
 	} else {
 		FC_FATAL1(@"Sending 'setURL' to a view which does not respond to setURL - %@", thisView);
 	}	
+}
+
+-(void)setView:(NSString *)viewName property:(NSString*)property to:(id)value
+{
+#if TARGET_OS_IPHONE
+	UIView* thisView = [_viewDictionary valueForKey:viewName];
+#else
+	NSView* thisView = [_viewDictionary valueForKey:viewName];
+#endif
+	
+	FC_ASSERT( thisView );
+
+	[thisView setValue:value forKey:property];
 }
 
 #pragma mark - View Management

@@ -40,9 +40,13 @@ enum FCPhaseState {
 -(void)wasAddedToQueue;
 -(void)wasRemovedFromQueue;
 -(float)willActivate;
+-(void)willActivatePostLua;
 -(void)isNowActive;
+-(void)isNowActivePostLua;
 -(float)willDeactivate;
+-(void)willDeactivatePostLua;
 -(void)isNowDeactive;
+-(void)isNowDeactivePostLua;
 @end
 
 @interface FCPhase : NSObject {

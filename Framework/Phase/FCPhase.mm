@@ -122,9 +122,13 @@
 	if ([_delegate respondsToSelector:@selector(willActivate)]) 
 	{
 		_activateTimer = [_delegate willActivate];
+	}
 #if defined(FC_LUA)
-		[[FCLua instance].coreVM call:_luaWillActivateFunc required:NO withSig:@""];
+	[[FCLua instance].coreVM call:_luaWillActivateFunc required:NO withSig:@""];
 #endif
+	if ([_delegate respondsToSelector:@selector(willActivatePostLua)]) 
+	{
+		[_delegate willActivatePostLua];
 	}
 }
 
@@ -133,9 +137,13 @@
 	if ([_delegate respondsToSelector:@selector(isNowActive)]) 
 	{
 		[_delegate isNowActive];		
+	}
 #if defined(FC_LUA)
-		[[FCLua instance].coreVM call:_luaIsNowActiveFunc required:NO withSig:@""];
+	[[FCLua instance].coreVM call:_luaIsNowActiveFunc required:NO withSig:@""];
 #endif
+	if ([_delegate respondsToSelector:@selector(isNowActivePostLua)]) 
+	{
+		[_delegate isNowActivePostLua];		
 	}
 }
 
@@ -144,9 +152,13 @@
 	if ([_delegate respondsToSelector:@selector(willDeactivate)]) 
 	{
 		_deactivateTimer = [_delegate willDeactivate];		
+	}
 #if defined(FC_LUA)
-		[[FCLua instance].coreVM call:_luaWillDeactivateFunc required:NO withSig:@""];
+	[[FCLua instance].coreVM call:_luaWillDeactivateFunc required:NO withSig:@""];
 #endif
+	if ([_delegate respondsToSelector:@selector(willDeactivatePostLua)]) 
+	{
+		[_delegate willDeactivatePostLua];		
 	}
 }
 
@@ -155,9 +167,13 @@
 	if ([_delegate respondsToSelector:@selector(isNowDeactive)])
 	{
 		[_delegate isNowDeactive];
+	}
 #if defined(FC_LUA)
-		[[FCLua instance].coreVM call:_luaIsNowDeactiveFunc required:NO withSig:@""];
+	[[FCLua instance].coreVM call:_luaIsNowDeactiveFunc required:NO withSig:@""];
 #endif
+	if ([_delegate respondsToSelector:@selector(isNowDeactivePostLua)])
+	{
+		[_delegate isNowDeactivePostLua];
 	}
 }
 

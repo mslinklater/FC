@@ -93,11 +93,6 @@ static int lua_Log( lua_State* state )
 {
 	NSString* output = [NSString stringWithFormat:@"FATAL - %@ - %@", location, errorString];
 	[FCError fatalCommon:output];
-//#if TARGET_OS_IPHONE
-//	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
-//#endif
-//	NSLog( @"%@", output );
-//	[FCError halt];
 }
 
 +(void)fatal1:(NSString*)location info:(NSString*)errorString arg1:(id)arg1
@@ -112,12 +107,6 @@ static int lua_Log( lua_State* state )
 	NSString* infoString = [NSString stringWithFormat:errorString, arg1, arg2];
 	NSString* output = [NSString stringWithFormat:@"FATAL - %@ - %@", location, infoString];
 	[FCError fatalCommon:output];
-
-//#if TARGET_OS_IPHONE
-//	[[FCConnect instance] sendString:[output stringByAppendingString:@"\n"]];
-//#endif
-//	NSLog( @"%@", output );
-//	[FCError halt];
 }
 
 #pragma mark - Error

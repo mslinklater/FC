@@ -76,15 +76,23 @@
 #endif
 
 +(FCViewManager*)instance;
+	
 #if defined (FC_LUA)
 +(void)registerLuaFunctions:(FCLuaVM *)lua;
 #endif
 
+-(void)printViews;
+	
+-(void)createView:(NSString*)name asClass:(NSString*)className withParent:(NSString*)parentView;
+-(void)destroyView:(NSString*)name;
+	
 #if TARGET_OS_IPHONE
 -(void)add:(UIView*)view as:(NSString*)name;
 #else
 -(void)add:(NSView*)view as:(NSString*)name;
 #endif
+	
+-(UIView*)viewNamed:(NSString*)name;
 	
 -(void)remove:(NSString*)name;
 
@@ -117,6 +125,8 @@
 -(void)setView:(NSString*)viewName onSelectLuaFunc:(NSString*)funcName;
 -(void)setView:(NSString *)viewName image:(NSString*)imageName;
 -(void)setView:(NSString *)viewName url:(NSString*)url;
+	
+-(void)setView:(NSString *)viewName property:(NSString*)property to:(id)value;
 @end
 
 
