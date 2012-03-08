@@ -20,12 +20,26 @@
  THE SOFTWARE.
  */
 
-#import "FCColor.h"
-#import "FCKeys.h"
+#ifndef CR1_FCLuaAsserts_h
+#define CR1_FCLuaAsserts_h
 
-typedef uint64_t FCHandle;	// should last a while 8)
+#if defined(DEBUG)
 
-static const FCHandle kFCHandleInvalid = 0;
-static const FCHandle kFCHandleFirstValid = 1;
+#define FC_LUA_ASSERT_TYPE( state, stackpos, type )	\
+{							\
+	if( lua_type( state, stackpos ) != type )	\
+	{	\
+		FCLua_DumpStack( state );	\
+		NSString* error = [NSString stringWithFormat:@"Lua: Wrong type at assert, wanted %s, but found %s", lua_typename( state, type), lua_typename( state, lua_type( state, stackpos))];	\
+		FC_LOG(error);	\
+		FC_HALT;	\
+	}	\
+}
 
-extern FCHandle NewFCHandle( void );
+#else
+
+#define FC_LUA_ASSERT_TYPE(state, stackpos, type){}
+
+#endif	// DEBUG
+
+#endif

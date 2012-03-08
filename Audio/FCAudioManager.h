@@ -20,42 +20,25 @@
  THE SOFTWARE.
  */
 
-#if defined(FC_PHYSICS)
-
 #import <Foundation/Foundation.h>
+#import <OpenAL/al.h>
+#import <OpenAL/alc.h>
+#import <AudioToolbox/AudioToolbox.h>
+#import <AudioToolbox/ExtendedAudioFile.h>
 
-#import "FCCore.h"
-#import "FCPhysicsTypes.h"
+@class FCAudioListener;
 
-class b2World;
-class b2Body;
-
-@class FCPhysics2DBodyDef;
-
-@interface FCPhysics2DBody : NSObject <FCPhysicsBody> 
-{
-	NSString*		_Id;
-	NSString*		_name;
-	b2World*		_world;
-	b2Body*			_body;
-	FCHandle		_handle;
+@interface FCAudioManager : NSObject {
+	ALCdevice*	_device;
+	ALCcontext*	_context;
+	
+	FCAudioListener*		_listener;
+	NSMutableDictionary*	_samples;
+	NSMutableDictionary*	_sources;
 }
-@property(nonatomic, strong) NSString* Id;
-@property(nonatomic, strong) NSString* name;
-@property(nonatomic) b2World* world;
-@property(nonatomic, readonly) b2Body* body;
-@property(nonatomic) FCHandle handle;
+@property(nonatomic, readonly) ALCdevice* device;
+@property(nonatomic, readonly) ALCcontext* context;
+@property(nonatomic, strong) NSMutableDictionary* samples;
 
-@property(nonatomic, readonly) float rotation;
-@property(nonatomic) FC::Vector3f position;
-
--(id)initWithDef:(FCPhysics2DBodyDef*)def;
-
--(FC::Vector2f)linearVelocity;
--(void)setLinearVelocity:(FC::Vector2f)newVel;
-
--(void)applyImpulse:(FC::Vector2f)impulse atWorldPos:(FC::Vector2f)pos;
-//-(void)createPulleyJointWith:(FCPhysics2DBody*)otherBody anchor1:(FC::Vector2f)anchor1 anchor2:(FC::Vector2f)anchor2 groundAnchor1:(FC::Vector2f)ground1 groundAnchor2:(FC::Vector2f)ground2 ratio:(float)ratio maxLength1:(float)maxLength1 maxLength2:(float)maxLength2;
++(FCAudioManager*)instance;
 @end
-
-#endif // defined(FC_PHYSICS)

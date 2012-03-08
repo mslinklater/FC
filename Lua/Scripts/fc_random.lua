@@ -10,8 +10,8 @@ function FCRandom.New( seed )
 		seed = 1
 	end
 	
-	setmetatable( ret, FCRandom )
 	ret.x = seed
+	setmetatable( ret, FCRandom )
 	return ret
 end
 

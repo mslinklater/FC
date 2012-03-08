@@ -20,42 +20,50 @@
  THE SOFTWARE.
  */
 
-#if defined(FC_PHYSICS)
+#import "FCAudioManager.h"
+#import "FCAudioListener.h"
 
-#import <Foundation/Foundation.h>
+// Lua
 
-#import "FCCore.h"
-#import "FCPhysicsTypes.h"
+// load sample
+// move listener
 
-class b2World;
-class b2Body;
+@implementation FCAudioManager
 
-@class FCPhysics2DBodyDef;
+@synthesize device = _device;
+@synthesize context = _context;
 
-@interface FCPhysics2DBody : NSObject <FCPhysicsBody> 
+@synthesize samples = _samples;
+
++(FCAudioManager*)instance
 {
-	NSString*		_Id;
-	NSString*		_name;
-	b2World*		_world;
-	b2Body*			_body;
-	FCHandle		_handle;
+	static FCAudioManager* pInstance;
+	if (!pInstance) {
+		pInstance = [[FCAudioManager alloc] init];
+	}
+	return pInstance;
 }
-@property(nonatomic, strong) NSString* Id;
-@property(nonatomic, strong) NSString* name;
-@property(nonatomic) b2World* world;
-@property(nonatomic, readonly) b2Body* body;
-@property(nonatomic) FCHandle handle;
 
-@property(nonatomic, readonly) float rotation;
-@property(nonatomic) FC::Vector3f position;
+-(id)init
+{
+	self = [super init];
+	if (self) {
+		
+		_listener = [[FCAudioListener alloc] init];
+		_samples = [NSMutableDictionary dictionary];
+		_sources = [NSMutableDictionary dictionary];
+		
+		_device = alcOpenDevice( NULL );
+		_context = alcCreateContext( _device, 0 );
+		alcMakeContextCurrent( _context );
 
--(id)initWithDef:(FCPhysics2DBodyDef*)def;
+//		alGenBuffers(<#ALsizei n#>, <#ALuint *buffers#>)
+//		alGenSources(<#ALsizei n#>, <#ALuint *sources#>)
+//		alBufferData(<#ALuint bid#>, <#ALenum format#>, <#const ALvoid *data#>, <#ALsizei size#>, <#ALsizei freq#>)
+		
+		
+	}
+	return self;
+}
 
--(FC::Vector2f)linearVelocity;
--(void)setLinearVelocity:(FC::Vector2f)newVel;
-
--(void)applyImpulse:(FC::Vector2f)impulse atWorldPos:(FC::Vector2f)pos;
-//-(void)createPulleyJointWith:(FCPhysics2DBody*)otherBody anchor1:(FC::Vector2f)anchor1 anchor2:(FC::Vector2f)anchor2 groundAnchor1:(FC::Vector2f)ground1 groundAnchor2:(FC::Vector2f)ground2 ratio:(float)ratio maxLength1:(float)maxLength1 maxLength2:(float)maxLength2;
 @end
-
-#endif // defined(FC_PHYSICS)

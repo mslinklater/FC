@@ -292,7 +292,7 @@ static int lua_RemoveFromGroup( lua_State* _state )
 	return 0;
 }
 
-static int lua_SetViewPropertyToInteger( lua_State* _state )
+static int lua_SetViewPropertyInteger( lua_State* _state )
 {
 	FC_ASSERT( lua_gettop(_state) == 3);
 	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING);
@@ -308,7 +308,7 @@ static int lua_SetViewPropertyToInteger( lua_State* _state )
 	return 0;
 }
 
-static int lua_SetViewPropertyToString( lua_State* _state )
+static int lua_SetViewPropertyString( lua_State* _state )
 {
 	FC_ASSERT( lua_gettop(_state) == 3);
 	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING);
@@ -373,8 +373,8 @@ static int lua_PrintViews( lua_State* _state )
 	[lua registerCFunction:lua_RemoveFromGroup as:@"FCViewManager.RemoveFromGroup"];
 
 	[lua registerCFunction:lua_PrintViews as:@"FCViewManager.PrintViews"];
-	[lua registerCFunction:lua_SetViewPropertyToInteger as:@"FCViewManager.SetViewPropertyToInteger"];
-	[lua registerCFunction:lua_SetViewPropertyToString as:@"FCViewManager.SetViewPropertyToString"];
+	[lua registerCFunction:lua_SetViewPropertyInteger as:@"FCViewManager.SetViewPropertyInteger"];
+	[lua registerCFunction:lua_SetViewPropertyString as:@"FCViewManager.SetViewPropertyString"];
 }
 #endif // defined(FC_LUA)
 

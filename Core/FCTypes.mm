@@ -20,12 +20,13 @@
  THE SOFTWARE.
  */
 
-#import "FCColor.h"
-#import "FCKeys.h"
+#import "FCTypes.h"
 
-typedef uint64_t FCHandle;	// should last a while 8)
+FCHandle NewFCHandle()
+{
+	static FCHandle s_nextHandle = kFCHandleInvalid;
 
-static const FCHandle kFCHandleInvalid = 0;
-static const FCHandle kFCHandleFirstValid = 1;
-
-extern FCHandle NewFCHandle( void );
+	s_nextHandle++;
+	
+	return s_nextHandle;
+}

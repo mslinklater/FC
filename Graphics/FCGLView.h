@@ -102,7 +102,7 @@
 
 - (void)setFramebuffer;
 - (BOOL)presentFramebuffer;
--(FC::Vector2f)posOnPlane:(CGPoint)pointIn;
+-(FC::Vector3f)posOnPlane:(CGPoint)pointIn;
 
 // rendering control
 

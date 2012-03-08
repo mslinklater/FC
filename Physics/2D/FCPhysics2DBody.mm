@@ -39,8 +39,10 @@
 @implementation FCPhysics2DBody
 
 @synthesize Id = _Id;
+@synthesize name = _name;
 @synthesize world = _world;
 @synthesize body = _body;
+@synthesize handle = _handle;
 
 -(id)initWithDef:(FCPhysics2DBodyDef*)def
 {
@@ -61,8 +63,6 @@
 
 -(void)createBodyFromDef:(FCPhysics2DBodyDef *)def
 {
-//	NSDictionary* bodyXML = [physicsData dictionaryForKeyPath:@"physics2d.body"];
-	
 	b2BodyDef b2def;
 	b2def.position.x = def.position.x;
 	b2def.position.y = def.position.y;
@@ -75,9 +75,6 @@
 		b2def.linearDamping = def.linearDamping;
 	} else {
 		b2def.linearDamping = 0;
-//		if ([bodyXML valueForKey:kFCKeyLinearDamping]) {
-//			b2def.linearDamping = [[bodyXML valueForKey:kFCKeyLinearDamping] floatValue];	
-//		}		
 	}
 	
 	if (def.isStatic) 
@@ -185,16 +182,17 @@
 
 #pragma mark - Position
 
--(FC::Vector2f)position
+-(FC::Vector3f)position
 {
 	const b2Vec2 pos = _body->GetPosition();
 
-	return FC::Vector2f(pos.x, pos.y);
+	return FC::Vector3f(pos.x, pos.y, 0.0f);
 }
 
--(void)setPosition:(FC::Vector2f)newPos
+-(void)setPosition:(FC::Vector3f)newPos
 {
-	_body->SetTransform( b2Vec2( newPos.x, newPos.y ), 0.0f );
+	float currentAngle = _body->GetAngle();
+	_body->SetTransform( b2Vec2( newPos.x, newPos.y ), currentAngle );
 }
 
 #pragma mark - Velocity
@@ -212,6 +210,8 @@
 	vel.y = newVel.y;
 	_body->SetLinearVelocity( vel );
 }
+
+#pragma mark - Apply forces & impulses
 
 -(void)applyImpulse:(FC::Vector2f)impulse atWorldPos:(FC::Vector2f)pos
 {
@@ -233,112 +233,18 @@
 	return _body->GetAngle();
 }
 
-#pragma mark - Create Joints
-
-//-(void)createRevoluteJointWith:(FCPhysics2DBody*)anchorBody atOffset:(FC::Vector2f)anchorOffset motorSpeed:(float)motorSpeed maxTorque:(float)maxToque lowerAngle:(float)lower upperAngle:(float)upper
-//{
-//	b2Body* pAnchorB2Body = anchorBody.body;
-//	
-//	b2Vec2 offset;	//= pAnchorB2Body->GetWorldCenter();
-//	offset.x = anchorOffset.x;
-//	offset.y = anchorOffset.y;
-//	
-//	b2RevoluteJointDef jointDef;
-//	jointDef.Initialize(pAnchorB2Body, _body, offset);
-//	
-//	if ((motorSpeed != kFCInvalidFloat) && (maxToque != kFCInvalidFloat)) {
-//		jointDef.enableMotor = true;
-//		jointDef.motorSpeed = motorSpeed;
-//		jointDef.maxMotorTorque = maxToque;
-//	}
-//
-//	if ((lower != kFCInvalidFloat) && (upper != kFCInvalidFloat)) {
-//		jointDef.enableLimit = true;
-//		jointDef.lowerAngle = lower;
-//		jointDef.upperAngle = upper;
-//	}
-//	
-//	_world->CreateJoint(&jointDef);
-//}
-
-//-(void)createPrismaticJointWith:(FCPhysics2DBody*)anchorBody axis:(FC::Vector2f)axis motorSpeed:(float)motorSpeed maxForce:(float)maxForce lowerTranslation:(float)lower upperTranslation:(float)upper
-//{
-//	b2Body* pAnchorB2Body = anchorBody.body;
-//
-//	b2Vec2 b2axis;
-//	b2axis.x = axis.x;
-//	b2axis.y = axis.y;
-//	
-//	b2PrismaticJointDef jointDef;
-//	jointDef.Initialize( pAnchorB2Body, _body, pAnchorB2Body->GetWorldCenter(), b2axis);
-//	
-//	if ((motorSpeed != kFCInvalidFloat) && (maxForce != kFCInvalidFloat)) 
-//	{
-//		jointDef.enableMotor = true;
-//		jointDef.maxMotorForce = maxForce;
-//		jointDef.motorSpeed = motorSpeed;
-//	}
-//
-//	if ((lower != kFCInvalidFloat) && (upper != kFCInvalidFloat)) 
-//	{
-//		jointDef.enableLimit = true;
-//		jointDef.lowerTranslation = lower;
-//		jointDef.upperTranslation = upper;
-//	}
-//
-//	_world->CreateJoint( &jointDef );
-//}
-
-//-(void)createDistanceJointWith:(FCPhysics2DBody*)anchorBody atOffset:(FC::Vector2f)offset anchorOffset:(FC::Vector2f)anchorOffset
-//{
-//	b2Body* pAnchorB2Body = anchorBody.body;
-//	
-//	b2Vec2 b2AnchorOffset;	//= pAnchorB2Body->GetWorldCenter();
-//	b2AnchorOffset.x = anchorOffset.x;
-//	b2AnchorOffset.y = anchorOffset.y;
-//
-//	b2Vec2 b2Offset;	//= pBody->GetWorldCenter();
-//	b2Offset.x = offset.x;
-//	b2Offset.y = offset.y;
-//
-//	b2DistanceJointDef jointDef;
-//	jointDef.Initialize(_body, pAnchorB2Body, b2Offset, b2AnchorOffset);
-//	jointDef.collideConnected = true;
-//	_world->CreateJoint(&jointDef);
-//}
-
--(void)createPulleyJointWith:(FCPhysics2DBody*)otherBody anchor1:(FC::Vector2f)anchor1 anchor2:(FC::Vector2f)anchor2 groundAnchor1:(FC::Vector2f)ground1 groundAnchor2:(FC::Vector2f)ground2 ratio:(float)ratio maxLength1:(float)maxLength1 maxLength2:(float)maxLength2
+-(void)setRotation:(float)rot
 {
-	b2Body* pBody2 = otherBody.body;
-	
-	b2PulleyJointDef jointDef;
-	
-	b2Vec2 b2Anchor1( anchor1.x, anchor1.y );
-	b2Anchor1 += _body->GetWorldCenter();
-	b2Vec2 b2Anchor2( anchor2.x, anchor2.y );
-	b2Anchor2 += pBody2->GetWorldCenter();
-	
-	b2Vec2 b2Ground1( ground1.x, ground1.y );
-	b2Vec2 b2Ground2( ground2.x, ground2.y );
-	
-	jointDef.Initialize( _body, pBody2, b2Ground1, b2Ground2, b2Anchor1, b2Anchor2, ratio );
-	
-	if (maxLength1 != kFCInvalidFloat) {
-		jointDef.maxLengthA = maxLength1;
-	}
-	if (maxLength2 != kFCInvalidFloat) {
-		jointDef.maxLengthB = maxLength2;
-	}
-
-	_world->CreateJoint( &jointDef );	
+	const b2Vec2 currentPos = _body->GetPosition();
+	_body->SetTransform( currentPos, rot );
 }
 
 #pragma mark - Debugging
 
 -(NSString*)description
 {
-	FC::Vector2f pos = [self position];
-	return [NSString stringWithFormat:@"pos (%f,%f)", pos.x, pos.y];
+	FC::Vector3f pos = [self position];
+	return [NSString stringWithFormat:@"pos (%f,%f)", pos.x, pos.y ];
 }
 
 @end

@@ -40,8 +40,8 @@ static int lua_CreateDistanceJoint( lua_State* _state )
 	
 	FCPhysics2DDistanceJointCreateDef* def = [[FCPhysics2DDistanceJointCreateDef alloc] init];
 
-	NSString* body1Id = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
-	def.body1 = [s_pInstance bodyWithId:body1Id];
+	NSString* body1Name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	def.body1 = [s_pInstance bodyWithName:body1Name];
 	
 	FC_ASSERT(def.body1);
 	
@@ -52,7 +52,8 @@ static int lua_CreateDistanceJoint( lua_State* _state )
 		obj2NameStackPos = 4;
 		
 		FC::Vector2f pos = FC::Vector2f( lua_tonumber(_state, 2), lua_tonumber(_state, 3) );
-		pos += def.body1.position;
+		FC::Vector3f body1Pos = def.body1.position;
+		pos += FC::Vector2f( body1Pos.x, body1Pos.y );
 		def.pos1 = pos;
 	} 
 	else 
@@ -65,15 +66,16 @@ static int lua_CreateDistanceJoint( lua_State* _state )
 	
 	FC_ASSERT(lua_isstring(_state, obj2NameStackPos));
 	
-	NSString* body2Id = [NSString stringWithUTF8String:lua_tostring(_state, obj2NameStackPos)];
-	def.body2 = [s_pInstance bodyWithId:body2Id];
+	NSString* body2Name = [NSString stringWithUTF8String:lua_tostring(_state, obj2NameStackPos)];
+	def.body2 = [s_pInstance bodyWithName:body2Name];
 	
 	FC_ASSERT(def.body2);
 	
 	if (lua_isnumber(_state, obj2NameStackPos+1)) 
 	{
 		FC::Vector2f pos = FC::Vector2f( lua_tonumber(_state, obj2NameStackPos+1), lua_tonumber(_state, obj2NameStackPos+2) );
-		pos += def.body2.position;
+		FC::Vector3f body2Pos = def.body2.position;
+		pos += FC::Vector2f( body2Pos.x, body2Pos.y );
 		def.pos2 = pos;
 	} 
 	else 
@@ -100,14 +102,15 @@ static int lua_CreateRevoluteJoint( lua_State* _state )
 	
 	FCPhysics2DRevoluteJointCreateDef* def = [[FCPhysics2DRevoluteJointCreateDef alloc] init];
 	
-	def.body1 = [s_pInstance bodyWithId:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
+	def.body1 = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
 	FC_ASSERT(def.body1);
-	def.body2 = [s_pInstance bodyWithId:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
+	def.body2 = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
 	FC_ASSERT(def.body2);
 	
 	if (lua_isnumber(_state, 3)) {
 		FC::Vector2f pos = FC::Vector2f( lua_tonumber(_state, 3), lua_tonumber(_state, 4) );
-		pos += def.body2.position;
+		FC::Vector3f body2Pos = def.body2.position;
+		pos += FC::Vector2f( body2Pos.x, body2Pos.y );
 		def.pos = pos;
 	} else
 	{
@@ -132,9 +135,9 @@ static int lua_CreatePrismaticJoint( lua_State* _state )
 	
 	FCPhysics2DPrismaticJointCreateDef* def = [[FCPhysics2DPrismaticJointCreateDef alloc] init];
 	
-	def.body1 = [s_pInstance bodyWithId:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
+	def.body1 = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
 	FC_ASSERT(def.body1);
-	def.body2 = [s_pInstance bodyWithId:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
+	def.body2 = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
 	FC_ASSERT(def.body2);
 	
 	NSDictionary* null = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 3)]];
@@ -165,9 +168,9 @@ static int lua_CreatePulleyJoint( lua_State* _state )
 	
 	FCPhysics2DPulleyJointCreateDef* def = [[FCPhysics2DPulleyJointCreateDef alloc] init];
 	
-	def.body1 = [s_pInstance bodyWithId:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
+	def.body1 = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
 	FC_ASSERT(def.body1);
-	def.body2 = [s_pInstance bodyWithId:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
+	def.body2 = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
 	FC_ASSERT(def.body2);
 
 	NSDictionary* groundAnchor1 = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 3)]];
@@ -282,7 +285,7 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 @synthesize world = _world;
 @synthesize gravity = _gravity;
 @synthesize joints = _joints;
-@synthesize bodiesByIdDict = _bodiesByIdDict;
+@synthesize bodies = _bodies;
 
 #pragma mark - Object Lifecycle
 
@@ -297,7 +300,8 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 	if (self) 
 	{
 		s_pInstance = self;
-		_bodiesByIdDict = [NSMutableDictionary dictionary];
+		_bodies = [NSMutableDictionary dictionary];
+		_bodiesByName = [NSMutableDictionary dictionary];
 		
 #if defined (FC_LUA)
 		[[FCLua instance].coreVM createGlobalTable:@"FCPhysics2D"];
@@ -312,7 +316,6 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 		[[FCLua instance].coreVM registerCFunction:lua_SetPrismaticJointLimits as:@"FCPhysics2D.SetPrismaticJointLimits"];
 #endif
 		
-		mNextHandle = 0;
 		_joints = [NSMutableDictionary dictionary];
 		
 		_gravity = b2Vec2( 0.0f, -9.8f );
@@ -328,8 +331,6 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 -(void)dealloc
 {
 	s_pInstance = nil;
-	_joints = nil;
-	_bodiesByIdDict = nil;
 	delete _world; 
 	_world = 0;
 }
@@ -339,36 +340,49 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 -(void)update:(float)realTime gameTime:(float)gameTime
 {
 	if (gameTime > 0.0f) {
-		_world->Step( gameTime, 6, 2 );
+		_world->Step( gameTime, 8, 4 );
 	}
-//	pWorld->ClearForces();
 }
 
--(FCPhysics2DBody*)newBodyWithDef:(FCPhysics2DBodyDef*)def
+-(FCPhysics2DBody*)newBodyWithDef:(FCPhysics2DBodyDef*)def name:(NSString *)name
 {
 	def.world = _world;
 
 	FCPhysics2DBody* newBody = [[FCPhysics2DBody alloc] initWithDef:def];
 
-	[_bodiesByIdDict setValue:newBody forKey:newBody.Id];
+	FCHandle handle = NewFCHandle();
+	newBody.handle = handle;
+
+	if (name) 
+	{
+		newBody.name = [NSString stringWithFormat:@"%@_%@", name, newBody.Id];
+		[_bodiesByName setValue:newBody forKey:newBody.name];
+	}
+
+	[_bodies setObject:newBody forKey:[NSNumber numberWithInt:handle]];
 	
 	return newBody;
 }
 
 -(void)destroyBody:(FCPhysics2DBody*)body
 {
-	[_bodiesByIdDict setValue:nil forKey:body.Id];
+	[_bodies removeObjectForKey:[NSNumber numberWithInt:body.handle]];
+	if (body.name) {
+		[_bodiesByName removeObjectForKey:body.name];
+	}
 }
 
--(FCPhysics2DBody*)bodyWithId:(NSString*)Id
+-(FCPhysics2DBody*)bodyWithName:(NSString*)name
 {
-	return [_bodiesByIdDict valueForKey:Id];
+	FC_ASSERT( [_bodiesByName valueForKey:name] );
+	return [_bodiesByName valueForKey:name];
 }
 
 #pragma mark - Joints
 
 -(FCHandle)createJoint:(FCPhysics2DJointCreateDef*)def
 {
+	FCHandle handle = NewFCHandle();
 	if ([def isKindOfClass:[FCPhysics2DDistanceJointCreateDef class]]) 
 	{
 		FCPhysics2DDistanceJointCreateDef* thisDef = (FCPhysics2DDistanceJointCreateDef*)def;
@@ -385,7 +399,7 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 		jointDef.collideConnected = true;
 		b2Joint* joint = _world->CreateJoint(&jointDef);
 		
-		[_joints setObject:[NSNumber numberWithInt:(int)joint] forKey:[NSNumber numberWithInt:mNextHandle]];
+		[_joints setObject:[NSNumber numberWithInt:(int)joint] forKey:[NSNumber numberWithInt:handle]];
 	} 
 	else if( [def isKindOfClass:[FCPhysics2DRevoluteJointCreateDef class]] )
 	{
@@ -401,7 +415,7 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 		jointDef.enableLimit = false;
 		b2Joint* joint = _world->CreateJoint(&jointDef);
 		
-		[_joints setObject:[NSNumber numberWithInt:(int)joint] forKey:[NSNumber numberWithInt:mNextHandle]];
+		[_joints setObject:[NSNumber numberWithInt:(int)joint] forKey:[NSNumber numberWithInt:handle]];
 	}
 	else if( [def isKindOfClass:[FCPhysics2DPrismaticJointCreateDef class]] )
 	{
@@ -420,7 +434,7 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 
 		b2Joint* joint = _world->CreateJoint(&jointDef);
 
-		[_joints setObject:[NSNumber numberWithInt:(int)joint] forKey:[NSNumber numberWithInt:mNextHandle]];
+		[_joints setObject:[NSNumber numberWithInt:(int)joint] forKey:[NSNumber numberWithInt:handle]];
 	}
 	else if( [def isKindOfClass:[FCPhysics2DPulleyJointCreateDef class]] )
 	{
@@ -448,13 +462,13 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 		
 		b2Joint* joint = _world->CreateJoint(&jointDef);
 		
-		[_joints setObject:[NSNumber numberWithInt:(int)joint] forKey:[NSNumber numberWithInt:mNextHandle]];
+		[_joints setObject:[NSNumber numberWithInt:(int)joint] forKey:[NSNumber numberWithInt:handle]];
 	}
 	else
 	{
 		FC_ASSERT(0);
 	}
-	return (FCHandle)mNextHandle++;
+	return handle;
 }
 
 -(void)setRevoluteJoint:(FCHandle)handle motorEnabled:(BOOL)enabled torque:(float)torque speed:(float)speed

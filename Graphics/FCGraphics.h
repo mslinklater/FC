@@ -22,8 +22,8 @@
 
 #if defined(FC_GRAPHICS)
 
-#include "PVRTGlobal.h"
-#include "PVRTTexture.h"
+//#include "PVRTGlobal.h"
+//#include "PVRTTexture.h"
 
 #import "FCGraphicsProtocols.h"
 

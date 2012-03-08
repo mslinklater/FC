@@ -20,8 +20,6 @@
  THE SOFTWARE.
  */
 
-
-
 #import "FCActorSystem.h"
 #import "FCActor.h"
 #import "FCPhysics.h"
@@ -40,14 +38,73 @@ static int lua_Reset( lua_State* _state )
 	[s_pInstance reset];
 	return 0;
 }
-#endif
 
-@interface FCActorSystem(hidden)
--(id)createActor:(NSDictionary*)actorDict ofClass:(NSString*)actorClass withResource:(FCResource*)res named:(NSString*)name;
-#if defined (FC_PHYSICS)
-//-(void)addJoint:(NSDictionary*)jointDict;
+static int lua_GetActorPosition( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 1);
+	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
+	
+	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:lua_tointeger(_state, 1)]];
+	FC::Vector3f pos = actor.position;
+	
+	lua_pushvector3f( _state, pos );
+	
+	return 1;
+}
+
+static int lua_SetActorPosition( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 2);
+	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
+	FC_ASSERT(lua_type(_state, 2) == LUA_TTABLE);
+	
+	FCHandle handle = lua_tointeger(_state, 1);
+	
+	FC::Vector3f pos = lua_tovector3f(_state);
+	
+	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:handle]];
+
+	actor.position = pos;
+	return 0;
+}
+
+static int lua_GetActorLinearVelocity( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 1);
+	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
+	
+	FCHandle handle = lua_tointeger(_state, 1);
+	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:handle]];
+	FC::Vector3f vel = actor.linearVelocity;
+	lua_pushvector3f(_state, vel);
+	return 1;
+}
+
+static int lua_SetActorLinearVelocity( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 2);
+	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
+	FC_ASSERT(lua_type(_state, 2) == LUA_TTABLE);
+	
+	FCHandle handle = lua_tointeger(_state, 1);
+	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:handle]];
+	actor.linearVelocity = lua_tovector3f(_state);
+	return 0;
+}
+
+static int lua_ApplyImpulse( lua_State* _state )
+{
+	FC_ASSERT(lua_gettop(_state) == 2);
+	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
+	FC_ASSERT(lua_type(_state, 2) == LUA_TTABLE);
+	
+	FCHandle handle = lua_tointeger(_state, 1);
+	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:handle]];
+	[actor applyImpulse:lua_tovector3f(_state) atWorldPos:actor.position];
+	return 0;
+}
+
 #endif
-@end
 
 @implementation FCActorSystem
 
@@ -57,9 +114,8 @@ static int lua_Reset( lua_State* _state )
 @synthesize tapGestureActorsArray = _tapGestureActorsArray;
 @synthesize deleteList = _deleteList;
 @synthesize classArraysDictionary = _classArraysDictionary;
-@synthesize actorIdDictionary = _actorIdDictionary;
+@synthesize actorFullNameDictionary = _actorFullNameDictionary;
 @synthesize actorHandleDictionary = _actorHandleDictionary;
-@synthesize nextHandle = _nextHandle;
 
 #pragma mark - FCSingleton protocol
 
@@ -78,20 +134,23 @@ static int lua_Reset( lua_State* _state )
 	self = [super init];
 	if (self) 
 	{
-		_nextHandle = 1;
-		
 		_allActorsArray = [[NSMutableArray alloc] init];
 		_updateActorsArray = [[NSMutableArray alloc] init];
 		_renderActorsArray = [[NSMutableArray alloc] init];
 		_tapGestureActorsArray = [[NSMutableArray alloc] init];
 		_deleteList = [[NSMutableArray alloc] init];
 		_classArraysDictionary = [[NSMutableDictionary alloc] init];
-		_actorIdDictionary = [[NSMutableDictionary alloc] init];
+		_actorFullNameDictionary = [[NSMutableDictionary alloc] init];
 		_actorHandleDictionary = [[NSMutableDictionary alloc] init];
 		
 #if defined (FC_LUA)
 		[[FCLua instance].coreVM createGlobalTable:@"FCActorSystem"];
 		[[FCLua instance].coreVM registerCFunction:lua_Reset as:@"FCActorSystem.Reset"];
+		[[FCLua instance].coreVM registerCFunction:lua_GetActorPosition as:@"FCActorSystem.GetPosition"];
+		[[FCLua instance].coreVM registerCFunction:lua_SetActorPosition as:@"FCActorSystem.SetPosition"];
+		[[FCLua instance].coreVM registerCFunction:lua_GetActorLinearVelocity as:@"FCActorSystem.GetLinearVelocity"];
+		[[FCLua instance].coreVM registerCFunction:lua_SetActorLinearVelocity as:@"FCActorSystem.SetLinearVelocity"];
+		[[FCLua instance].coreVM registerCFunction:lua_SetActorLinearVelocity as:@"FCActorSystem.ApplyImpulse"];
 #endif
 	}
 
@@ -100,7 +159,7 @@ static int lua_Reset( lua_State* _state )
 
 #pragma mark - New FCR Based methods
 
--(NSArray*)createActorsOfClass:(NSString *)actorClass withResource:(FCResource *)res named:(NSString *)name
+-(NSArray*)createActorsOfClass:(NSString *)actorClass withResource:(FCResource *)res name:(NSString *)name
 {
 	// Test is the actor class type you are requesting actually exists
 	FC_ASSERT(NSClassFromString(actorClass));
@@ -113,14 +172,14 @@ static int lua_Reset( lua_State* _state )
 	
 	for(NSDictionary* actorDict in actors)
 	{
-		[newActors addObject:[self createActor:actorDict ofClass:actorClass withResource:res named:name]];
+		[newActors addObject:[self createActor:actorDict ofClass:actorClass withResource:res name:name]];
 	}	
 
 	NSArray* retArray = [NSArray arrayWithArray:newActors];
 	return retArray;
 }
 
--(id)createActor:(NSDictionary*)actorDict ofClass:(NSString *)actorClass withResource:(FCResource *)res named:(NSString*)name
+-(id)createActor:(NSDictionary*)actorDict ofClass:(NSString *)actorClass withResource:(FCResource *)res name:(NSString *)name
 {
 	// get body
 	
@@ -162,16 +221,18 @@ static int lua_Reset( lua_State* _state )
 	
 	id actor = [self actorOfClass:NSClassFromString(actorClass)];
 	
-	actor = [actor initWithDictionary:actorDict body:bodyDict model:modelDict resource:res];
-	((FCActor*)actor).handle = _nextHandle++;
+	actor = [actor initWithDictionary:actorDict body:bodyDict model:modelDict resource:res name:name];
+	((FCActor*)actor).handle = NewFCHandle();
 
 	// some more checks etc
 
 	NSString* actorId = [actorDict valueForKey:@"id"];
 
-	if (actorId) // id is optional
+	if (name) // id is optional
 	{
-		[_actorIdDictionary setValue:actor forKey:actorId];
+		((FCActor*)actor).fullName = [NSString stringWithFormat:@"%@_%@", name, actorId];
+		FC_ASSERT([_actorFullNameDictionary valueForKey:((FCActor*)actor).fullName] == nil);
+		[_actorFullNameDictionary setValue:actor forKey:((FCActor*)actor).fullName];
 	}
 
 	// add to class arrays dictionary
@@ -232,10 +293,10 @@ static int lua_Reset( lua_State* _state )
 
 -(void)removeActor:(FCActor*)actor
 {
-	if (((FCActor*)actor).Id) 
+	if (((FCActor*)actor).fullName) 
 	{
-		NSString* Id = ((FCActor*)actor).Id;
-		[_actorIdDictionary removeObjectForKey:Id];
+		NSString* fullName = ((FCActor*)actor).Id;
+		[_actorFullNameDictionary removeObjectForKey:fullName];
 	}
 
 	if ([actor needsUpdate]) {
@@ -262,9 +323,9 @@ static int lua_Reset( lua_State* _state )
 	return [_classArraysDictionary valueForKey:actorClass];
 }
 
--(id)actorWithId:(NSString *)Id
+-(id)actorWithFullName:(NSString *)Id
 {
-	return [_actorIdDictionary valueForKey:Id];
+	return [_actorFullNameDictionary valueForKey:Id];
 }
 
 -(id)actorWithHandle:(FCHandle)handle
@@ -282,20 +343,14 @@ static int lua_Reset( lua_State* _state )
 
 -(void)removeAllActors
 {
-//	NSArray* actorsArray = [NSArray arrayWithArray:_allActorsArray];
-//	
-//	for (FCActor* actor in actorsArray)
-//	{
-//		[self removeActor:actor];
-//	}
 	[_allActorsArray removeAllObjects];
 	[_updateActorsArray removeAllObjects];
 	[_renderActorsArray removeAllObjects];
 	[_tapGestureActorsArray removeAllObjects];
 	[_deleteList removeAllObjects];
-	
+
 	[_classArraysDictionary removeAllObjects];
-	[_actorIdDictionary removeAllObjects];
+	[_actorFullNameDictionary removeAllObjects];
 	[_actorHandleDictionary removeAllObjects];
 }
 

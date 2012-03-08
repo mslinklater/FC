@@ -24,11 +24,20 @@
 
 #import <Foundation/Foundation.h>
 
+#import "FCCore.h"
 #import "FCLuaVM.h"
 #import "FCLuaThread.h"
 #import "FCLuaClass.h"
 #import "FCLuaCommon.h"
 #import "FCLuaMemory.h"
+#import "FCLuaAsserts.h"
+
+// Some helpers, which should probably be moved out
+
+void lua_pushvector3f( lua_State* _state, FC::Vector3f& vec );
+FC::Vector2f lua_tovector2f( lua_State* _state );
+FC::Vector3f lua_tovector3f( lua_State* _state );
+FC::Color4f lua_tocolor4f( lua_State* _state );
 
 @interface FCLua : NSObject {
 	NSMutableDictionary*	_threadsDict;
@@ -46,6 +55,7 @@
 -(FCLuaVM*)newVM;
 
 -(void)executeLine:(NSString*)line;
+-(void)printStats;
 
 @end
 

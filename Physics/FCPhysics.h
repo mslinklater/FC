@@ -29,6 +29,7 @@
 #import "FCPhysics2D.h"
 #import "FCPhysics3D.h"
 #import "FCPhysicsMaterial.h"
+#import "FCPhysicsTypes.h"
 
 @interface FCPhysics : NSObject <FCGameObjectUpdate> {
 	FCPhysics2D* _twoD;

@@ -37,6 +37,7 @@
 
 @synthesize handle = _handle;
 @synthesize name = _name;
+@synthesize fullName = _fullName;
 @synthesize createDef = _createDef;
 @synthesize Id = _id;
 
@@ -45,12 +46,16 @@
 #endif
 
 #if defined (FC_PHYSICS)
-@synthesize body2d = _body2d;
+@synthesize physicsBody = _physicsBody;
 #endif
 
 #pragma mark - Initializers
 
--(id)initWithDictionary:(NSDictionary*)dictionary body:(NSDictionary*)bodyDict model:(NSDictionary*)modelDict resource:(FCResource*)res
+-(id)initWithDictionary:(NSDictionary*)dictionary 
+				   body:(NSDictionary*)bodyDict 
+				  model:(NSDictionary*)modelDict 
+			   resource:(FCResource*)res
+				   name:(NSString*)name
 {
 	self = [super init];
 	if (self) 
@@ -58,6 +63,8 @@
 		_createDef = dictionary;
 		_id = [self.createDef valueForKey:kFCKeyId];
 				
+		// hardwired to 2D for now 8)
+		
 		if (bodyDict) 
 		{
 #if defined (FC_PHYSICS)
@@ -82,7 +89,7 @@
 			bodyDef.canSleep = NO;
 			bodyDef.shapeDef = bodyDict;
 			
-			_body2d = [[[FCPhysics instance] twoD] newBodyWithDef:bodyDef];
+			_physicsBody = [[[FCPhysics instance] twoD] newBodyWithDef:bodyDef name:name];
 #endif
 		}
 		
@@ -110,10 +117,9 @@
 
 -(void)dealloc
 {
-	
+	[[[FCPhysics instance] twoD] destroyBody:_physicsBody];	
 	_createDef = nil;
 	_id = nil;
-	
 }
 
 #pragma mark - Joints
@@ -122,24 +128,51 @@
 
 #if defined (FC_PHYSICS)
 #pragma mark - Physics methods
--(FC::Vector2f)getCenter
+-(FC::Vector3f)getCenter
 {
-	return [_body2d position];
+	return [_physicsBody position];
 }
 
--(void)applyImpulse:(FC::Vector2f)impulse atWorldPos:(FC::Vector2f)pos
+-(void)applyImpulse:(FC::Vector3f)impulse atWorldPos:(FC::Vector3f)pos
 {
-	[_body2d applyImpulse:impulse atWorldPos:pos];
+	[_physicsBody applyImpulse:impulse atWorldPos:pos];
 }
 
 #endif
 
-#pragma mark - Setters
+#pragma mark - Position
 
--(void)setPosition:(FC::Vector2f)newPosition
+-(void)setPosition:(FC::Vector3f)newPosition
 {
 #if defined (FC_PHYSICS)
-	[_body2d setPosition:newPosition];
+	[_physicsBody setPosition:newPosition];
+#endif
+}
+
+-(FC::Vector3f)position
+{
+#if defined (FC_PHYSICS)
+	return _physicsBody.position;
+#else
+	return FC::Vector3f( 0.0f, 0.0f, 0.0f );
+#endif
+}
+
+#pragma mark - Linear Velocity
+
+-(void)setLinearVelocity:(FC::Vector3f)vel
+{
+#if defined (FC_PHYSICS)
+	[_physicsBody setLinearVelocity:vel];
+#endif
+}
+
+-(FC::Vector3f)linearVelocity
+{
+#if defined (FC_PHYSICS)
+	return [_physicsBody linearVelocity];
+#else
+	return FC::Vector2f( 0.0f, 0.0f, 0.0f );
 #endif
 }
 
@@ -147,15 +180,6 @@
 {
 	[_model setDebugMeshColor:color];
 	return;
-}
-
--(FC::Vector2f)position
-{
-#if defined (FC_PHYSICS)
-	return _body2d.position;
-#else
-	return FC::Vector2f( 0.0f, 0.0f );
-#endif
 }
 
 -(BOOL)needsUpdate
@@ -177,15 +201,15 @@
 {
 	// TODO: needs to be able to handle model positioning without physics
 #if defined (FC_PHYSICS)
-	if( _body2d )
+	if( _physicsBody )
 	{
-		FC::Vector2f pos = [_body2d position ];
-		float rot = [_body2d rotation];
+		FC::Vector3f pos = [_physicsBody position ];
+		float rot = [_physicsBody rotation];
 		
 		if( _model )
 		{
 			[_model setRotation:rot];
-			[_model setPosition:FC::Vector3f(pos.x, pos.y, 0.0f)];					
+			[_model setPosition:pos];					
 		}
 	}
 #endif

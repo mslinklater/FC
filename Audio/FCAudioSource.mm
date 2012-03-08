@@ -20,12 +20,8 @@
  THE SOFTWARE.
  */
 
-#import "FCColor.h"
-#import "FCKeys.h"
+#import "FCAudioSource.h"
 
-typedef uint64_t FCHandle;	// should last a while 8)
+@implementation FCAudioSource
 
-static const FCHandle kFCHandleInvalid = 0;
-static const FCHandle kFCHandleFirstValid = 1;
-
-extern FCHandle NewFCHandle( void );
+@end

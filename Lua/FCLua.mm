@@ -29,6 +29,97 @@
 #import "FCLuaCommon.h"
 #import "FCDebug.h"
 
+void lua_pushvector3f( lua_State* _state, FC::Vector3f& vec )
+{
+	lua_newtable(_state);
+	int top = lua_gettop(_state);
+	
+	lua_pushnumber(_state, 1);
+	lua_pushnumber(_state, vec.x);
+	lua_settable(_state, top);
+	
+	lua_pushnumber(_state, 2);
+	lua_pushnumber(_state, vec.y);
+	lua_settable(_state, top);
+	
+	lua_pushnumber(_state, 3);
+	lua_pushnumber(_state, vec.z);
+	lua_settable(_state, top);
+}
+
+FC::Vector2f lua_tovector2f( lua_State* _state )
+{
+	FC::Vector2f vec;
+	
+	lua_pushnil(_state);
+	
+	lua_next(_state, -2);
+	
+	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	vec.x = lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	lua_next(_state, -2);
+	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	vec.y = lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	return vec;
+}
+
+FC::Vector3f lua_tovector3f( lua_State* _state )
+{
+	FC::Vector3f vec;
+	
+	lua_pushnil(_state);
+	
+	lua_next(_state, -2);
+	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	vec.x = lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	lua_next(_state, -2);
+	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	vec.y = lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+
+	lua_next(_state, -2);
+	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	vec.z = lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+
+	return vec;
+}
+
+FC::Color4f lua_tocolor4f( lua_State* _state )
+{
+	FC::Color4f color;
+
+	lua_pushnil(_state);
+	
+	lua_next(_state, -2);
+	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	color.r = lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	lua_next(_state, -2);
+	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	color.g = lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	lua_next(_state, -2);
+	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	color.b = lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	lua_next(_state, -2);
+	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	color.a = lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+
+	return color;
+}
+
 static unsigned int common_newThread( lua_State* _state )
 {
 	static int s_recurseCount = 0;
@@ -48,6 +139,8 @@ static unsigned int common_newThread( lua_State* _state )
 	FCLuaThread* thread = [[FCLuaThread alloc] initFromState:_state withId:fcLua.nextThreadId];
 	
 	[fcLua.threadsDict setObject:thread forKey:[NSNumber numberWithUnsignedInt:fcLua.nextThreadId]];
+	
+	NSLog(@"CreateThread %d", fcLua.nextThreadId);
 	
 	[fcLua incrementNextThreadId];
 	
@@ -124,6 +217,8 @@ static int lua_KillThread( lua_State* state )
 
 	NSNumber* key = [NSNumber numberWithInt:killid];
 
+	NSLog(@"Killthread %@", key);
+	
 	FCLuaThread* thread = [instance.threadsDict objectForKey:key];
 
 	if (thread) {
@@ -131,10 +226,16 @@ static int lua_KillThread( lua_State* state )
 	} else
 	{
 		FC_WARNING(@"Trying to kill non-existent Lua thread");
+		FC_HALT;
 	}
 	return 0;
 }
 
+static int lua_PrintStats( lua_State* _state )
+{
+	[[FCLua instance] printStats];
+	return 0;
+}
 
 #pragma mark - FCLua Private Interface
 
@@ -206,6 +307,9 @@ static int lua_KillThread( lua_State* state )
 		[m_coreVM registerCFunction:lua_WaitGameThread as:@"FCWaitGame"];
 		[m_coreVM registerCFunction:lua_KillThread as:@"FCKillThread"];
 		
+		[m_coreVM createGlobalTable:@"FCLua"];
+		[m_coreVM registerCFunction:lua_PrintStats as:@"FCLua.PrintStats"];
+		
 		_nextThreadId = 1;
 	}
 	return self;
@@ -214,6 +318,15 @@ static int lua_KillThread( lua_State* state )
 -(void)executeLine:(NSString *)line
 {
 	[m_coreVM executeLine:line];
+}
+
+-(void)printStats
+{
+	FC_LOG(@"---FCLua Stats---");
+	FC_LOG1(@"Num threads: %@", [NSNumber numberWithInt:[_threadsDict count]]);
+	FC_LOG1(@"Threads: %@", _threadsDict);
+	FC_LOG1(@"Memory: %@ allocs", [NSNumber numberWithInt:[FCLuaMemory instance].numAllocs] );
+	FC_LOG1(@"Memory: %@ bytes", [NSNumber numberWithInt:[FCLuaMemory instance].totalMemory] );
 }
 
 -(void)dealloc

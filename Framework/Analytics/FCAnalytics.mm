@@ -71,7 +71,7 @@ static int lua_EndTimedEvent( lua_State* _state )
 
 @implementation FCAnalytics
 @synthesize currentTimedEvents = _currentTimedEvents;
-@synthesize nextHandle = _nextHandle;
+//@synthesize nextHandle = _nextHandle;
 
 #pragma mark - FCSingleton
 
@@ -99,7 +99,6 @@ static int lua_EndTimedEvent( lua_State* _state )
 	self = [super init];
 	if (self) {
 		_currentTimedEvents = [NSMutableDictionary dictionary];
-		_nextHandle = kFCHandleFirstValid;
 	}
 	return self;
 }
@@ -112,8 +111,9 @@ static int lua_EndTimedEvent( lua_State* _state )
 -(FCHandle)beginTimedEvent:(NSString*)event
 {
 	[FlurryAnalytics logEvent:event timed:YES];
-	[_currentTimedEvents setObject:event forKey:[NSNumber numberWithInt:_nextHandle]];
-	return _nextHandle++;
+	FCHandle h = NewFCHandle();
+	[_currentTimedEvents setObject:event forKey:[NSNumber numberWithInt:h]];
+	return h;
 }
 
 -(void)endTimedEvent:(FCHandle)hEvent

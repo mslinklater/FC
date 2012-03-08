@@ -34,20 +34,22 @@
     b2World*				_world;
 	b2Vec2					_gravity;
 	NSMutableDictionary*	_joints;
-	NSMutableDictionary*	_bodiesByIdDict;
-	FCHandle				mNextHandle;
+	NSMutableDictionary*	_bodies;
+	NSMutableDictionary*	_bodiesByName;
+//	FCHandle				mNextHandle;
 }
 @property(nonatomic) b2World* world;
 @property(nonatomic) b2Vec2 gravity;
 @property(nonatomic, strong) NSMutableDictionary* joints;
-@property(nonatomic, strong) NSMutableDictionary* bodiesByIdDict;
+@property(nonatomic, strong) NSMutableDictionary* bodies;
 
 -(void)prepareForDealloc;
 
--(FCPhysics2DBody*)newBodyWithDef:(FCPhysics2DBodyDef*)def;
+-(FCPhysics2DBody*)newBodyWithDef:(FCPhysics2DBodyDef*)def name:(NSString*)name;
 -(void)destroyBody:(FCPhysics2DBody*)body;
 
--(FCPhysics2DBody*)bodyWithId:(NSString*)Id;
+//-(FCPhysics2DBody*)bodyWithId:(NSString*)Id;
+-(FCPhysics2DBody*)bodyWithName:(NSString*)name;
 
 -(FCHandle)createJoint:(FCPhysics2DJointCreateDef*)def;
 

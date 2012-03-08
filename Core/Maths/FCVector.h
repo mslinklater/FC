@@ -55,7 +55,8 @@ inline float Magnitude( const Vector2f& v )
 {
 	return (float)sqrt(v.x * v.x + v.y * v.y);
 }
-	
+
+
 inline Vector2f Normalised( const Vector2f& v )
 {
 	float mag = Magnitude( v );
@@ -92,6 +93,11 @@ public:
 	float	y;
 	float	z;
 };
+
+inline float Magnitude( const Vector3f& v )
+{
+	return (float)sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
+}
 
 class Vector4f {
 public:

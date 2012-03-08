@@ -544,7 +544,7 @@ static int lua_SetFrustumTranslation( lua_State* _state )
     [self deleteFramebuffer];
 }
 
--(FC::Vector2f)posOnPlane:(CGPoint)pointIn
+-(FC::Vector3f)posOnPlane:(CGPoint)pointIn
 {
 	// needs offset
 	
@@ -560,7 +560,7 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 	pointIn.x /= halfScreenWidth / (-self.frustumTranslation.z * self.fov);
 	pointIn.y /= halfScreenHeight / (-self.frustumTranslation.z * (self.fov * _aspectRatio));
 	
-	return FC::Vector2f(pointIn.x, pointIn.y);
+	return FC::Vector3f(pointIn.x, pointIn.y, 0.0f);
 }
 
 -(void)setProjectionMatrix

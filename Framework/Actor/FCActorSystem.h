@@ -36,10 +36,9 @@
 	NSMutableArray* _deleteList;
 	
 	NSMutableDictionary* _classArraysDictionary;
-	NSMutableDictionary* _actorIdDictionary;
+	NSMutableDictionary* _actorFullNameDictionary;
 	NSMutableDictionary* _actorHandleDictionary;
 	// actor name dict
-	FCHandle			_nextHandle;
 }
 @property(nonatomic, strong) NSMutableArray* allActorsArray;
 @property(nonatomic, strong) NSMutableArray* updateActorsArray;
@@ -47,15 +46,14 @@
 @property(nonatomic, strong) NSMutableArray* tapGestureActorsArray;
 @property(nonatomic, strong) NSMutableArray* deleteList;
 @property(nonatomic, strong) NSMutableDictionary* classArraysDictionary;
-@property(nonatomic, strong) NSMutableDictionary* actorIdDictionary;
+@property(nonatomic, strong) NSMutableDictionary* actorFullNameDictionary;
 @property(nonatomic, strong) NSMutableDictionary* actorHandleDictionary;
-@property(nonatomic, readonly) FCHandle nextHandle;
 
 +(FCActorSystem*)instance;
 
 -(id)init;
 -(id)actorOfClass:(Class)actorClass;
--(id)actorWithId:(NSString*)Id;
+-(id)actorWithFullName:(NSString*)Id;
 -(id)actorWithHandle:(FCHandle)handle;
 
 -(void)addToDeleteArray:(FCActor*)actor;
@@ -67,7 +65,12 @@
 
 -(NSArray*)createActorsOfClass:(NSString*)actorClass 
 				  withResource:(FCResource*)res
-						 named:(NSString*)name;
+						  name:(NSString*)name;
+
+-(id)createActor:(NSDictionary*)actorDict 
+		 ofClass:(NSString*)actorClass 
+	withResource:(FCResource*)res
+			name:(NSString*)name;
 
 @end
 

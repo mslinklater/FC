@@ -21,4 +21,23 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "FCCore.h"
 
+// Common API that both 2D and 3D physics bodies must implement
+
+@protocol FCPhysicsBody <NSObject>
+
+-(FC::Vector3f)position;
+-(void)setPosition:(FC::Vector3f)pos;
+
+-(FC::Vector3f)linearVelocity;
+-(void)setLinearVelocity:(FC::Vector3f)vel;
+
+-(float)rotation;
+-(void)setRotation:(float)rot;
+
+// orientation
+// set Orientation
+
+-(void)applyImpulse:(FC::Vector3f)impulse atWorldPos:(FC::Vector3f)pos;
+@end

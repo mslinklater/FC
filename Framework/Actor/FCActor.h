@@ -27,10 +27,8 @@
 #import "FCActorSystem.h"
 
 #import "FCCore.h"
-//#import "FCMaths.h"
-//#import "FCProtocols.h"
-//#import "FCModel.h"
 #import "FCGraphics.h"
+#import "FCPhysics.h"
 
 #if defined (FC_GRAPHICS)
 @class FCModel;
@@ -38,45 +36,50 @@
 
 @class FCResource;
 
-#if defined (FC_PHYSICS)
-@class FCPhysics2DBody;
-#endif
-
 @interface FCActor : NSObject <FCActorBase> 
 {
 	FCHandle			_handle;
 	NSString*			_name;
 	NSString*			_id;			// deprecate
+	NSString*			_fullName;
 	NSDictionary*		_createDef;
 #if defined (FC_GRAPHICS)
 	FCModel*			_model;
 #endif
 #if defined (FC_PHYSICS)
-	FCPhysics2DBody*	_body2d;
+	id<FCPhysicsBody>	_physicsBody;
 #endif
 }
 @property(nonatomic) FCHandle handle;
 @property(nonatomic, strong) NSString* name;
 @property(nonatomic, strong, readonly) NSString* Id;
+@property(nonatomic, strong) NSString* fullName;
 @property(nonatomic, strong, readonly) NSDictionary* createDef;
 #if defined (FC_GRAPHICS)
 @property(nonatomic, strong, readonly) FCModel* model;
 #endif
 #if defined (FC_PHYSICS)
-@property(nonatomic, strong, readonly) FCPhysics2DBody*	body2d;
+@property(nonatomic, strong, readonly) id<FCPhysicsBody>	physicsBody;
 #endif
 
--(id)initWithDictionary:(NSDictionary*)dictionary body:(NSDictionary*)bodyDict model:(NSDictionary*)modelDict resource:(FCResource*)res;
+-(id)initWithDictionary:(NSDictionary*)dictionary 
+				   body:(NSDictionary*)bodyDict 
+				  model:(NSDictionary*)modelDict 
+			   resource:(FCResource*)res
+				   name:(NSString*)name;
 
 // TODO: Get these two into a property
--(void)setPosition:(FC::Vector2f)pos;
--(FC::Vector2f)position;
+-(void)setPosition:(FC::Vector3f)pos;
+-(FC::Vector3f)position;
+
+-(void)setLinearVelocity:(FC::Vector3f)vel;
+-(FC::Vector3f)linearVelocity;
 
 -(void)setDebugModelColor:(FC::Color4f)color;
 
 #if defined (FC_PHYSICS)
--(void)applyImpulse:(FC::Vector2f)impulse atWorldPos:(FC::Vector2f)pos;
--(FC::Vector2f)getCenter;
+-(void)applyImpulse:(FC::Vector3f)impulse atWorldPos:(FC::Vector3f)pos;
+-(FC::Vector3f)getCenter;
 #endif
 @end
 
