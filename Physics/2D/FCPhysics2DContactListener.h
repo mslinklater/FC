@@ -20,21 +20,48 @@
  THE SOFTWARE.
  */
 
-#import "Maths/FCMaths.h"
 
-@class FCResource;
+#ifndef CR1_FCPhysics2DContactListener_h
+#define CR1_FCPhysics2DContactListener_h
 
+#include <map>
+#include <set>
 
-//@protocol FCGameObjectLifetime
-//-(void)reset;
-//-(void)destroy;
-//@end
+#include <Box2D/Box2D.h>
 
-@protocol FCGameObjectUpdate
--(void)update:(float)realTime gameTime:(float)gameTime;
-@end
+struct CollisionInfo {
+	float velocity;
+	float x;
+	float y;
+	void* actor1;
+	void* actor2;
+};
 
-@protocol FCGameObjectRender
--(NSArray*)renderGather;
-@end
+typedef std::map<uint64_t, CollisionInfo>	tCollisionMap;
+typedef tCollisionMap::iterator				tCollisionMapIter;
 
+typedef void(*tCollisionSubscriber)(tCollisionMap&);
+
+class FCPhysics2DContactListener : public b2ContactListener {
+public:
+	
+	FCPhysics2DContactListener();
+	~FCPhysics2DContactListener();
+	
+	void PreSolve( b2Contact* contact, const b2Manifold* oldManifold );	// input from Box2D
+	
+	void Clear();
+	void DispatchToSubscribers();
+	void AddSubscriber( tCollisionSubscriber subscriber );
+	void RemoveSubscriber( tCollisionSubscriber subscriber );
+	int	NumCollisions(){ return m_collisions.size(); }
+private:
+
+	typedef std::set<tCollisionSubscriber> tSubscriberSet;
+	typedef tSubscriberSet::iterator tSubscriberSetIter;
+	
+	tCollisionMap	m_collisions;
+	tSubscriberSet	m_subscribers;
+};
+
+#endif

@@ -30,32 +30,37 @@
 
 static int lua_Save( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(0);
 	[[FCPersistentData instance] saveData];
 	return 0;
 }
 
 static int lua_Load( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(0);
 	[[FCPersistentData instance] loadData];
 	return 0;
 }
 
 static int lua_Clear( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(0);
 	[[FCPersistentData instance] clearData];
 	return 0;
 }
 
 static int lua_Print( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(0);
 	[[FCPersistentData instance] printData];
 	return 0;
 }
 
 static int lua_SetBool( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, -2) == LUA_TSTRING );
-	FC_ASSERT( lua_type(_state, -1) == LUA_TBOOLEAN );
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(-2, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TBOOLEAN);
 	
 	const char* pVarName = lua_tostring( _state, -2);
 	bool value = lua_toboolean(_state, -1);
@@ -75,7 +80,8 @@ static int lua_SetBool( lua_State* _state )
 
 static int lua_GetBool( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, -1) == LUA_TSTRING );
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TSTRING);
 
 	const char* pVarName = lua_tostring( _state, -1 );
 
@@ -98,8 +104,9 @@ static int lua_GetBool( lua_State* _state )
 
 static int lua_SetString( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, -2) == LUA_TSTRING );
-	FC_ASSERT( lua_type(_state, -1) == LUA_TSTRING );
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(-2, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TSTRING);
 	
 	const char* pKey = lua_tostring( _state, -2);
 	const char* pValue = lua_tostring(_state, -1);
@@ -112,7 +119,8 @@ static int lua_SetString( lua_State* _state )
 
 static int lua_GetString( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, -1) == LUA_TSTRING );
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TSTRING);
 	
 	const char* pKey = lua_tostring( _state, -1 );
 	
@@ -131,8 +139,9 @@ static int lua_GetString( lua_State* _state )
 
 static int lua_SetNumber( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, -2) == LUA_TSTRING );
-	FC_ASSERT( lua_type(_state, -1) == LUA_TNUMBER );
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(-2, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	
 	const char* pKey = lua_tostring( _state, -2);
 	double value = lua_tonumber(_state, -1);
@@ -145,7 +154,8 @@ static int lua_SetNumber( lua_State* _state )
 
 static int lua_GetNumber( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, -1) == LUA_TSTRING );
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TSTRING);
 	
 	const char* pKey = lua_tostring( _state, -1 );
 	

@@ -51,29 +51,29 @@ static FCDevice* s_pDevice;
 
 static int lua_Probe( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 0);
+	FC_LUA_ASSERT_NUMPARAMS(0);
 	[s_pDevice probe];
 	return 0;
 }
 
 static int lua_WarmProbe( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 0);
+	FC_LUA_ASSERT_NUMPARAMS(0);
 	[s_pDevice warmProbe];
 	return 0;
 }
 
 static int lua_Print( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 0);
+	FC_LUA_ASSERT_NUMPARAMS(0);
 	[s_pDevice print];
 	return 0;
 }
 
 static int lua_GetDeviceString( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 1);
-	FC_ASSERT(lua_isstring(_state, 1));
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
 	NSString* key = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 
@@ -86,8 +86,8 @@ static int lua_GetDeviceString( lua_State* _state )
 
 static int lua_GetDeviceNumber( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 1);
-	FC_ASSERT(lua_isstring(_state, 1));
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
 	NSString* key = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	
@@ -101,6 +101,7 @@ static int lua_GetDeviceNumber( lua_State* _state )
 
 static int lua_GetGameCenterID( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(0);
 	lua_pushstring(_state, [s_pDevice.gameCenterID UTF8String]);
 	return 1;
 }

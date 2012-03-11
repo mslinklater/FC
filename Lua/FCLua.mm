@@ -136,13 +136,11 @@ static unsigned int common_newThread( lua_State* _state )
 		FC_FATAL(@"Too many Lua threads");
 	}
 	
-	FCLuaThread* thread = [[FCLuaThread alloc] initFromState:_state withId:fcLua.nextThreadId];
+	FCHandle handle = NewFCHandle();
 	
-	[fcLua.threadsDict setObject:thread forKey:[NSNumber numberWithUnsignedInt:fcLua.nextThreadId]];
+	FCLuaThread* thread = [[FCLuaThread alloc] initFromState:_state withId:handle];
 	
-	NSLog(@"CreateThread %d", fcLua.nextThreadId);
-	
-	[fcLua incrementNextThreadId];
+	[fcLua.threadsDict setObject:thread forKey:[NSNumber numberWithUnsignedInt:handle]];
 	
 	[thread resume];
 	
@@ -155,6 +153,9 @@ static unsigned int common_newThread( lua_State* _state )
 
 static int lua_NewThread( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TFUNCTION);
+	
 	if (lua_isfunction(_state, 1))
 	{
 		unsigned int threadId = common_newThread( _state );
@@ -168,18 +169,21 @@ static int lua_NewThread( lua_State* _state )
 	return 0;
 }
 
-static int lua_WaitThread( lua_State* state )
+static int lua_WaitThread( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	
 	// find thread with this state
 	FCLua* instance = [FCLua instance];
 	NSArray* keys = [instance.threadsDict allKeys];
 	for( id key in keys )
 	{
 		FCLuaThread* thread = [instance.threadsDict objectForKey:key];
-		if (state == thread.luaState) {
-			double time = lua_tonumber(state, 1);
+		if (_state == thread.luaState) {
+			double time = lua_tonumber(_state, 1);
 			[thread pauseRealTime:time];
-			int yieldVal = lua_yield(state, 0);
+			int yieldVal = lua_yield(_state, 0);
 			return yieldVal;
 		}
 	}
@@ -187,18 +191,21 @@ static int lua_WaitThread( lua_State* state )
 	return 0;
 }
 
-static int lua_WaitGameThread( lua_State* state )
+static int lua_WaitGameThread( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	
 	// find thread with this state
 	FCLua* instance = [FCLua instance];
 	NSArray* keys = [instance.threadsDict allKeys];
 	for( id key in keys )
 	{
 		FCLuaThread* thread = [instance.threadsDict objectForKey:key];
-		if (state == thread.luaState) {
-			double time = lua_tonumber(state, 1);
+		if (_state == thread.luaState) {
+			double time = lua_tonumber(_state, 1);
 			[thread pauseGameTime:time];
-			int yieldVal = lua_yield(state, 0);
+			int yieldVal = lua_yield(_state, 0);
 			return yieldVal;
 		}
 	}
@@ -206,19 +213,20 @@ static int lua_WaitGameThread( lua_State* state )
 	return 0;
 }
 
-static int lua_KillThread( lua_State* state )
+static int lua_KillThread( lua_State* _state )
 {
-	if (!lua_isnumber(state, -1)) {
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	
+	if (!lua_isnumber(_state, -1)) {
 		FC_FATAL(@"Trying to pass a non-number to thread kill");
 	}
-	int killid = (int)lua_tointeger(state, -1);
+	int killid = (int)lua_tointeger(_state, -1);
 	
 	FCLua* instance = [FCLua instance];
 
 	NSNumber* key = [NSNumber numberWithInt:killid];
 
-	NSLog(@"Killthread %@", key);
-	
 	FCLuaThread* thread = [instance.threadsDict objectForKey:key];
 
 	if (thread) {
@@ -233,6 +241,8 @@ static int lua_KillThread( lua_State* state )
 
 static int lua_PrintStats( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(0);
+	
 	[[FCLua instance] printStats];
 	return 0;
 }
@@ -248,7 +258,10 @@ static int lua_PrintStats( lua_State* _state )
 
 @implementation FCLua
 @synthesize threadsDict = _threadsDict;
-@synthesize nextThreadId = _nextThreadId;
+@synthesize perfCounter = _perfCounter;
+@synthesize maxCPUTime = _maxCPUTime;
+@synthesize avgCount = _avgCount;
+@synthesize avgCPUTime = _avgCPUTime;
 
 #pragma mark - Class methods
 
@@ -264,6 +277,8 @@ static int lua_PrintStats( lua_State* _state )
 -(void)updateThreadsRealTime:(float)dt gameTime:(float)gt
 {
 	// check for stack crawl
+		
+	[_perfCounter zero];
 	
 	// update threads
 	NSArray* keys = [self.threadsDict allKeys];
@@ -277,6 +292,13 @@ static int lua_PrintStats( lua_State* _state )
 			[self.threadsDict removeObjectForKey:key];
 		}
 	}
+	
+	float millisecs = [_perfCounter milliValue];
+	if (millisecs > _maxCPUTime) {
+		_maxCPUTime = millisecs;
+	}
+	_avgCPUTime += millisecs;
+	_avgCount++;
 }
 
 #pragma mark Object Lifecycle
@@ -310,7 +332,10 @@ static int lua_PrintStats( lua_State* _state )
 		[m_coreVM createGlobalTable:@"FCLua"];
 		[m_coreVM registerCFunction:lua_PrintStats as:@"FCLua.PrintStats"];
 		
-		_nextThreadId = 1;
+		_perfCounter = [[FCPerformanceCounter alloc] init];
+		_maxCPUTime = 0.0f;
+		_avgCPUTime = 0.0f;
+		_avgCount = 0;
 	}
 	return self;
 }
@@ -327,16 +352,13 @@ static int lua_PrintStats( lua_State* _state )
 	FC_LOG1(@"Threads: %@", _threadsDict);
 	FC_LOG1(@"Memory: %@ allocs", [NSNumber numberWithInt:[FCLuaMemory instance].numAllocs] );
 	FC_LOG1(@"Memory: %@ bytes", [NSNumber numberWithInt:[FCLuaMemory instance].totalMemory] );
+	FC_LOG1(@"CPU: %@ max", [NSNumber numberWithFloat:_maxCPUTime] );
+	FC_LOG1(@"CPU: %@ avg", [NSNumber numberWithFloat:_avgCPUTime / _avgCount] );
 }
 
 -(void)dealloc
 {
 	_threadsDict = nil;
-}
-
--(void)incrementNextThreadId
-{
-	_nextThreadId++;
 }
 
 #pragma mark - VM

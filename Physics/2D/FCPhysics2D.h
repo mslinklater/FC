@@ -29,6 +29,7 @@
 #import "FCPhysics2DBody.h"
 #import "FCPhysics2DBodyDef.h"
 #import "FCPhysics2DJoint.h"
+#import "FCPhysics2DContactListener.h"
 
 @interface FCPhysics2D : NSObject <FCGameObjectUpdate> {
     b2World*				_world;
@@ -36,19 +37,19 @@
 	NSMutableDictionary*	_joints;
 	NSMutableDictionary*	_bodies;
 	NSMutableDictionary*	_bodiesByName;
-//	FCHandle				mNextHandle;
+	FCPhysics2DContactListener*	_contactListener;
 }
 @property(nonatomic) b2World* world;
 @property(nonatomic) b2Vec2 gravity;
 @property(nonatomic, strong) NSMutableDictionary* joints;
 @property(nonatomic, strong) NSMutableDictionary* bodies;
+@property(nonatomic, readonly) FCPhysics2DContactListener* contactListener;
 
 -(void)prepareForDealloc;
 
 -(FCPhysics2DBody*)newBodyWithDef:(FCPhysics2DBodyDef*)def name:(NSString*)name;
 -(void)destroyBody:(FCPhysics2DBody*)body;
 
-//-(FCPhysics2DBody*)bodyWithId:(NSString*)Id;
 -(FCPhysics2DBody*)bodyWithName:(NSString*)name;
 
 -(FCHandle)createJoint:(FCPhysics2DJointCreateDef*)def;

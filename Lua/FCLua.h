@@ -41,15 +41,22 @@ FC::Color4f lua_tocolor4f( lua_State* _state );
 
 @interface FCLua : NSObject {
 	NSMutableDictionary*	_threadsDict;
-	unsigned int			_nextThreadId;
+//	unsigned int			_nextThreadId;
+	
+	FCPerformanceCounter*	_perfCounter;
+	float					_maxCPUTime;
+	float					_avgCPUTime;
+	int						_avgCount;
 }
 @property(nonatomic, readonly) NSMutableDictionary* threadsDict;
-@property(nonatomic, readonly) unsigned int nextThreadId;
+@property(nonatomic, strong) FCPerformanceCounter* perfCounter;
+@property(nonatomic) float maxCPUTime;
+@property(nonatomic) float avgCPUTime;
+@property(nonatomic) int avgCount;
 
 +(FCLua*)instance;
 
 -(void)updateThreadsRealTime:(float)dt gameTime:(float)dt;
--(void)incrementNextThreadId;
 
 -(FCLuaVM*)coreVM;
 -(FCLuaVM*)newVM;

@@ -156,7 +156,7 @@ extern "C" {
 		case kLuaThreadStateDead:
 			break;			
 	}
-	lua_gc( _luaState, LUA_GCCOLLECT, 0 );
+//	lua_gc( _luaState, LUA_GCCOLLECT, 0 );
 
 }
 

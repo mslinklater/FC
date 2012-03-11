@@ -20,21 +20,16 @@
  THE SOFTWARE.
  */
 
-#import "Maths/FCMaths.h"
+#import <Foundation/Foundation.h>
+#import <OpenAL/al.h>
+#import <OpenAL/alc.h>
 
-@class FCResource;
+#import "FCCore.h"
 
-
-//@protocol FCGameObjectLifetime
-//-(void)reset;
-//-(void)destroy;
-//@end
-
-@protocol FCGameObjectUpdate
--(void)update:(float)realTime gameTime:(float)gameTime;
+@interface FCAudioBuffer : NSObject {
+	FCHandle	_handle;
+	ALuint	_ALHandle;
+}
+@property(nonatomic) FCHandle handle;
+@property(nonatomic) ALuint ALHandle;
 @end
-
-@protocol FCGameObjectRender
--(NSArray*)renderGather;
-@end
-

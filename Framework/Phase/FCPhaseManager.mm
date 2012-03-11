@@ -24,11 +24,12 @@
 #import "FCError.h"
 
 #if defined (FC_LUA)
-#import "FCLuaVM.h"
+#import "FCLua.h"
 
 static int lua_AddPhaseToQueue( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, -1) == LUA_TSTRING );
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TSTRING);
 
 	const char* pPhaseName = lua_tostring( _state, -1);
 
@@ -41,7 +42,8 @@ static int lua_AddPhaseToQueue( lua_State* _state )
 
 static int lua_DeactivatePhase( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, -1) == LUA_TSTRING );
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TSTRING);
 	
 	const char* pPhaseName = lua_tostring( _state, -1);
 	

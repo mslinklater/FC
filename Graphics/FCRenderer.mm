@@ -42,8 +42,8 @@ static FCRenderer* s_currentLuaTarget;
 
 static int lua_SetCurrentRenderer( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 1);
-	FC_ASSERT(lua_isstring(_state, 1));
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 
 	FCRenderer* rend = [s_renderers valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
 	FC_ASSERT(rend);

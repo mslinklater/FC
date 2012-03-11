@@ -36,6 +36,22 @@
 
 @class FCResource;
 
+@protocol FCActorBase
+
+-(id)initWithDictionary:(NSDictionary*)dictionary body:(NSDictionary*)bodyDict model:(NSDictionary*)modelDict resource:(FCResource*)res name:(NSString*)name;
+-(void)dealloc;
+
+@optional
+-(void)update:(float)gameTime;
+-(void)render;
+-(BOOL)needsUpdate;
+-(BOOL)needsRender;
+-(BOOL)respondsToTapGesture;
+-(float)radius;
+-(BOOL)posWithinBounds:(FC::Vector2f)pos;
+
+@end
+
 @interface FCActor : NSObject <FCActorBase> 
 {
 	FCHandle			_handle;

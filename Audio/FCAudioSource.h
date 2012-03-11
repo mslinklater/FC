@@ -21,7 +21,15 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <OpenAL/al.h>
+#import <OpenAL/alc.h>
 
-@interface FCAudioSource : NSObject
+#import "FCCore.h"
 
+@interface FCAudioSource : NSObject {
+	FCHandle	_handle;
+	ALuint		_ALHandle;
+}
+@property(nonatomic) FCHandle handle;
+@property(nonatomic) ALuint ALHandle;
 @end

@@ -30,7 +30,7 @@ static FCTwitter* s_pInstance;
 
 static int lua_CanTweet( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 0);
+	FC_LUA_ASSERT_NUMPARAMS(0);
 	
 	lua_pushboolean(_state, [s_pInstance canTweet]);
 	
@@ -39,8 +39,8 @@ static int lua_CanTweet( lua_State* _state )
 
 static int lua_TweetWithText( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 1);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TSTRING);
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 
 	NSString* text = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 
@@ -51,8 +51,8 @@ static int lua_TweetWithText( lua_State* _state )
 
 static int lua_AddHyperlink( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 1);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TSTRING);
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
 	NSString* hyperlink = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	
@@ -63,6 +63,7 @@ static int lua_AddHyperlink( lua_State* _state )
 
 static int lua_Send( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(0);
 	[s_pInstance send];
 	return 0;
 }

@@ -25,20 +25,32 @@
 
 #if defined(DEBUG)
 
-#define FC_LUA_ASSERT_TYPE( state, stackpos, type )	\
+#define FC_LUA_ASSERT_TYPE( stackpos, type )	\
 {							\
-	if( lua_type( state, stackpos ) != type )	\
+	if( lua_type( _state, stackpos ) != type )	\
 	{	\
-		FCLua_DumpStack( state );	\
-		NSString* error = [NSString stringWithFormat:@"Lua: Wrong type at assert, wanted %s, but found %s", lua_typename( state, type), lua_typename( state, lua_type( state, stackpos))];	\
+		NSString* error = [NSString stringWithFormat:@"LUA (%s): Wrong type at assert, wanted %s, but found %s", __FUNCTION__, lua_typename( _state, type), lua_typename( _state, lua_type( _state, stackpos))];	\
 		FC_LOG(error);	\
-		FC_HALT;	\
+		FCLua_DumpStack( _state );	\
+		return 0;	\
 	}	\
+}
+
+#define FC_LUA_ASSERT_NUMPARAMS( n )	\
+{										\
+	if( lua_gettop( _state ) != n )		\
+	{									\
+		NSString* error = [NSString stringWithFormat:@"LUA (%s): Wrong number of paramaters. Expected %d but received %d", __FUNCTION__, n, lua_gettop( _state )];	\
+		FC_LOG(error);	\
+		FCLua_DumpStack( _state );		\
+		return 0;	\
+	}			\
 }
 
 #else
 
 #define FC_LUA_ASSERT_TYPE(state, stackpos, type){}
+#define FC_LUA_ASSERT_NUMPARAMS( n ){}
 
 #endif	// DEBUG
 

@@ -35,14 +35,16 @@ static FCActorSystem* s_pInstance;
 #if defined (FC_LUA)
 static int lua_Reset( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(0);
+	
 	[s_pInstance reset];
 	return 0;
 }
 
 static int lua_GetActorPosition( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 1);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
 	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:lua_tointeger(_state, 1)]];
 	FC::Vector3f pos = actor.position;
@@ -52,11 +54,23 @@ static int lua_GetActorPosition( lua_State* _state )
 	return 1;
 }
 
+static int lua_GetActorPositionY( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	
+	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:lua_tointeger(_state, 1)]];
+	
+	lua_pushnumber(_state, actor.position.y);
+	
+	return 1;
+}
+
 static int lua_SetActorPosition( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 2);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
-	FC_ASSERT(lua_type(_state, 2) == LUA_TTABLE);
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(2, LUA_TTABLE);
 	
 	FCHandle handle = lua_tointeger(_state, 1);
 	
@@ -70,8 +84,8 @@ static int lua_SetActorPosition( lua_State* _state )
 
 static int lua_GetActorLinearVelocity( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 1);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
 	FCHandle handle = lua_tointeger(_state, 1);
 	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:handle]];
@@ -82,9 +96,9 @@ static int lua_GetActorLinearVelocity( lua_State* _state )
 
 static int lua_SetActorLinearVelocity( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 2);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
-	FC_ASSERT(lua_type(_state, 2) == LUA_TTABLE);
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(2, LUA_TTABLE);
 	
 	FCHandle handle = lua_tointeger(_state, 1);
 	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:handle]];
@@ -94,9 +108,9 @@ static int lua_SetActorLinearVelocity( lua_State* _state )
 
 static int lua_ApplyImpulse( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 2);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
-	FC_ASSERT(lua_type(_state, 2) == LUA_TTABLE);
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(2, LUA_TTABLE);
 	
 	FCHandle handle = lua_tointeger(_state, 1);
 	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:handle]];
@@ -147,6 +161,7 @@ static int lua_ApplyImpulse( lua_State* _state )
 		[[FCLua instance].coreVM createGlobalTable:@"FCActorSystem"];
 		[[FCLua instance].coreVM registerCFunction:lua_Reset as:@"FCActorSystem.Reset"];
 		[[FCLua instance].coreVM registerCFunction:lua_GetActorPosition as:@"FCActorSystem.GetPosition"];
+		[[FCLua instance].coreVM registerCFunction:lua_GetActorPositionY as:@"FCActorSystem.GetPositionY"];
 		[[FCLua instance].coreVM registerCFunction:lua_SetActorPosition as:@"FCActorSystem.SetPosition"];
 		[[FCLua instance].coreVM registerCFunction:lua_GetActorLinearVelocity as:@"FCActorSystem.GetLinearVelocity"];
 		[[FCLua instance].coreVM registerCFunction:lua_SetActorLinearVelocity as:@"FCActorSystem.SetLinearVelocity"];

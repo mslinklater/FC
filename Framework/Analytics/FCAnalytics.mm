@@ -35,8 +35,8 @@
 
 static int lua_RegisterEvent( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 1);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TSTRING);
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
 	[[FCAnalytics instance] registerEvent:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
 	
@@ -45,8 +45,8 @@ static int lua_RegisterEvent( lua_State* _state )
 
 static int lua_BeginTimedEvent( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 1);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TSTRING);
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 
 	FCHandle handle = [[FCAnalytics instance] beginTimedEvent:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
 	
@@ -57,8 +57,8 @@ static int lua_BeginTimedEvent( lua_State* _state )
 
 static int lua_EndTimedEvent( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 1);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
 	[[FCAnalytics instance] endTimedEvent:(FCHandle)lua_tointeger(_state, 1)];
 	
@@ -71,7 +71,6 @@ static int lua_EndTimedEvent( lua_State* _state )
 
 @implementation FCAnalytics
 @synthesize currentTimedEvents = _currentTimedEvents;
-//@synthesize nextHandle = _nextHandle;
 
 #pragma mark - FCSingleton
 

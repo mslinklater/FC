@@ -30,9 +30,6 @@
 #import "FCCore.h"
 #import "FCModel.h"
 
-@interface FCActor(hidden)
-@end
-
 @implementation FCActor
 
 @synthesize handle = _handle;

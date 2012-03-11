@@ -39,6 +39,7 @@
 #import "FCShaderManager.h"
 #import "FCFacebook.h"
 #import "FCTwitter.h"
+#import "FCAudioManager.h"
 
 #if defined (FC_LUA)
 static FCLuaVM*					s_lua;
@@ -58,7 +59,8 @@ static BOOL						s_paused;
 #if defined (FC_LUA)
 static int lua_ShowStatusBar( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, -1) == LUA_TBOOLEAN );
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TBOOLEAN);
 	
 	int visible = lua_toboolean( _state, -1);
 
@@ -73,29 +75,30 @@ static int lua_ShowStatusBar( lua_State* _state )
 
 static int lua_SetBackgroundColor( lua_State* _state )
 {
-	FC_ASSERT(lua_type(_state, 1) == LUA_TTABLE);
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TTABLE);
 	
 	double r, g, b, a;
 
 	lua_pushnil(_state);
 	
 	lua_next(_state, -2);
-	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	r = lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 
 	lua_next(_state, -2);
-	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	g = lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 
 	lua_next(_state, -2);
-	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	b = lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 
 	lua_next(_state, -2);
-	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	a = lua_tonumber(_state, -1);
 	
 	s_viewController.view.backgroundColor = [UIColor colorWithRed:r green:g blue:b alpha:a];
@@ -105,13 +108,15 @@ static int lua_SetBackgroundColor( lua_State* _state )
 
 static int lua_ShowGameCenterLeaderboards( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(0);
 	[[FCApplication instance] showGameCenterLeaderboard];
 	return 0;
 }
 
 static int lua_LaunchExternalURL( lua_State* _state )
 {
-	FC_ASSERT(lua_type(_state, 1) == LUA_TSTRING);
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
 	NSString* urlString = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	
@@ -121,7 +126,7 @@ static int lua_LaunchExternalURL( lua_State* _state )
 
 static int lua_MainViewSize( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 0);
+	FC_LUA_ASSERT_NUMPARAMS(0);
 	
 	CGSize size = s_viewController.view.frame.size;
 	
@@ -133,8 +138,8 @@ static int lua_MainViewSize( lua_State* _state )
 
 static int lua_PauseGame( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 1);
-	FC_ASSERT(lua_isboolean(_state, 1));
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TBOOLEAN);
 	
 	if (lua_toboolean(_state, 1)) {
 		[[FCApplication instance] pause];
@@ -147,8 +152,8 @@ static int lua_PauseGame( lua_State* _state )
 
 static int lua_SetUpdateFrequency( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 1);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
 	[[FCApplication instance] setUpdateFrequency:lua_tointeger(_state, 1)];
 	
@@ -235,6 +240,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	[FCFacebook instance];
 	[FCAnalytics instance];
 	[FCTwitter instance];
+	[FCAudioManager instance];
 #endif
 	[[FCDevice instance] probe];
 	[[FCDevice instance] warmProbe];

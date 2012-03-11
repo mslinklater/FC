@@ -31,10 +31,8 @@
 
 @interface FCAnalytics : NSObject {
 	NSMutableDictionary* _currentTimedEvents;
-	//FCHandle _nextHandle;
 }
 @property(nonatomic, strong) NSMutableDictionary* currentTimedEvents;
-//@property(nonatomic) FCHandle nextHandle;
 
 +(FCAnalytics*)instance;
 

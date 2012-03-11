@@ -20,8 +20,12 @@
  THE SOFTWARE.
  */
 
-#import "FCAudioSample.h"
+#import "FCAudioCollisionTypeHandler.h"
 
-@implementation FCAudioSample
+@implementation FCAudioCollisionTypeHandler
+
+@synthesize target = _target;
+@synthesize selector = _selector;
+@synthesize theClass = _theClass;
 
 @end

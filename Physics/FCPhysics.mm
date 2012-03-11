@@ -32,23 +32,23 @@ static FCPhysics* s_pPhysics = 0;
 
 static int lua_Reset( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(0);
 	[s_pPhysics reset];
 	return 0;
 }
 
 static int lua_Create2DSystem( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(0);
 	[s_pPhysics create2DSystem];
 	return 0;
 }
 
 static int lua_SetMaterial( lua_State* _state )
 {
-	// FCPhysics.AddMaterial( "normal", { friction = 0.5, resitiution = 0.6, density = 1} )
-	
-	FC_ASSERT(lua_gettop(_state) == 2);
-	FC_ASSERT(lua_isstring(_state, 1));
-	FC_ASSERT(lua_istable(_state, 2));
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TTABLE);
 	
 	// get string and components
 	
@@ -57,21 +57,18 @@ static int lua_SetMaterial( lua_State* _state )
 	material.name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	
 	lua_getfield(_state, 2, "density");
-	if (lua_isnumber(_state, 3)) {
-		material.density = (float)lua_tonumber(_state, 3);
-	}
+	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
+	material.density = (float)lua_tonumber(_state, 3);
 	lua_pop(_state, 1);
 
 	lua_getfield(_state, 2, "restitution");
-	if (lua_isnumber(_state, 3)) {
-		material.restitution = (float)lua_tonumber(_state, 3);
-	}
+	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
+	material.restitution = (float)lua_tonumber(_state, 3);
 	lua_pop(_state, 1);
 
 	lua_getfield(_state, 2, "friction");
-	if (lua_isnumber(_state, 3)) {
-		material.friction = (float)lua_tonumber(_state, 3);
-	}
+	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
+	material.friction = (float)lua_tonumber(_state, 3);
 	lua_pop(_state, 1);
 
 	lua_settop(_state, 0);
@@ -110,6 +107,7 @@ static int lua_SetMaterial( lua_State* _state )
 		[[FCLua instance].coreVM createGlobalTable:@"FCPhysics"];		
 		
 		[[FCLua instance].coreVM registerCFunction:lua_Create2DSystem	as:@"FCPhysics.Create2DSystem"];
+//		[[FCLua instance].coreVM registerCFunction:lua_Destroy2DSystem	as:@"FCPhysics.Destroy2DSystem"];
 		[[FCLua instance].coreVM registerCFunction:lua_Reset			as:@"FCPhysics.Reset"];
 		[[FCLua instance].coreVM registerCFunction:lua_SetMaterial		as:@"FCPhysics.SetMaterial"];
 
@@ -156,12 +154,14 @@ static int lua_SetMaterial( lua_State* _state )
 
 -(void)create2DSystem
 {
-	_twoD = [[FCPhysics2D alloc] init];	
+	if (_twoD == nil) {
+		_twoD = [[FCPhysics2D alloc] init];	
+	}
 }
 
 //-(void)destroy2DSystem
 //{
-//	[_twoD prepareForDealloc];
+////	[_twoD prepareForDealloc];
 //	_twoD = nil;
 //}
 

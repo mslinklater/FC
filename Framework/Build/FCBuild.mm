@@ -31,6 +31,7 @@
 
 static int lua_Debug( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(0);
 #if DEBUG
 	lua_pushboolean(_state, 1);
 #else

@@ -20,21 +20,14 @@
  THE SOFTWARE.
  */
 
-#import "Maths/FCMaths.h"
+#import <Foundation/Foundation.h>
 
-@class FCResource;
-
-
-//@protocol FCGameObjectLifetime
-//-(void)reset;
-//-(void)destroy;
-//@end
-
-@protocol FCGameObjectUpdate
--(void)update:(float)realTime gameTime:(float)gameTime;
+@interface FCAudioCollisionTypeHandler : NSObject {
+	id	_target;
+	SEL	_selector;
+	Class _theClass;
+}
+@property(nonatomic, strong) id target;
+@property(nonatomic) SEL selector;
+@property(nonatomic) Class theClass;
 @end
-
-@protocol FCGameObjectRender
--(NSArray*)renderGather;
-@end
-

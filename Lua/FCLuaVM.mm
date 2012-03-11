@@ -25,6 +25,7 @@
 #import "FCLuaVM.h"
 #import "FCLuaMemory.h"
 #import "FCLuaCommon.h"
+#import "FCLuaAsserts.h"
 
 extern "C" {
 	#import "lauxlib.h"
@@ -113,6 +114,9 @@ void common_LoadScriptForState(NSString* path, lua_State* _state, BOOL optional)
 
 static int lua_LoadScript( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	
 	NSString* path = [NSString stringWithCString:lua_tostring(_state, -1) encoding:NSUTF8StringEncoding];
 	common_LoadScriptForState(path, _state, NO);
 	return 0;
@@ -120,6 +124,9 @@ static int lua_LoadScript( lua_State* _state )
 
 static int lua_LoadScriptOptional( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	
 	NSString* path = [NSString stringWithCString:lua_tostring(_state, -1) encoding:NSUTF8StringEncoding];
 	common_LoadScriptForState(path, _state, YES);
 	return 0;
@@ -570,7 +577,7 @@ endargs:
 
 	va_end(vl);
 	
-	lua_gc( _state, LUA_GCCOLLECT, 0 );
+//	lua_gc( _state, LUA_GCCOLLECT, 0 );
 }
 
 #pragma mark - Debug

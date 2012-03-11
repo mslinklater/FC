@@ -21,24 +21,75 @@
  */
 
 #import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
+
 #import <OpenAL/al.h>
 #import <OpenAL/alc.h>
 #import <AudioToolbox/AudioToolbox.h>
 #import <AudioToolbox/ExtendedAudioFile.h>
 
+#import "FCCore.h"
+
 @class FCAudioListener;
 
-@interface FCAudioManager : NSObject {
+@interface FCAudioManager : NSObject <AVAudioPlayerDelegate> {
 	ALCdevice*	_device;
 	ALCcontext*	_context;
-	
+
+	UInt32					_iPodIsPlaying;
+	AVAudioPlayer*			_bgPlayer;
+
 	FCAudioListener*		_listener;
-	NSMutableDictionary*	_samples;
 	NSMutableDictionary*	_sources;
+	NSMutableDictionary*	_buffers;
+	NSMutableDictionary*	_simpleSounds;
+	NSMutableArray*			_activeSimpleSounds;
+	NSMutableDictionary*	_collisionTypeHandlers;
+	
+	float					_musicVolume;
+	NSString*				_musicFinishedLuaCallback;
+
+	float					_sfxVolume;
 }
 @property(nonatomic, readonly) ALCdevice* device;
 @property(nonatomic, readonly) ALCcontext* context;
-@property(nonatomic, strong) NSMutableDictionary* samples;
+
+@property(nonatomic, readonly) UInt32	iPodIsPlaying;
+@property(nonatomic, strong) AVAudioPlayer* bgPlayer;
+
+@property(nonatomic, strong) FCAudioListener* listener;
+@property(nonatomic, strong) NSMutableDictionary* sources;
+@property(nonatomic, strong) NSMutableDictionary* buffers;
+@property(nonatomic, strong) NSMutableDictionary* simpleSounds;
+@property(nonatomic, strong) NSMutableArray* activeSimpleSounds;
+@property(nonatomic, strong) NSMutableDictionary* collisionTypeHandlers;
+
+@property(nonatomic) float musicVolume;
+@property(nonatomic, strong) NSString* musicFinishedLuaCallback;
+
+@property(nonatomic) float sfxVolume;
 
 +(FCAudioManager*)instance;
+
+-(FCHandle)loadSimpleSound:(NSString*)name;
+-(void)unloadSimpleSound:(FCHandle)handle;
+-(void)playSimpleSound:(FCHandle)handle;
+
+-(FCHandle)createBuffer;
+-(void)deleteBuffer:(FCHandle)handle;
+
+-(FCHandle)createSource;
+-(void)deleteSource:(FCHandle)handle;
+
+-(void)playMusic:(NSString*)name;
+-(void)pauseMusic;
+-(void)resumeMusic;
+-(void)stopMusic;
+
+-(void)addCollisionTypeHanderFor:(NSString*)type1 andType:(NSString*)type2 theClass:(Class)theClass target:(id)target selector:(SEL)selector;
+-(void)removeCollisionTypeHanderFor:(NSString*)type1 andType:(NSString*)type2;
+
+-(void)subscribeToPhysics2D;
+-(void)unsubscribeFromPhysics2D;
+
 @end

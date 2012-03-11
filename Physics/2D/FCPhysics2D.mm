@@ -36,7 +36,7 @@ static FCPhysics2D* s_pInstance = 0;
 static int lua_CreateDistanceJoint( lua_State* _state )
 {	
 	FC_ASSERT(lua_gettop(_state) >= 4);
-	FC_ASSERT(lua_isstring(_state, 1));
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
 	FCPhysics2DDistanceJointCreateDef* def = [[FCPhysics2DDistanceJointCreateDef alloc] init];
 
@@ -64,7 +64,7 @@ static int lua_CreateDistanceJoint( lua_State* _state )
 		def.pos1 = FC::Vector2f( [[null valueForKey:kFCKeyOffsetX] floatValue], [[null valueForKey:kFCKeyOffsetY] floatValue] );
 	}
 	
-	FC_ASSERT(lua_isstring(_state, obj2NameStackPos));
+	FC_LUA_ASSERT_TYPE(obj2NameStackPos, LUA_TSTRING);
 	
 	NSString* body2Name = [NSString stringWithUTF8String:lua_tostring(_state, obj2NameStackPos)];
 	def.body2 = [s_pInstance bodyWithName:body2Name];
@@ -97,8 +97,8 @@ static int lua_CreateDistanceJoint( lua_State* _state )
 static int lua_CreateRevoluteJoint( lua_State* _state )
 {
 	FC_ASSERT(lua_gettop(_state) >= 3);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TSTRING);
-	FC_ASSERT(lua_type(_state, 2) == LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
 	
 	FCPhysics2DRevoluteJointCreateDef* def = [[FCPhysics2DRevoluteJointCreateDef alloc] init];
 	
@@ -128,10 +128,10 @@ static int lua_CreateRevoluteJoint( lua_State* _state )
 
 static int lua_CreatePrismaticJoint( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 3);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TSTRING);
-	FC_ASSERT(lua_type(_state, 2) == LUA_TSTRING);
-	FC_ASSERT(lua_type(_state, 3) == LUA_TSTRING);
+	FC_LUA_ASSERT_NUMPARAMS(3);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(3, LUA_TSTRING);
 	
 	FCPhysics2DPrismaticJointCreateDef* def = [[FCPhysics2DPrismaticJointCreateDef alloc] init];
 	
@@ -157,14 +157,14 @@ static int lua_CreatePrismaticJoint( lua_State* _state )
 
 static int lua_CreatePulleyJoint( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 7);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TSTRING);
-	FC_ASSERT(lua_type(_state, 2) == LUA_TSTRING);
-	FC_ASSERT(lua_type(_state, 3) == LUA_TSTRING);
-	FC_ASSERT(lua_type(_state, 4) == LUA_TSTRING);
-	FC_ASSERT(lua_type(_state, 5) == LUA_TSTRING);
-	FC_ASSERT(lua_type(_state, 6) == LUA_TSTRING);
-	FC_ASSERT(lua_type(_state, 7) == LUA_TNUMBER);
+	FC_LUA_ASSERT_NUMPARAMS(7);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(3, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(4, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(5, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(6, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(7, LUA_TNUMBER);
 	
 	FCPhysics2DPulleyJointCreateDef* def = [[FCPhysics2DPulleyJointCreateDef alloc] init];
 	
@@ -200,10 +200,10 @@ static int lua_CreatePulleyJoint( lua_State* _state )
 
 static int lua_SetRevoluteJointLimits( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 3);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
-	FC_ASSERT(lua_type(_state, 2) == LUA_TNUMBER);
-	FC_ASSERT(lua_type(_state, 3) == LUA_TNUMBER);
+	FC_LUA_ASSERT_NUMPARAMS(3);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 	
 	FCHandle hJoint = (FCHandle)lua_tointeger(_state, 1);
 	float min = lua_tonumber(_state, 2);
@@ -220,10 +220,10 @@ static int lua_SetRevoluteJointLimits( lua_State* _state )
 
 static int lua_SetRevoluteJointMotor( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 3);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
-	FC_ASSERT(lua_type(_state, 2) == LUA_TNUMBER);
-	FC_ASSERT(lua_type(_state, 3) == LUA_TNUMBER);
+	FC_LUA_ASSERT_NUMPARAMS(3);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 	
 	FCHandle hJoint = (FCHandle)lua_tointeger(_state, 1);
 	float speed = lua_tonumber(_state, 2);
@@ -240,10 +240,10 @@ static int lua_SetRevoluteJointMotor( lua_State* _state )
 
 static int lua_SetPrismaticJointLimits( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 3);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
-	FC_ASSERT(lua_type(_state, 2) == LUA_TNUMBER);
-	FC_ASSERT(lua_type(_state, 3) == LUA_TNUMBER);
+	FC_LUA_ASSERT_NUMPARAMS(3);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 	
 	FCHandle hJoint = (FCHandle)lua_tointeger(_state, 1);
 	float min = lua_tonumber(_state, 2);
@@ -260,10 +260,10 @@ static int lua_SetPrismaticJointLimits( lua_State* _state )
 
 static int lua_SetPrismaticJointMotor( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 3);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
-	FC_ASSERT(lua_type(_state, 2) == LUA_TNUMBER);
-	FC_ASSERT(lua_type(_state, 3) == LUA_TNUMBER);
+	FC_LUA_ASSERT_NUMPARAMS(3);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 	
 	FCHandle hJoint = (FCHandle)lua_tointeger(_state, 1);
 	float speed = lua_tonumber(_state, 2);
@@ -286,6 +286,7 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 @synthesize gravity = _gravity;
 @synthesize joints = _joints;
 @synthesize bodies = _bodies;
+@synthesize contactListener = _contactListener;
 
 #pragma mark - Object Lifecycle
 
@@ -322,8 +323,12 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 		
 		if (!_world) 
 		{
-			_world = new b2World( _gravity, true );
+			_world = new b2World( _gravity );
 		}
+		
+		_contactListener = new FCPhysics2DContactListener;
+		
+		_world->SetContactListener(_contactListener);
 	}
 	return self;
 }
@@ -331,6 +336,7 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 -(void)dealloc
 {
 	s_pInstance = nil;
+	delete _contactListener;
 	delete _world; 
 	_world = 0;
 }
@@ -339,9 +345,11 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 
 -(void)update:(float)realTime gameTime:(float)gameTime
 {
+	_contactListener->Clear();
 	if (gameTime > 0.0f) {
 		_world->Step( gameTime, 8, 4 );
 	}
+	_contactListener->DispatchToSubscribers();
 }
 
 -(FCPhysics2DBody*)newBodyWithDef:(FCPhysics2DBodyDef*)def name:(NSString *)name

@@ -40,8 +40,8 @@ static FCGLView* s_currentLuaTarget;
 
 static int lua_SetCurrentView( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 1);
-	FC_ASSERT(lua_isstring(_state, 1));
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	
@@ -54,28 +54,28 @@ static int lua_SetCurrentView( lua_State* _state )
 
 static int lua_SetClearColor( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 1);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TTABLE);
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TTABLE);
 	
 	lua_pushnil(_state);
 	
 	lua_next(_state, -2);
-	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float r = lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
-	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float g = lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
-	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float b = lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
-	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float a = lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
@@ -86,8 +86,8 @@ static int lua_SetClearColor( lua_State* _state )
 
 static int lua_SetFOV( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 1);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
 	s_currentLuaTarget.fov = lua_tonumber(_state, 1);
 	
@@ -96,9 +96,9 @@ static int lua_SetFOV( lua_State* _state )
 
 static int lua_SetNearFarClip( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 2);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
-	FC_ASSERT(lua_type(_state, 2) == LUA_TNUMBER);
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
 	
 	s_currentLuaTarget.nearClip = lua_tonumber(_state, 1);
 	s_currentLuaTarget.farClip = lua_tonumber(_state, 2);
@@ -108,10 +108,10 @@ static int lua_SetNearFarClip( lua_State* _state )
 
 static int lua_SetFrustumTranslation( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 3);
-	FC_ASSERT(lua_type(_state, 1) == LUA_TNUMBER);
-	FC_ASSERT(lua_type(_state, 2) == LUA_TNUMBER);
-	FC_ASSERT(lua_type(_state, 3) == LUA_TNUMBER);
+	FC_LUA_ASSERT_NUMPARAMS(3);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 
 	s_currentLuaTarget.frustumTranslation = FC::Vector3f(
 														 lua_tonumber(_state, 1),

@@ -20,10 +20,25 @@
  THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
+#import "FCAudioBuffer.h"
 
-@interface FCAudioSample : NSObject {
-	
+@implementation FCAudioBuffer
+
+@synthesize handle = _handle;
+@synthesize ALHandle = _ALHandle;
+
+-(id)init
+{
+	self = [super init];
+	if (self) {
+		alGenBuffers(1, &_ALHandle);
+	}
+	return self;
+}
+
+-(void)dealloc
+{
+	alDeleteBuffers(1, &_ALHandle);
 }
 
 @end

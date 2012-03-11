@@ -4,7 +4,7 @@ FCStats = {}
 
 function FCStats.Inc( name )
 
-	gcid = FCDevice.GetGameCenterID()	
+	local gcid = FCDevice.GetGameCenterID()	
 	if gcid == nil then
 		gcid = "local"
 	end
@@ -19,7 +19,7 @@ function FCStats.Inc( name )
 end
 
 function FCStats.Get( name )
-	gcid = FCDevice.GetGameCenterID()	
+	local gcid = FCDevice.GetGameCenterID()	
 	if gcid == nil then
 		gcid = "local"
 	end

@@ -24,4 +24,21 @@
 
 @implementation FCAudioSource
 
+@synthesize handle = _handle;
+@synthesize ALHandle = _ALHandle;
+
+-(id)init
+{
+	self = [super init];
+	if (self) {
+		alGenSources(1, &_ALHandle);
+	}
+	return self;
+}
+
+-(void)dealloc
+{
+	alDeleteSources(1, &_ALHandle);
+}
+
 @end

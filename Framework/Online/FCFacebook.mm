@@ -28,8 +28,8 @@
 
 static int lua_ConnectWithAppId( lua_State* _state )
 {
-	FC_ASSERT( lua_gettop(_state) == 1 );
-	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
 	NSString* appId = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 
@@ -40,6 +40,8 @@ static int lua_ConnectWithAppId( lua_State* _state )
 
 static int lua_IsLoggedIn( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(0);
+	
 	if ([FCFacebook instance].loginStatus == kLoggedIn) {
 		lua_pushboolean(_state, 1);
 	} else {
@@ -50,12 +52,16 @@ static int lua_IsLoggedIn( lua_State* _state )
 
 static int lua_Login( lua_State* _state )
 {	
+	FC_LUA_ASSERT_NUMPARAMS(0);
+	
 	[[FCFacebook instance] login];
 	return 0;
 }
 
 static int lua_Logout( lua_State* _state )
 {	
+	FC_LUA_ASSERT_NUMPARAMS(0);
+	
 	[[FCFacebook instance] logout];
 	return 0;
 }
