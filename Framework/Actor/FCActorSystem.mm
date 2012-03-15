@@ -49,32 +49,27 @@ static int lua_GetActorPosition( lua_State* _state )
 	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:lua_tointeger(_state, 1)]];
 	FC::Vector3f pos = actor.position;
 	
-	lua_pushvector3f( _state, pos );
+	lua_pushnumber(_state, pos.x);
+	lua_pushnumber(_state, pos.y);
+	lua_pushnumber(_state, pos.z);
 	
-	return 1;
-}
-
-static int lua_GetActorPositionY( lua_State* _state )
-{
-	FC_LUA_ASSERT_NUMPARAMS(1);
-	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	
-	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:lua_tointeger(_state, 1)]];
-	
-	lua_pushnumber(_state, actor.position.y);
-	
-	return 1;
+	return 3;
 }
 
 static int lua_SetActorPosition( lua_State* _state )
 {
-	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_NUMPARAMS(4);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	FC_LUA_ASSERT_TYPE(2, LUA_TTABLE);
+	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(4, LUA_TNUMBER);
 	
 	FCHandle handle = lua_tointeger(_state, 1);
 	
-	FC::Vector3f pos = lua_tovector3f(_state);
+	FC::Vector3f pos;
+	pos.x = lua_tonumber(_state, 2);
+	pos.y = lua_tonumber(_state, 3);
+	pos.z = lua_tonumber(_state, 4);
 	
 	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:handle]];
 
@@ -90,31 +85,38 @@ static int lua_GetActorLinearVelocity( lua_State* _state )
 	FCHandle handle = lua_tointeger(_state, 1);
 	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:handle]];
 	FC::Vector3f vel = actor.linearVelocity;
-	lua_pushvector3f(_state, vel);
-	return 1;
+	
+	lua_pushnumber(_state, vel.x);
+	lua_pushnumber(_state, vel.y);
+	lua_pushnumber(_state, vel.z);
+	return 3;
 }
 
 static int lua_SetActorLinearVelocity( lua_State* _state )
 {
-	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_NUMPARAMS(4);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	FC_LUA_ASSERT_TYPE(2, LUA_TTABLE);
+	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(4, LUA_TNUMBER);
 	
 	FCHandle handle = lua_tointeger(_state, 1);
 	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:handle]];
-	actor.linearVelocity = lua_tovector3f(_state);
+	actor.linearVelocity = FC::Vector3f( lua_tonumber(_state, 2), lua_tonumber(_state, 3), lua_tonumber(_state, 4) );
 	return 0;
 }
 
 static int lua_ApplyImpulse( lua_State* _state )
 {
-	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_NUMPARAMS(4);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	FC_LUA_ASSERT_TYPE(2, LUA_TTABLE);
+	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(4, LUA_TNUMBER);
 	
 	FCHandle handle = lua_tointeger(_state, 1);
 	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:handle]];
-	[actor applyImpulse:lua_tovector3f(_state) atWorldPos:actor.position];
+	[actor applyImpulse:FC::Vector3f(lua_tonumber(_state, 2), lua_tonumber(_state, 3), lua_tonumber(_state, 4)) atWorldPos:actor.position];
 	return 0;
 }
 
@@ -161,7 +163,6 @@ static int lua_ApplyImpulse( lua_State* _state )
 		[[FCLua instance].coreVM createGlobalTable:@"FCActorSystem"];
 		[[FCLua instance].coreVM registerCFunction:lua_Reset as:@"FCActorSystem.Reset"];
 		[[FCLua instance].coreVM registerCFunction:lua_GetActorPosition as:@"FCActorSystem.GetPosition"];
-		[[FCLua instance].coreVM registerCFunction:lua_GetActorPositionY as:@"FCActorSystem.GetPositionY"];
 		[[FCLua instance].coreVM registerCFunction:lua_SetActorPosition as:@"FCActorSystem.SetPosition"];
 		[[FCLua instance].coreVM registerCFunction:lua_GetActorLinearVelocity as:@"FCActorSystem.GetLinearVelocity"];
 		[[FCLua instance].coreVM registerCFunction:lua_SetActorLinearVelocity as:@"FCActorSystem.SetLinearVelocity"];
@@ -235,9 +236,11 @@ static int lua_ApplyImpulse( lua_State* _state )
 	// instantiate actor
 	
 	id actor = [self actorOfClass:NSClassFromString(actorClass)];
+
+	FCHandle handle = NewFCHandle();
 	
-	actor = [actor initWithDictionary:actorDict body:bodyDict model:modelDict resource:res name:name];
-	((FCActor*)actor).handle = NewFCHandle();
+	actor = [actor initWithDictionary:actorDict body:bodyDict model:modelDict resource:res name:name handle:handle];
+//	((FCActor*)actor).handle = handle;
 
 	// some more checks etc
 

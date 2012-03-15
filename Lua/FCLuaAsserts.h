@@ -49,7 +49,7 @@
 
 #else
 
-#define FC_LUA_ASSERT_TYPE(state, stackpos, type){}
+#define FC_LUA_ASSERT_TYPE(stackpos, type){}
 #define FC_LUA_ASSERT_NUMPARAMS( n ){}
 
 #endif	// DEBUG

@@ -48,10 +48,12 @@ class b2Body;
 
 @property(nonatomic, readonly) float rotation;
 @property(nonatomic) FC::Vector3f position;
+@property(nonatomic) float angularVelocity;
 
 -(id)initWithDef:(FCPhysics2DBodyDef*)def;
 
--(FC::Vector2f)linearVelocity;
+// turn these into a property
+-(FC::Vector2f)linearVelocity;	
 -(void)setLinearVelocity:(FC::Vector2f)newVel;
 
 -(void)applyImpulse:(FC::Vector2f)impulse atWorldPos:(FC::Vector2f)pos;

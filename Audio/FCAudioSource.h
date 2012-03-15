@@ -27,9 +27,25 @@
 #import "FCCore.h"
 
 @interface FCAudioSource : NSObject {
-	FCHandle	_handle;
-	ALuint		_ALHandle;
+	FCHandle		_handle;
+	ALuint			_ALHandle;
+	ALuint			_ALBufferHandle;
+	FC::Vector3f	_position;
+	BOOL			_stopped;
+	float			_volume;
+	float			_pitch;	
+	BOOL			_looping;
 }
 @property(nonatomic) FCHandle handle;
 @property(nonatomic) ALuint ALHandle;
+@property(nonatomic) ALuint ALBufferHandle;
+@property(nonatomic) FC::Vector3f position;
+@property(nonatomic, readonly) BOOL stopped;
+@property(nonatomic) float volume;
+@property(nonatomic) float pitch;
+@property(nonatomic) BOOL looping;
+
+-(void)play;
+-(void)stop;
+
 @end

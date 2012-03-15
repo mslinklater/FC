@@ -56,15 +56,15 @@ void FCPhysics2DContactListener::PreSolve( b2Contact* contact, const b2Manifold*
 		
 		if (approachVelocity < -0.1f)
 		{ 
-			uint64_t actor1 = (uint64_t)bodyA->GetUserData();
-			uint64_t actor2 = (uint64_t)bodyB->GetUserData();
+			FCHandle hActor1 = (FCHandle)bodyA->GetUserData();
+			FCHandle hActor2 = (FCHandle)bodyB->GetUserData();
 			
 			uint64_t key;
 			
-			if (actor1 < actor2) {
-				key = actor1 | (actor2 << 32);
+			if (hActor1 < hActor2) {
+				key = ((uint64_t)hActor1) | (((uint64_t)hActor2) << 32);
 			} else {
-				key = actor2 | (actor1 << 32);
+				key = ((uint64_t)hActor2) | (((uint64_t)hActor1) << 32);
 			}
 
 			tCollisionMapIter i = m_collisions.find(key);
@@ -74,11 +74,14 @@ void FCPhysics2DContactListener::PreSolve( b2Contact* contact, const b2Manifold*
 				info.velocity = approachVelocity;
 				info.x = point.x;
 				info.y = point.y;
-				info.actor1 = (void*)actor1;
-				info.actor2 = (void*)actor2;
+				info.z = 0.0f;
+				info.hActor1 = hActor1;
+				info.hActor2 = hActor2;
+//				info.actor1 = (void*)actor1;
+//				info.actor2 = (void*)actor2;
 				m_collisions[key] = info;
 			} else {
-				if (i->second.velocity < approachVelocity) {
+				if (i->second.velocity > approachVelocity) {
 					i->second.velocity = approachVelocity;
 				}
 			}

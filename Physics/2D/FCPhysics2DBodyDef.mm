@@ -35,6 +35,7 @@
 @synthesize linearDamping = _linearDamping;
 @synthesize world = _world;
 @synthesize actor = _actor;
+@synthesize hActor = _hActor;
 @synthesize position = _position;
 
 +(FCPhysics2DBodyDef*)defaultDef
@@ -49,6 +50,7 @@
 	def.canSleep = YES;
 	def.linearDamping = kFCInvalidFloat;
 	def.world = 0;
+	def.hActor = kFCHandleInvalid;
 	return def;
 }
 
@@ -62,6 +64,7 @@
 	[ret appendFormat:@"can sleep %@\n", (_canSleep) ? @"yes" : @"no"];
 	[ret appendFormat:@"shapeDef %@\n", _shapeDef];
 	[ret appendFormat:@"actor %@\n", _actor];
+	[ret appendFormat:@"hActor %d\n", _hActor];
 	return ret;
 }
 

@@ -82,7 +82,8 @@
 				   body:(NSDictionary*)bodyDict 
 				  model:(NSDictionary*)modelDict 
 			   resource:(FCResource*)res
-				   name:(NSString*)name;
+				   name:(NSString*)name
+				 handle:(FCHandle)handle;
 
 // TODO: Get these two into a property
 -(void)setPosition:(FC::Vector3f)pos;

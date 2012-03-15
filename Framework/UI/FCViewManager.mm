@@ -36,9 +36,9 @@
 
 static int lua_SetText( lua_State* _state )
 {
-	FC_ASSERT( lua_gettop(_state) == 2);
-	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
-	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING );
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
 	
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	NSString* text = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
@@ -50,31 +50,31 @@ static int lua_SetText( lua_State* _state )
 
 static int lua_SetTextColor( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
-	FC_ASSERT( lua_type(_state, 2) == LUA_TTABLE );
-	FC_ASSERT( lua_gettop(_state) == 2);
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TTABLE);
 
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	
 	lua_pushnil(_state);
 	
 	lua_next(_state, -2);
-	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float r = lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
-	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float g = lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
-	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float b = lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
-	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float a = lua_tonumber(_state, -1);
 	
 	[[FCViewManager instance] setView:viewName textColor:[UIColor colorWithRed:r green:g blue:b alpha:a]];
@@ -84,8 +84,8 @@ static int lua_SetTextColor( lua_State* _state )
 
 static int lua_GetFrame( lua_State* _state )
 {
-	FC_ASSERT(lua_gettop(_state) == 1);
-	FC_ASSERT(lua_isstring(_state, 1));
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	
@@ -111,15 +111,15 @@ static int lua_GetFrame( lua_State* _state )
 
 static int lua_SetFrame( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
-	FC_ASSERT( lua_type(_state, 2) == LUA_TTABLE );
 	FC_ASSERT( lua_gettop(_state) <= 3);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TTABLE);
 
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	float seconds = 0.0f;
 
 	if (lua_gettop(_state) > 2) {
-		FC_ASSERT( lua_type(_state, 3) == LUA_TNUMBER );
+		FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 		seconds = lua_tonumber(_state, 3);
 		lua_pop(_state, 1);
 	}
@@ -127,22 +127,22 @@ static int lua_SetFrame( lua_State* _state )
 	lua_pushnil(_state);
 	
 	lua_next(_state, -2);
-	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float x = lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 
 	lua_next(_state, -2);
-	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float y = lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 
 	lua_next(_state, -2);
-	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float w = lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 
 	lua_next(_state, -2);
-	FC_ASSERT(lua_type(_state, -1) == LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float h = lua_tonumber(_state, -1);
 	
 	[[FCViewManager instance] setView:viewName frame:CGRectMake(x, y, w, h) over:seconds];
@@ -152,9 +152,9 @@ static int lua_SetFrame( lua_State* _state )
 
 static int lua_SetAlpha( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
-	FC_ASSERT( lua_type(_state, 2) == LUA_TNUMBER );
 	FC_ASSERT( lua_gettop(_state) <= 3);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
 	
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	float alpha = lua_tonumber(_state, 2);
@@ -162,7 +162,7 @@ static int lua_SetAlpha( lua_State* _state )
 	float seconds = 0.0f;
 
 	if (lua_gettop(_state) > 2) {
-		FC_ASSERT( lua_type(_state, 3) == LUA_TNUMBER );
+		FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 		seconds = lua_tonumber(_state, 3);
 	}
 
@@ -173,9 +173,9 @@ static int lua_SetAlpha( lua_State* _state )
 
 static int lua_SetOnSelectLuaFunction( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_ASSERT( (lua_type(_state, 2) == LUA_TSTRING) || (lua_type(_state, 2) == LUA_TNIL) );
-	FC_ASSERT( lua_gettop(_state) == 2);
 	
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	
@@ -194,9 +194,9 @@ static int lua_SetOnSelectLuaFunction( lua_State* _state )
 
 static int lua_SetImage( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
-	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING );
-	FC_ASSERT( lua_gettop(_state) <= 3);
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
 	
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	NSString* imageName = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
@@ -208,9 +208,9 @@ static int lua_SetImage( lua_State* _state )
 
 static int lua_SetURL( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
-	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING );
-	FC_ASSERT( lua_gettop(_state) <= 3);
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
 	
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	NSString* url = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
@@ -223,8 +223,8 @@ static int lua_SetURL( lua_State* _state )
 static int lua_CreateView( lua_State* _state )
 {
 	FC_ASSERT( lua_gettop(_state) > 1 );
-	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING);
-	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
 	
 	NSString* name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	NSString* className = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
@@ -232,7 +232,7 @@ static int lua_CreateView( lua_State* _state )
 	NSString* parent = nil;
 	
 	if (lua_gettop(_state) > 2) {
-		FC_ASSERT( lua_type(_state, 3) == LUA_TSTRING );
+		FC_LUA_ASSERT_TYPE(3, LUA_TSTRING)
 		parent = [NSString stringWithUTF8String:lua_tostring(_state, 3)];
 	}
 
@@ -243,8 +243,8 @@ static int lua_CreateView( lua_State* _state )
 
 static int lua_DestroyView( lua_State* _state )
 {
-	FC_ASSERT( lua_gettop(_state) == 1 );
-	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
 	NSString* name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	
@@ -254,8 +254,8 @@ static int lua_DestroyView( lua_State* _state )
 
 static int lua_CreateGroup( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
-	FC_ASSERT( lua_gettop(_state) == 1);
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	NSString* groupName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	[[FCViewManager instance] createGroup:groupName];
 	return 0;
@@ -263,8 +263,8 @@ static int lua_CreateGroup( lua_State* _state )
 
 static int lua_RemoveGroup( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
-	FC_ASSERT( lua_gettop(_state) == 1);
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	NSString* groupName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	[[FCViewManager instance] removeGroup:groupName];
 	return 0;
@@ -272,9 +272,10 @@ static int lua_RemoveGroup( lua_State* _state )
 
 static int lua_AddToGroup( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
-	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING );
-	FC_ASSERT( lua_gettop(_state) == 2);
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
+	
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	NSString* groupName = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
 	[[FCViewManager instance] add:viewName toGroup:groupName];
@@ -283,9 +284,9 @@ static int lua_AddToGroup( lua_State* _state )
 
 static int lua_RemoveFromGroup( lua_State* _state )
 {
-	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING );
-	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING );
-	FC_ASSERT( lua_gettop(_state) == 2);
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
 	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	NSString* groupName = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
 	[[FCViewManager instance] remove:viewName fromGroup:groupName];
@@ -294,10 +295,10 @@ static int lua_RemoveFromGroup( lua_State* _state )
 
 static int lua_SetViewPropertyInteger( lua_State* _state )
 {
-	FC_ASSERT( lua_gettop(_state) == 3);
-	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING);
-	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING);
-	FC_ASSERT( lua_type(_state, 3) == LUA_TNUMBER);
+	FC_LUA_ASSERT_NUMPARAMS(3);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 	
 	NSString* name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	NSString* property = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
@@ -310,10 +311,10 @@ static int lua_SetViewPropertyInteger( lua_State* _state )
 
 static int lua_SetViewPropertyString( lua_State* _state )
 {
-	FC_ASSERT( lua_gettop(_state) == 3);
-	FC_ASSERT( lua_type(_state, 1) == LUA_TSTRING);
-	FC_ASSERT( lua_type(_state, 2) == LUA_TSTRING);
-	FC_ASSERT( lua_type(_state, 3) == LUA_TSTRING);
+	FC_LUA_ASSERT_NUMPARAMS(3);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(3, LUA_TSTRING);
 	
 	NSString* name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
 	NSString* property = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
@@ -326,6 +327,7 @@ static int lua_SetViewPropertyString( lua_State* _state )
 
 static int lua_PrintViews( lua_State* _state )
 {
+	FC_LUA_ASSERT_NUMPARAMS(0);
 	[[FCViewManager instance] printViews];
 	return 0;
 }

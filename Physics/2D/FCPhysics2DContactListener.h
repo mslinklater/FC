@@ -24,6 +24,8 @@
 #ifndef CR1_FCPhysics2DContactListener_h
 #define CR1_FCPhysics2DContactListener_h
 
+#import "FCCore.h"
+
 #include <map>
 #include <set>
 
@@ -33,8 +35,9 @@ struct CollisionInfo {
 	float velocity;
 	float x;
 	float y;
-	void* actor1;
-	void* actor2;
+	float z;
+	FCHandle	hActor1;
+	FCHandle	hActor2;
 };
 
 typedef std::map<uint64_t, CollisionInfo>	tCollisionMap;

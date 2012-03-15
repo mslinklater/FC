@@ -30,7 +30,14 @@
 
 #import "FCCore.h"
 
+#if defined (DEBUG)
+#define AL_CHECK [FCAudioManager checkALError]
+#else
+#define AL_CHECK
+#endif
+
 @class FCAudioListener;
+@class FCAudioSource;
 
 @interface FCAudioManager : NSObject <AVAudioPlayerDelegate> {
 	ALCdevice*	_device;
@@ -40,7 +47,7 @@
 	AVAudioPlayer*			_bgPlayer;
 
 	FCAudioListener*		_listener;
-	NSMutableDictionary*	_sources;
+	NSMutableDictionary*	_activeSources;
 	NSMutableDictionary*	_buffers;
 	NSMutableDictionary*	_simpleSounds;
 	NSMutableArray*			_activeSimpleSounds;
@@ -58,7 +65,7 @@
 @property(nonatomic, strong) AVAudioPlayer* bgPlayer;
 
 @property(nonatomic, strong) FCAudioListener* listener;
-@property(nonatomic, strong) NSMutableDictionary* sources;
+@property(nonatomic, strong) NSMutableDictionary* activeSources;
 @property(nonatomic, strong) NSMutableDictionary* buffers;
 @property(nonatomic, strong) NSMutableDictionary* simpleSounds;
 @property(nonatomic, strong) NSMutableArray* activeSimpleSounds;
@@ -70,23 +77,29 @@
 @property(nonatomic) float sfxVolume;
 
 +(FCAudioManager*)instance;
++(void)checkALError;
 
 -(FCHandle)loadSimpleSound:(NSString*)name;
 -(void)unloadSimpleSound:(FCHandle)handle;
 -(void)playSimpleSound:(FCHandle)handle;
 
--(FCHandle)createBuffer;
+-(FCHandle)createBufferWithFile:(NSString*)filename;
 -(void)deleteBuffer:(FCHandle)handle;
 
--(FCHandle)createSource;
--(void)deleteSource:(FCHandle)handle;
+-(FCHandle)prepareSourceWithBuffer:(FCHandle)hBuffer vital:(BOOL)vital;
+
+//-(FCHandle)createSource;
+//-(void)deleteSource:(FCHandle)handle;
 
 -(void)playMusic:(NSString*)name;
 -(void)pauseMusic;
 -(void)resumeMusic;
 -(void)stopMusic;
 
--(void)addCollisionTypeHanderFor:(NSString*)type1 andType:(NSString*)type2 theClass:(Class)theClass target:(id)target selector:(SEL)selector;
+//-(void)addCollisionTypeHanderFor:(NSString*)type1 andType:(NSString*)type2 theClass:(Class)theClass target:(id)target selector:(SEL)selector;
+//-(void)removeCollisionTypeHanderFor:(NSString*)type1 andType:(NSString*)type2;
+
+-(void)addCollisionTypeHanderFor:(NSString*)type1 andType:(NSString*)type2 luaFunc:(NSString*)luaFunc;
 -(void)removeCollisionTypeHanderFor:(NSString*)type1 andType:(NSString*)type2;
 
 -(void)subscribeToPhysics2D;

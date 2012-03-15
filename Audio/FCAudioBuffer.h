@@ -27,9 +27,20 @@
 #import "FCCore.h"
 
 @interface FCAudioBuffer : NSObject {
-	FCHandle	_handle;
-	ALuint	_ALHandle;
+//	FCHandle	_handle;
+	ALuint		_ALHandle;
+	void*		_bufferData;
+	ALenum		_format;
+	ALsizei		_size;
+	ALsizei		_freq;
 }
-@property(nonatomic) FCHandle handle;
+//@property(nonatomic) FCHandle handle;
 @property(nonatomic) ALuint ALHandle;
+@property(nonatomic) void* bufferData;
+@property(nonatomic) ALenum format;
+@property(nonatomic) ALsizei size;
+@property(nonatomic) ALsizei freq;
+
+-(id)initWithFilename:(NSString*)filename;
+
 @end

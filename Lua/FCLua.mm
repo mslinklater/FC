@@ -153,7 +153,6 @@ static unsigned int common_newThread( lua_State* _state )
 
 static int lua_NewThread( lua_State* _state )
 {
-	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TFUNCTION);
 	
 	if (lua_isfunction(_state, 1))
@@ -234,7 +233,7 @@ static int lua_KillThread( lua_State* _state )
 	} else
 	{
 		FC_WARNING(@"Trying to kill non-existent Lua thread");
-		FC_HALT;
+//		FC_HALT;
 	}
 	return 0;
 }

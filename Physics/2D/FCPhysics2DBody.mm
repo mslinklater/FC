@@ -52,12 +52,15 @@
 		_Id = def.Id;
 		[self createBodyFromDef:def];
 		[self createFixturesFromDef:def];
+		
+		NSLog(@"init %@", self);
 	}
 	return self;
 }
 
 -(void)dealloc
 {
+	NSLog(@"dealloc %@", self);
 	_world->DestroyBody(_body);
 }
 
@@ -67,7 +70,7 @@
 	b2def.position.x = def.position.x;
 	b2def.position.y = def.position.y;
 	b2def.angle = FCDegToRad( def.angle );
-	b2def.userData = (__bridge void*)def.actor;
+	b2def.userData = (void*)def.hActor;
 	b2def.allowSleep = def.canSleep;
 	
 	// Linear damping
@@ -227,6 +230,17 @@
 }
 
 #pragma mark = Rotation
+
+-(float)angularVelocity
+{
+	return _body->GetAngularVelocity();
+}
+
+-(void)setAngularVelocity:(float)angularVelocity
+{
+	_body->SetAngularVelocity(angularVelocity);
+	return;
+}
 
 -(float)rotation
 {

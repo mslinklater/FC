@@ -36,7 +36,8 @@ class b2World;
 	float			_linearDamping;
 	NSDictionary*	_shapeDef;
 	b2World*		_world;
-	id __weak		_actor;
+	id __weak		_actor;	// deprecate
+	FCHandle		_hActor;
 	FC::Vector2f	_position;
 }
 @property(nonatomic, readonly, strong) NSString* Id;
@@ -47,6 +48,7 @@ class b2World;
 @property(nonatomic, strong) NSDictionary* shapeDef;
 @property(nonatomic) b2World* world;
 @property(nonatomic, weak) id actor;
+@property(nonatomic) FCHandle hActor;
 @property(nonatomic) FC::Vector2f position;
 
 +(FCPhysics2DBodyDef*)defaultDef;

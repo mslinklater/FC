@@ -53,12 +53,14 @@
 				  model:(NSDictionary*)modelDict 
 			   resource:(FCResource*)res
 				   name:(NSString*)name
+				 handle:(FCHandle)handle
 {
 	self = [super init];
 	if (self) 
 	{	
 		_createDef = dictionary;
 		_id = [self.createDef valueForKey:kFCKeyId];
+		_handle = handle;
 				
 		// hardwired to 2D for now 8)
 		
@@ -86,7 +88,7 @@
 			bodyDef.canSleep = NO;
 			bodyDef.shapeDef = bodyDict;
 			
-			_physicsBody = [[[FCPhysics instance] twoD] newBodyWithDef:bodyDef name:name];
+			_physicsBody = [[[FCPhysics instance] twoD] newBodyWithDef:bodyDef name:name actorHandle:handle];
 #endif
 		}
 		
@@ -115,8 +117,12 @@
 -(void)dealloc
 {
 	[[[FCPhysics instance] twoD] destroyBody:_physicsBody];	
+	_physicsBody = nil;
+	_model = nil;
 	_createDef = nil;
 	_id = nil;
+	_fullName = nil;
+	_name = nil;
 }
 
 #pragma mark - Joints

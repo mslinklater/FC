@@ -23,7 +23,6 @@
 #if defined (FC_PHYSICS)
 
 #import "FCPhysics2D.h"
-//#import "FCObjectManager.h"
 #import "FCPhysics2DJoint.h"
 
 #import "FCFramework.h"
@@ -278,6 +277,17 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 	return 0;
 }
 
+static int lua_GetBodyAngularVelocity( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	
+	FCPhysics2DBody* body = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
+	
+	lua_pushnumber(_state, body.angularVelocity);
+	return 1;
+}
+
 #endif
 
 @implementation FCPhysics2D
@@ -315,6 +325,8 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 		[[FCLua instance].coreVM registerCFunction:lua_SetRevoluteJointLimits as:@"FCPhysics2D.SetRevoluteJointLimits"];
 		[[FCLua instance].coreVM registerCFunction:lua_SetPrismaticJointMotor as:@"FCPhysics2D.SetPrismaticJointMotor"];
 		[[FCLua instance].coreVM registerCFunction:lua_SetPrismaticJointLimits as:@"FCPhysics2D.SetPrismaticJointLimits"];
+
+		[[FCLua instance].coreVM registerCFunction:lua_GetBodyAngularVelocity as:@"FCPhysics2D.GetAngularVelocity"];
 #endif
 		
 		_joints = [NSMutableDictionary dictionary];
@@ -352,14 +364,16 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 	_contactListener->DispatchToSubscribers();
 }
 
--(FCPhysics2DBody*)newBodyWithDef:(FCPhysics2DBodyDef*)def name:(NSString *)name
+-(FCPhysics2DBody*)newBodyWithDef:(FCPhysics2DBodyDef*)def name:(NSString *)name actorHandle:(FCHandle)actorHandle
 {
+//	FCHandle handle = NewFCHandle();
+	
 	def.world = _world;
+	def.hActor = actorHandle;
 
 	FCPhysics2DBody* newBody = [[FCPhysics2DBody alloc] initWithDef:def];
 
-	FCHandle handle = NewFCHandle();
-	newBody.handle = handle;
+	newBody.handle = actorHandle;
 
 	if (name) 
 	{
@@ -367,7 +381,7 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 		[_bodiesByName setValue:newBody forKey:newBody.name];
 	}
 
-	[_bodies setObject:newBody forKey:[NSNumber numberWithInt:handle]];
+	[_bodies setObject:newBody forKey:[NSNumber numberWithInt:actorHandle]];
 	
 	return newBody;
 }

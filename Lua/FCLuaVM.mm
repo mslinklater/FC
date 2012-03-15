@@ -495,7 +495,7 @@ static int panic (lua_State *L) {
 	for (narg = 0; *csig; narg++) {
 		luaL_checkstack(_state, 1, "too many arguments");
 		switch (*csig) {
-			case 'd': /* double argument */
+			case 'f': /* float argument */
 				lua_pushnumber(_state, va_arg(vl, double));
 				break;
 			case 'i': /* integer argument */
@@ -544,23 +544,23 @@ endargs:
 	
 	while (*csig) {
 		switch (*csig++) {
-			case 'd': /* double result */
-				FC_ASSERT(lua_isnumber(_state, nres));
-				*va_arg(vl, double*) = lua_tonumber(_state, nres);
+			case 'f': /* float result */
+				FC_ASSERT(lua_type(_state, nres) == LUA_TNUMBER);
+				*va_arg(vl, float*) = lua_tonumber(_state, nres);
 				break;
 				
 			case 'i': /* int result */
-				FC_ASSERT(lua_isnumber(_state, nres));
+				FC_ASSERT(lua_type(_state, nres) == LUA_TNUMBER);
 				*va_arg(vl, int*) = (int)lua_tointeger(_state, nres);
 				break;
 				
 			case 's': /* string result */
-				FC_ASSERT(lua_isstring(_state, nres));
+				FC_ASSERT(lua_type(_state, nres) == LUA_TSTRING);
 				*va_arg(vl, const char **) = lua_tostring(_state, nres);
 				break;
 
 			case 'b': /* boolean result */
-				FC_ASSERT(lua_isboolean(_state, nres));
+				FC_ASSERT(lua_type(_state, nres) == LUA_TBOOLEAN);
 				*va_arg(vl, bool*) = lua_toboolean(_state, nres);
 				break;
 

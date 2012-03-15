@@ -47,7 +47,7 @@
 
 -(void)prepareForDealloc;
 
--(FCPhysics2DBody*)newBodyWithDef:(FCPhysics2DBodyDef*)def name:(NSString*)name;
+-(FCPhysics2DBody*)newBodyWithDef:(FCPhysics2DBodyDef*)def name:(NSString*)name actorHandle:(FCHandle)actorHandle;
 -(void)destroyBody:(FCPhysics2DBody*)body;
 
 -(FCPhysics2DBody*)bodyWithName:(NSString*)name;

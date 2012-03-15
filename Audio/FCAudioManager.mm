@@ -25,6 +25,7 @@
 #import "FCAudioBuffer.h"
 #import "FCAudioSource.h"
 #import "FCAudioCollisionTypeHandler.h"
+#import "FCActorSystem.h"
 
 #import "FCLua.h"
 #import "FCPhysics.h"
@@ -94,15 +95,6 @@ static int lua_StopMusic( lua_State* _state )
 	return 0;
 }
 
-static int lua_CreateBuffer( lua_State* _state )
-{
-	FC_LUA_ASSERT_NUMPARAMS(0);
-	FCHandle h = [[FCAudioManager instance] createBuffer];
-	
-	lua_pushinteger(_state, h);
-	return 1;
-}
-
 static int lua_DeleteBuffer( lua_State* _state )
 {
 	FC_LUA_ASSERT_NUMPARAMS(1);
@@ -112,23 +104,23 @@ static int lua_DeleteBuffer( lua_State* _state )
 	return 0;
 }
 
-static int lua_CreateSource( lua_State* _state )
-{
-	FC_LUA_ASSERT_NUMPARAMS(0);
-	FCHandle h = [[FCAudioManager instance] createSource];
-	
-	lua_pushinteger(_state, h);
-	return 1;
-}
-
-static int lua_DeleteSource( lua_State* _state )
-{
-	FC_LUA_ASSERT_NUMPARAMS(1);
-	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	
-	[[FCAudioManager instance] deleteSource:lua_tointeger(_state, 1)];
-	return 0;
-}
+//static int lua_CreateSource( lua_State* _state )
+//{
+//	FC_LUA_ASSERT_NUMPARAMS(0);
+//	FCHandle h = [[FCAudioManager instance] createSource];
+//	
+//	lua_pushinteger(_state, h);
+//	return 1;
+//}
+//
+//static int lua_DeleteSource( lua_State* _state )
+//{
+//	FC_LUA_ASSERT_NUMPARAMS(1);
+//	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+//	
+//	[[FCAudioManager instance] deleteSource:lua_tointeger(_state, 1)];
+//	return 0;
+//}
 
 static int lua_LoadSimpleSound( lua_State* _state )
 {
@@ -186,6 +178,165 @@ static int lua_UnsubscribeFromPhysics2D( lua_State* _state )
 	return 0;
 }
 
+static int lua_CreateBufferWithFile( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	
+	NSString* name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+
+	FCHandle h = [[FCAudioManager instance] createBufferWithFile:name];
+
+	lua_pushinteger(_state, h);	
+	return 1;
+}
+
+static int lua_AddCollisionTypeHandler( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(3);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(3, LUA_TSTRING);
+	
+	NSString* type1 = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	NSString* type2 = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
+	NSString* luaFunc = [NSString stringWithUTF8String:lua_tostring(_state, 3)];
+	
+	[[FCAudioManager instance] addCollisionTypeHanderFor:type1 andType:type2 luaFunc:luaFunc];
+	
+	return 0;
+}
+
+static int lua_RemoveCollisionTypeHandler( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
+	
+	NSString* type1 = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	NSString* type2 = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
+
+	[[FCAudioManager instance] removeCollisionTypeHanderFor:type1 andType:type2];
+	
+	return 0;
+}
+
+static int lua_PrepareSourceWithBuffer( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(2, LUA_TBOOLEAN);
+	
+	FCHandle hBuffer = lua_tointeger(_state, 1);
+
+	BOOL vital = lua_toboolean(_state, 2);
+	
+	FCHandle hSource = [[FCAudioManager instance] prepareSourceWithBuffer:hBuffer vital:vital];
+	
+	lua_pushinteger(_state, hSource);
+	return 1;
+}
+
+static int lua_SourceSetVolume( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
+	
+	FCHandle hSource = lua_tointeger(_state, 1);
+	float vol = lua_tonumber(_state, 2);
+	
+	FCAudioSource* source = [[FCAudioManager instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
+
+	FC_ASSERT(source);
+	
+	source.volume = vol;
+	
+	return 0;
+}
+
+static int lua_SourcePlay( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	
+	FCHandle hSource = lua_tointeger(_state, 1);	
+	FCAudioSource* source = [[FCAudioManager instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
+	
+	FC_ASSERT(source);
+	
+	[source play];
+	
+	return 0;
+}
+
+static int lua_SourceStop( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	
+	FCHandle hSource = lua_tointeger(_state, 1);	
+	FCAudioSource* source = [[FCAudioManager instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
+	
+	FC_ASSERT(source);
+	
+	[source stop];
+	
+	return 0;
+}
+
+static int lua_SourceLooping( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(2, LUA_TBOOLEAN);
+	
+	FCHandle hSource = lua_tointeger(_state, 1);	
+	FCAudioSource* source = [[FCAudioManager instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
+	
+	FC_ASSERT(source);
+	
+	source.looping = lua_toboolean(_state, 2);
+	
+	return 0;
+}
+
+static int lua_SourcePosition( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(4);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(4, LUA_TNUMBER);
+	
+	FCHandle hSource = lua_tointeger(_state, 1);	
+	FCAudioSource* source = [[FCAudioManager instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
+
+	FC::Vector3f pos;
+	pos.x = lua_tonumber(_state, 2);
+	pos.y = lua_tonumber(_state, 3);
+	pos.z = lua_tonumber(_state, 4);
+
+	source.position = pos;
+	
+	return 0;
+}
+
+static int lua_SourcePitch( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
+	
+	FCHandle hSource = lua_tointeger(_state, 1);	
+	FCAudioSource* source = [[FCAudioManager instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
+
+	float pitch = lua_tonumber(_state, 2);
+	source.pitch = pitch;
+	
+	return 0;
+}
+
 // load sample
 // move listener
 
@@ -207,27 +358,32 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 {
 	for (tCollisionMapIter i = collisions.begin(); i != collisions.end(); ++i) 
 	{
-		id obj1 = (__bridge id)(i->second.actor1);
-		id obj2 = (__bridge id)(i->second.actor2);
-
+		CollisionInfo* pCollisionInfo = &(i->second);
+		
+		NSDictionary* actorHandleDictionary = [FCActorSystem instance].actorHandleDictionary;
+		
+		id obj1 = [actorHandleDictionary objectForKey:[NSNumber numberWithInt:pCollisionInfo->hActor1]];
+		id obj2 = [actorHandleDictionary objectForKey:[NSNumber numberWithInt:pCollisionInfo->hActor2]];
+		
 		NSString* key = [NSString stringWithFormat:@"%@%@", [obj1 class], [obj2 class]];
+
+		NSString* luaFunc = [[FCAudioManager instance].collisionTypeHandlers valueForKey:key];
 		
-		FCAudioCollisionTypeHandler* handler = [[FCAudioManager instance].collisionTypeHandlers objectForKey:key];
-		
-		if( handler )
+		if( luaFunc )
 		{
-			CollisionInfo* pCollisionInfo = &(i->second);
-			
-			NSMethodSignature* sig = [handler.theClass instanceMethodSignatureForSelector:handler.selector];		
-			NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:sig];
-			[invocation setSelector:handler.selector];
-			[invocation setTarget:handler.target];
-			[invocation setArgument:(void*)&pCollisionInfo atIndex:2];
-			[invocation invoke];			
+			[[FCLua instance].coreVM call:luaFunc required:YES withSig:@"iiffff>",
+				pCollisionInfo->hActor1,
+				pCollisionInfo->hActor2,
+				pCollisionInfo->x,
+				pCollisionInfo->y,
+				pCollisionInfo->z,
+				pCollisionInfo->velocity];
 		}
 		else 
 		{
+#if defined (DEBUG)
 			NSLog(@"Unhandled %@", key);
+#endif
 			// unhandled by specific, so try the objects themselves ?
 		}
 	}
@@ -241,7 +397,7 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 @synthesize iPodIsPlaying = _iPodIsPlaying;
 @synthesize bgPlayer = _bgPlayer;
 @synthesize listener = _listener;
-@synthesize sources = _sources;
+@synthesize activeSources = _activeSources;
 @synthesize buffers = _buffers;
 @synthesize simpleSounds = _simpleSounds;
 @synthesize activeSimpleSounds = _activeSimpleSounds;
@@ -257,6 +413,38 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 		pInstance = [[FCAudioManager alloc] init];
 	}
 	return pInstance;
+}
+
++(void)checkALError
+{
+	ALenum error = AL_NO_ERROR;
+	
+	if((error = alGetError()) != AL_NO_ERROR) 
+	{
+		switch (error) {
+			case AL_INVALID_NAME:
+				FC_ASSERT1(0, @"OpenAL: Invalid name");
+				break;
+			case AL_INVALID_ENUM:
+				FC_ASSERT1(0, @"OpenAL: Invalid enum");
+				break;
+			case AL_INVALID_VALUE:
+				FC_ASSERT1(0, @"OpenAL: Invalid value");
+				break;
+			case AL_INVALID_OPERATION:
+				FC_ASSERT1(0, @"OpenAL: Invalid operation");
+				break;
+			case AL_OUT_OF_MEMORY:
+				FC_ASSERT1(0, @"OpenAL: Out of memory");
+				break;
+				
+			default:
+				NSLog(@"%@", [FCAudioManager instance].activeSources);
+				NSString* string = [NSString stringWithFormat:@"Unknown AL error %d", error];
+				FC_LOG( string );
+				break;
+		}
+	}
 }
 
 -(id)init
@@ -275,10 +463,19 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 		[[FCLua instance].coreVM registerCFunction:lua_ResumeMusic as:@"FCAudio.ResumeMusic"];
 		[[FCLua instance].coreVM registerCFunction:lua_StopMusic as:@"FCAudio.StopMusic"];
 
-		[[FCLua instance].coreVM registerCFunction:lua_CreateBuffer as:@"FCAudio.CreateBuffer"];
+		[[FCLua instance].coreVM registerCFunction:lua_CreateBufferWithFile as:@"FCAudio.CreateBuffer"];
 		[[FCLua instance].coreVM registerCFunction:lua_DeleteBuffer as:@"FCAudio.DeleteBuffer"];
-		[[FCLua instance].coreVM registerCFunction:lua_CreateSource as:@"FCAudio.CreateSource"];
-		[[FCLua instance].coreVM registerCFunction:lua_DeleteSource as:@"FCAudio.DeleteSource"];
+
+		[[FCLua instance].coreVM registerCFunction:lua_PrepareSourceWithBuffer as:@"FCAudio.PrepareSourceWithBuffer"];
+		[[FCLua instance].coreVM registerCFunction:lua_SourceSetVolume as:@"FCAudio.SourceSetVolume"];
+		[[FCLua instance].coreVM registerCFunction:lua_SourcePlay as:@"FCAudio.SourcePlay"];
+		[[FCLua instance].coreVM registerCFunction:lua_SourceStop as:@"FCAudio.SourceStop"];
+		[[FCLua instance].coreVM registerCFunction:lua_SourcePosition as:@"FCAudio.SourcePosition"];
+		[[FCLua instance].coreVM registerCFunction:lua_SourcePitch as:@"FCAudio.SourcePitch"];
+		[[FCLua instance].coreVM registerCFunction:lua_SourceLooping as:@"FCAudio.SourceLooping"];
+
+		[[FCLua instance].coreVM registerCFunction:lua_AddCollisionTypeHandler as:@"FCAudio.AddCollisionTypeHandler"];
+		[[FCLua instance].coreVM registerCFunction:lua_RemoveCollisionTypeHandler as:@"FCAudio.RemoveCollisionTypeHandler"];
 		
 		[[FCLua instance].coreVM registerCFunction:lua_LoadSimpleSound as:@"FCAudio.LoadSimpleSound"];
 		[[FCLua instance].coreVM registerCFunction:lua_UnloadSimpleSound as:@"FCAudio.UnloadSimpleSound"];
@@ -288,7 +485,7 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 		[[FCLua instance].coreVM registerCFunction:lua_UnsubscribeFromPhysics2D as:@"FCAudio.UnsubscribeFromPhysics2D"];
 
 		_listener = [[FCAudioListener alloc] init];
-		_sources = [NSMutableDictionary dictionary];
+		_activeSources = [NSMutableDictionary dictionary];
 		_buffers = [NSMutableDictionary dictionary];
 		_simpleSounds = [NSMutableDictionary dictionary];
 		_activeSimpleSounds = [NSMutableArray array];
@@ -299,8 +496,6 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 		
 		// audio session stuff
 		
-#if TARGET_IPHONE_SIMULATOR
-#else
 		OSStatus result = AudioSessionInitialize(NULL, NULL, InterruptionListener, (__bridge void*)self);		
 		FC_ASSERT( result == 0 );
 		
@@ -316,20 +511,27 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 			category = kAudioSessionCategory_AmbientSound;
 		else
 			category = kAudioSessionCategory_SoloAmbientSound;
-		
+
+#if TARGET_IPHONE_SIMULATOR
+		AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(category), &category);
+#else
 		result = AudioSessionSetProperty(kAudioSessionProperty_AudioCategory, sizeof(category), &category);
 		FC_ASSERT( result == 0 );
+#endif
 		
 		result = AudioSessionAddPropertyListener(kAudioSessionProperty_AudioRouteChange, RouteChangeListener, (__bridge void*)self);
 		FC_ASSERT( result == 0 );
 		
 		result = AudioSessionSetActive(true);
 		FC_ASSERT( result == 0 );
-#endif
+		
+		alGetError();
 		
 		_device = alcOpenDevice( NULL );
 		_context = alcCreateContext( _device, 0 );
 		alcMakeContextCurrent( _context );
+		
+
 	}
 	return self;
 }
@@ -357,7 +559,13 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 -(void)playMusic:(NSString*)name
 {
 	NSString* path = [[NSBundle mainBundle] pathForResource:name ofType:@"m4a"];
-	NSURL* url = [NSURL URLWithString:path];
+	
+	FC_ASSERT(path);
+	
+	NSURL* url = [NSURL fileURLWithPath:path];
+	
+	FC_ASSERT(url);
+	
 	NSError* error = nil;
 	_bgPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:url error:&error];
 	_bgPlayer.delegate = self;
@@ -385,6 +593,9 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 	FCHandle h = NewFCHandle();
 	
 	NSString* path = [[NSBundle mainBundle] pathForResource:name ofType:@"m4a"];
+
+	FC_ASSERT(path);
+	
 	NSURL* url = [NSURL fileURLWithPath:path];
 
 	NSData* data = [NSData dataWithContentsOfURL:url];
@@ -413,12 +624,11 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 	[_activeSimpleSounds addObject:avPlayer];	
 }
 
--(FCHandle)createBuffer
+-(FCHandle)createBufferWithFile:(NSString *)filename
 {
 	FCHandle h = NewFCHandle();
 	
-	FCAudioBuffer* buffer = [[FCAudioBuffer alloc] init];
-	buffer.handle = h;
+	FCAudioBuffer* buffer = [[FCAudioBuffer alloc] initWithFilename:filename];
 	[_buffers setObject:buffer forKey:[NSNumber numberWithInt:h]];
 	
 	return h;
@@ -430,39 +640,115 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 	[_buffers removeObjectForKey:[NSNumber numberWithInt:handle]];
 }
 
--(FCHandle)createSource
+//-(FCHandle)createSource
+//{
+//	FCHandle h = NewFCHandle();
+//	
+//	FCAudioSource* buffer = [[FCAudioSource alloc] init];
+//	buffer.handle = h;
+//	[_sources setObject:buffer forKey:[NSNumber numberWithInt:h]];
+//	
+//	return h;
+//}
+//
+//-(void)deleteSource:(FCHandle)handle
+//{
+//	FC_ASSERT([_sources objectForKey:[NSNumber numberWithInt:handle]]);
+//	[_sources removeObjectForKey:[NSNumber numberWithInt:handle]];
+//}
+
+-(FCHandle)prepareSourceWithBuffer:(FCHandle)hBuffer vital:(BOOL)vital
 {
-	FCHandle h = NewFCHandle();
+	// try to reuse an existing one first
 	
-	FCAudioSource* buffer = [[FCAudioSource alloc] init];
-	buffer.handle = h;
-	[_sources setObject:buffer forKey:[NSNumber numberWithInt:h]];
+	FCAudioBuffer* buffer = [_buffers objectForKey:[NSNumber numberWithInt:hBuffer]];
+
+	NSArray* sourceKeys = [_activeSources allKeys];
 	
-	return h;
+	for( NSNumber* key in sourceKeys )
+	{
+		FCAudioSource* source = [_activeSources objectForKey:key];
+		
+		FC_ASSERT(source);
+		
+		if (source.stopped) 
+		{
+//			if (source.ALBufferHandle != buffer.ALHandle) 
+//			{
+//				source.ALBufferHandle = buffer.ALHandle;
+//			}
+			
+//			return source.handle;
+			[_activeSources removeObjectForKey:key];
+		}
+	}
+	
+	// all active sources are still playing, so create a new one
+	
+	int maxPlayingVoices;
+	
+	if (vital) {
+		maxPlayingVoices = 30;
+	} else {
+		maxPlayingVoices = 24;
+	}
+	
+	if ([_activeSources count] < maxPlayingVoices) 
+	{
+		FCAudioSource* source = [[FCAudioSource alloc] init];
+		source.ALBufferHandle = buffer.ALHandle;
+		
+		FCHandle hSource = NewFCHandle();
+		source.handle = hSource;
+		
+		[_activeSources setObject:source forKey:[NSNumber numberWithInt:hSource]];
+		
+//		NSLog(@"NumSources = %d", [_activeSources count]);
+		
+		return hSource;
+	}
+	
+	return 0;
 }
 
--(void)deleteSource:(FCHandle)handle
-{
-	FC_ASSERT([_sources objectForKey:[NSNumber numberWithInt:handle]]);
-	[_sources removeObjectForKey:[NSNumber numberWithInt:handle]];
-}
+//-(void)addCollisionTypeHanderFor:(NSString*)type1 
+//						 andType:(NSString*)type2 
+//						theClass:(Class)theClass
+//						  target:(id)target 
+//						selector:(SEL)selector
+//{
+//	FCAudioCollisionTypeHandler* handler = [[FCAudioCollisionTypeHandler alloc] init];
+//	handler.theClass = theClass;
+//	handler.target = target;
+//	handler.selector = selector;
+//
+//	NSString* key = [NSString stringWithFormat:@"%@%@", type1, type2];
+//	
+//	FC_ASSERT([_collisionTypeHandlers objectForKey:key] == nil);
+//	
+//	[_collisionTypeHandlers setObject:handler forKey:key];
+//	
+//	if(![type1 isEqualToString:type2])
+//	{
+//		key = [NSString stringWithFormat:@"%@%@", type2, type1];	
+//		
+//		FC_ASSERT([_collisionTypeHandlers objectForKey:key] == nil);
+//		
+//		[_collisionTypeHandlers setObject:handler forKey:key];		
+//	}
+//}
 
 -(void)addCollisionTypeHanderFor:(NSString*)type1 
 						 andType:(NSString*)type2 
-						theClass:(Class)theClass
-						  target:(id)target 
-						selector:(SEL)selector
+						 luaFunc:(NSString*)luaFunc
 {
-	FCAudioCollisionTypeHandler* handler = [[FCAudioCollisionTypeHandler alloc] init];
-	handler.theClass = theClass;
-	handler.target = target;
-	handler.selector = selector;
-
+//	FCAudioCollisionTypeHandler* handler = [[FCAudioCollisionTypeHandler alloc] init];
+	
 	NSString* key = [NSString stringWithFormat:@"%@%@", type1, type2];
 	
 	FC_ASSERT([_collisionTypeHandlers objectForKey:key] == nil);
 	
-	[_collisionTypeHandlers setObject:handler forKey:key];
+	[_collisionTypeHandlers setValue:luaFunc forKey:key];
 	
 	if(![type1 isEqualToString:type2])
 	{
@@ -470,13 +756,13 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 		
 		FC_ASSERT([_collisionTypeHandlers objectForKey:key] == nil);
 		
-		[_collisionTypeHandlers setObject:handler forKey:key];		
+		[_collisionTypeHandlers setValue:luaFunc forKey:key];		
 	}
 }
 
 -(void)removeCollisionTypeHanderFor:(NSString*)type1 andType:(NSString*)type2
 {
-	NSString* key = [NSString stringWithFormat:@"%@%@", type1, type2];	
+	NSString* key = [NSString stringWithFormat:@"%@%@", type1, type2];
 	
 	FC_ASSERT([_collisionTypeHandlers objectForKey:key]);
 
@@ -491,6 +777,24 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 		[_collisionTypeHandlers removeObjectForKey:key];
 	}
 }
+
+//-(void)removeCollisionTypeHanderFor:(NSString*)type1 andType:(NSString*)type2
+//{
+//	NSString* key = [NSString stringWithFormat:@"%@%@", type1, type2];	
+//	
+//	FC_ASSERT([_collisionTypeHandlers objectForKey:key]);
+//	
+//	[_collisionTypeHandlers removeObjectForKey:key];
+//	
+//	if(![type1 isEqualToString:type2])
+//	{
+//		key = [NSString stringWithFormat:@"%@%@", type2, type1];	
+//		
+//		FC_ASSERT([_collisionTypeHandlers objectForKey:key]);
+//		
+//		[_collisionTypeHandlers removeObjectForKey:key];
+//	}
+//}
 
 -(void)subscribeToPhysics2D
 {
