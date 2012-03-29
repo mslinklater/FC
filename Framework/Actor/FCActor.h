@@ -38,7 +38,13 @@
 
 @protocol FCActorBase
 
--(id)initWithDictionary:(NSDictionary*)dictionary body:(NSDictionary*)bodyDict model:(NSDictionary*)modelDict resource:(FCResource*)res name:(NSString*)name;
+-(id)initWithDictionary:(NSDictionary*)dictionary 
+				   body:(NSDictionary*)bodyDict 
+				  model:(NSDictionary*)modelDict 
+			   resource:(FCResource*)res 
+				   name:(NSString*)name
+				 handle:(FCHandle)handle;
+
 -(void)dealloc;
 
 @optional

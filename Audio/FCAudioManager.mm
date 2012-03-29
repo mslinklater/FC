@@ -24,7 +24,6 @@
 #import "FCAudioListener.h"
 #import "FCAudioBuffer.h"
 #import "FCAudioSource.h"
-#import "FCAudioCollisionTypeHandler.h"
 #import "FCActorSystem.h"
 
 #import "FCLua.h"

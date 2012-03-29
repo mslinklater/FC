@@ -197,6 +197,33 @@ static int lua_CreatePulleyJoint( lua_State* _state )
 	return 1;
 }
 
+static int lua_CreateRopeJoint( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(6);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(4, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(5, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(6, LUA_TNUMBER);
+	
+	FCPhysics2DRopeJointCreateDef* def = [[FCPhysics2DRopeJointCreateDef alloc] init];
+
+	def.body1 = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
+	FC_ASSERT(def.body1);
+	def.body2 = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
+	FC_ASSERT(def.body2);
+
+	def.bodyAnchor1 = FC::Vector2f( lua_tonumber(_state, 3), lua_tonumber(_state, 4) );
+	def.bodyAnchor2 = FC::Vector2f( lua_tonumber(_state, 5), lua_tonumber(_state, 6) );
+	
+	FCHandle hJoint = [s_pInstance createJoint:def];
+	
+	lua_pushinteger(_state, hJoint);
+	
+	return 1;
+}
+
 static int lua_SetRevoluteJointLimits( lua_State* _state )
 {
 	FC_LUA_ASSERT_NUMPARAMS(3);
@@ -282,9 +309,10 @@ static int lua_GetBodyAngularVelocity( lua_State* _state )
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
-	FCPhysics2DBody* body = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
-	
-	lua_pushnumber(_state, body.angularVelocity);
+//	FCPhysics2DBody* thisBody = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
+
+//	lua_pushnumber(_state, body.angularVelocity);
+	lua_pushnumber(_state, 0.0f);
 	return 1;
 }
 
@@ -320,6 +348,7 @@ static int lua_GetBodyAngularVelocity( lua_State* _state )
 		[[FCLua instance].coreVM registerCFunction:lua_CreateRevoluteJoint as:@"FCPhysics2D.CreateRevoluteJoint"];
 		[[FCLua instance].coreVM registerCFunction:lua_CreatePrismaticJoint as:@"FCPhysics2D.CreatePrismaticJoint"];
 		[[FCLua instance].coreVM registerCFunction:lua_CreatePulleyJoint as:@"FCPhysics2D.CreatePulleyJoint"];
+		[[FCLua instance].coreVM registerCFunction:lua_CreateRopeJoint as:@"FCPhysics2D.CreateRopeJoint"];
 		
 		[[FCLua instance].coreVM registerCFunction:lua_SetRevoluteJointMotor as:@"FCPhysics2D.SetRevoluteJointMotor"];
 		[[FCLua instance].coreVM registerCFunction:lua_SetRevoluteJointLimits as:@"FCPhysics2D.SetRevoluteJointLimits"];
@@ -359,31 +388,31 @@ static int lua_GetBodyAngularVelocity( lua_State* _state )
 {
 	_contactListener->Clear();
 	if (gameTime > 0.0f) {
-		_world->Step( gameTime, 8, 4 );
+		_world->Step( gameTime, 8, 8 );
 	}
 	_contactListener->DispatchToSubscribers();
 }
 
--(FCPhysics2DBody*)newBodyWithDef:(FCPhysics2DBodyDef*)def name:(NSString *)name actorHandle:(FCHandle)actorHandle
+-(FCPhysics2DBody*)createBodyWithDef:(FCPhysics2DBodyDef*)def name:(NSString *)name actorHandle:(FCHandle)actorHandle
 {
 //	FCHandle handle = NewFCHandle();
 	
 	def.world = _world;
 	def.hActor = actorHandle;
 
-	FCPhysics2DBody* newBody = [[FCPhysics2DBody alloc] initWithDef:def];
+	FCPhysics2DBody* body = [[FCPhysics2DBody alloc] initWithDef:def];
 
-	newBody.handle = actorHandle;
+	body.handle = actorHandle;
 
 	if (name) 
 	{
-		newBody.name = [NSString stringWithFormat:@"%@_%@", name, newBody.Id];
-		[_bodiesByName setValue:newBody forKey:newBody.name];
+		body.name = [NSString stringWithFormat:@"%@_%@", name, body.Id];
+		[_bodiesByName setValue:body forKey:body.name];
 	}
 
-	[_bodies setObject:newBody forKey:[NSNumber numberWithInt:actorHandle]];
+	[_bodies setObject:body forKey:[NSNumber numberWithInt:actorHandle]];
 	
-	return newBody;
+	return body;
 }
 
 -(void)destroyBody:(FCPhysics2DBody*)body
@@ -417,7 +446,7 @@ static int lua_GetBodyAngularVelocity( lua_State* _state )
 		pos2.y = thisDef.pos2.y;
 
 		b2DistanceJointDef jointDef;
-		jointDef.Initialize(thisDef.body1.body, thisDef.body2.body, pos1, pos2);
+		jointDef.Initialize(thisDef.body1.b2Body, thisDef.body2.b2Body, pos1, pos2);
 		jointDef.collideConnected = true;
 		b2Joint* joint = _world->CreateJoint(&jointDef);
 		
@@ -432,7 +461,7 @@ static int lua_GetBodyAngularVelocity( lua_State* _state )
 		pos.y = thisDef.pos.y;
 		
 		b2RevoluteJointDef jointDef;
-		jointDef.Initialize(thisDef.body1.body, thisDef.body2.body, pos);
+		jointDef.Initialize(thisDef.body1.b2Body, thisDef.body2.b2Body, pos);
 		jointDef.enableMotor = false;
 		jointDef.enableLimit = false;
 		b2Joint* joint = _world->CreateJoint(&jointDef);
@@ -452,7 +481,7 @@ static int lua_GetBodyAngularVelocity( lua_State* _state )
 		pos.y = thisDef.body2.position.y;
 
 		b2PrismaticJointDef jointDef;
-		jointDef.Initialize(thisDef.body1.body, thisDef.body2.body, pos, axis);
+		jointDef.Initialize(thisDef.body1.b2Body, thisDef.body2.b2Body, pos, axis);
 
 		b2Joint* joint = _world->CreateJoint(&jointDef);
 
@@ -479,8 +508,34 @@ static int lua_GetBodyAngularVelocity( lua_State* _state )
 		bodyAnchor2.x = thisDef.bodyAnchor2.x;
 		bodyAnchor2.y = thisDef.bodyAnchor2.y;
 
-		jointDef.Initialize( thisDef.body1.body, thisDef.body2.body, groundAnchor1, groundAnchor2, 
+		jointDef.Initialize( thisDef.body1.b2Body, thisDef.body2.b2Body, groundAnchor1, groundAnchor2, 
 							bodyAnchor1, bodyAnchor2, thisDef.ratio );
+		
+		b2Joint* joint = _world->CreateJoint(&jointDef);
+		
+		[_joints setObject:[NSNumber numberWithInt:(int)joint] forKey:[NSNumber numberWithInt:handle]];
+	}
+	else if( [def isKindOfClass:[FCPhysics2DRopeJointCreateDef class]] )
+	{
+		FCPhysics2DRopeJointCreateDef* thisDef = (FCPhysics2DRopeJointCreateDef*)def;
+
+		b2RopeJointDef jointDef;
+		
+		jointDef.bodyA = thisDef.body1.b2Body;
+		jointDef.bodyB = thisDef.body2.b2Body;
+
+		b2Vec2 bodyAnchor1;
+		bodyAnchor1.x = thisDef.bodyAnchor1.x;
+		bodyAnchor1.y = thisDef.bodyAnchor1.y;
+		
+		b2Vec2 bodyAnchor2;
+		bodyAnchor2.x = thisDef.bodyAnchor2.x;
+		bodyAnchor2.y = thisDef.bodyAnchor2.y;
+		
+		jointDef.localAnchorA = bodyAnchor1;
+		jointDef.localAnchorB = bodyAnchor2;
+		
+		jointDef.maxLength = 1.0f;
 		
 		b2Joint* joint = _world->CreateJoint(&jointDef);
 		

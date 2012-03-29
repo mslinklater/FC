@@ -41,7 +41,7 @@
 @synthesize Id = _Id;
 @synthesize name = _name;
 @synthesize world = _world;
-@synthesize body = _body;
+@synthesize b2Body = _b2Body;
 @synthesize handle = _handle;
 
 -(id)initWithDef:(FCPhysics2DBodyDef*)def
@@ -52,16 +52,13 @@
 		_Id = def.Id;
 		[self createBodyFromDef:def];
 		[self createFixturesFromDef:def];
-		
-		NSLog(@"init %@", self);
 	}
 	return self;
 }
 
 -(void)dealloc
 {
-	NSLog(@"dealloc %@", self);
-	_world->DestroyBody(_body);
+	_world->DestroyBody(_b2Body);
 }
 
 -(void)createBodyFromDef:(FCPhysics2DBodyDef *)def
@@ -91,7 +88,7 @@
 	
 	_world = def.world;
 	
-	_body = _world->CreateBody( &b2def );
+	_b2Body = _world->CreateBody( &b2def );
 }
 
 -(void)createFixturesFromDef:(FCPhysics2DBodyDef*)def
@@ -131,7 +128,7 @@
 			circlePos.y = [[fixture valueForKey:kFCKeyOffsetY] floatValue];
 			shape.m_p = circlePos;
 			fixtureDef.shape = &shape;
-			_body->CreateFixture( &fixtureDef );
+			_b2Body->CreateFixture( &fixtureDef );
 		}
 		else if ([type isEqualToString:kFCKeyRectangle]) 
 		{
@@ -147,7 +144,7 @@
 						   rectanglePos, rectangleAngle);
 			
 			fixtureDef.shape = &shape;
-			_body->CreateFixture( &fixtureDef );
+			_b2Body->CreateFixture( &fixtureDef );
 		}
 		else if ([type isEqualToString:kFCKeyPolygon]) 
 		{
@@ -172,7 +169,7 @@
 			
 			
 			fixtureDef.shape = &shape;
-			_body->CreateFixture( &fixtureDef );
+			_b2Body->CreateFixture( &fixtureDef );
 			
 			delete [] verts;
 		}
@@ -187,22 +184,22 @@
 
 -(FC::Vector3f)position
 {
-	const b2Vec2 pos = _body->GetPosition();
+	const b2Vec2 pos = _b2Body->GetPosition();
 
 	return FC::Vector3f(pos.x, pos.y, 0.0f);
 }
 
 -(void)setPosition:(FC::Vector3f)newPos
 {
-	float currentAngle = _body->GetAngle();
-	_body->SetTransform( b2Vec2( newPos.x, newPos.y ), currentAngle );
+	float currentAngle = _b2Body->GetAngle();
+	_b2Body->SetTransform( b2Vec2( newPos.x, newPos.y ), currentAngle );
 }
 
 #pragma mark - Velocity
 
 -(FC::Vector2f)linearVelocity
 {
-	b2Vec2 vel = _body->GetLinearVelocity();
+	b2Vec2 vel = _b2Body->GetLinearVelocity();
 	return FC::Vector2f( vel.x, vel.y );
 }
 
@@ -211,7 +208,7 @@
 	b2Vec2 vel;
 	vel.x = newVel.x;
 	vel.y = newVel.y;
-	_body->SetLinearVelocity( vel );
+	_b2Body->SetLinearVelocity( vel );
 }
 
 #pragma mark - Apply forces & impulses
@@ -226,31 +223,31 @@
 	b2Pos.x = pos.x;
 	b2Pos.y = pos.y;
 	
-	_body->ApplyLinearImpulse( b2Imp, b2Pos );
+	_b2Body->ApplyLinearImpulse( b2Imp, b2Pos );
 }
 
 #pragma mark = Rotation
 
 -(float)angularVelocity
 {
-	return _body->GetAngularVelocity();
+	return _b2Body->GetAngularVelocity();
 }
 
 -(void)setAngularVelocity:(float)angularVelocity
 {
-	_body->SetAngularVelocity(angularVelocity);
+	_b2Body->SetAngularVelocity(angularVelocity);
 	return;
 }
 
 -(float)rotation
 {
-	return _body->GetAngle();
+	return _b2Body->GetAngle();
 }
 
 -(void)setRotation:(float)rot
 {
-	const b2Vec2 currentPos = _body->GetPosition();
-	_body->SetTransform( currentPos, rot );
+	const b2Vec2 currentPos = _b2Body->GetPosition();
+	_b2Body->SetTransform( currentPos, rot );
 }
 
 #pragma mark - Debugging

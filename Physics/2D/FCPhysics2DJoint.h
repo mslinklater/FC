@@ -65,6 +65,16 @@
 @property(nonatomic) FC::Vector2f axis;
 @end
 
+#pragma mark - FCPhysics2DRopeJointCreateDef
+
+@interface FCPhysics2DRopeJointCreateDef : FCPhysics2DJointCreateDef {
+	FC::Vector2f	_bodyAnchor1;
+	FC::Vector2f	_bodyAnchor2;
+}
+@property(nonatomic) FC::Vector2f bodyAnchor1;
+@property(nonatomic) FC::Vector2f bodyAnchor2;
+@end
+
 #pragma mark - FCPhysics2DPulleyJointCreateDef
 
 @interface FCPhysics2DPulleyJointCreateDef : FCPhysics2DJointCreateDef {

@@ -88,7 +88,7 @@
 			bodyDef.canSleep = NO;
 			bodyDef.shapeDef = bodyDict;
 			
-			_physicsBody = [[[FCPhysics instance] twoD] newBodyWithDef:bodyDef name:name actorHandle:handle];
+			_physicsBody = [[[FCPhysics instance] twoD] createBodyWithDef:bodyDef name:name actorHandle:handle];
 #endif
 		}
 		

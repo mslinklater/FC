@@ -37,27 +37,24 @@ class b2Body;
 	NSString*		_Id;
 	NSString*		_name;
 	b2World*		_world;
-	b2Body*			_body;
+	b2Body*			_b2Body;
 	FCHandle		_handle;
 }
+
 @property(nonatomic, strong) NSString* Id;
 @property(nonatomic, strong) NSString* name;
 @property(nonatomic) b2World* world;
-@property(nonatomic, readonly) b2Body* body;
+@property(nonatomic, readonly) b2Body* b2Body;
 @property(nonatomic) FCHandle handle;
 
 @property(nonatomic, readonly) float rotation;
 @property(nonatomic) FC::Vector3f position;
 @property(nonatomic) float angularVelocity;
+@property(nonatomic) FC::Vector2f linearVelocity;
 
 -(id)initWithDef:(FCPhysics2DBodyDef*)def;
 
-// turn these into a property
--(FC::Vector2f)linearVelocity;	
--(void)setLinearVelocity:(FC::Vector2f)newVel;
-
 -(void)applyImpulse:(FC::Vector2f)impulse atWorldPos:(FC::Vector2f)pos;
-//-(void)createPulleyJointWith:(FCPhysics2DBody*)otherBody anchor1:(FC::Vector2f)anchor1 anchor2:(FC::Vector2f)anchor2 groundAnchor1:(FC::Vector2f)ground1 groundAnchor2:(FC::Vector2f)ground2 ratio:(float)ratio maxLength1:(float)maxLength1 maxLength2:(float)maxLength2;
 @end
 
 #endif // defined(FC_PHYSICS)

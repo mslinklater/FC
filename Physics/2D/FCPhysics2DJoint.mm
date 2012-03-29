@@ -53,6 +53,13 @@
 @synthesize axis = _axis;
 @end
 
+#pragma mark - FCPhysics2DRopeJointCreateDef
+
+@implementation FCPhysics2DRopeJointCreateDef
+@synthesize bodyAnchor1 = _bodyAnchor1;
+@synthesize bodyAnchor2 = _bodyAnchor2;
+@end
+
 #pragma mark - FCPhysics2DPulleyJointCreateDef
 
 @implementation FCPhysics2DPulleyJointCreateDef
