@@ -26,14 +26,19 @@
 #import "FCShaderProgram.h"
 #import "FCShaderUniform.h"
 
-@interface FCShaderManager : NSObject
+@interface FCShaderManager : NSObject {
+	NSMutableDictionary* _shaders;
+	NSMutableDictionary* _programs;
+}
+@property(nonatomic, strong) NSMutableDictionary* shaders;
+@property(nonatomic, strong) NSMutableDictionary* programs;
 
 +(FCShaderManager*)instance;
 
 -(FCShader*)addShader:(NSString*)name;
 -(FCShader*)shader:(NSString*)name;
 
--(FCShaderProgram*)addProgram:(NSString*)name;
+-(FCShaderProgram*)addProgram:(NSString*)name as:(NSString*)shaderName;
 -(FCShaderProgram*)program:(NSString*)name;
 @end
 

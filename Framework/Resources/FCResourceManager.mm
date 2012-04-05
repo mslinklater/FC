@@ -121,7 +121,7 @@ static NSString* kUDSuffix = @"_ultra";
 
 -(NSData*)dataForResource:(NSString*)resource ofType:(NSString*)type
 {
-	NSString* outputResource = [NSString stringWithFormat:@"Output/%@", resource];
+	NSString* outputResource = [NSString stringWithFormat:@"Assets/%@", resource];
 	
 	NSString* actualResourceName = [self actualResourceName:outputResource ofType:type];
 

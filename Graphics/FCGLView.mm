@@ -566,7 +566,7 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 -(void)setProjectionMatrix
 {
 	FCShaderManager* shaderManager = [FCShaderManager instance];
-	FCShaderProgram* program = [shaderManager program:@"debug_debug"];
+	FCShaderProgram* program = [shaderManager program:kFCKeyShaderWireframe];	// needs to be current shader or all active shaders
 	FCShaderUniform* projectionUniform = [program getUniform:@"projection"];
 	
 	// build matrix

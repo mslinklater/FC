@@ -91,10 +91,13 @@ extern NSString* kFCKeyAngle;
 extern NSString* kFCKeyRadius;
 extern NSString* kFCKeyShape;
 extern NSString* kFCKeyRectangle;
+extern NSString* kFCKeyBox;
 extern NSString* kFCKeyXSize;
 extern NSString* kFCKeyYSize;
+extern NSString* kFCKeyZSize;
 extern NSString* kFCKeyCircle;
 extern NSString* kFCKeyPolygon;
+extern NSString* kFCKeyHull;
 extern NSString* kFCKeyLinearDamping;
 extern NSString* kFCKeyDynamic;
 
@@ -108,6 +111,10 @@ extern NSString* kFCKeyYellow;
 extern NSString* kFCKeyWhite;
 
 extern NSString* kFCKeyCount;
+
+// Graphics
+
+extern NSString* kFCKeyShaderWireframe;
 
 // File types
 

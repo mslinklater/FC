@@ -39,9 +39,9 @@
 #import "FCVertexDescriptor.h"
 
 static 	FC::Color4f	s_whiteColor( 1.0f, 1.0f, 1.0f, 1.0f );
-static int kNumCircleSegments = 16;
-static FCVertexDescriptor* s_debugMeshVertexDescriptor;
-static NSString* s_debugShaderName = @"debug_debug";
+static int kNumCircleSegments = 36;
+//static FCVertexDescriptor* s_debugMeshVertexDescriptor;
+//static NSString* s_debugShaderName = @"debug_debug";
 
 #pragma mark - Private interface
 
@@ -62,12 +62,12 @@ static NSString* s_debugShaderName = @"debug_debug";
 #pragma mark -
 #pragma mark Initialisers
 
-+(void)initialize
-{
-	s_debugMeshVertexDescriptor = [[FCVertexDescriptor alloc] init];
-	s_debugMeshVertexDescriptor.positionType = kFCVertexDescriptorPropertyTypeAttributeVec3;
-	s_debugMeshVertexDescriptor.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec4;
-}
+//+(void)initialize
+//{
+//	s_debugMeshVertexDescriptor = [[FCVertexDescriptor alloc] init];
+//	s_debugMeshVertexDescriptor.positionType = kFCVertexDescriptorPropertyTypeAttributeVec3;
+//	s_debugMeshVertexDescriptor.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec4;
+//}
 
 -(id)initWithPhysicsBody:(NSDictionary *)bodyDict color:(UIColor*)color	//actorXOffset:(float)actorX actorYOffset:(float)actorY
 {
@@ -91,15 +91,18 @@ static NSString* s_debugShaderName = @"debug_debug";
 			
 			float fixtureX = [[fixture valueForKey:kFCKeyOffsetX] floatValue];// + actorX;
 			float fixtureY = [[fixture valueForKey:kFCKeyOffsetY] floatValue];// + actorY;
+			float fixtureZ = [[fixture valueForKey:kFCKeyOffsetZ] floatValue];// + actorZ;
 			
-			if ([type isEqualToString:@"rectangle"]) 
+			if ([type isEqualToString:@"box"]) 
 			{
-				// rectangle
+				// box
 				NSMutableDictionary* debugDict = [[NSMutableDictionary alloc] init];
 				[debugDict setValue:[NSNumber numberWithFloat:fixtureX] forKey:kFCKeyOffsetX];
 				[debugDict setValue:[NSNumber numberWithFloat:fixtureY] forKey:kFCKeyOffsetY];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureZ] forKey:kFCKeyOffsetZ];
 				[debugDict setValue:[fixture valueForKey:@"xSize"] forKey:kFCKeyXSize];
 				[debugDict setValue:[fixture valueForKey:@"ySize"] forKey:kFCKeyYSize];
+				[debugDict setValue:[fixture valueForKey:@"zSize"] forKey:kFCKeyZSize];
 				
 				[self addDebugRectangle:debugDict color:color];
 			} 
@@ -109,23 +112,30 @@ static NSString* s_debugShaderName = @"debug_debug";
 				NSMutableDictionary* debugDict = [[NSMutableDictionary alloc] init];
 				[debugDict setValue:[NSNumber numberWithFloat:fixtureX] forKey:kFCKeyOffsetX];
 				[debugDict setValue:[NSNumber numberWithFloat:fixtureY] forKey:kFCKeyOffsetY];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureZ] forKey:kFCKeyOffsetZ];
 				[debugDict setValue:[fixture valueForKey:@"radius"] forKey:kFCKeyRadius];
 				
 				[self addDebugCircle:debugDict color:color];				
 			} 
-			else if([type isEqualToString:@"polygon"]) 
+			else if([type isEqualToString:@"hull"]) 
 			{
 				// polygon
 				NSMutableDictionary* debugDict = [[NSMutableDictionary alloc] init];
 
-				NSArray* floatArray = [[fixture valueForKey:@"verts"] componentsSeparatedByString:@" "];
+				NSString* strippedVerts = [fixture valueForKey:@"verts"];
+				strippedVerts = [strippedVerts stringByReplacingOccurrencesOfString:@"," withString:@" "];
+				strippedVerts = [strippedVerts stringByReplacingOccurrencesOfString:@"(" withString:@""];
+				strippedVerts = [strippedVerts stringByReplacingOccurrencesOfString:@")" withString:@""];
+				
+				NSArray* floatArray = [strippedVerts componentsSeparatedByString:@" "];
 
-				int numVerts = [floatArray count] / 2;
+				int numVerts = [floatArray count] / 3;
 				
 				[debugDict setValue:[NSString stringWithFormat:@"%d", numVerts] forKey:kFCKeyNumVertices];
-				[debugDict setValue:[fixture valueForKey:@"verts"] forKey:@"verts"];
+				[debugDict setValue:strippedVerts forKey:@"verts"];
 				[debugDict setValue:[NSNumber numberWithFloat:fixtureX] forKey:kFCKeyOffsetX];
 				[debugDict setValue:[NSNumber numberWithFloat:fixtureY] forKey:kFCKeyOffsetY];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureZ] forKey:kFCKeyOffsetZ];
 				
 				[self addDebugPolygon:debugDict color:color];
 			}
@@ -139,46 +149,46 @@ static NSString* s_debugShaderName = @"debug_debug";
 	self = [super init];
 	if (self) 
 	{
-		NSArray* meshArray = [modelDict arrayForKey:kFCKeyMesh];;
-		NSArray* binaryPayloadArray = [res.xmlData arrayForKeyPath:@"fcr.binarypayload.chunk"];
-		(void)binaryPayloadArray;
-
-		for( NSDictionary* mesh in meshArray )
-		{
-			NSString* shaderProgramName = [mesh valueForKey:kFCKeyShaderProgramName];
-			(void)shaderProgramName;
-			
-			NSDictionary* buffers = [mesh valueForKey:kFCKeyBuffers];
-			NSString* vertexBufferId = [buffers valueForKey:kFCKeyVertexBuffer];
-
-			NSDictionary* chunkDictionary = nil; //= [binaryPayloadArray valueForKey:vertexBufferId];
-
-			for( NSDictionary* dict in binaryPayloadArray )
-			{
-				if ([[dict valueForKey:kFCKeyId] isEqualToString:vertexBufferId]) {
-					chunkDictionary = dict;
-				}
-			}
-			
-			
-			NSString* vertexFormatString = [chunkDictionary valueForKey:kFCKeyVertexFormat];
-
-			FCVertexDescriptor* resourceVertexDescriptor = [FCVertexDescriptor vertexDescriptorWithVertexFormatString:vertexFormatString 
-																									   andUniformDict:mesh];
-			
-			FCShaderProgram* shaderProgram = [[FCShaderManager instance] program:shaderProgramName];
-			FCVertexDescriptor* shaderVertexDescriptor = shaderProgram.requiredVertexDescriptor;
-			
-			if ([resourceVertexDescriptor canSatisfy:shaderVertexDescriptor]) {
-				// bind etc
-			}
-			else
-			{
-				FC_ERROR(@"Shader binding error for model");
-			}
-			
-//			NSLog(@"%@", resourceVertexDescriptor);
-		}
+//		NSArray* meshArray = [modelDict arrayForKey:kFCKeyMesh];;
+//		NSArray* binaryPayloadArray = [res.xmlData arrayForKeyPath:@"fcr.binarypayload.chunk"];
+//		(void)binaryPayloadArray;
+//
+//		for( NSDictionary* mesh in meshArray )
+//		{
+//			NSString* shaderProgramName = [mesh valueForKey:kFCKeyShaderProgramName];
+//			(void)shaderProgramName;
+//			
+//			NSDictionary* buffers = [mesh valueForKey:kFCKeyBuffers];
+//			NSString* vertexBufferId = [buffers valueForKey:kFCKeyVertexBuffer];
+//
+//			NSDictionary* chunkDictionary = nil; //= [binaryPayloadArray valueForKey:vertexBufferId];
+//
+//			for( NSDictionary* dict in binaryPayloadArray )
+//			{
+//				if ([[dict valueForKey:kFCKeyId] isEqualToString:vertexBufferId]) {
+//					chunkDictionary = dict;
+//				}
+//			}
+//			
+//			
+//			NSString* vertexFormatString = [chunkDictionary valueForKey:kFCKeyVertexFormat];
+//
+//			FCVertexDescriptor* resourceVertexDescriptor = [FCVertexDescriptor vertexDescriptorWithVertexFormatString:vertexFormatString 
+//																									   andUniformDict:mesh];
+//			
+//			FCShaderProgram* shaderProgram = [[FCShaderManager instance] program:shaderProgramName];
+//			FCVertexDescriptor* shaderVertexDescriptor = shaderProgram.requiredVertexDescriptor;
+//			
+//			if ([resourceVertexDescriptor canSatisfy:shaderVertexDescriptor]) {
+//				// bind etc
+//			}
+//			else
+//			{
+//				FC_ERROR(@"Shader binding error for model");
+//			}
+//			
+////			NSLog(@"%@", resourceVertexDescriptor);
+//		}
 		
 		// get vertex description provided by the resource
 		
@@ -288,7 +298,7 @@ static NSString* s_debugShaderName = @"debug_debug";
 
 -(void)addDebugCircle:(NSDictionary*)def color:(UIColor*)debugColor
 {
-	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:s_debugMeshVertexDescriptor shaderName:s_debugShaderName];
+	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:[FCVertexDescriptor vertexDescriptorForShader:kFCKeyShaderWireframe] shaderName:kFCKeyShaderWireframe];
 	[self.meshes addObject:mesh];
 
 	mesh.numVertices = kNumCircleSegments + 1;
@@ -345,7 +355,7 @@ static NSString* s_debugShaderName = @"debug_debug";
 
 -(void)addDebugRectangle:(NSDictionary*)def color:(UIColor *)debugColor
 {
-	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:s_debugMeshVertexDescriptor shaderName:s_debugShaderName];
+	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:[FCVertexDescriptor vertexDescriptorForShader:kFCKeyShaderWireframe] shaderName:kFCKeyShaderWireframe];
 	[self.meshes addObject:mesh];
 
 	mesh.numVertices = 4;
@@ -380,8 +390,6 @@ static NSString* s_debugShaderName = @"debug_debug";
 	pVert->y = center.y + size.y * 1.0f;
 	pVert->z = center.z;
 	
-//	mesh.colorUniform = debugColor;
-
 	if (debugColor) {
 		float red, green, blue, alpha;
 		[debugColor getRed:&red green:&green blue:&blue alpha:&alpha];
@@ -404,7 +412,7 @@ static NSString* s_debugShaderName = @"debug_debug";
 
 -(void)addDebugPolygon:(NSDictionary*)def color:(UIColor *)debugColor
 {
-	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:s_debugMeshVertexDescriptor shaderName:s_debugShaderName];
+	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:[FCVertexDescriptor vertexDescriptorForShader:kFCKeyShaderWireframe] shaderName:kFCKeyShaderWireframe];
 	[self.meshes addObject:mesh];
 	
 	mesh.numVertices = [[def valueForKey:kFCKeyNumVertices] intValue];
@@ -418,20 +426,20 @@ static NSString* s_debugShaderName = @"debug_debug";
 	
 	float xOffset = [[def valueForKey:kFCKeyOffsetX] floatValue];
 	float yOffset = [[def valueForKey:kFCKeyOffsetY] floatValue];
+	float zOffset = [[def valueForKey:kFCKeyOffsetZ] floatValue];
 	
 	pVert->x = [[vertsArray objectAtIndex:0] floatValue] + xOffset;
 	pVert->y = [[vertsArray objectAtIndex:1] floatValue] + yOffset;
-	pVert->z = 0.0f;
+	pVert->z = [[vertsArray objectAtIndex:2] floatValue] + zOffset;
 
 	for (int i = 1 ; i < mesh.numVertices ; i++) 
 	{
 		pVert = (FC::Vector3f*)((unsigned int)pVert + mesh.vertexDescriptor.stride);
-		pVert->x = [[vertsArray objectAtIndex:i*2] floatValue] + xOffset;
-		pVert->y = [[vertsArray objectAtIndex:(i*2)+1] floatValue] + yOffset;
-		pVert->z = 0.0f;
+		pVert->x = [[vertsArray objectAtIndex:i*3] floatValue] + xOffset;
+		pVert->y = [[vertsArray objectAtIndex:(i*3)+1] floatValue] + yOffset;
+		pVert->z = [[vertsArray objectAtIndex:(i*3)+2] floatValue] + zOffset;
 	}	
 
-//	mesh.colorUniform = debugColor;
 	if (debugColor) {
 		float red, green, blue, alpha;
 		[debugColor getRed:&red green:&green blue:&blue alpha:&alpha];

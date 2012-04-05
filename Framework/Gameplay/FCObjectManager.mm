@@ -51,17 +51,17 @@ static FCObjectManager* s_pInstance;
 
 -(void)addObjectsFromResource:(FCResource*)resource
 {
-	// add nulls
-	NSArray* gameplayObjects = [resource.xmlData arrayForKeyPath:@"fcr.gameplay.game"];
+	// add locators
+	NSArray* locators = [resource.xmlData arrayForKeyPath:@"fcr.gameplay.locator"];
 
-	for( NSDictionary* obj in gameplayObjects )
+	for( NSDictionary* obj in locators )
 	{
-		NSString* objType = [obj valueForKey:kFCKeyType];
+//		NSString* objType = [obj valueForKey:kFCKeyType];
 		
-		if ([objType isEqualToString:kFCKeyNull]) {
-			NSString* nullId = [[obj valueForKey:kFCKeyName] stringByReplacingOccurrencesOfString:@"_g_" withString:@""];
+//		if ([objType isEqualToString:kFCKeyNull]) {
+			NSString* nullId = [obj valueForKey:kFCKeyName];
 			[_nulls setValue:obj forKey:nullId];
-		}
+//		}
 		// etc
 	}
 }

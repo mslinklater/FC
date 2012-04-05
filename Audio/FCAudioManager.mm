@@ -381,7 +381,7 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 		else 
 		{
 #if defined (DEBUG)
-			NSLog(@"Unhandled %@", key);
+//			NSLog(@"Unhandled %@", key);
 #endif
 			// unhandled by specific, so try the objects themselves ?
 		}

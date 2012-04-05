@@ -51,40 +51,6 @@ static int lua_SetCurrentRenderer( lua_State* _state )
 	return 0;
 }
 
-// add actor to gather (actor name)
-
-//static int lua_AddActorToGather( lua_State* _state )
-//{
-//	FC_ASSERT(lua_gettop(_state) == 1);
-//	FC_ASSERT(lua_isstring(_state, 1));
-//	
-//	NSString* name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
-//
-//	FCActor* actor = [[FCActorSystem instance].actorNameDictionary valueForKey:name];
-//
-//	[s_currentLuaTarget addToGatherList:actor];
-//	
-//	return 0;
-//}
-//
-//// remove actor from gather
-//
-//static int lua_RemoveActorFromGather( lua_State* _state )
-//{
-//	FC_ASSERT(lua_gettop(_state) == 1);
-//	FC_ASSERT(lua_isstring(_state, 1));
-//
-//	NSString* name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
-//	
-//	FCActor* actor = [[FCActorSystem instance].actorNameDictionary valueForKey:name];
-//
-//	FC_ASSERT( actor );
-//	
-//	[s_currentLuaTarget removeFromGatherList:actor];
-//	
-//	return 0;
-//}
-
 @implementation FCRenderer
 
 @synthesize name = _name;
@@ -106,8 +72,6 @@ static int lua_SetCurrentRenderer( lua_State* _state )
 			s_renderers = [[NSMutableDictionary alloc] init];
 			[[FCLua instance].coreVM createGlobalTable:@"FCRenderer"];
 			[[FCLua instance].coreVM registerCFunction:lua_SetCurrentRenderer as:@"FCRenderer.SetCurrentRenderer"];
-//			[[FCLua instance].coreVM registerCFunction:lua_AddActorToGather as:@"FCRenderer.AddActorToGather"];
-//			[[FCLua instance].coreVM registerCFunction:lua_RemoveActorFromGather as:@"FCRenderer.RemoveActorFromGather"];
 		}
 		
 		[s_renderers setValue:self forKey:name];

@@ -61,6 +61,8 @@ static NSString* s_nameForProperty[ kFCVertexDescriptorLastProperty ] = {
 	@"Last Attribute"
 };
 
+static NSMutableDictionary* s_dictionary;
+
 @interface FCVertexDescriptor()
 -(unsigned int)sizeForType:(FCVertexDescriptorPropertyType)type;
 @end
@@ -83,6 +85,16 @@ static NSString* s_nameForProperty[ kFCVertexDescriptorLastProperty ] = {
 @synthesize tex2Offset = _tex2Offset;
 @synthesize tex3Offset = _tex3Offset;
 
++(void)initialize
+{
+	s_dictionary = [[NSMutableDictionary alloc] init];
+	
+	FCVertexDescriptor* wireframe = [[FCVertexDescriptor alloc] init];
+	wireframe.positionType = kFCVertexDescriptorPropertyTypeAttributeVec3;
+	wireframe.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec4;
+	[s_dictionary setValue:wireframe forKey:kFCKeyShaderWireframe];
+}
+
 -(id)init
 {
 	self = [super init];
@@ -98,64 +110,64 @@ static NSString* s_nameForProperty[ kFCVertexDescriptorLastProperty ] = {
 	return self;
 }
 
-+(id)vertexDescriptor
++(id)vertexDescriptorForShader:(NSString *)shader
 {
-	return [[FCVertexDescriptor alloc] init];
+	return [s_dictionary valueForKey:shader];
 }
 
--(id)initWithVertexFormatString:(NSString *)desc andUniformDict:(NSDictionary *)uniformDict
-{
-	self = [self init];
-	
-	// Uniforms
+//-(id)initWithVertexFormatString:(NSString *)desc andUniformDict:(NSDictionary *)uniformDict
+//{
+//	self = [self init];
+//	
+//	// Uniforms
+//
+//	NSString* diffuseColorValue = [uniformDict valueForKey:kFCKeyMaterialDiffuseColor];
+//	
+//	if (diffuseColorValue) {
+//		NSArray* elementArray = [diffuseColorValue componentsSeparatedByString:@" "];
+//		if ([elementArray count] == 3) {
+//			self.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec3;
+//		} else if ([elementArray count] == 4) {
+//			self.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec4;			
+//		} else {
+//			FC_FATAL(@"Diffuse color with other than 3 or 4 components");
+//		}
+//	}
+//
+//	// Attributes
+//
+//	NSArray* attributeArray = [desc componentsSeparatedByString:@","];
+//	
+//	for( NSString* attributeString in attributeArray ) {
+//		NSRange leftBracketRange = [attributeString rangeOfString:@"("];
+//		NSRange rightBracketRange = [attributeString rangeOfString:@")"];
+//
+//		NSRange nameRange;
+//		nameRange.location = 0;
+//		nameRange.length = leftBracketRange.location;
+//		
+//		NSRange typeRange;
+//		typeRange.location = leftBracketRange.location + 1;
+//		typeRange.length = rightBracketRange.location - leftBracketRange.location - 1;
+//		
+//		NSString* attrNameString = [attributeString substringWithRange:nameRange];
+//		NSString* attrTypeString = [attributeString substringWithRange:typeRange];
+//		
+//		NSLog(@"%@ %@", attrNameString, attrTypeString);
+//	}
+//							   
+//	return self;
+//}
 
-	NSString* diffuseColorValue = [uniformDict valueForKey:kFCKeyMaterialDiffuseColor];
-	
-	if (diffuseColorValue) {
-		NSArray* elementArray = [diffuseColorValue componentsSeparatedByString:@" "];
-		if ([elementArray count] == 3) {
-			self.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec3;
-		} else if ([elementArray count] == 4) {
-			self.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec4;			
-		} else {
-			FC_FATAL(@"Diffuse color with other than 3 or 4 components");
-		}
-	}
+//+(id)vertexDescriptorWithVertexFormatString:(NSString *)desc andUniformDict:(NSDictionary *)uniformDict
+//{
+//	return [[FCVertexDescriptor alloc] initWithVertexFormatString:desc andUniformDict:uniformDict];
+//}
 
-	// Attributes
-
-	NSArray* attributeArray = [desc componentsSeparatedByString:@","];
-	
-	for( NSString* attributeString in attributeArray ) {
-		NSRange leftBracketRange = [attributeString rangeOfString:@"("];
-		NSRange rightBracketRange = [attributeString rangeOfString:@")"];
-
-		NSRange nameRange;
-		nameRange.location = 0;
-		nameRange.length = leftBracketRange.location;
-		
-		NSRange typeRange;
-		typeRange.location = leftBracketRange.location + 1;
-		typeRange.length = rightBracketRange.location - leftBracketRange.location - 1;
-		
-		NSString* attrNameString = [attributeString substringWithRange:nameRange];
-		NSString* attrTypeString = [attributeString substringWithRange:typeRange];
-		
-		NSLog(@"%@ %@", attrNameString, attrTypeString);
-	}
-							   
-	return self;
-}
-
-+(id)vertexDescriptorWithVertexFormatString:(NSString *)desc andUniformDict:(NSDictionary *)uniformDict
-{
-	return [[FCVertexDescriptor alloc] initWithVertexFormatString:desc andUniformDict:uniformDict];
-}
-
--(BOOL)canSatisfy:(FCVertexDescriptor*)desc
-{
-	return NO;
-}
+//-(BOOL)canSatisfy:(FCVertexDescriptor*)desc
+//{
+//	return NO;
+//}
 
 -(unsigned int)stride
 {

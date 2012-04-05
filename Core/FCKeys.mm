@@ -89,8 +89,11 @@ NSString* kFCKeyRadius = @"radius";
 NSString* kFCKeyShape = @"shape";
 NSString* kFCKeyCircle = @"circle";
 NSString* kFCKeyRectangle = @"rectangle";
+NSString* kFCKeyBox = @"box";
 NSString* kFCKeyXSize = @"xSize";
 NSString* kFCKeyYSize = @"ySize";
+NSString* kFCKeyZSize = @"zSize";
+NSString* kFCKeyHull = @"hull";
 NSString* kFCKeyPolygon = @"polygon";
 NSString* kFCKeyLinearDamping = @"lineardamping";
 NSString* kFCKeyDynamic = @"dynamic";
@@ -103,6 +106,10 @@ NSString* kFCKeyYellow = @"yellow";
 NSString* kFCKeyWhite = @"white";
 
 NSString* kFCKeyCount = @"count";
+
+// Graphics
+
+NSString* kFCKeyShaderWireframe = @"Wireframe";
 
 // File types
 

@@ -51,11 +51,12 @@ void common_LoadScriptForState(NSString* path, lua_State* _state, BOOL optional)
 	else
 	{
 #if defined (DEBUG)
-		path = [NSString stringWithFormat:@"lua/%@", path];
+		path = [NSString stringWithFormat:@"Assets/LuaDebug/%@", path];
 #else
-		path = [NSString stringWithFormat:@"luabin/%@", path];
+		path = [NSString stringWithFormat:@"Assets/Lua/%@", path];
 #endif
-		filePath = [[NSBundle mainBundle] pathForResource:[path lowercaseString] ofType:@"lua"];		
+//		filePath = [[NSBundle mainBundle] pathForResource:[path lowercaseString] ofType:@"lua"];		
+		filePath = [[NSBundle mainBundle] pathForResource:path ofType:@"lua"];		
 	}
 
 	if(filePath == nil)

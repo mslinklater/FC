@@ -1,4 +1,4 @@
-/*
+ /*
  Copyright (C) 2011-2012 by Martin Linklater
  
  Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -27,10 +27,8 @@
 #import "FCShader.h"
 #import "FCShaderProgram.h"
 
-@interface FCShaderManager()
-@property(nonatomic, strong) NSMutableDictionary* shaders;
-@property(nonatomic, strong) NSMutableDictionary* programs;
-@end
+//@interface FCShaderManager()
+//@end
 
 @implementation FCShaderManager
 @synthesize shaders = _shaders;
@@ -87,14 +85,9 @@
 			type = kShaderTypeFragment;
 		}
 		
-//		FCShader* newShader = [[FCShader alloc] initType:type withSource:source];
 		ret = [[FCShader alloc] initType:type withSource:source];
 		
 		[self.shaders setValue:ret forKey:name];
-		
-//		ret = newShader;
-		
-//		[ret autorelease];
 	}
 	return ret;
 }
@@ -104,7 +97,7 @@
 	return [self.shaders valueForKey:name];
 }
 
--(FCShaderProgram*)addProgram:(NSString *)name
+-(FCShaderProgram*)addProgram:(NSString *)name as:(NSString *)shaderName
 {
 	FCShaderProgram* ret = [self.programs valueForKey:name];
 	
@@ -122,15 +115,9 @@
 		
 		// build program
 		
-//		FCShaderProgram* program = [[FCShaderProgram alloc] initWithVertex:vertexShader andFragment:fragmentShader];
 		ret = [[FCShaderProgram alloc] initWithVertex:vertexShader andFragment:fragmentShader];
 		
-//		[self.programs setValue:program forKey:name];
-		[self.programs setValue:ret forKey:name];
-		
-//		ret = program;
-
-//		[program autorelease];
+		[self.programs setValue:ret forKey:shaderName];
 	}
 	return ret;
 }

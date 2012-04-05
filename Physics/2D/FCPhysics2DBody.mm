@@ -130,7 +130,7 @@
 			fixtureDef.shape = &shape;
 			_b2Body->CreateFixture( &fixtureDef );
 		}
-		else if ([type isEqualToString:kFCKeyRectangle]) 
+		else if ([type isEqualToString:kFCKeyBox]) 
 		{
 			b2PolygonShape shape;
 			
@@ -146,13 +146,17 @@
 			fixtureDef.shape = &shape;
 			_b2Body->CreateFixture( &fixtureDef );
 		}
-		else if ([type isEqualToString:kFCKeyPolygon]) 
+		else if ([type isEqualToString:kFCKeyHull]) 
 		{
 			b2PolygonShape shape;
 			
-			NSArray* vertsArray = [[fixture valueForKey:@"verts"] componentsSeparatedByString:@" "];
+			NSString* strippedVerts = [[fixture valueForKey:@"verts"] stringByReplacingOccurrencesOfString:@"," withString:@" "];
+			strippedVerts = [strippedVerts stringByReplacingOccurrencesOfString:@"(" withString:@""];
+			strippedVerts = [strippedVerts stringByReplacingOccurrencesOfString:@")" withString:@""];
 			
-			int numVerts = [vertsArray count] / 2;
+			NSArray* vertsArray = [strippedVerts componentsSeparatedByString:@" "];
+			
+			int numVerts = [vertsArray count] / 3;
 			
 			b2Vec2* verts = (b2Vec2*)malloc(sizeof(b2Vec2) * numVerts );
 			
@@ -161,12 +165,11 @@
 			
 			for(int i = 0 ; i < numVerts ; i++ )	// backwards due to different winding between collada and box2d
 			{
-				verts[numVerts - 1 - i].x = [[vertsArray objectAtIndex:i * 2] floatValue] + xOffset;
-				verts[numVerts - 1 - i].y = [[vertsArray objectAtIndex:(i * 2) + 1] floatValue] + yOffset;
+				verts[numVerts - 1 - i].x = [[vertsArray objectAtIndex:i * 3] floatValue] + xOffset;
+				verts[numVerts - 1 - i].y = [[vertsArray objectAtIndex:(i * 3) + 1] floatValue] + yOffset;
 			}
 
 			shape.Set(verts, numVerts);
-			
 			
 			fixtureDef.shape = &shape;
 			_b2Body->CreateFixture( &fixtureDef );

@@ -99,12 +99,12 @@ enum FCVertexDescriptorPropertyType {
 @property(nonatomic, readonly) unsigned int tex3Offset;
 
 -(id)init;
-+(id)vertexDescriptor;
++(id)vertexDescriptorForShader:(NSString*)shader;
 
--(id)initWithVertexFormatString:(NSString*)desc andUniformDict:(NSDictionary*)uniformDict;
-+(id)vertexDescriptorWithVertexFormatString:(NSString*)desc andUniformDict:(NSDictionary*)uniformDict;
+//-(id)initWithVertexFormatString:(NSString*)desc andUniformDict:(NSDictionary*)uniformDict;
+//+(id)vertexDescriptorWithVertexFormatString:(NSString*)desc andUniformDict:(NSDictionary*)uniformDict;
 
--(BOOL)canSatisfy:(FCVertexDescriptor*)desc;
+//-(BOOL)canSatisfy:(FCVertexDescriptor*)desc;
 
 @end
 
