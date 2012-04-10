@@ -32,6 +32,7 @@ NSString* kFCKeyNull = @"null";
 
 // Physics
 
+NSString* kFCKeyBody = @"body";
 NSString* kFCKeyMaterial = @"material";
 NSString* kFCKeyPhysics = @"physics";
 NSString* kFCKeyDensity = @"density";
@@ -71,6 +72,7 @@ NSString* kFCKeyDebugShape = @"debugshape";
 
 NSString* kFCKeyNumVertices = @"numvertices";
 NSString* kFCKeyNumTriangles = @"numtriangles";
+NSString* kFCKeyNumEdges = @"numedges";
 NSString* kFCKeyType = @"type";
 
 NSString* kFCKeyX = @"x";
@@ -110,6 +112,10 @@ NSString* kFCKeyCount = @"count";
 // Graphics
 
 NSString* kFCKeyShaderWireframe = @"Wireframe";
+NSString* kFCKeyShaderDebug = @"Debug";
+NSString* kFCKeyShaderTest = @"Test";
+
+NSString* kFCKeyDiffuseColor = @"diffusecolor";
 
 // File types
 
@@ -121,6 +127,7 @@ NSString* kFCKeyVertexNormal = @"vertexnormal";
 NSString* kFCKeyVertexTexCoord0 = @"vertextexcoord0";
 
 NSString* kFCKeyVertexBuffer = @"vertexbuffer";
+NSString* kFCKeyIndexBuffer = @"indexbuffer";
 NSString* kFCKeyNormalArray = @"normalarray";
 NSString* kFCKeyVertexArray = @"vertexarray";
 NSString* kFCKeyTexcoord0Array = @"texcoord0array";
@@ -130,6 +137,7 @@ NSString* kFCKeyTexcoord3Array = @"texcoord3array";
 NSString* kFCKeyIndexArray = @"indexarray";
 NSString* kFCKeyMaterialDiffuseColor = @"materialdiffusecolor";
 NSString* kFCKeyMaterialDiffuseTexture = @"materialdiffusetexture";
+NSString* kFCKeyShader = @"shader";
 NSString* kFCKeyShaderProgramName = @"shaderprogramname";
 NSString* kFCKeyStride = @"stride";
 

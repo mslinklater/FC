@@ -565,18 +565,25 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 
 -(void)setProjectionMatrix
 {
-	FCShaderManager* shaderManager = [FCShaderManager instance];
-	FCShaderProgram* program = [shaderManager program:kFCKeyShaderWireframe];	// needs to be current shader or all active shaders
-	FCShaderUniform* projectionUniform = [program getUniform:@"projection"];
-	
 	// build matrix
 	
 	FC::Matrix4f mat = FC::Matrix4f::Frustum( -self.fov, self.fov, -self.fov * _aspectRatio, self.fov * _aspectRatio, self.nearClip, self.farClip );	
 	FC::Matrix4f trans = FC::Matrix4f::Translate(self.frustumTranslation.x, self.frustumTranslation.y, self.frustumTranslation.z);
-
+	
 	mat = trans * mat;
 	
-	[program setUniformValue:projectionUniform to:&mat size:sizeof(FC::Matrix4f)];
+	FCShaderManager* shaderManager = [FCShaderManager instance];
+	
+	NSArray* programs = [shaderManager allShaders];
+
+	for( FCShaderProgram* program in programs )
+	{
+		FCShaderUniform* projectionUniform = [program getUniform:@"projection"];
+				
+		[program setUniformValue:projectionUniform to:&mat size:sizeof(FC::Matrix4f)];
+	}
+	
+//	FCShaderProgram* program = [shaderManager program:kFCKeyShaderDebug];	// needs to be current shader or all active shaders
 }
 
 -(void)clear

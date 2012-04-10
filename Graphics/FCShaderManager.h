@@ -40,6 +40,7 @@
 
 -(FCShaderProgram*)addProgram:(NSString*)name as:(NSString*)shaderName;
 -(FCShaderProgram*)program:(NSString*)name;
+-(NSArray*)allShaders;
 @end
 
 #endif // defined(FC_GRAPHICS)

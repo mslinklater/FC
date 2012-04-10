@@ -90,16 +90,17 @@ enum FCVertexDescriptorPropertyType {
 @property(nonatomic) FCVertexDescriptorPropertyType tex2Type;
 @property(nonatomic) FCVertexDescriptorPropertyType tex3Type;
 @property(nonatomic) unsigned int stride;
-@property(nonatomic, readonly) unsigned int positionOffset;
-@property(nonatomic, readonly) unsigned int diffuseColorOffset;
-@property(nonatomic, readonly) unsigned int normalOffset;
-@property(nonatomic, readonly) unsigned int tex0Offset;
-@property(nonatomic, readonly) unsigned int tex1Offset;
-@property(nonatomic, readonly) unsigned int tex2Offset;
-@property(nonatomic, readonly) unsigned int tex3Offset;
+@property(nonatomic) unsigned int positionOffset;
+@property(nonatomic) unsigned int diffuseColorOffset;
+@property(nonatomic) unsigned int normalOffset;
+@property(nonatomic) unsigned int tex0Offset;
+@property(nonatomic) unsigned int tex1Offset;
+@property(nonatomic) unsigned int tex2Offset;
+@property(nonatomic) unsigned int tex3Offset;
 
 -(id)init;
 +(id)vertexDescriptorForShader:(NSString*)shader;
++(BOOL)doesShaderExist:(NSString*)shader;
 
 //-(id)initWithVertexFormatString:(NSString*)desc andUniformDict:(NSDictionary*)uniformDict;
 //+(id)vertexDescriptorWithVertexFormatString:(NSString*)desc andUniformDict:(NSDictionary*)uniformDict;

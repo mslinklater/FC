@@ -199,7 +199,7 @@ static int lua_ApplyImpulse( lua_State* _state )
 {
 	// get body
 	
-	NSString* bodyId = [actorDict valueForKey:@"body"];	
+	NSString* bodyId = [actorDict valueForKey:kFCKeyBody];	
 	NSArray* bodies = [res.xmlData arrayForKeyPath:@"fcr.physics.bodies.body"];
 	
 	// Find the body associated with this actor
@@ -207,7 +207,7 @@ static int lua_ApplyImpulse( lua_State* _state )
 	NSDictionary* bodyDict = nil;
 	for(NSDictionary* body in bodies)
 	{
-		NSString* thisId = [body valueForKey:@"id"];
+		NSString* thisId = [body valueForKey:kFCKeyId];
 		
 		if ([thisId isEqualToString:bodyId]) 
 		{
@@ -218,18 +218,21 @@ static int lua_ApplyImpulse( lua_State* _state )
 	
 	// get model
 
-	NSString* modelId = [actorDict valueForKey:@"model"];
-	NSArray* models = [res.xmlData arrayForKeyPath:@"fcr.models.model"];
-
 	NSDictionary* modelDict = nil;
-	for(NSDictionary* model in models)
+	NSString* modelId = [actorDict valueForKey:kFCKeyModel];
+	if (modelId) 
 	{
-		NSString* thisId = [model valueForKey:@"modelId"];
+		NSArray* models = [res.xmlData arrayForKeyPath:@"fcr.models.model"];
 		
-		if ([thisId isEqualToString:modelId]) 
+		for(NSDictionary* model in models)
 		{
-			modelDict = model;
-			break;
+			NSString* thisId = [model valueForKey:kFCKeyId];
+			
+			if ([thisId isEqualToString:modelId]) 
+			{
+				modelDict = model;
+				break;
+			}
 		}
 	}
 
@@ -244,7 +247,7 @@ static int lua_ApplyImpulse( lua_State* _state )
 
 	// some more checks etc
 
-	NSString* actorId = [actorDict valueForKey:@"id"];
+	NSString* actorId = [actorDict valueForKey:kFCKeyId];
 
 	if (name) // id is optional
 	{

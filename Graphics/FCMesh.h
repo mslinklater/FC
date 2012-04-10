@@ -30,33 +30,41 @@
 
 @interface FCMesh : NSObject 
 {	
-	unsigned int		_numVertices;
-	unsigned int		_numTriangles;
-	FCVertexDescriptor* _vertexDescriptor;
-	FCShaderProgram*	_shaderProgram;
-	void*				_pVertexBuffer;	
-	FC::Vector3us*		_pIndexBuffer;
-	FC::Color4f			_colorUniform;
-	GLuint				_vertexBufferHandle;
-	GLuint				_indexBufferHandle;	
-	BOOL				_fixedUp;
+	unsigned int			_numVertices;
+	unsigned int			_numTriangles;
+	unsigned int			_numEdges;
+	FCVertexDescriptor*		_vertexDescriptor;
+	FCShaderProgram*		_shaderProgram;
+	unsigned int			_sizeVertexBuffer;
+	void*					_pVertexBuffer;	
+	unsigned int			_sizeIndexBuffer;
+	unsigned short*			_pIndexBuffer;
+	FC::Color4f				_colorUniform;		// deprecate
+	GLuint					_vertexBufferHandle;
+	GLuint					_indexBufferHandle;	
+	BOOL					_fixedUp;
+	GLenum					_primitiveType;
 }
 @property(nonatomic) unsigned int numVertices;
 @property(nonatomic) unsigned int numTriangles;
+@property(nonatomic) unsigned int numEdges;
 @property(nonatomic, strong, readonly) FCVertexDescriptor* vertexDescriptor;
+@property(nonatomic) unsigned int sizeVertexBuffer;
 @property(nonatomic, readonly) void* pVertexBuffer;
-@property(nonatomic, readonly) FC::Vector3us* pIndexBuffer;
+@property(nonatomic) unsigned int sizeIndexBuffer;
+@property(nonatomic, readonly) unsigned short* pIndexBuffer;
 @property(nonatomic) FC::Color4f colorUniform;
 @property(nonatomic, strong) FCShaderProgram* shaderProgram;
 @property(nonatomic) GLuint vertexBufferHandle;
 @property(nonatomic) GLuint indexBufferHandle;
 @property(nonatomic, readonly) BOOL fixedUp;
+@property(nonatomic, readonly) GLenum primitiveType;
 
--(id)initWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor shaderName:(NSString*)shaderName;
-+(id)fcMeshWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor shaderName:(NSString*)shaderName;
+-(id)initWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor shaderName:(NSString*)shaderName primitiveType:(GLenum)primitiveType;
+//+(id)fcMeshWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor shaderName:(NSString*)shaderName;
 
 -(void)render;
--(FC::Vector3us*)pIndexBufferAtIndex:(unsigned short)index;
+-(unsigned short*)pIndexBufferAtIndex:(unsigned short)index;
 @end
 
 #endif // defined(FC_GRAPHICS)

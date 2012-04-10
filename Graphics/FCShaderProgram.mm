@@ -29,6 +29,7 @@
 #import "FCShaderUniform.h"
 #import "FCShaderAttribute.h"
 #import "FCVertexDescriptor.h"
+#import "FCMesh.h"
 
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/glext.h>
@@ -43,6 +44,7 @@
 @synthesize vertexShader = _vertexShader;
 @synthesize fragmentShader = _fragmentShader;
 @synthesize uniforms = _uniforms;
+@synthesize perMeshUniforms = _perMeshUniforms;
 @synthesize attributes = _attributes;
 @synthesize requiredVertexDescriptor = _requiredVertexDescriptor;
 
@@ -100,6 +102,7 @@
 -(void)processUniforms
 {
 	NSMutableDictionary* uniforms = [NSMutableDictionary dictionary];
+	NSMutableDictionary* perMeshUniforms = [NSMutableDictionary dictionary];
 	
 	GLint numUniforms;
 	glGetProgramiv(self.glHandle, GL_ACTIVE_UNIFORMS, &numUniforms);
@@ -126,12 +129,19 @@
 		thisUniform.num = num;
 		thisUniform.type = type;			
 		
-		[uniforms setValue:thisUniform forKey:[NSString stringWithFormat:@"%s", uniformNameBuffer]];			
+		NSString* uniformNameString = [NSString stringWithFormat:@"%s", uniformNameBuffer];
+		
+		[uniforms setValue:thisUniform forKey:uniformNameString];
+		
+		if (![uniformNameString isEqualToString:@"projection"] && ![uniformNameString isEqualToString:@"modelview"]) {
+			[perMeshUniforms setValue:thisUniform forKey:uniformNameString];
+		}
 	}
 	
 	free(uniformNameBuffer);
 	
 	_uniforms = [NSDictionary dictionaryWithDictionary:uniforms];	
+	_perMeshUniforms = [NSDictionary dictionaryWithDictionary:perMeshUniforms];
 }
 
 -(void)processAttributes
@@ -179,7 +189,7 @@
 {
 	GLuint location = glGetAttribLocation(self.glHandle, [name UTF8String]);
 	
-	FC_ASSERT(location != 0xffffffff);
+//	FC_ASSERT(location != 0xffffffff);
 	
 	return location;
 }
@@ -247,6 +257,29 @@
 -(void)use
 {
 	glUseProgram(self.glHandle);
+}
+
+-(void)bindUniformsWithMesh:(FCMesh*)mesh vertexDescriptor:(FCVertexDescriptor *)vertexDescriptor
+{
+	FCShaderAttribute* attribute = [_attributes valueForKey:@"position"];
+	GLuint positionSlot = attribute.glLocation;
+	glVertexAttribPointer(positionSlot, 3, GL_FLOAT, GL_FALSE, vertexDescriptor.stride, 0);
+	glEnableVertexAttribArray(positionSlot);
+	
+	// iterate over uniforms and pluck the appropriate mesh value
+	NSArray* keys = [self.perMeshUniforms allKeys];
+	
+	for( NSString* key in keys )
+	{
+		FCShaderUniform* uniform = [self.perMeshUniforms valueForKey:key];
+		
+		FC::Color4f diffuseColor = mesh.colorUniform;
+		[self setUniformValue:uniform to:&diffuseColor size:sizeof(diffuseColor)];
+		
+		//	[self.shaderProgram setUniformValue:diffuseColorUniform to:&_colorUniform size:sizeof(FC::Color4f)];
+
+	}
+	
 }
 
 -(void)validate

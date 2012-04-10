@@ -90,9 +90,23 @@ static NSMutableDictionary* s_dictionary;
 	s_dictionary = [[NSMutableDictionary alloc] init];
 	
 	FCVertexDescriptor* wireframe = [[FCVertexDescriptor alloc] init];
-	wireframe.positionType = kFCVertexDescriptorPropertyTypeAttributeVec3;
+	wireframe.positionType = kFCVertexDescriptorPropertyTypeAttributeVec4;
+	wireframe.positionOffset = 0;
 	wireframe.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec4;
 	[s_dictionary setValue:wireframe forKey:kFCKeyShaderWireframe];
+	
+	FCVertexDescriptor* debug = [[FCVertexDescriptor alloc] init];
+	debug.positionType = kFCVertexDescriptorPropertyTypeAttributeVec4;
+	debug.positionOffset = 0;
+	debug.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec4;
+	[s_dictionary setValue:debug forKey:kFCKeyShaderDebug];
+
+	FCVertexDescriptor* test = [[FCVertexDescriptor alloc] init];
+	test.positionType = kFCVertexDescriptorPropertyTypeAttributeVec4;
+	test.positionOffset = 0;
+	test.diffuseColorType = kFCVertexDescriptorPropertyTypeAttributeVec4;
+	test.diffuseColorOffset = 16;
+	[s_dictionary setValue:test forKey:kFCKeyShaderTest];
 }
 
 -(id)init
@@ -112,7 +126,13 @@ static NSMutableDictionary* s_dictionary;
 
 +(id)vertexDescriptorForShader:(NSString *)shader
 {
+	FC_ASSERT([s_dictionary valueForKey:shader]);
 	return [s_dictionary valueForKey:shader];
+}
+
++(BOOL)doesShaderExist:(NSString*)shader
+{
+	return [s_dictionary valueForKey:shader] != nil;
 }
 
 //-(id)initWithVertexFormatString:(NSString *)desc andUniformDict:(NSDictionary *)uniformDict
@@ -281,7 +301,7 @@ static NSMutableDictionary* s_dictionary;
 	NSMutableString* retString = [NSMutableString string];
 	[retString appendString:@"--- FCVertexDescriptor"];
 	[retString appendFormat:@"Name: %@", self.name];
-	[retString appendFormat:@"Stride: %@", self.stride];
+	[retString appendFormat:@"Stride: %d", self.stride];
 	
 	if (self.positionType != kFCVertexDescriptorPropertyTypeAbsent) {
 		[retString appendFormat:@"Position: %@, %d", s_nameForProperty[ self.positionType ], self.positionOffset ];

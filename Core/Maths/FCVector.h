@@ -131,6 +131,21 @@ public:
 	int	y;
 };
 
+class Vector2us {
+public:
+	Vector2us(){}
+	Vector2us( unsigned short xIn, unsigned short yIn ) : x(xIn), y(yIn) {}
+	Vector2us( const Vector2us& vec ) : x(vec.x), y(vec.y) {}
+	
+	Vector2us operator+( Vector2us &v ){ return Vector2us( x + v.x, y + v.y); }
+	Vector2us operator-( Vector2us &v ){ return Vector2us( x - v.x, y - v.y); }
+	
+	void Zero( void ){ x = y = 0; }
+	
+	unsigned short	x;
+	unsigned short	y;
+};
+
 class Vector3s {
 	public:
 		Vector3s(){}

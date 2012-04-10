@@ -94,8 +94,8 @@
 		
 		// now create a model
 #if defined (FC_GRAPHICS)
-//		if (modelDict) 
-		if ( 0 )
+		if (modelDict) 
+//		if ( 0 )
 		{
 			_model = [[FCModel alloc] initWithModel:modelDict resource:res];
 		}

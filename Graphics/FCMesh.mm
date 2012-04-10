@@ -30,6 +30,7 @@
 #import "FCShaderManager.h"
 #import "FCRenderer.h"
 #import "FCVertexDescriptor.h"
+#import "FCShaderAttribute.h"
 
 @interface FCMesh() 
 {
@@ -41,6 +42,7 @@
 @implementation FCMesh
 @synthesize numVertices = _numVertices;
 @synthesize numTriangles = _numTriangles;
+@synthesize numEdges = _numEdges;
 @synthesize vertexDescriptor = _vertexDescriptor;
 @synthesize pVertexBuffer = _pVertexBuffer;
 @synthesize pIndexBuffer = _pIndexBuffer;
@@ -49,10 +51,13 @@
 @synthesize shaderProgram = _shaderProgram;
 @synthesize vertexBufferHandle = _vertexBufferHandle;
 @synthesize indexBufferHandle = _indexBufferHandle;
+@synthesize primitiveType = _primitiveType;
 
 #pragma mark - Object lifetime
 
--(id)initWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor shaderName:(NSString*)shaderName
+-(id)initWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor 
+				   shaderName:(NSString*)shaderName
+				primitiveType:(GLenum)primitiveType
 {
 	self = [super init];
 	if (self) {
@@ -63,13 +68,9 @@
 		_pVertexBuffer = 0;
 		_pIndexBuffer = 0;
 		_shaderProgram = [[FCShaderManager instance] program:shaderName];
+		_primitiveType = primitiveType;
 	}
 	return self;
-}
-
-+(id)fcMeshWithVertexDescriptor:(FCVertexDescriptor *)vertexDescriptor shaderName:(NSString *)shaderName
-{
-	return [[FCMesh alloc] initWithVertexDescriptor:vertexDescriptor shaderName:shaderName];
 }
 
 -(void)setNumVertices:(unsigned int)numVertices
@@ -77,15 +78,32 @@
 	FC_ASSERT1(self.numVertices == 0, @"numVertices already set - cannot do twice");
 	FC_ASSERT1(numVertices < 65535, @"Cannot cope with meshes with more than 65535 verts yet");
 	_numVertices = numVertices;
-	_pVertexBuffer = malloc(self.numVertices * self.vertexDescriptor.stride);
+	_sizeVertexBuffer = self.numVertices * self.vertexDescriptor.stride;
+	_pVertexBuffer = malloc(_sizeVertexBuffer);
 }
 
 -(void)setNumTriangles:(unsigned int)numTriangles
 {
-	FC_ASSERT1(self.numTriangles == 0, @"numTriangles already set - cannot do twice");
-	_numTriangles = numTriangles;
-	_pIndexBuffer = (FC::Vector3us*)malloc(self.numTriangles * sizeof(FC::Vector3us));
+	if(_primitiveType == GL_TRIANGLES)
+	{
+		FC_ASSERT1(self.numTriangles == 0, @"numTriangles already set - cannot do twice");
+		_numTriangles = numTriangles;
+		_sizeIndexBuffer = self.numTriangles * 3 * sizeof(unsigned short);
+		_pIndexBuffer = (unsigned short*)malloc(_sizeIndexBuffer);		
+	}
 }
+
+-(void)setNumEdges:(unsigned int)numEdges
+{
+	if(_primitiveType == GL_LINES)
+	{
+		FC_ASSERT1(self.numEdges == 0, @"numEdges already set - cannot do twice");
+		_numEdges = numEdges;
+		_sizeIndexBuffer = self.numEdges * 2 * sizeof(unsigned short);
+		_pIndexBuffer = (unsigned short*)malloc(_sizeIndexBuffer);		
+	}
+}
+
 
 -(void)dealloc
 {
@@ -97,7 +115,7 @@
 	
 }
 
--(FC::Vector3us*)pIndexBufferAtIndex:(unsigned short)index
+-(unsigned short*)pIndexBufferAtIndex:(unsigned short)index
 {
 	return self.pIndexBuffer + index;
 }
@@ -110,25 +128,36 @@
 		[self fixupVBOs];
 	}
 
-	GLuint positionSlot = [self.shaderProgram getAttribLocation:@"position"];
-	
-	GLsizei stride = self.vertexDescriptor.stride;
-
 	[self.shaderProgram use];
-	
-	FCShaderUniform* diffuseColorUniform = [self.shaderProgram getUniform:@"diffusecolor"];
-	[self.shaderProgram setUniformValue:diffuseColorUniform to:&_colorUniform size:sizeof(FC::Color4f)];
 	
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.indexBufferHandle);
 	glBindBuffer(GL_ARRAY_BUFFER, self.vertexBufferHandle);
-	glVertexAttribPointer(positionSlot, 3, GL_FLOAT, GL_FALSE, stride, 0);
-	glEnableVertexAttribArray(positionSlot);
+	
+	[_shaderProgram bindUniformsWithMesh:self vertexDescriptor:self.vertexDescriptor];
+		
+	FCShaderAttribute* attribute = [self.shaderProgram.attributes valueForKey:@"diffusecolor"];	
+	if( attribute )
+	{
+		GLuint colorSlot = attribute.glLocation;	
+		glVertexAttribPointer(colorSlot, 4, GL_FLOAT, GL_FALSE, self.vertexDescriptor.stride, (void*)self.vertexDescriptor.diffuseColorOffset);
+		glEnableVertexAttribArray(colorSlot);		
+	}
 	
 #if defined (DEBUG)
 	[self.shaderProgram validate];
 #endif
 
-	glDrawElements(GL_TRIANGLES, self.numTriangles * 3, GL_UNSIGNED_SHORT, 0);
+	switch (_primitiveType) {
+		case GL_TRIANGLES:
+			glDrawElements(GL_TRIANGLES, self.numTriangles * 3, GL_UNSIGNED_SHORT, 0);
+			break;
+		case GL_LINES:
+			glDrawElements(GL_LINES, self.numEdges * 2, GL_UNSIGNED_SHORT, 0);
+			break;			
+		default:
+			FC_HALT;
+			break;
+	}
 }
 
 -(void)fixupVBOs
@@ -141,14 +170,14 @@
 	GLCHECK;
 	glBindBuffer(GL_ARRAY_BUFFER, self.vertexBufferHandle);
 	GLCHECK;
-	glBufferData(GL_ARRAY_BUFFER, self.numVertices * self.vertexDescriptor.stride, self.pVertexBuffer, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, _sizeVertexBuffer, self.pVertexBuffer, GL_STATIC_DRAW);
 	GLCHECK;
 
 	glGenBuffers(1, &_indexBufferHandle);
 	GLCHECK;
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.indexBufferHandle);
 	GLCHECK;
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, self.numTriangles * sizeof(FC::Vector3s), self.pIndexBuffer, GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _sizeIndexBuffer, self.pIndexBuffer, GL_STATIC_DRAW);
 	GLCHECK;
 
 	// release working memory

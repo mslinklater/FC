@@ -128,6 +128,11 @@
 	return [self.programs valueForKey:name];
 }
 
+-(NSArray*)allShaders
+{
+	return [_programs allValues];
+}
+
 @end
 
 #endif // defined(FC_GRAPHICS)
