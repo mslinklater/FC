@@ -1,5 +1,5 @@
 attribute vec4 position;
-uniform vec4 diffusecolor;
+attribute vec4 diffusecolor;
 uniform mat4 projection;
 uniform mat4 modelview;
 

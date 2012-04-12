@@ -101,11 +101,20 @@ static NSMutableDictionary* s_dictionary;
 	debug.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec4;
 	[s_dictionary setValue:debug forKey:kFCKeyShaderDebug];
 
+	FCVertexDescriptor* flatunlit = [[FCVertexDescriptor alloc] init];
+	flatunlit.positionType = kFCVertexDescriptorPropertyTypeAttributeVec4;
+	flatunlit.positionOffset = 0;
+	flatunlit.diffuseColorType = kFCVertexDescriptorPropertyTypeAttributeVec4;
+	flatunlit.diffuseColorOffset = 16;
+	[s_dictionary setValue:flatunlit forKey:kFCKeyShaderFlatUnlit];
+
 	FCVertexDescriptor* test = [[FCVertexDescriptor alloc] init];
 	test.positionType = kFCVertexDescriptorPropertyTypeAttributeVec4;
 	test.positionOffset = 0;
+	test.normalType = kFCVertexDescriptorPropertyTypeAttributeVec3;
+	test.normalOffset = 16;
 	test.diffuseColorType = kFCVertexDescriptorPropertyTypeAttributeVec4;
-	test.diffuseColorOffset = 16;
+	test.diffuseColorOffset = 28;
 	[s_dictionary setValue:test forKey:kFCKeyShaderTest];
 }
 

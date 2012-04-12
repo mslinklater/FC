@@ -134,15 +134,27 @@
 	glBindBuffer(GL_ARRAY_BUFFER, self.vertexBufferHandle);
 	
 	[_shaderProgram bindUniformsWithMesh:self vertexDescriptor:self.vertexDescriptor];
-		
-	FCShaderAttribute* attribute = [self.shaderProgram.attributes valueForKey:@"diffusecolor"];	
-	if( attribute )
+
+	// Diffuse color
+	
+	FCShaderAttribute* diffuseColorAttribute = [self.shaderProgram.attributes valueForKey:@"diffusecolor"];	
+	if( diffuseColorAttribute )
 	{
-		GLuint colorSlot = attribute.glLocation;	
+		GLuint colorSlot = diffuseColorAttribute.glLocation;	
 		glVertexAttribPointer(colorSlot, 4, GL_FLOAT, GL_FALSE, self.vertexDescriptor.stride, (void*)self.vertexDescriptor.diffuseColorOffset);
 		glEnableVertexAttribArray(colorSlot);		
 	}
+
+	// Normal
 	
+	FCShaderAttribute* normalAttribute = [self.shaderProgram.attributes valueForKey:@"normal"];	
+	if( normalAttribute )
+	{
+		GLuint normalSlot = normalAttribute.glLocation;	
+		glVertexAttribPointer(normalSlot, 3, GL_FLOAT, GL_FALSE, self.vertexDescriptor.stride, (void*)self.vertexDescriptor.normalOffset);
+		glEnableVertexAttribArray(normalSlot);		
+	}
+
 #if defined (DEBUG)
 	[self.shaderProgram validate];
 #endif

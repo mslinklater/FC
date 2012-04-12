@@ -44,6 +44,15 @@ namespace FC {
 			return mat;
 		}
 		
+		Matrix4f Transpose( void ) {
+			Matrix4f ret;
+			ret.e[0] = e[0]; ret.e[1] = e[4]; ret.e[2] = e[8]; ret.e[3] = e[12];
+			ret.e[4] = e[1]; ret.e[5] = e[5]; ret.e[6] = e[9]; ret.e[7] = e[13];
+			ret.e[8] = e[2]; ret.e[9] = e[6]; ret.e[10] = e[10]; ret.e[11] = e[14];
+			ret.e[12] = e[3]; ret.e[13] = e[7]; ret.e[14] = e[11]; ret.e[15] = e[15];
+			return ret;
+		}
+		
 		static Matrix4f Frustum( float left, float right, float bottom, float top, float near, float far ) {
 			FC_ASSERT(right != left);
 			FC_ASSERT(top != bottom);
@@ -120,22 +129,17 @@ namespace FC {
 			
 			return mat;
 		}
-		
-//		Vector2f operator+( Vector2f &v ){ return Vector2f( x + v.x, y + v.y); }
-//		Vector2f operator-( Vector2f &v ){ return Vector2f( x - v.x, y - v.y); }
-//		Vector2f operator/( float mag ){ return Vector2f( x / mag, y / mag ); }
-//		
-//		void Zero( void ){ x = y = 0.0f; }
-//		void RotateDeg( float degrees )
-//		{  
-//			float rads = degrees * kDegToRad;		
-//			float _x = x * cosf(rads) - y * sinf(rads);
-//			float _y = x * sinf(rads) + y * cosf(rads);
-//			x = _x;
-//			y = _y;
-//		}
-		
+				
 		float	e[16];
 	};
+	 
+	static Vector3f operator *( const Vector3f& vec, const Matrix4f& mat )
+	{
+		Vector3f ret;
+		ret.x = vec.x * mat.e[0] + vec.y * mat.e[1] + vec.z * mat.e[2];
+		ret.y = vec.x * mat.e[4] + vec.y * mat.e[5] + vec.z * mat.e[6];
+		ret.z = vec.x * mat.e[8] + vec.y * mat.e[9] + vec.z * mat.e[10];
+		return ret;
+	}
 	
 } // namespace FC

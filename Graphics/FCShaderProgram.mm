@@ -181,7 +181,7 @@
 -(FCShaderUniform*)getUniform:(NSString *)name
 {
 	FCShaderUniform* uniform = [self.uniforms valueForKey:name];
-	FC_ASSERT(uniform);
+//	FC_ASSERT(uniform);
 	return uniform;
 }
 
@@ -273,8 +273,22 @@
 	{
 		FCShaderUniform* uniform = [self.perMeshUniforms valueForKey:key];
 		
-		FC::Color4f diffuseColor = mesh.colorUniform;
-		[self setUniformValue:uniform to:&diffuseColor size:sizeof(diffuseColor)];
+		if( [key isEqualToString:@"diffusecolor"] )
+		{
+			FC::Color4f diffuseColor = mesh.colorUniform;
+			[self setUniformValue:uniform to:&diffuseColor size:sizeof(diffuseColor)];			
+		}
+		if( [key isEqualToString:@"light_color"] )
+		{
+			FC::Color4f lightColor( 1.0f, 1.0f, 1.0f, 1.0f );
+			[self setUniformValue:uniform to:&lightColor size:sizeof(lightColor)];			
+		}
+//		if( [key isEqualToString:@"light_direction"] )
+//		{
+//			FC::Vector3f lightDirection( 0.707f, 0.707f, 0.707f );
+//			
+//			[self setUniformValue:uniform to:&lightDirection size:sizeof(lightDirection)];			
+//		}
 		
 		//	[self.shaderProgram setUniformValue:diffuseColorUniform to:&_colorUniform size:sizeof(FC::Color4f)];
 

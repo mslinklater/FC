@@ -149,7 +149,7 @@ static int kNumCircleSegments = 36;
 		{
 			NSString* shaderName = [mesh valueForKey:kFCKeyShader];
 			
-			FC_ASSERT([FCVertexDescriptor doesShaderExist:shaderName]);
+			FC_ASSERT1([FCVertexDescriptor doesShaderExist:shaderName], @"Unknown shader");
 
 			NSString* indexBufferId = [mesh valueForKey:kFCKeyIndexBuffer];
 			NSString* vertexBufferId = [mesh valueForKey:kFCKeyVertexBuffer];
@@ -215,6 +215,11 @@ static int kNumCircleSegments = 36;
 	FC::Matrix4f mat = FC::Matrix4f::Identity();
 	FC::Matrix4f trans = FC::Matrix4f::Translate(self.position.x, self.position.y, 0.0f);
 	FC::Matrix4f rot = FC::Matrix4f::Rotate(self.rotation, FC::Vector3f(0.0f, 0.0f, -1.0f) );
+//	FC::Matrix4f invRot = rot.Transpose();
+
+	FC::Vector3f lightDirection( 0.707f, 0.707f, 0.707f );
+
+	FC::Vector3f invLight = lightDirection * rot;
 	
 	mat = rot * trans;
 		
@@ -222,6 +227,18 @@ static int kNumCircleSegments = 36;
 	{
 		FCShaderUniform* uniform = [mesh.shaderProgram getUniform:@"modelview"];		
 		[mesh.shaderProgram setUniformValue:uniform to:&mat size:sizeof(mat)];
+
+		uniform = [mesh.shaderProgram getUniform:@"light_direction"];
+		if (uniform) {
+			[mesh.shaderProgram setUniformValue:uniform to:&invLight size:sizeof(invLight)];
+		}
+		
+		//		if( [key isEqualToString:@"light_direction"] )
+		//		{
+		//			FC::Vector3f lightDirection( 0.707f, 0.707f, 0.707f );
+		//			
+		//			[self setUniformValue:uniform to:&lightDirection size:sizeof(lightDirection)];			
+		//		}
 
 		[mesh render];
 	}

@@ -113,6 +113,7 @@ NSString* kFCKeyCount = @"count";
 
 NSString* kFCKeyShaderWireframe = @"Wireframe";
 NSString* kFCKeyShaderDebug = @"Debug";
+NSString* kFCKeyShaderFlatUnlit = @"Flat unlit";
 NSString* kFCKeyShaderTest = @"Test";
 
 NSString* kFCKeyDiffuseColor = @"diffusecolor";
