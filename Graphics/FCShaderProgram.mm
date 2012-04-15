@@ -46,7 +46,6 @@
 @synthesize uniforms = _uniforms;
 @synthesize perMeshUniforms = _perMeshUniforms;
 @synthesize attributes = _attributes;
-@synthesize requiredVertexDescriptor = _requiredVertexDescriptor;
 
 -(id)initWithVertex:(FCShader*)vertexShader andFragment:(FCShader*)fragmentShader
 {
@@ -181,16 +180,12 @@
 -(FCShaderUniform*)getUniform:(NSString *)name
 {
 	FCShaderUniform* uniform = [self.uniforms valueForKey:name];
-//	FC_ASSERT(uniform);
 	return uniform;
 }
 
 -(GLuint)getAttribLocation:(NSString *)name
 {
 	GLuint location = glGetAttribLocation(self.glHandle, [name UTF8String]);
-	
-//	FC_ASSERT(location != 0xffffffff);
-	
 	return location;
 }
 
@@ -261,11 +256,6 @@
 
 -(void)bindUniformsWithMesh:(FCMesh*)mesh vertexDescriptor:(FCVertexDescriptor *)vertexDescriptor
 {
-	FCShaderAttribute* attribute = [_attributes valueForKey:@"position"];
-	GLuint positionSlot = attribute.glLocation;
-	glVertexAttribPointer(positionSlot, 3, GL_FLOAT, GL_FALSE, vertexDescriptor.stride, 0);
-	glEnableVertexAttribArray(positionSlot);
-	
 	// iterate over uniforms and pluck the appropriate mesh value
 	NSArray* keys = [self.perMeshUniforms allKeys];
 	
@@ -275,7 +265,7 @@
 		
 		if( [key isEqualToString:@"diffusecolor"] )
 		{
-			FC::Color4f diffuseColor = mesh.colorUniform;
+			FC::Color4f diffuseColor = mesh.diffuseColor;
 			[self setUniformValue:uniform to:&diffuseColor size:sizeof(diffuseColor)];			
 		}
 		if( [key isEqualToString:@"light_color"] )
@@ -283,17 +273,50 @@
 			FC::Color4f lightColor( 1.0f, 1.0f, 1.0f, 1.0f );
 			[self setUniformValue:uniform to:&lightColor size:sizeof(lightColor)];			
 		}
-//		if( [key isEqualToString:@"light_direction"] )
-//		{
-//			FC::Vector3f lightDirection( 0.707f, 0.707f, 0.707f );
-//			
-//			[self setUniformValue:uniform to:&lightDirection size:sizeof(lightDirection)];			
-//		}
-		
-		//	[self.shaderProgram setUniformValue:diffuseColorUniform to:&_colorUniform size:sizeof(FC::Color4f)];
+		if( [key isEqualToString:@"specular_color"] )
+		{
+			FC::Color4f color = mesh.specularColor;
+			[self setUniformValue:uniform to:&color size:sizeof(color)];
+		}
+		if( [key isEqualToString:@"specular_hardness"] )
+		{
+			float hardness = 8.0f;
+			[self setUniformValue:uniform to:&hardness size:sizeof(hardness)];			
+		}
+	}
+}
 
+-(void)bindAttributesWithVertexDescriptor:(FCVertexDescriptor *)vertexDescriptor
+{
+	// Postion
+	
+	FCShaderAttribute* positionAttribute = [_attributes valueForKey:@"position"];	
+	if( positionAttribute )
+	{
+		GLuint slot = positionAttribute.glLocation;	
+		glVertexAttribPointer(slot, 3, GL_FLOAT, GL_FALSE, vertexDescriptor.stride, (void*)vertexDescriptor.positionOffset);
+		glEnableVertexAttribArray(slot);		
 	}
 	
+	// Diffuse color
+	
+	FCShaderAttribute* diffuseColorAttribute = [_attributes valueForKey:@"diffusecolor"];	
+	if( diffuseColorAttribute )
+	{
+		GLuint colorSlot = diffuseColorAttribute.glLocation;	
+		glVertexAttribPointer(colorSlot, 3, GL_FLOAT, GL_FALSE, vertexDescriptor.stride, (void*)vertexDescriptor.diffuseColorOffset);
+		glEnableVertexAttribArray(colorSlot);		
+	}
+	
+	// Normal
+	
+	FCShaderAttribute* normalAttribute = [_attributes valueForKey:@"normal"];	
+	if( normalAttribute )
+	{
+		GLuint normalSlot = normalAttribute.glLocation;	
+		glVertexAttribPointer(normalSlot, 3, GL_FLOAT, GL_FALSE, vertexDescriptor.stride, (void*)vertexDescriptor.normalOffset);
+		glEnableVertexAttribArray(normalSlot);		
+	}
 }
 
 -(void)validate
@@ -347,27 +370,6 @@
 	free( pBuffer );
 	
 	return [NSArray arrayWithArray:attribArray];
-}
-
--(FCVertexDescriptor*)requiredVertexDescriptor
-{
-	if (!_requiredVertexDescriptor) {
-		_requiredVertexDescriptor = [[FCVertexDescriptor alloc] init];
-		
-		NSLog(@"uniforms: %@", self.uniforms);
-		
-		NSLog(@"attributes: %@", self.attributes);
-		
-		NSArray* keys = [self.attributes allKeys];
-		
-		for( NSString* key in keys )
-		{
-//			FCShaderAttribute* attr = [self.attributes valueForKey:key];
-			
-		}
-		
-	}
-	return _requiredVertexDescriptor;
 }
 
 @end

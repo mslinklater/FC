@@ -187,6 +187,17 @@ static int kNumCircleSegments = 36;
 			meshObject.numTriangles = [[mesh valueForKey:kFCKeyNumTriangles] intValue];
 			meshObject.numEdges = [[mesh valueForKey:kFCKeyNumEdges] intValue];
 			
+			// specular color
+			
+			if ([mesh valueForKey:@"specular_r"] && [mesh valueForKey:@"specular_g"] && [mesh valueForKey:@"specular_b"]) {
+				FC::Color4f specular;
+				specular.r = [[mesh valueForKey:@"specular_r"] floatValue];
+				specular.g = [[mesh valueForKey:@"specular_r"] floatValue];
+				specular.b = [[mesh valueForKey:@"specular_r"] floatValue];
+				specular.a = 1.0f;
+				meshObject.specularColor = specular;
+			}
+			
 			// copy across vertex and index buffers
 
 			NSUInteger indexBufferOffset = [[indexBufferDict valueForKey:@"offset"] intValue];
@@ -200,7 +211,7 @@ static int kNumCircleSegments = 36;
 //			resource 
 			NSString* diffuseString = [mesh valueForKey:kFCKeyDiffuseColor];
 			NSArray* components = [diffuseString componentsSeparatedByString:@","];
-			meshObject.colorUniform = FC::Color4f([[components objectAtIndex:0] floatValue], 
+			meshObject.diffuseColor = FC::Color4f([[components objectAtIndex:0] floatValue], 
 												  [[components objectAtIndex:1] floatValue], 
 												  [[components objectAtIndex:2] floatValue], 1.0f );
 
@@ -248,7 +259,7 @@ static int kNumCircleSegments = 36;
 {
 	for( FCMesh* mesh in _meshes )
 	{
-		mesh.colorUniform = color;
+		mesh.diffuseColor = color;
 	}
 }
 
@@ -288,10 +299,10 @@ static int kNumCircleSegments = 36;
 	if (debugColor) {
 		float red, green, blue, alpha;
 		[debugColor getRed:&red green:&green blue:&blue alpha:&alpha];
-		mesh.colorUniform = FC::Color4f( red, green, blue, alpha );
+		mesh.diffuseColor = FC::Color4f( red, green, blue, alpha );
 	}
 	else
-		mesh.colorUniform = s_whiteColor;
+		mesh.diffuseColor = s_whiteColor;
 	
 	unsigned short* pIndex;
 	
@@ -351,10 +362,10 @@ static int kNumCircleSegments = 36;
 	if (debugColor) {
 		float red, green, blue, alpha;
 		[debugColor getRed:&red green:&green blue:&blue alpha:&alpha];
-		mesh.colorUniform = FC::Color4f( red, green, blue, alpha );
+		mesh.diffuseColor = FC::Color4f( red, green, blue, alpha );
 	}
 	else
-		mesh.colorUniform = s_whiteColor;
+		mesh.diffuseColor = s_whiteColor;
 
 	unsigned short* pIndex;
 	
@@ -403,11 +414,11 @@ static int kNumCircleSegments = 36;
 	if (debugColor) {
 		float red, green, blue, alpha;
 		[debugColor getRed:&red green:&green blue:&blue alpha:&alpha];
-		mesh.colorUniform = FC::Color4f( red, green, blue, alpha );
+		mesh.diffuseColor = FC::Color4f( red, green, blue, alpha );
 	}
 	else
 	{
-		mesh.colorUniform = s_whiteColor;
+		mesh.diffuseColor = s_whiteColor;
 	}
 
 	unsigned short* pIndex;

@@ -72,6 +72,7 @@ static NSMutableDictionary* s_dictionary;
 @synthesize positionType = _positionType;
 @synthesize diffuseColorType = _diffuseColorType;
 @synthesize normalType = _normalType;
+@synthesize specularColorType = _specularColorType;
 @synthesize tex0Type = _tex0Type;
 @synthesize tex1Type = _tex1Type;
 @synthesize tex2Type = _tex2Type;
@@ -80,12 +81,13 @@ static NSMutableDictionary* s_dictionary;
 @synthesize positionOffset = _positionOffset;
 @synthesize diffuseColorOffset = _diffuseColorOffset;
 @synthesize normalOffset = _normalOffset;
+@synthesize specularColorOffset = _specularColorOffset;
 @synthesize tex0Offset = _tex0Offset;
 @synthesize tex1Offset = _tex1Offset;
 @synthesize tex2Offset = _tex2Offset;
 @synthesize tex3Offset = _tex3Offset;
 
-+(void)initialize
++(void)initialize	// Get rid of this.... should just be an intelligent structure
 {
 	s_dictionary = [[NSMutableDictionary alloc] init];
 	
@@ -109,12 +111,14 @@ static NSMutableDictionary* s_dictionary;
 	[s_dictionary setValue:flatunlit forKey:kFCKeyShaderFlatUnlit];
 
 	FCVertexDescriptor* test = [[FCVertexDescriptor alloc] init];
-	test.positionType = kFCVertexDescriptorPropertyTypeAttributeVec4;
+	test.positionType = kFCVertexDescriptorPropertyTypeAttributeVec3;
 	test.positionOffset = 0;
 	test.normalType = kFCVertexDescriptorPropertyTypeAttributeVec3;
-	test.normalOffset = 16;
-	test.diffuseColorType = kFCVertexDescriptorPropertyTypeAttributeVec4;
-	test.diffuseColorOffset = 28;
+	test.normalOffset = 12;
+	test.diffuseColorType = kFCVertexDescriptorPropertyTypeAttributeVec3;
+	test.diffuseColorOffset = 24;
+	test.specularColorType = kFCVertexDescriptorPropertyTypeAttributeVec4;
+	test.specularColorOffset = 36;
 	[s_dictionary setValue:test forKey:kFCKeyShaderTest];
 }
 
@@ -143,61 +147,6 @@ static NSMutableDictionary* s_dictionary;
 {
 	return [s_dictionary valueForKey:shader] != nil;
 }
-
-//-(id)initWithVertexFormatString:(NSString *)desc andUniformDict:(NSDictionary *)uniformDict
-//{
-//	self = [self init];
-//	
-//	// Uniforms
-//
-//	NSString* diffuseColorValue = [uniformDict valueForKey:kFCKeyMaterialDiffuseColor];
-//	
-//	if (diffuseColorValue) {
-//		NSArray* elementArray = [diffuseColorValue componentsSeparatedByString:@" "];
-//		if ([elementArray count] == 3) {
-//			self.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec3;
-//		} else if ([elementArray count] == 4) {
-//			self.diffuseColorType = kFCVertexDescriptorPropertyTypeUniformVec4;			
-//		} else {
-//			FC_FATAL(@"Diffuse color with other than 3 or 4 components");
-//		}
-//	}
-//
-//	// Attributes
-//
-//	NSArray* attributeArray = [desc componentsSeparatedByString:@","];
-//	
-//	for( NSString* attributeString in attributeArray ) {
-//		NSRange leftBracketRange = [attributeString rangeOfString:@"("];
-//		NSRange rightBracketRange = [attributeString rangeOfString:@")"];
-//
-//		NSRange nameRange;
-//		nameRange.location = 0;
-//		nameRange.length = leftBracketRange.location;
-//		
-//		NSRange typeRange;
-//		typeRange.location = leftBracketRange.location + 1;
-//		typeRange.length = rightBracketRange.location - leftBracketRange.location - 1;
-//		
-//		NSString* attrNameString = [attributeString substringWithRange:nameRange];
-//		NSString* attrTypeString = [attributeString substringWithRange:typeRange];
-//		
-//		NSLog(@"%@ %@", attrNameString, attrTypeString);
-//	}
-//							   
-//	return self;
-//}
-
-//+(id)vertexDescriptorWithVertexFormatString:(NSString *)desc andUniformDict:(NSDictionary *)uniformDict
-//{
-//	return [[FCVertexDescriptor alloc] initWithVertexFormatString:desc andUniformDict:uniformDict];
-//}
-
-//-(BOOL)canSatisfy:(FCVertexDescriptor*)desc
-//{
-//	return NO;
-//}
-
 -(unsigned int)stride
 {
 	// cache this
@@ -252,9 +201,6 @@ static NSMutableDictionary* s_dictionary;
 
 -(unsigned int) diffuseColorOffset
 {
-//	FC_ASSERT(self.diffuseColorType > kFCVertexDescriptorPropertyFirstAttribute);
-//	FC_ASSERT(self.diffuseColorType < kFCVertexDescriptorPropertyLastAttribute);
-	
 	(void)self.stride;
 	return _diffuseColorOffset;
 }

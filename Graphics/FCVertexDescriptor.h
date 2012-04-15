@@ -68,6 +68,7 @@ enum FCVertexDescriptorPropertyType {
 	FCVertexDescriptorPropertyType	_positionType;
 	FCVertexDescriptorPropertyType	_diffuseColorType;
 	FCVertexDescriptorPropertyType	_normalType;
+	FCVertexDescriptorPropertyType	_specularColorType;
 	FCVertexDescriptorPropertyType	_tex0Type;
 	FCVertexDescriptorPropertyType	_tex1Type;
 	FCVertexDescriptorPropertyType	_tex2Type;
@@ -76,6 +77,7 @@ enum FCVertexDescriptorPropertyType {
 	unsigned int					_positionOffset;
 	unsigned int					_diffuseColorOffset;
 	unsigned int					_normalOffset;
+	unsigned int					_specularColorOffset;
 	unsigned int					_tex0Offset;
 	unsigned int					_tex1Offset;
 	unsigned int					_tex2Offset;
@@ -85,6 +87,7 @@ enum FCVertexDescriptorPropertyType {
 @property(nonatomic) FCVertexDescriptorPropertyType positionType;
 @property(nonatomic) FCVertexDescriptorPropertyType diffuseColorType;
 @property(nonatomic) FCVertexDescriptorPropertyType normalType;
+@property(nonatomic) FCVertexDescriptorPropertyType specularColorType;
 @property(nonatomic) FCVertexDescriptorPropertyType tex0Type;
 @property(nonatomic) FCVertexDescriptorPropertyType tex1Type;
 @property(nonatomic) FCVertexDescriptorPropertyType tex2Type;
@@ -93,6 +96,7 @@ enum FCVertexDescriptorPropertyType {
 @property(nonatomic) unsigned int positionOffset;
 @property(nonatomic) unsigned int diffuseColorOffset;
 @property(nonatomic) unsigned int normalOffset;
+@property(nonatomic) unsigned int specularColorOffset;
 @property(nonatomic) unsigned int tex0Offset;
 @property(nonatomic) unsigned int tex1Offset;
 @property(nonatomic) unsigned int tex2Offset;

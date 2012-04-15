@@ -38,7 +38,6 @@
 	NSDictionary* _attributes;
 	NSDictionary* _uniforms;
 	NSDictionary* _perMeshUniforms;
-	FCVertexDescriptor* _requiredVertexDescriptor;
 }
 @property(nonatomic, readonly) GLuint glHandle;
 @property(nonatomic, strong, readonly) FCShader* vertexShader;
@@ -46,7 +45,6 @@
 @property(nonatomic, strong, readonly) NSDictionary* uniforms;
 @property(nonatomic, strong, readonly) NSDictionary* perMeshUniforms;
 @property(nonatomic, strong, readonly) NSDictionary* attributes;
-@property(nonatomic, strong) FCVertexDescriptor* requiredVertexDescriptor;
 
 -(id)initWithVertex:(FCShader*)vertexShader andFragment:(FCShader*)fragmentShader;
 -(FCShaderUniform*)getUniform:(NSString*)name;
@@ -55,6 +53,7 @@
 -(void)use;
 -(void)validate;
 -(void)bindUniformsWithMesh:(FCMesh*)mesh vertexDescriptor:(FCVertexDescriptor*)vertexDescriptor;
+-(void)bindAttributesWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor; // Get rid of the vertex descriptor
 -(NSArray*)getActiveAttributes;	// Deprecate;
 
 @end

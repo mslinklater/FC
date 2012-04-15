@@ -103,12 +103,12 @@
 	
 	if (!ret) 
 	{
-		NSArray* nameArray = [name componentsSeparatedByString:@"_"];
+//		NSArray* nameArray = [name componentsSeparatedByString:@"_"];
 		
-		FC_ASSERT( [nameArray count] == 2 );
+//		FC_ASSERT( [nameArray count] == 2 );
 		
-		NSString* vertexShaderName = [NSString stringWithFormat:@"%@.vsh", [nameArray objectAtIndex:0]];
-		NSString* fragmentShaderName = [NSString stringWithFormat:@"%@.fsh", [nameArray objectAtIndex:1]];
+		NSString* vertexShaderName = [NSString stringWithFormat:@"%@.vsh", name];
+		NSString* fragmentShaderName = [NSString stringWithFormat:@"%@.fsh", name];
 		
 		FCShader* vertexShader = [self addShader:vertexShaderName];
 		FCShader* fragmentShader = [self addShader:fragmentShaderName];

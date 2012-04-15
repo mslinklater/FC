@@ -116,11 +116,16 @@ class FCVertex:
 	def __init__(self):
 		self.pos = None
 		self.diffuse_color = None
+		self.specular_color = None
 		self.normal = None
-		self.diffuse_intensity = None
+		self.specular_hardness = None
 
 	def __eq__(self, other):
-		return self.pos == other.pos and self.diffuse_color == other.diffuse_color and self.normal == other.normal
+		return self.pos == other.pos \
+		and self.diffuse_color == other.diffuse_color \
+		and self.normal == other.normal \
+		and self.specular_color == other.specular_color \
+		and self.specular_hardness == other.specular_hardness
 
 	def __str__(self):
 		return "pos(), normal(), diffuse()".format(self)
@@ -229,6 +234,7 @@ class ExportFCR(bpy.types.Operator):
 			locatorElement.set( "rotationZ", str(locator.rotation_euler.z) )
 
 	def processWireframeShaderMesh( self, mesh, bm, meshElement, vertexBufferElement, indexBufferElement ):
+		meshElement.set( "shader", "wireframe" )
 		diffuseColor = mesh.material_slots[bm.faces[0].material_index].material.diffuse_color
 		meshElement.set( "diffusecolor", str(diffuseColor.r) + "," + str(diffuseColor.g) + "," + str(diffuseColor.b) )
 		
@@ -262,6 +268,7 @@ class ExportFCR(bpy.types.Operator):
 		return i
 
 	def processFlatUnlitShaderMesh( self, mesh, bm, meshElement, vertexBufferElement, indexBufferElement ):
+		meshElement.set( "shader", "flatunlit" )
 		self.__VertCache = []
 		indices = []
 		print( "num faces " + str(len(self.__faces)) )
@@ -299,20 +306,24 @@ class ExportFCR(bpy.types.Operator):
 	#-------------------------------------------------------------------------------------
 
 	def processTestShaderMesh( self, mesh, bm, meshElement, vertexBufferElement, indexBufferElement ):
+		meshElement.set( "shader", "test" )
 		print("Processing Test shader mesh")
 		self.__VertCache = []
 		indices = []
 		print( "num faces " + str(len(self.__faces)) )
-		specular_color = mesh.material_slots[ self.__faces[0].material_index].material.specular_color
-		specular_hardness = mesh.material_slots[ self.__faces[0].material_index].material.specular_hardness
-		meshElement.set( 'specular_r', str(specular_color.r) )
-		meshElement.set( 'specular_g', str(specular_color.g) )
-		meshElement.set( 'specular_b', str(specular_color.b) )
-		meshElement.set( 'specular_hardness', str(specular_hardness) )
 		for face in self.__faces:
 			face.normal_update()
-			diffuse_color = mesh.material_slots[ face.material_index ].material.diffuse_color
-			diffuse_intensity = mesh.material_slots[ face.material_index ].material.diffuse_intensity
+			material = mesh.material_slots[ face.material_index ].material
+			diffuse_color = material.diffuse_color
+			diffuse_intensity = material.diffuse_intensity
+			diffuse_color.r *= diffuse_intensity
+			diffuse_color.g *= diffuse_intensity
+			diffuse_color.b *= diffuse_intensity
+			specular_color = material.specular_color
+			specular_intensity = material.specular_intensity
+			specular_color.r *= specular_intensity
+			specular_color.g *= specular_intensity
+			specular_color.b *= specular_intensity
 			for vert in face.verts:
 				thisVert = FCVertex()
 				if face.smooth:
@@ -321,18 +332,21 @@ class ExportFCR(bpy.types.Operator):
 					thisVert.normal = face.normal
 				thisVert.pos = vert.co
 				thisVert.diffuse_color = diffuse_color
-				thisVert.diffuse_intensity = diffuse_intensity
+				thisVert.specular_color = specular_color
+				thisVert.specular_hardness = material.specular_hardness / 10
 				indices.append( self.indexInVertCache( thisVert ) )				
 		meshElement.set( "numvertices", str(len(indices)) )
 
 		origOffset = self.__binFile.tell()
 		vertexBufferElement.set( "offset", str( origOffset ) )
 		for vertex in self.__VertCache:
-			float_array = array( 'f', [ vertex.pos.x, vertex.pos.y, vertex.pos.z, 0 ] )
+			float_array = array( 'f', [ vertex.pos.x, vertex.pos.y, vertex.pos.z ] )
 			float_array.tofile( self.__binFile )
 			float_array = array( 'f', [ vertex.normal.x, vertex.normal.y, vertex.normal.z ] )
 			float_array.tofile( self.__binFile )
-			float_array = array( 'f', [ vertex.diffuse_color.r, vertex.diffuse_color.g, vertex.diffuse_color.b, vertex.diffuse_intensity ] )
+			float_array = array( 'f', [ vertex.diffuse_color.r, vertex.diffuse_color.g, vertex.diffuse_color.b ] )
+			float_array.tofile( self.__binFile )
+			float_array = array( 'f', [ vertex.specular_color.r, vertex.specular_color.g, vertex.specular_color.b, vertex.specular_hardness ] )
 			float_array.tofile( self.__binFile )
 		newOffset = self.__binFile.tell()
 		vertexBufferElement.set( "size", str( newOffset - origOffset ) )
@@ -355,7 +369,7 @@ class ExportFCR(bpy.types.Operator):
 		self.__vertices = bm.verts
 		self.__faces = bm.faces
 		self.__edges = bm.edges
-		meshElement.set( "shader", mesh.fc_shader_type )
+#		meshElement.set( "shader", mesh.fc_shader_type )
 		meshElement.set( "numtriangles", str(len(self.__faces)) )
 		meshElement.set( "numedges", str(len(self.__edges)) )
 		if mesh.fc_shader_type == "Wireframe":

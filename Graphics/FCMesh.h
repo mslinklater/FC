@@ -39,11 +39,13 @@
 	void*					_pVertexBuffer;	
 	unsigned int			_sizeIndexBuffer;
 	unsigned short*			_pIndexBuffer;
-	FC::Color4f				_colorUniform;		// deprecate
 	GLuint					_vertexBufferHandle;
 	GLuint					_indexBufferHandle;	
 	BOOL					_fixedUp;
 	GLenum					_primitiveType;
+
+	FC::Color4f				_diffuseColor;
+	FC::Color4f				_specularColor;
 }
 @property(nonatomic) unsigned int numVertices;
 @property(nonatomic) unsigned int numTriangles;
@@ -53,12 +55,14 @@
 @property(nonatomic, readonly) void* pVertexBuffer;
 @property(nonatomic) unsigned int sizeIndexBuffer;
 @property(nonatomic, readonly) unsigned short* pIndexBuffer;
-@property(nonatomic) FC::Color4f colorUniform;
 @property(nonatomic, strong) FCShaderProgram* shaderProgram;
 @property(nonatomic) GLuint vertexBufferHandle;
 @property(nonatomic) GLuint indexBufferHandle;
 @property(nonatomic, readonly) BOOL fixedUp;
 @property(nonatomic, readonly) GLenum primitiveType;
+
+@property(nonatomic) FC::Color4f diffuseColor;
+@property(nonatomic) FC::Color4f specularColor;
 
 -(id)initWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor shaderName:(NSString*)shaderName primitiveType:(GLenum)primitiveType;
 //+(id)fcMeshWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor shaderName:(NSString*)shaderName;

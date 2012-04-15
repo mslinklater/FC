@@ -46,12 +46,16 @@
 @synthesize vertexDescriptor = _vertexDescriptor;
 @synthesize pVertexBuffer = _pVertexBuffer;
 @synthesize pIndexBuffer = _pIndexBuffer;
-@synthesize colorUniform = _colorUniform;
 @synthesize fixedUp = _fixedUp;
 @synthesize shaderProgram = _shaderProgram;
 @synthesize vertexBufferHandle = _vertexBufferHandle;
 @synthesize indexBufferHandle = _indexBufferHandle;
 @synthesize primitiveType = _primitiveType;
+@synthesize sizeIndexBuffer = _sizeIndexBuffer;
+@synthesize sizeVertexBuffer = _sizeVertexBuffer;
+
+@synthesize diffuseColor = _diffuseColor;
+@synthesize specularColor = _specularColor;
 
 #pragma mark - Object lifetime
 
@@ -111,8 +115,6 @@
 	GLCHECK;
 	glDeleteBuffers(1, &_vertexBufferHandle);
 	GLCHECK;
-	
-	
 }
 
 -(unsigned short*)pIndexBufferAtIndex:(unsigned short)index
@@ -134,27 +136,8 @@
 	glBindBuffer(GL_ARRAY_BUFFER, self.vertexBufferHandle);
 	
 	[_shaderProgram bindUniformsWithMesh:self vertexDescriptor:self.vertexDescriptor];
-
-	// Diffuse color
+	[_shaderProgram bindAttributesWithVertexDescriptor:self.vertexDescriptor];
 	
-	FCShaderAttribute* diffuseColorAttribute = [self.shaderProgram.attributes valueForKey:@"diffusecolor"];	
-	if( diffuseColorAttribute )
-	{
-		GLuint colorSlot = diffuseColorAttribute.glLocation;	
-		glVertexAttribPointer(colorSlot, 4, GL_FLOAT, GL_FALSE, self.vertexDescriptor.stride, (void*)self.vertexDescriptor.diffuseColorOffset);
-		glEnableVertexAttribArray(colorSlot);		
-	}
-
-	// Normal
-	
-	FCShaderAttribute* normalAttribute = [self.shaderProgram.attributes valueForKey:@"normal"];	
-	if( normalAttribute )
-	{
-		GLuint normalSlot = normalAttribute.glLocation;	
-		glVertexAttribPointer(normalSlot, 3, GL_FLOAT, GL_FALSE, self.vertexDescriptor.stride, (void*)self.vertexDescriptor.normalOffset);
-		glEnableVertexAttribArray(normalSlot);		
-	}
-
 #if defined (DEBUG)
 	[self.shaderProgram validate];
 #endif
