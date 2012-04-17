@@ -30,6 +30,7 @@
 
 @interface FCMesh : NSObject 
 {	
+	unsigned int			_vertexBufferStride;
 	unsigned int			_numVertices;
 	unsigned int			_numTriangles;
 	unsigned int			_numEdges;
@@ -47,6 +48,7 @@
 	FC::Color4f				_diffuseColor;
 	FC::Color4f				_specularColor;
 }
+@property(nonatomic, readonly) unsigned int vertexBufferStride;
 @property(nonatomic) unsigned int numVertices;
 @property(nonatomic) unsigned int numTriangles;
 @property(nonatomic) unsigned int numEdges;

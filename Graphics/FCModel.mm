@@ -36,7 +36,6 @@
 #import "FCShaderManager.h"
 #import "FCShaderProgram.h"
 #import "FCRenderer.h"
-#import "FCVertexDescriptor.h"
 
 static 	FC::Color4f	s_whiteColor( 1.0f, 1.0f, 1.0f, 1.0f );
 static int kNumCircleSegments = 36;
@@ -149,7 +148,7 @@ static int kNumCircleSegments = 36;
 		{
 			NSString* shaderName = [mesh valueForKey:kFCKeyShader];
 			
-			FC_ASSERT1([FCVertexDescriptor doesShaderExist:shaderName], @"Unknown shader");
+//			FC_ASSERT1([FCVertexDescriptor doesShaderExist:shaderName], @"Unknown shader");
 
 			NSString* indexBufferId = [mesh valueForKey:kFCKeyIndexBuffer];
 			NSString* vertexBufferId = [mesh valueForKey:kFCKeyVertexBuffer];
@@ -171,7 +170,7 @@ static int kNumCircleSegments = 36;
 			
 			// all looks good so far - lets build the mesh
 
-			FCVertexDescriptor* vertexDescriptor = [FCVertexDescriptor vertexDescriptorForShader:shaderName];
+//			FCVertexDescriptor* vertexDescriptor = [FCVertexDescriptor vertexDescriptorForShader:shaderName];
 			
 			GLenum primitiveType = GL_TRIANGLES;
 			
@@ -179,9 +178,10 @@ static int kNumCircleSegments = 36;
 				primitiveType = GL_LINES;
 			}
 			
-			FCMesh* meshObject = [[FCMesh alloc] initWithVertexDescriptor:vertexDescriptor 
+			FCMesh* meshObject = [[FCMesh alloc] initWithVertexDescriptor:nil 
 															   shaderName:shaderName
 															primitiveType:primitiveType];
+			
 			
 			meshObject.numVertices = [[mesh valueForKey:kFCKeyNumVertices] intValue];
 			meshObject.numTriangles = [[mesh valueForKey:kFCKeyNumTriangles] intValue];
@@ -208,12 +208,13 @@ static int kNumCircleSegments = 36;
 			NSUInteger vertexBufferSize = [[vertexBufferDict valueForKey:@"size"] intValue];
 			[res.binaryPayload getBytes:meshObject.pVertexBuffer range:NSMakeRange(vertexBufferOffset, vertexBufferSize)];
 					
-//			resource 
 			NSString* diffuseString = [mesh valueForKey:kFCKeyDiffuseColor];
-			NSArray* components = [diffuseString componentsSeparatedByString:@","];
-			meshObject.diffuseColor = FC::Color4f([[components objectAtIndex:0] floatValue], 
-												  [[components objectAtIndex:1] floatValue], 
-												  [[components objectAtIndex:2] floatValue], 1.0f );
+			if (diffuseString) {
+				NSArray* components = [diffuseString componentsSeparatedByString:@","];
+				meshObject.diffuseColor = FC::Color4f([[components objectAtIndex:0] floatValue], 
+													  [[components objectAtIndex:1] floatValue], 
+													  [[components objectAtIndex:2] floatValue], 1.0f );
+			}
 
 			[self.meshes addObject:meshObject];
 		}
@@ -265,7 +266,7 @@ static int kNumCircleSegments = 36;
 
 -(void)addDebugCircle:(NSDictionary*)def color:(UIColor*)debugColor
 {
-	FCMesh* mesh = [[FCMesh alloc] initWithVertexDescriptor:[FCVertexDescriptor vertexDescriptorForShader:kFCKeyShaderDebug] 
+	FCMesh* mesh = [[FCMesh alloc] initWithVertexDescriptor:nil 
 										   shaderName:kFCKeyShaderDebug primitiveType:GL_TRIANGLES];
 	[self.meshes addObject:mesh];
 
@@ -280,7 +281,7 @@ static int kNumCircleSegments = 36;
 	center.y = [[def valueForKey:kFCKeyOffsetY] floatValue];
 	center.z = 0.0f;
 
-	pVert = (FC::Vector3f*)((unsigned long)mesh.pVertexBuffer + mesh.vertexDescriptor.positionOffset);
+	pVert = (FC::Vector3f*)((unsigned long)mesh.pVertexBuffer);
 	pVert->x = center.x;
 	pVert->y = center.y;
 	pVert->z = center.z;
@@ -289,7 +290,7 @@ static int kNumCircleSegments = 36;
 	{		
 		float angle1 = ( 3.142f * 2.0f / kNumCircleSegments ) * i;
 		
-		pVert = (FC::Vector3f*)((unsigned int)pVert + mesh.vertexDescriptor.stride);
+		pVert = (FC::Vector3f*)((unsigned int)pVert + 12);
 		
 		pVert->x = center.x + sinf( angle1 ) * radius;
 		pVert->y = center.y + cosf( angle1 ) * radius;
@@ -322,7 +323,7 @@ static int kNumCircleSegments = 36;
 
 -(void)addDebugRectangle:(NSDictionary*)def color:(UIColor *)debugColor
 {
-	FCMesh* mesh = [[FCMesh alloc] initWithVertexDescriptor:[FCVertexDescriptor vertexDescriptorForShader:kFCKeyShaderDebug] 
+	FCMesh* mesh = [[FCMesh alloc] initWithVertexDescriptor:nil 
 												 shaderName:kFCKeyShaderDebug primitiveType:GL_TRIANGLES];
 //	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:[FCVertexDescriptor vertexDescriptorForShader:kFCKeyShaderWireframe] shaderName:kFCKeyShaderWireframe];
 	[self.meshes addObject:mesh];
@@ -339,22 +340,22 @@ static int kNumCircleSegments = 36;
 
 	FC::Vector3f* pVert;
 	
-	pVert = (FC::Vector3f*)((unsigned long)mesh.pVertexBuffer + mesh.vertexDescriptor.positionOffset);
+	pVert = (FC::Vector3f*)((unsigned long)mesh.pVertexBuffer);
 	pVert->x = center.x + size.x * -1.0f;
 	pVert->y = center.y + size.y * -1.0f;
 	pVert->z = center.z;
 	
-	pVert = (FC::Vector3f*)((unsigned int)pVert + mesh.vertexDescriptor.stride);
+	pVert = (FC::Vector3f*)((unsigned int)pVert + 12);
 	pVert->x = center.x + size.x * 1.0f;
 	pVert->y = center.y + size.y * -1.0f;
 	pVert->z = center.z;
 	
-	pVert = (FC::Vector3f*)((unsigned int)pVert + mesh.vertexDescriptor.stride);
+	pVert = (FC::Vector3f*)((unsigned int)pVert + 12);
 	pVert->x = center.x + size.x * 1.0f;
 	pVert->y = center.y + size.y * 1.0f;
 	pVert->z = center.z;
 	
-	pVert = (FC::Vector3f*)((unsigned int)pVert + mesh.vertexDescriptor.stride);
+	pVert = (FC::Vector3f*)((unsigned int)pVert + 12);
 	pVert->x = center.x + size.x * -1.0f;
 	pVert->y = center.y + size.y * 1.0f;
 	pVert->z = center.z;
@@ -381,7 +382,7 @@ static int kNumCircleSegments = 36;
 
 -(void)addDebugPolygon:(NSDictionary*)def color:(UIColor *)debugColor
 {
-	FCMesh* mesh = [[FCMesh alloc] initWithVertexDescriptor:[FCVertexDescriptor vertexDescriptorForShader:kFCKeyShaderDebug] 
+	FCMesh* mesh = [[FCMesh alloc] initWithVertexDescriptor:nil 
 												 shaderName:kFCKeyShaderDebug primitiveType:GL_TRIANGLES];
 //	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:[FCVertexDescriptor vertexDescriptorForShader:kFCKeyShaderWireframe] shaderName:kFCKeyShaderWireframe];
 	[self.meshes addObject:mesh];
@@ -393,7 +394,7 @@ static int kNumCircleSegments = 36;
 
 	NSArray* vertsArray = [[def valueForKeyPath:@"verts"] componentsSeparatedByString:@" "];
 
-	pVert = (FC::Vector3f*)((unsigned long)mesh.pVertexBuffer + mesh.vertexDescriptor.positionOffset);
+	pVert = (FC::Vector3f*)((unsigned long)mesh.pVertexBuffer);
 	
 	float xOffset = [[def valueForKey:kFCKeyOffsetX] floatValue];
 	float yOffset = [[def valueForKey:kFCKeyOffsetY] floatValue];
@@ -405,7 +406,7 @@ static int kNumCircleSegments = 36;
 
 	for (int i = 1 ; i < mesh.numVertices ; i++) 
 	{
-		pVert = (FC::Vector3f*)((unsigned int)pVert + mesh.vertexDescriptor.stride);
+		pVert = (FC::Vector3f*)((unsigned int)pVert + 12);
 		pVert->x = [[vertsArray objectAtIndex:i*3] floatValue] + xOffset;
 		pVert->y = [[vertsArray objectAtIndex:(i*3)+1] floatValue] + yOffset;
 		pVert->z = [[vertsArray objectAtIndex:(i*3)+2] floatValue] + zOffset;

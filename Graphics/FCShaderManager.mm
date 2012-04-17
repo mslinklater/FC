@@ -26,9 +26,11 @@
 #import "FCShaderManager.h"
 #import "FCShader.h"
 #import "FCShaderProgram.h"
-
-//@interface FCShaderManager()
-//@end
+#import "FCShaderProgramDebug.h"
+#import "FCShaderProgramFlatUnlit.h"
+#import "FCShaderProgramWireframe.h"
+#import "FCShaderProgramNoTexVLit.h"
+#import "FCShaderProgramTest.h"
 
 @implementation FCShaderManager
 @synthesize shaders = _shaders;
@@ -97,16 +99,12 @@
 	return [self.shaders valueForKey:name];
 }
 
--(FCShaderProgram*)addProgram:(NSString *)name as:(NSString *)shaderName
+-(FCShaderProgram*)addProgram:(NSString *)name //as:(NSString *)shaderName
 {
 	FCShaderProgram* ret = [self.programs valueForKey:name];
 	
 	if (!ret) 
 	{
-//		NSArray* nameArray = [name componentsSeparatedByString:@"_"];
-		
-//		FC_ASSERT( [nameArray count] == 2 );
-		
 		NSString* vertexShaderName = [NSString stringWithFormat:@"%@.vsh", name];
 		NSString* fragmentShaderName = [NSString stringWithFormat:@"%@.fsh", name];
 		
@@ -115,11 +113,28 @@
 		
 		// build program
 		
-		ret = [[FCShaderProgram alloc] initWithVertex:vertexShader andFragment:fragmentShader];
+		if ([name isEqualToString:kFCKeyShaderDebug]) {
+			ret = [[FCShaderProgramDebug alloc] initWithVertex:vertexShader andFragment:fragmentShader];
+		} else if ([name isEqualToString:kFCKeyShaderWireframe]) {
+			ret = [[FCShaderProgramWireframe alloc] initWithVertex:vertexShader andFragment:fragmentShader];
+		} else if ([name isEqualToString:kFCKeyShaderFlatUnlit]) {
+			ret = [[FCShaderProgramFlatUnlit alloc] initWithVertex:vertexShader andFragment:fragmentShader];
+		} else if ([name isEqualToString:kFCKeyShaderNoTexVLit]) {
+			ret = [[FCShaderProgramNoTexVLit alloc] initWithVertex:vertexShader andFragment:fragmentShader];
+		} else if ([name isEqualToString:kFCKeyShaderTest]) {
+			ret = [[FCShaderProgramTest alloc] initWithVertex:vertexShader andFragment:fragmentShader];
+		} else {
+			FC_ERROR1(@"Unknown shader %@", name);
+		}
 		
-		[self.programs setValue:ret forKey:shaderName];
+		[self.programs setValue:ret forKey:name];
 	}
 	return ret;
+}
+
+-(void)activateShader:(NSString *)shader
+{
+	[self addProgram:shader];
 }
 
 -(FCShaderProgram*)program:(NSString *)name

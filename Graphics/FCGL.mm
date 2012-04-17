@@ -20,31 +20,3 @@
  THE SOFTWARE.
  */
 
-#if defined(FC_GRAPHICS)
-
-#import <Foundation/Foundation.h>
-#import "FCShaderProgram.h"
-#import "FCShaderUniform.h"
-
-@interface FCShaderManager : NSObject {
-	NSMutableDictionary* _shaders;
-	NSMutableDictionary* _programs;
-}
-@property(nonatomic, strong) NSMutableDictionary* shaders;
-@property(nonatomic, strong) NSMutableDictionary* programs;
-
-+(FCShaderManager*)instance;
-
-//-(FCShader*)addShader:(NSString*)name;
-//-(FCShader*)shader:(NSString*)name;
-
-//-(FCShaderProgram*)addProgram:(NSString*)name as:(NSString*)shaderName;
-
--(FCShaderProgram*)program:(NSString*)name;
--(NSArray*)allShaders;
-
--(void)activateShader:(NSString*)shader;
-@end
-
-#endif // defined(FC_GRAPHICS)
-

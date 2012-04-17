@@ -121,6 +121,7 @@ extern NSString* kFCKeyCount;
 extern NSString* kFCKeyShaderWireframe;
 extern NSString* kFCKeyShaderDebug;
 extern NSString* kFCKeyShaderFlatUnlit;
+extern NSString* kFCKeyShaderNoTexVLit;
 extern NSString* kFCKeyShaderTest;
 
 // File types

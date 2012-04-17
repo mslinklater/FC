@@ -38,6 +38,7 @@
 	NSDictionary* _attributes;
 	NSDictionary* _uniforms;
 	NSDictionary* _perMeshUniforms;
+	unsigned int	_stride;
 }
 @property(nonatomic, readonly) GLuint glHandle;
 @property(nonatomic, strong, readonly) FCShader* vertexShader;
@@ -45,6 +46,7 @@
 @property(nonatomic, strong, readonly) NSDictionary* uniforms;
 @property(nonatomic, strong, readonly) NSDictionary* perMeshUniforms;
 @property(nonatomic, strong, readonly) NSDictionary* attributes;
+@property(nonatomic) unsigned int stride;
 
 -(id)initWithVertex:(FCShader*)vertexShader andFragment:(FCShader*)fragmentShader;
 -(FCShaderUniform*)getUniform:(NSString*)name;

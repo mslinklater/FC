@@ -28,7 +28,6 @@
 #import "FCGLHelpers.h"
 #import "FCShaderUniform.h"
 #import "FCShaderAttribute.h"
-#import "FCVertexDescriptor.h"
 #import "FCMesh.h"
 
 #import <OpenGLES/EAGL.h>
@@ -46,6 +45,7 @@
 @synthesize uniforms = _uniforms;
 @synthesize perMeshUniforms = _perMeshUniforms;
 @synthesize attributes = _attributes;
+@synthesize stride = _stride;
 
 -(id)initWithVertex:(FCShader*)vertexShader andFragment:(FCShader*)fragmentShader
 {
@@ -256,67 +256,12 @@
 
 -(void)bindUniformsWithMesh:(FCMesh*)mesh vertexDescriptor:(FCVertexDescriptor *)vertexDescriptor
 {
-	// iterate over uniforms and pluck the appropriate mesh value
-	NSArray* keys = [self.perMeshUniforms allKeys];
-	
-	for( NSString* key in keys )
-	{
-		FCShaderUniform* uniform = [self.perMeshUniforms valueForKey:key];
-		
-		if( [key isEqualToString:@"diffusecolor"] )
-		{
-			FC::Color4f diffuseColor = mesh.diffuseColor;
-			[self setUniformValue:uniform to:&diffuseColor size:sizeof(diffuseColor)];			
-		}
-		if( [key isEqualToString:@"light_color"] )
-		{
-			FC::Color4f lightColor( 1.0f, 1.0f, 1.0f, 1.0f );
-			[self setUniformValue:uniform to:&lightColor size:sizeof(lightColor)];			
-		}
-		if( [key isEqualToString:@"specular_color"] )
-		{
-			FC::Color4f color = mesh.specularColor;
-			[self setUniformValue:uniform to:&color size:sizeof(color)];
-		}
-		if( [key isEqualToString:@"specular_hardness"] )
-		{
-			float hardness = 8.0f;
-			[self setUniformValue:uniform to:&hardness size:sizeof(hardness)];			
-		}
-	}
+	FC_HALT;
 }
 
 -(void)bindAttributesWithVertexDescriptor:(FCVertexDescriptor *)vertexDescriptor
 {
-	// Postion
-	
-	FCShaderAttribute* positionAttribute = [_attributes valueForKey:@"position"];	
-	if( positionAttribute )
-	{
-		GLuint slot = positionAttribute.glLocation;	
-		glVertexAttribPointer(slot, 3, GL_FLOAT, GL_FALSE, vertexDescriptor.stride, (void*)vertexDescriptor.positionOffset);
-		glEnableVertexAttribArray(slot);		
-	}
-	
-	// Diffuse color
-	
-	FCShaderAttribute* diffuseColorAttribute = [_attributes valueForKey:@"diffusecolor"];	
-	if( diffuseColorAttribute )
-	{
-		GLuint colorSlot = diffuseColorAttribute.glLocation;	
-		glVertexAttribPointer(colorSlot, 3, GL_FLOAT, GL_FALSE, vertexDescriptor.stride, (void*)vertexDescriptor.diffuseColorOffset);
-		glEnableVertexAttribArray(colorSlot);		
-	}
-	
-	// Normal
-	
-	FCShaderAttribute* normalAttribute = [_attributes valueForKey:@"normal"];	
-	if( normalAttribute )
-	{
-		GLuint normalSlot = normalAttribute.glLocation;	
-		glVertexAttribPointer(normalSlot, 3, GL_FLOAT, GL_FALSE, vertexDescriptor.stride, (void*)vertexDescriptor.normalOffset);
-		glEnableVertexAttribArray(normalSlot);		
-	}
+	FC_HALT;
 }
 
 -(void)validate

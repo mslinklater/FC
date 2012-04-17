@@ -583,11 +583,6 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 		FCShaderUniform* projectionUniform = [program getUniform:@"projection"];
 		[program setUniformValue:projectionUniform to:&mat size:sizeof(FC::Matrix4f)];
 		
-		FCShaderUniform* ambientColorUniform = [program getUniform:@"ambient_color"];
-		if (ambientColorUniform) 
-		{
-			[program setUniformValue:ambientColorUniform to:&ambientColor size:sizeof(ambientColor)];			
-		}
 	}
 	
 //	FCShaderProgram* program = [shaderManager program:kFCKeyShaderDebug];	// needs to be current shader or all active shaders

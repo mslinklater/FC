@@ -29,7 +29,6 @@
 #import "FCGLHelpers.h"
 #import "FCShaderManager.h"
 #import "FCRenderer.h"
-#import "FCVertexDescriptor.h"
 #import "FCShaderAttribute.h"
 
 @interface FCMesh() 
@@ -40,6 +39,7 @@
 @end
 
 @implementation FCMesh
+@synthesize vertexBufferStride = _vertexBufferStride;
 @synthesize numVertices = _numVertices;
 @synthesize numTriangles = _numTriangles;
 @synthesize numEdges = _numEdges;
@@ -73,16 +73,18 @@
 		_pIndexBuffer = 0;
 		_shaderProgram = [[FCShaderManager instance] program:shaderName];
 		_primitiveType = primitiveType;
+		_vertexBufferStride = _shaderProgram.stride;
 	}
 	return self;
 }
 
 -(void)setNumVertices:(unsigned int)numVertices
 {
+	FC_ASSERT(_vertexBufferStride);
 	FC_ASSERT1(self.numVertices == 0, @"numVertices already set - cannot do twice");
 	FC_ASSERT1(numVertices < 65535, @"Cannot cope with meshes with more than 65535 verts yet");
 	_numVertices = numVertices;
-	_sizeVertexBuffer = self.numVertices * self.vertexDescriptor.stride;
+	_sizeVertexBuffer = self.numVertices * _vertexBufferStride;
 	_pVertexBuffer = malloc(_sizeVertexBuffer);
 }
 

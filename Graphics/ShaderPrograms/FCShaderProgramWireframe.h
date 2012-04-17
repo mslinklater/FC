@@ -20,31 +20,20 @@
  THE SOFTWARE.
  */
 
-#if defined(FC_GRAPHICS)
-
-#import <Foundation/Foundation.h>
 #import "FCShaderProgram.h"
-#import "FCShaderUniform.h"
 
-@interface FCShaderManager : NSObject {
-	NSMutableDictionary* _shaders;
-	NSMutableDictionary* _programs;
+@class FCShader;
+@class FCShaderUniform;
+@class FCShaderAttribute;
+
+@interface FCShaderProgramWireframe : FCShaderProgram {
+	FCShaderUniform*	_diffuseColorUniform;
+	FCShaderAttribute*	_positionAttribute;
 }
-@property(nonatomic, strong) NSMutableDictionary* shaders;
-@property(nonatomic, strong) NSMutableDictionary* programs;
+@property(nonatomic, strong) FCShaderUniform* diffuseColorUniform;
+@property(nonatomic, strong) FCShaderAttribute* positionAttribute;
 
-+(FCShaderManager*)instance;
-
-//-(FCShader*)addShader:(NSString*)name;
-//-(FCShader*)shader:(NSString*)name;
-
-//-(FCShaderProgram*)addProgram:(NSString*)name as:(NSString*)shaderName;
-
--(FCShaderProgram*)program:(NSString*)name;
--(NSArray*)allShaders;
-
--(void)activateShader:(NSString*)shader;
+-(id)initWithVertex:(FCShader *)vertexShader andFragment:(FCShader *)fragmentShader;
+-(void)bindUniformsWithMesh:(FCMesh*)mesh vertexDescriptor:(FCVertexDescriptor*)vertexDescriptor;
+-(void)bindAttributesWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor;
 @end
-
-#endif // defined(FC_GRAPHICS)
-

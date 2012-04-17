@@ -44,6 +44,14 @@ class OBJECT_PT_fc(bpy.types.Panel):
 
 #-----------------------------------------------------------------------------------------
 
+def FloatToHalf( floatIn ):		#converts float to half float encoded as a hex short
+	return int(0)
+
+def HalfToFloat( halfIn ):
+	return 0.0
+
+#-----------------------------------------------------------------------------------------
+
 class FCColor:
 	def __init__(self, r=0, g=0, b=0, a=0):
 		self.r = r
@@ -244,7 +252,7 @@ class ExportFCR(bpy.types.Operator):
 		origOffset = self.__binFile.tell()
 		vertexBufferElement.set( "offset", str( origOffset ) )
 		for vertex in self.__vertices:
-			float_array = array( 'f', [ vertex.co.x, vertex.co.y, vertex.co.z, 0 ] )
+			float_array = array( 'f', [ vertex.co.x, vertex.co.y, vertex.co.z ] )
 			float_array.tofile( self.__binFile )
 		newOffset = self.__binFile.tell()
 		vertexBufferElement.set( "size", str( newOffset - origOffset ) )
@@ -278,19 +286,76 @@ class ExportFCR(bpy.types.Operator):
 			diffuse_intensity = mesh.material_slots[ face.material_index ].material.diffuse_intensity
 			for vert in face.verts:
 				thisVert = FCVertex()
-				#thisVert.normal = face.normal
 				thisVert.pos = vert.co
 				thisVert.diffuse_color = diffuse_color
-				thisVert.diffuse_intensity = diffuse_intensity
+				thisVert.diffuse_color.r *= diffuse_intensity
+				thisVert.diffuse_color.g *= diffuse_intensity
+				thisVert.diffuse_color.b *= diffuse_intensity
 				indices.append( self.indexInVertCache( thisVert ) )				
 		meshElement.set( "numvertices", str(len(indices)) )
 
 		origOffset = self.__binFile.tell()
 		vertexBufferElement.set( "offset", str( origOffset ) )
 		for vertex in self.__VertCache:
-			float_array = array( 'f', [ vertex.pos.x, vertex.pos.y, vertex.pos.z, 0 ] )
+			float_array = array( 'f', [ vertex.pos.x, vertex.pos.y, vertex.pos.z ] )
 			float_array.tofile( self.__binFile )
-			float_array = array( 'f', [ vertex.diffuse_color.r, vertex.diffuse_color.g, vertex.diffuse_color.b, vertex.diffuse_intensity ] )
+			float_array = array( 'B', [ int(vertex.diffuse_color.r * 255), int(vertex.diffuse_color.g * 255), int(vertex.diffuse_color.b * 255), 255 ] )
+			float_array.tofile( self.__binFile )
+		newOffset = self.__binFile.tell()
+		vertexBufferElement.set( "size", str( newOffset - origOffset ) )
+
+		origOffset = self.__binFile.tell()
+		indexBufferElement.set( "offset", str( origOffset ) )
+		for index in indices:
+			int_array = array( 'H', [ index ] )
+			int_array.tofile( self.__binFile )
+		newOffset = self.__binFile.tell()
+		indexBufferElement.set( "size", str( newOffset - origOffset ) )
+
+	#-------------------------------------------------------------------------------------
+
+	def processNoTexVLitShaderMesh( self, mesh, bm, meshElement, vertexBufferElement, indexBufferElement ):
+		meshElement.set( "shader", "test" )
+		print("Processing Test shader mesh")
+		self.__VertCache = []
+		indices = []
+		print( "num faces " + str(len(self.__faces)) )
+		for face in self.__faces:
+			face.normal_update()
+			material = mesh.material_slots[ face.material_index ].material
+			diffuse_color = material.diffuse_color
+			diffuse_intensity = material.diffuse_intensity
+			diffuse_color.r *= diffuse_intensity
+			diffuse_color.g *= diffuse_intensity
+			diffuse_color.b *= diffuse_intensity
+			specular_color = material.specular_color
+			specular_intensity = material.specular_intensity
+			specular_color.r *= specular_intensity
+			specular_color.g *= specular_intensity
+			specular_color.b *= specular_intensity
+			for vert in face.verts:
+				thisVert = FCVertex()
+				if face.smooth:
+					thisVert.normal = vert.normal
+				else:
+					thisVert.normal = face.normal
+				thisVert.pos = vert.co
+				thisVert.diffuse_color = diffuse_color
+				thisVert.specular_color = specular_color
+				thisVert.specular_hardness = material.specular_hardness
+				indices.append( self.indexInVertCache( thisVert ) )				
+		meshElement.set( "numvertices", str(len(indices)) )
+
+		origOffset = self.__binFile.tell()
+		vertexBufferElement.set( "offset", str( origOffset ) )
+		for vertex in self.__VertCache:
+			float_array = array( 'f', [ vertex.pos.x, vertex.pos.y, vertex.pos.z ] )
+			float_array.tofile( self.__binFile )
+			float_array = array( 'h', [ int(vertex.normal.x * 32767), int(vertex.normal.y * 32767), int(vertex.normal.z * 32767), 0 ] )
+			float_array.tofile( self.__binFile )
+			float_array = array( 'B', [ int(vertex.diffuse_color.r * 255), int(vertex.diffuse_color.g * 255), int(vertex.diffuse_color.b * 255), 255 ] )
+			float_array.tofile( self.__binFile )
+			float_array = array( 'B', [ int(vertex.specular_color.r * 255), int(vertex.specular_color.g * 255), int(vertex.specular_color.b * 255), int(vertex.specular_hardness) ] )
 			float_array.tofile( self.__binFile )
 		newOffset = self.__binFile.tell()
 		vertexBufferElement.set( "size", str( newOffset - origOffset ) )
@@ -333,7 +398,7 @@ class ExportFCR(bpy.types.Operator):
 				thisVert.pos = vert.co
 				thisVert.diffuse_color = diffuse_color
 				thisVert.specular_color = specular_color
-				thisVert.specular_hardness = material.specular_hardness / 10
+				thisVert.specular_hardness = material.specular_hardness
 				indices.append( self.indexInVertCache( thisVert ) )				
 		meshElement.set( "numvertices", str(len(indices)) )
 
@@ -342,11 +407,11 @@ class ExportFCR(bpy.types.Operator):
 		for vertex in self.__VertCache:
 			float_array = array( 'f', [ vertex.pos.x, vertex.pos.y, vertex.pos.z ] )
 			float_array.tofile( self.__binFile )
-			float_array = array( 'f', [ vertex.normal.x, vertex.normal.y, vertex.normal.z ] )
+			float_array = array( 'h', [ int(vertex.normal.x * 32767), int(vertex.normal.y * 32767), int(vertex.normal.z * 32767), 0 ] )
 			float_array.tofile( self.__binFile )
-			float_array = array( 'f', [ vertex.diffuse_color.r, vertex.diffuse_color.g, vertex.diffuse_color.b ] )
+			float_array = array( 'B', [ int(vertex.diffuse_color.r * 255), int(vertex.diffuse_color.g * 255), int(vertex.diffuse_color.b * 255), 255 ] )
 			float_array.tofile( self.__binFile )
-			float_array = array( 'f', [ vertex.specular_color.r, vertex.specular_color.g, vertex.specular_color.b, vertex.specular_hardness ] )
+			float_array = array( 'B', [ int(vertex.specular_color.r * 255), int(vertex.specular_color.g * 255), int(vertex.specular_color.b * 255), int(vertex.specular_hardness) ] )
 			float_array.tofile( self.__binFile )
 		newOffset = self.__binFile.tell()
 		vertexBufferElement.set( "size", str( newOffset - origOffset ) )
@@ -378,6 +443,8 @@ class ExportFCR(bpy.types.Operator):
 			self.processUntexturedShaderMesh( mesh, bm, meshElement, vertexBufferElement, indexBufferElement )
 		elif mesh.fc_shader_type == "Flat unlit":
 			self.processFlatUnlitShaderMesh( mesh, bm, meshElement, vertexBufferElement, indexBufferElement )
+		elif mesh.fc_shader_type == "NoTex VLit":
+			self.processNoTexVLitShaderMesh( mesh, bm, meshElement, vertexBufferElement, indexBufferElement )
 		elif mesh.fc_shader_type == "Test":
 			self.processTestShaderMesh( mesh, bm, meshElement, vertexBufferElement, indexBufferElement )
 		
@@ -497,7 +564,7 @@ def register():
 	FCFixtureTypes = [("Circle", "Circle", "Circle"), ("Box", "Box", "Box"), ("Hull", "Hull", "Hull")]
 	bpy.types.Object.fc_fixture_type = bpy.props.EnumProperty( items=FCFixtureTypes, name="FixtureType", description="Fixture Type", default="Hull" )
 	
-	FCShaderTypes = [("Wireframe", "Wireframe", "Wireframe"), ("Untextured", "Untextured", "Untextured"), ("Flat unlit", "Flat unlit", "flat unlit"), ("Test", "Test", "Test")]
+	FCShaderTypes = [("Wireframe", "Wireframe", "Wireframe"), ("Untextured", "Untextured", "Untextured"), ("Flat unlit", "Flat unlit", "flat unlit"), ("NoTex VLit", "NoTex VLit", "NoTex VLit"), ("Test", "Test", "Test")]
 	bpy.types.Object.fc_shader_type = bpy.props.EnumProperty( items=FCShaderTypes, name="ShaderType", description="Shader", default="Wireframe" )
 	
 	bpy.types.Object.fc_actor_dynamic = bpy.props.BoolProperty( name="Dynamic", description="Dynamic, moving actor" ) 
