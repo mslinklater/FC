@@ -19,22 +19,6 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
- 
-namespace FC
-{
-	// Based on the Multiply-with-carry method invented by George Marsaglia
-	// http://en.wikipedia.org/wiki/Random_number_generation#Computational_methods
-	
-	class RandomNumber
-	{
-	public:
-		RandomNumber();
-		
-		void Seed(int w, int z);
-		unsigned int	Get( void );
-	private:
-		unsigned int m_w;
-		unsigned int m_z;
-	};
-	
-}
+
+#include "FCVector.h"
+

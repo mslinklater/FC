@@ -96,7 +96,7 @@
 		
 		[self getAchievementsFromServer];
 
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerIdChanged:) name:kFCNotificationPlayerIDChanged object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerIdChanged:) name:[NSString stringWithUTF8String:kFCNotificationPlayerIDChanged.c_str()] object:nil];
 		
     }
     return self;
@@ -104,7 +104,7 @@
 
 -(void)dealloc
 {
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:kFCNotificationPlayerIDChanged object:nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:[NSString stringWithUTF8String:kFCNotificationPlayerIDChanged.c_str()] object:nil];
 	mAchievementsState = nil;
 	[mCheckTimer invalidate];
 	mCheckTimer = nil;

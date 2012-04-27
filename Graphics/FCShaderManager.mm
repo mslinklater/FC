@@ -30,6 +30,9 @@
 #import "FCShaderProgramFlatUnlit.h"
 #import "FCShaderProgramWireframe.h"
 #import "FCShaderProgramNoTexVLit.h"
+#import "FCShaderProgramNoTexPLit.h"
+#import "FCShaderProgram1TexVLit.h"
+#import "FCShaderProgram1TexPLit.h"
 #import "FCShaderProgramTest.h"
 
 @implementation FCShaderManager
@@ -69,8 +72,8 @@
 		// find shader in bundle
 		
 		NSString* path = [[NSBundle mainBundle] pathForResource:resourceName ofType:resourceType];
-		
-		FC_ASSERT1(path, @"shader not found");
+
+		FC_ASSERT1(path, @"Shader not found");
 		
 		// load it
 		
@@ -89,6 +92,8 @@
 		
 		ret = [[FCShader alloc] initType:type withSource:source];
 		
+		FC_LOG1(@"Compiled GL shader %@", name);
+
 		[self.shaders setValue:ret forKey:name];
 	}
 	return ret;
@@ -113,19 +118,43 @@
 		
 		// build program
 		
-		if ([name isEqualToString:kFCKeyShaderDebug]) {
+		if ([name isEqualToString:[NSString stringWithUTF8String:kFCKeyShaderDebug.c_str()]]) 
+		{
 			ret = [[FCShaderProgramDebug alloc] initWithVertex:vertexShader andFragment:fragmentShader];
-		} else if ([name isEqualToString:kFCKeyShaderWireframe]) {
+		} 
+		else if ([name isEqualToString:[NSString stringWithUTF8String:kFCKeyShaderWireframe.c_str()]]) 
+		{
 			ret = [[FCShaderProgramWireframe alloc] initWithVertex:vertexShader andFragment:fragmentShader];
-		} else if ([name isEqualToString:kFCKeyShaderFlatUnlit]) {
+		} 
+		else if ([name isEqualToString:[NSString stringWithUTF8String:kFCKeyShaderFlatUnlit.c_str()]]) 
+		{
 			ret = [[FCShaderProgramFlatUnlit alloc] initWithVertex:vertexShader andFragment:fragmentShader];
-		} else if ([name isEqualToString:kFCKeyShaderNoTexVLit]) {
+		} 
+		else if ([name isEqualToString:[NSString stringWithUTF8String:kFCKeyShaderNoTexVLit.c_str()]]) 
+		{
 			ret = [[FCShaderProgramNoTexVLit alloc] initWithVertex:vertexShader andFragment:fragmentShader];
-		} else if ([name isEqualToString:kFCKeyShaderTest]) {
+		} 
+		else if ([name isEqualToString:[NSString stringWithUTF8String:kFCKeyShaderNoTexPLit.c_str()]]) 
+		{
+			ret = [[FCShaderProgramNoTexPLit alloc] initWithVertex:vertexShader andFragment:fragmentShader];
+		} 
+		else if ([name isEqualToString:[NSString stringWithUTF8String:kFCKeyShader1TexVLit.c_str()]]) 
+		{
+			ret = [[FCShaderProgram1TexVLit alloc] initWithVertex:vertexShader andFragment:fragmentShader];
+		} 
+		else if ([name isEqualToString:[NSString stringWithUTF8String:kFCKeyShader1TexPLit.c_str()]]) 
+		{
+			ret = [[FCShaderProgram1TexPLit alloc] initWithVertex:vertexShader andFragment:fragmentShader];
+		} 
+		else if ([name isEqualToString:[NSString stringWithUTF8String:kFCKeyShaderTest.c_str()]]) 
+		{
 			ret = [[FCShaderProgramTest alloc] initWithVertex:vertexShader andFragment:fragmentShader];
-		} else {
+		} 
+		else {
 			FC_ERROR1(@"Unknown shader %@", name);
 		}
+		
+		FC_LOG1(@"Linked GL program %@", name);
 		
 		[self.programs setValue:ret forKey:name];
 	}

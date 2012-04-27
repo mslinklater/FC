@@ -29,6 +29,7 @@
 #import "FCShaderUniform.h"
 #import "FCShaderAttribute.h"
 #import "FCMesh.h"
+#import "FCGL.h"
 
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/glext.h>
@@ -51,37 +52,37 @@
 {
 	self = [super init];
 	if (self) {
-		_glHandle = glCreateProgram();
+		_glHandle = FCglCreateProgram();
 		
 		FC_ASSERT( self.glHandle );
 		
 		_vertexShader = vertexShader;
 		_fragmentShader = fragmentShader;
 		
-		glAttachShader(self.glHandle, vertexShader.glHandle);
-		glAttachShader(self.glHandle, fragmentShader.glHandle);
+		FCglAttachShader(self.glHandle, vertexShader.glHandle);
+		FCglAttachShader(self.glHandle, fragmentShader.glHandle);
 		
-		glLinkProgram(self.glHandle);
+		FCglLinkProgram(self.glHandle);
 		
 		GLint linked;
 		
-		glGetProgramiv(self.glHandle, GL_LINK_STATUS, &linked);
+		FCglGetProgramiv(self.glHandle, GL_LINK_STATUS, &linked);
 		
 		if (!linked) 
 		{
 			GLint infoLen = 0;
 			
-			glGetProgramiv(self.glHandle, GL_INFO_LOG_LENGTH, &infoLen);
+			FCglGetProgramiv(self.glHandle, GL_INFO_LOG_LENGTH, &infoLen);
 			
 			if (infoLen > 1) {
 				char* infoLog = (char*)malloc(sizeof(char) * infoLen);
-				glGetProgramInfoLog(self.glHandle, infoLen, NULL, infoLog);
+				FCglGetProgramInfoLog(self.glHandle, infoLen, NULL, infoLog);
 				NSString* errorString = [NSString stringWithFormat:@"%s", infoLog];
 				FC_FATAL1(@"Linking program:%@", errorString);
 				free(infoLog);
 			}
 			
-			glDeleteProgram(self.glHandle);
+			FCglDeleteProgram(self.glHandle);
 			return nil;
 		}
 		
@@ -104,10 +105,10 @@
 	NSMutableDictionary* perMeshUniforms = [NSMutableDictionary dictionary];
 	
 	GLint numUniforms;
-	glGetProgramiv(self.glHandle, GL_ACTIVE_UNIFORMS, &numUniforms);
+	FCglGetProgramiv(self.glHandle, GL_ACTIVE_UNIFORMS, &numUniforms);
 	
 	GLint uniformMax;	
-	glGetProgramiv(self.glHandle, GL_ACTIVE_UNIFORM_MAX_LENGTH, &uniformMax);
+	FCglGetProgramiv(self.glHandle, GL_ACTIVE_UNIFORM_MAX_LENGTH, &uniformMax);
 	
 	GLchar* uniformNameBuffer = (GLchar*)malloc(sizeof(GLchar) * uniformMax);
 	
@@ -118,9 +119,9 @@
 		GLenum type;
 		GLint location;
 		
-		glGetActiveUniform(self.glHandle, iUniform, uniformMax, &length, &num, &type, uniformNameBuffer);
+		FCglGetActiveUniform(self.glHandle, iUniform, uniformMax, &length, &num, &type, uniformNameBuffer);
 		
-		location = glGetUniformLocation(self.glHandle, uniformNameBuffer);
+		location = FCglGetUniformLocation(self.glHandle, uniformNameBuffer);
 		
 		FCShaderUniform* thisUniform = [FCShaderUniform fcShaderUniform];
 		
@@ -150,8 +151,8 @@
 	GLint numActive;
 	GLint maxLength;
 	
-	glGetProgramiv(self.glHandle, GL_ACTIVE_ATTRIBUTES, &numActive);
-	glGetProgramiv(self.glHandle, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxLength);
+	FCglGetProgramiv(self.glHandle, GL_ACTIVE_ATTRIBUTES, &numActive);
+	FCglGetProgramiv(self.glHandle, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxLength);
 	
 	char* attributeNameBuffer = (char*)malloc(sizeof(char) * maxLength);
 	
@@ -163,8 +164,8 @@
 
 		FCShaderAttribute* thisAttribute = [FCShaderAttribute fcShaderAttribute];
 
-		glGetActiveAttrib(self.glHandle, i, maxLength, &sizeWritten, &size, &type, attributeNameBuffer);
-		thisAttribute.glLocation = glGetAttribLocation(self.glHandle, attributeNameBuffer);
+		FCglGetActiveAttrib(self.glHandle, i, maxLength, &sizeWritten, &size, &type, attributeNameBuffer);
+		thisAttribute.glLocation = FCglGetAttribLocation(self.glHandle, attributeNameBuffer);
 		thisAttribute.type = type;
 		thisAttribute.num = size;
 		
@@ -185,61 +186,61 @@
 
 -(GLuint)getAttribLocation:(NSString *)name
 {
-	GLuint location = glGetAttribLocation(self.glHandle, [name UTF8String]);
+	GLuint location = FCglGetAttribLocation(self.glHandle, [name UTF8String]);
 	return location;
 }
 
 -(void)setUniformValue:(FCShaderUniform *)uniform to:(void *)pValues size:(unsigned int)size
 {
-	glUseProgram(self.glHandle);
+	FCglUseProgram(self.glHandle);
 	
 	switch (uniform.type) 
 	{
 		case GL_FLOAT:
 			FC_ASSERT(size == sizeof(GLfloat) * uniform.num);
-			glUniform1fv(uniform.glLocation, uniform.num, (GLfloat*)pValues);
+			FCglUniform1fv(uniform.glLocation, uniform.num, (GLfloat*)pValues);
 			break;
 		case GL_FLOAT_VEC2:
 			FC_ASSERT(size == sizeof(GLfloat) * 2 * uniform.num);
-			glUniform2fv(uniform.glLocation, uniform.num, (GLfloat*)pValues);
+			FCglUniform2fv(uniform.glLocation, uniform.num, (GLfloat*)pValues);
 			break;
 		case GL_FLOAT_VEC3:
 			FC_ASSERT(size == sizeof(GLfloat) * 3 * uniform.num);
-			glUniform3fv(uniform.glLocation, uniform.num, (GLfloat*)pValues);
+			FCglUniform3fv(uniform.glLocation, uniform.num, (GLfloat*)pValues);
 			break;
 		case GL_FLOAT_VEC4:
 			FC_ASSERT(size == sizeof(GLfloat) * 4 * uniform.num);
-			glUniform4fv(uniform.glLocation, uniform.num, (GLfloat*)pValues);
+			FCglUniform4fv(uniform.glLocation, uniform.num, (GLfloat*)pValues);
 			break;
 			
 		case GL_INT:
 			FC_ASSERT(size == sizeof(GLint) * uniform.num);
-			glUniform1iv(uniform.glLocation, uniform.num, (GLint*)pValues);
+			FCglUniform1iv(uniform.glLocation, uniform.num, (GLint*)pValues);
 			break;
 		case GL_INT_VEC2:
 			FC_ASSERT(size == sizeof(GLint) * 2 * uniform.num);
-			glUniform2iv(uniform.glLocation, uniform.num, (GLint*)pValues);
+			FCglUniform2iv(uniform.glLocation, uniform.num, (GLint*)pValues);
 			break;
 		case GL_INT_VEC3:
 			FC_ASSERT(size == sizeof(GLint) * 3 * uniform.num);
-			glUniform3iv(uniform.glLocation, uniform.num, (GLint*)pValues);
+			FCglUniform3iv(uniform.glLocation, uniform.num, (GLint*)pValues);
 			break;
 		case GL_INT_VEC4:
 			FC_ASSERT(size == sizeof(GLint) * 4 * uniform.num);
-			glUniform4iv(uniform.glLocation, uniform.num, (GLint*)pValues);
+			FCglUniform4iv(uniform.glLocation, uniform.num, (GLint*)pValues);
 			break;
 			
 		case GL_FLOAT_MAT2:
 			FC_ASSERT(size == sizeof(GLfloat) * 4 * uniform.num);
-			glUniformMatrix2fv(uniform.glLocation, uniform.num, GL_FALSE, (GLfloat*)pValues);
+			FCglUniformMatrix2fv(uniform.glLocation, uniform.num, GL_FALSE, (GLfloat*)pValues);
 			break;			
 		case GL_FLOAT_MAT3:
 			FC_ASSERT(size == sizeof(GLfloat) * 9 * uniform.num);
-			glUniformMatrix3fv(uniform.glLocation, uniform.num, GL_FALSE, (GLfloat*)pValues);
+			FCglUniformMatrix3fv(uniform.glLocation, uniform.num, GL_FALSE, (GLfloat*)pValues);
 			break;
 		case GL_FLOAT_MAT4:
 			FC_ASSERT(size == sizeof(GLfloat) * 16 * uniform.num);
-			glUniformMatrix4fv(uniform.glLocation, uniform.num, GL_FALSE, (GLfloat*)pValues);
+			FCglUniformMatrix4fv(uniform.glLocation, uniform.num, GL_FALSE, (GLfloat*)pValues);
 			break;
 
 		default:
@@ -251,7 +252,7 @@
 
 -(void)use
 {
-	glUseProgram(self.glHandle);
+	FCglUseProgram(self.glHandle);
 }
 
 -(void)bindUniformsWithMesh:(FCMesh*)mesh vertexDescriptor:(FCVertexDescriptor *)vertexDescriptor
@@ -266,21 +267,21 @@
 
 -(void)validate
 {
-	glValidateProgram(self.glHandle);
+	FCglValidateProgram(self.glHandle);
 	
 	GLint status;
 	
-	glGetProgramiv(self.glHandle, GL_VALIDATE_STATUS, &status);
+	FCglGetProgramiv(self.glHandle, GL_VALIDATE_STATUS, &status);
 
 	if (!status) 
 	{
 		GLint infoLen = 0;
 		
-		glGetProgramiv(self.glHandle, GL_INFO_LOG_LENGTH, &infoLen);
+		FCglGetProgramiv(self.glHandle, GL_INFO_LOG_LENGTH, &infoLen);
 		
 		if (infoLen > 1) {
 			char* infoLog = (char*)malloc(sizeof(char) * infoLen);
-			glGetProgramInfoLog(self.glHandle, infoLen, NULL, infoLog);
+			FCglGetProgramInfoLog(self.glHandle, infoLen, NULL, infoLog);
 			NSString* errorString = [NSString stringWithFormat:@"%s", infoLog];
 			FC_FATAL1(@"Validate fail:%@", errorString);
 			free(infoLog);
@@ -295,11 +296,11 @@
 	GLint numActive;
 	GLint maxLength;
 	
-	glGetProgramiv(self.glHandle, GL_ACTIVE_ATTRIBUTES, &numActive);
+	FCglGetProgramiv(self.glHandle, GL_ACTIVE_ATTRIBUTES, &numActive);
 	
 	[attribArray addObject:[NSString stringWithFormat:@"Num active attributes: %d", numActive]];
 
-	glGetProgramiv(self.glHandle, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxLength);
+	FCglGetProgramiv(self.glHandle, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &maxLength);
 	
 	char* pBuffer = (char*)malloc(sizeof(char) * maxLength);
 
@@ -307,7 +308,7 @@
 		GLsizei sizeWritten;
 		GLint size;
 		GLenum type;
-		glGetActiveAttrib(self.glHandle, i, maxLength, &sizeWritten, &size, &type, pBuffer);
+		FCglGetActiveAttrib(self.glHandle, i, maxLength, &sizeWritten, &size, &type, pBuffer);
 		
 		[attribArray addObject:[NSString stringWithFormat:@"%d %s %d x %@", i, pBuffer, size, FCGLStringForEnum(type)]];
 	}

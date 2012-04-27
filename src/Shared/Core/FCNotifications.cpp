@@ -20,5 +20,15 @@
  THE SOFTWARE.
  */
 
-#import "FCMatrix.h"
+#include "FCNotifications.h"
 
+std::string kFCNotificationContinue = "FCN_Continue";
+std::string kFCNotificationQuit = "FCN_Quit";
+std::string kFCNotificationRestart = "FCN_Restart";
+std::string kFCNotificationRetry = "FCN_Retry";
+
+std::string kFCNotificationPause = "FCN_Pause";
+std::string kFCNotificationResume = "FCN_Resume";
+
+std::string kFCNotificationPlayerIDChanged = "FCN_PlayerIDChanged";
+std::string kFCNotificationHighScoresChanged = "FCN_HighScoresChanged";

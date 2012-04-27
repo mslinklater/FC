@@ -366,7 +366,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 #if defined (FC_LUA)
 	[[FCLua instance].coreVM setGlobal:@"FCApp.paused" boolean:YES];
 #endif
-	[[NSNotificationCenter defaultCenter] postNotificationName:kFCNotificationPause object:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithUTF8String:kFCNotificationPause.c_str()] object:nil];
 }
 
 -(void)resume
@@ -375,7 +375,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 #if defined (FC_LUA)
 	[[FCLua instance].coreVM setGlobal:@"FCApp.paused" boolean:NO];
 #endif
-	[[NSNotificationCenter defaultCenter] postNotificationName:kFCNotificationResume object:nil];
+	[[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithUTF8String:kFCNotificationResume.c_str()] object:nil];
 }
 
 -(void)willResignActive

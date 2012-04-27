@@ -55,7 +55,9 @@ static int lua_SetCurrentRenderer( lua_State* _state )
 
 @synthesize name = _name;
 @synthesize models = _models;
+@synthesize meshes = _meshes;
 @synthesize gatherList = _gatherList;
+@synthesize textureManager = _textureManager;
 
 #pragma mark - FCSingleton protocol
 
@@ -65,6 +67,7 @@ static int lua_SetCurrentRenderer( lua_State* _state )
 	if (self) {
 		_name = name;
 		_models = [[NSMutableArray alloc] init];
+		_meshes = [[NSMutableArray alloc] init];
 		_gatherList = [[NSMutableArray alloc] init];
 		
 		if (!s_renderers) // one off init
@@ -101,6 +104,7 @@ static int lua_SetCurrentRenderer( lua_State* _state )
 	// go through gather list and aggregate the arrays
 	
 	[_models removeAllObjects];
+	[_meshes removeAllObjects];
 	
 	// gather from objects on the gather list
 	
@@ -109,16 +113,50 @@ static int lua_SetCurrentRenderer( lua_State* _state )
 		[_models addObjectsFromArray:[obj renderGather]];
 	}
 
-	// sorting here ?
+	for (FCModel* model in _models) {
+		[_meshes addObjectsFromArray:model.meshes];
+	}
+	
+	// sorting here - by shader and alpha
 
 	// render the models in sorted order
 	
-	for( FCModel* model in _models )
+	GLuint lastShaderProgram = 99999;
+	
+	for( FCMesh* mesh in _meshes )
 	{
-		[model render];
-	}
+		FC::Matrix4f mat = FC::Matrix4f::Identity();
+		FC::Matrix4f trans = FC::Matrix4f::Translate(mesh.parentModel.position.x, mesh.parentModel.position.y, 0.0f);
+		FC::Matrix4f rot = FC::Matrix4f::Rotate(mesh.parentModel.rotation, FC::Vector3f(0.0f, 0.0f, -1.0f) );
+		
+		FC::Vector3f lightDirection( 0.707f, 0.707f, 0.707f );		
+		FC::Vector3f invLight = lightDirection * rot;
+		
+		mat = rot * trans;
+		
+//			if (lastShaderProgram != mesh.shaderProgram.glHandle) 
+//			{
+				FCShaderUniform* uniform = [mesh.shaderProgram getUniform:@"modelview"];		
+				[mesh.shaderProgram setUniformValue:uniform to:&mat size:sizeof(mat)];
+				
+				uniform = [mesh.shaderProgram getUniform:@"light_direction"];
+				if (uniform) {
+					[mesh.shaderProgram setUniformValue:uniform to:&invLight size:sizeof(invLight)];
+				}
+				lastShaderProgram = mesh.shaderProgram.glHandle;
+//			}
+		
+//		[_textureManager bindDebugTexture];
 
-	[_models removeAllObjects];
+		[mesh render];
+	}
+	
+//	for( FCModel* model in _models )
+//	{
+//		[model render];
+//	}
+
+//	[_models removeAllObjects];
 }
 
 @end

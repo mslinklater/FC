@@ -8,8 +8,17 @@ bl_info = {
 
 import xml.etree.ElementTree as ET
 import bpy
-import bmesh
+import os
+import shutil
+import hashlib
 from array import array
+
+kShaderTypeWireframe = "Wireframe"
+kShaderTypeFlatUnlit = "Flat unlit"
+kShaderTypeNoTexVLit = "NoTex VLit"
+kShaderTypeNoTexPLit = "NoTex PLit"
+kShaderType1TexVLit = "1 Tex VLit"
+kShaderType1TexPLit = "1 Tex PLit"
 
 #-----------------------------------------------------------------------------------------
 
@@ -62,6 +71,16 @@ class FCColor:
 	def __eq__(self, other):
 		return self.r == other.r and self.g == other.g and self.b == other.b and self.a == other.a
 
+#-----------------------------------------------------------------------------------------
+
+class Vector2:
+	def __init__(self, x=0, y=0):
+		self.x = x
+		self.y = y
+		
+	def __eq__(self, other):
+		return self.x == other.x and self.y == other.y
+		
 #-----------------------------------------------------------------------------------------
 
 class Vector3:
@@ -127,16 +146,50 @@ class FCVertex:
 		self.specular_color = None
 		self.normal = None
 		self.specular_hardness = None
+		self.uv1 = None
 
 	def __eq__(self, other):
 		return self.pos == other.pos \
 		and self.diffuse_color == other.diffuse_color \
 		and self.normal == other.normal \
 		and self.specular_color == other.specular_color \
-		and self.specular_hardness == other.specular_hardness
+		and self.specular_hardness == other.specular_hardness \
+		and self.uv1 == other.uv1 \
 
 	def __str__(self):
 		return "pos(), normal(), diffuse()".format(self)
+
+#-----------------------------------------------------------------------------------------
+
+def HashAndCopyTexture( inputPath, outputPath ):
+
+	inputPath = os.path.dirname( bpy.data.filepath ) + str(inputPath)[1:]
+#	print("HashAndCopyTexture texturePath: " + inputPath )
+#	print("HashAndCopyTexture outputPath:" + outputPath)
+	inputFileType = os.path.splitext(inputPath)[1]
+#	print("File type: " + inputFileType)
+
+	textureFolderPath = os.path.dirname( outputPath ) + "/Textures"
+
+#	print("TextureFolderPath: " + textureFolderPath)
+
+	if not os.path.exists( textureFolderPath ):
+		os.makedirs( textureFolderPath )
+
+	f = open( inputPath, 'rb' )
+	size = os.stat( inputPath )
+
+	hash = hashlib.md5( f.read( size.st_size) ).hexdigest()
+
+	outputPath = textureFolderPath + "/" + str(hash) + inputFileType
+	
+#	print("Reformed outputPath:" + outputPath)
+	
+	if not os.path.exists( outputPath ):
+		print("Copying texture image file")
+		shutil.copyfile( inputPath, outputPath )
+	
+	return str( hash )
 
 #-----------------------------------------------------------------------------------------
 
@@ -241,9 +294,9 @@ class ExportFCR(bpy.types.Operator):
 			locatorElement.set( "rotationY", str(locator.rotation_euler.y) )
 			locatorElement.set( "rotationZ", str(locator.rotation_euler.z) )
 
-	def processWireframeShaderMesh( self, mesh, bm, meshElement, vertexBufferElement, indexBufferElement ):
+	def processWireframeShaderMesh( self, mesh, meshElement, vertexBufferElement, indexBufferElement ):
 		meshElement.set( "shader", "wireframe" )
-		diffuseColor = mesh.material_slots[bm.faces[0].material_index].material.diffuse_color
+		diffuseColor = mesh.material_slots[self.__polygons[0].material_index].material.diffuse_color
 		meshElement.set( "diffusecolor", str(diffuseColor.r) + "," + str(diffuseColor.g) + "," + str(diffuseColor.b) )
 		
 		meshElement.set( "numvertices", str(len(self.__vertices)) )
@@ -261,7 +314,7 @@ class ExportFCR(bpy.types.Operator):
 		origOffset = self.__binFile.tell()
 		indexBufferElement.set( "offset", str( origOffset ) )
 		for edge in self.__edges:
-			int_array = array( 'H', [ edge.verts[0].index, edge.verts[1].index ] )
+			int_array = array( 'H', [ edge.vertices[0], edge.vertices[1] ] )
 			int_array.tofile( self.__binFile )
 		newOffset = self.__binFile.tell()
 		indexBufferElement.set( "size", str( newOffset - origOffset ) )
@@ -275,18 +328,25 @@ class ExportFCR(bpy.types.Operator):
 		self.__VertCache.append( vertex )
 		return i
 
-	def processFlatUnlitShaderMesh( self, mesh, bm, meshElement, vertexBufferElement, indexBufferElement ):
+	def writeStandardIndexBuffer( self, indices, indexBufferElement ):
+		origOffset = self.__binFile.tell()
+		indexBufferElement.set( "offset", str( origOffset ) )
+		for index in indices:
+			int_array = array( 'H', [ index ] )
+			int_array.tofile( self.__binFile )
+		newOffset = self.__binFile.tell()
+		indexBufferElement.set( "size", str( newOffset - origOffset ) )
+
+	def processFlatUnlitShaderMesh( self, mesh, meshElement, vertexBufferElement, indexBufferElement ):
 		meshElement.set( "shader", "flatunlit" )
 		self.__VertCache = []
 		indices = []
-		print( "num faces " + str(len(self.__faces)) )
-		for face in self.__faces:
-			face.normal_update()
+		for face in self.__polygons:
 			diffuse_color = mesh.material_slots[ face.material_index ].material.diffuse_color
 			diffuse_intensity = mesh.material_slots[ face.material_index ].material.diffuse_intensity
-			for vert in face.verts:
+			for vert in face.vertices:
 				thisVert = FCVertex()
-				thisVert.pos = vert.co
+				thisVert.pos = self.__vertices[vert].co
 				thisVert.diffuse_color = diffuse_color
 				thisVert.diffuse_color.r *= diffuse_intensity
 				thisVert.diffuse_color.g *= diffuse_intensity
@@ -304,22 +364,222 @@ class ExportFCR(bpy.types.Operator):
 		newOffset = self.__binFile.tell()
 		vertexBufferElement.set( "size", str( newOffset - origOffset ) )
 
-		origOffset = self.__binFile.tell()
-		indexBufferElement.set( "offset", str( origOffset ) )
-		for index in indices:
-			int_array = array( 'H', [ index ] )
-			int_array.tofile( self.__binFile )
-		newOffset = self.__binFile.tell()
-		indexBufferElement.set( "size", str( newOffset - origOffset ) )
+		self.writeStandardIndexBuffer( indices, indexBufferElement )
 
 	#-------------------------------------------------------------------------------------
 
-	def processNoTexVLitShaderMesh( self, mesh, bm, meshElement, vertexBufferElement, indexBufferElement ):
-		meshElement.set( "shader", "test" )
-		print("Processing Test shader mesh")
+	def processNoTexVLitShaderMesh( self, mesh, meshElement, vertexBufferElement, indexBufferElement ):
+		meshElement.set( "shader", "notex_vlit" )
 		self.__VertCache = []
 		indices = []
-		print( "num faces " + str(len(self.__faces)) )
+		for face in self.__polygons:
+			material = mesh.material_slots[ face.material_index ].material
+			diffuse_color = material.diffuse_color
+			diffuse_intensity = material.diffuse_intensity
+			diffuse_color.r *= diffuse_intensity
+			diffuse_color.g *= diffuse_intensity
+			diffuse_color.b *= diffuse_intensity
+			specular_color = material.specular_color
+			specular_intensity = material.specular_intensity
+			specular_color.r *= specular_intensity
+			specular_color.g *= specular_intensity
+			specular_color.b *= specular_intensity
+			for vert in face.vertices:
+				thisVert = FCVertex()
+				if face.use_smooth:
+					thisVert.normal = self.__vertices[vert].normal
+				else:
+					thisVert.normal = face.normal
+				thisVert.pos = self.__vertices[vert].co
+				thisVert.diffuse_color = diffuse_color
+				thisVert.specular_color = specular_color
+				thisVert.specular_hardness = material.specular_hardness
+				indices.append( self.indexInVertCache( thisVert ) )				
+		meshElement.set( "numvertices", str(len(indices)) )
+
+		origOffset = self.__binFile.tell()
+		vertexBufferElement.set( "offset", str( origOffset ) )
+		for vertex in self.__VertCache:
+			float_array = array( 'f', [ vertex.pos.x, vertex.pos.y, vertex.pos.z ] )
+			float_array.tofile( self.__binFile )
+			float_array = array( 'h', [ int(vertex.normal.x * 32767), int(vertex.normal.y * 32767), int(vertex.normal.z * 32767), 0 ] )
+			float_array.tofile( self.__binFile )
+			float_array = array( 'B', [ int(vertex.diffuse_color.r * 255), int(vertex.diffuse_color.g * 255), int(vertex.diffuse_color.b * 255), 255 ] )
+			float_array.tofile( self.__binFile )
+			float_array = array( 'B', [ int(vertex.specular_color.r * 255), int(vertex.specular_color.g * 255), int(vertex.specular_color.b * 255), int(vertex.specular_hardness) ] )
+			float_array.tofile( self.__binFile )
+		newOffset = self.__binFile.tell()
+		vertexBufferElement.set( "size", str( newOffset - origOffset ) )
+
+		self.writeStandardIndexBuffer( indices, indexBufferElement )
+
+	#-------------------------------------------------------------------------------------
+
+	def processNoTexPLitShaderMesh( self, mesh, meshElement, vertexBufferElement, indexBufferElement ):
+		meshElement.set( "shader", "notex_plit" )
+		self.__VertCache = []
+		indices = []
+		for face in self.__polygons:
+			material = mesh.material_slots[ face.material_index ].material
+			diffuse_color = material.diffuse_color
+			diffuse_intensity = material.diffuse_intensity
+			diffuse_color.r *= diffuse_intensity
+			diffuse_color.g *= diffuse_intensity
+			diffuse_color.b *= diffuse_intensity
+			specular_color = material.specular_color
+			specular_intensity = material.specular_intensity
+			specular_color.r *= specular_intensity
+			specular_color.g *= specular_intensity
+			specular_color.b *= specular_intensity
+			for vert in face.vertices:
+				thisVert = FCVertex()
+				if face.use_smooth:
+					thisVert.normal = self.__vertices[vert].normal
+				else:
+					thisVert.normal = face.normal
+				thisVert.pos = self.__vertices[vert].co
+				thisVert.diffuse_color = diffuse_color
+				thisVert.specular_color = specular_color
+				thisVert.specular_hardness = material.specular_hardness
+				indices.append( self.indexInVertCache( thisVert ) )				
+		meshElement.set( "numvertices", str(len(indices)) )
+
+		origOffset = self.__binFile.tell()
+		vertexBufferElement.set( "offset", str( origOffset ) )
+		for vertex in self.__VertCache:
+			float_array = array( 'f', [ vertex.pos.x, vertex.pos.y, vertex.pos.z ] )
+			float_array.tofile( self.__binFile )
+			float_array = array( 'h', [ int(vertex.normal.x * 32767), int(vertex.normal.y * 32767), int(vertex.normal.z * 32767), 0 ] )
+			float_array.tofile( self.__binFile )
+			float_array = array( 'B', [ int(vertex.diffuse_color.r * 255), int(vertex.diffuse_color.g * 255), int(vertex.diffuse_color.b * 255), 255 ] )
+			float_array.tofile( self.__binFile )
+			float_array = array( 'B', [ int(vertex.specular_color.r * 255), int(vertex.specular_color.g * 255), int(vertex.specular_color.b * 255), int(vertex.specular_hardness) ] )
+			float_array.tofile( self.__binFile )
+		newOffset = self.__binFile.tell()
+		vertexBufferElement.set( "size", str( newOffset - origOffset ) )
+
+		self.writeStandardIndexBuffer( indices, indexBufferElement )
+
+	#-------------------------------------------------------------------------------------
+
+	def process1TexVLitShaderMesh( self, mesh, meshElement, vertexBufferElement, indexBufferElement ):
+		meshElement.set( "shader", "1tex_vlit" )
+		
+		textureArray = mesh.data.tessface_uv_textures
+		if len(textureArray) != 1:
+			print("ERROR: 1 Tex shader mesh has " + str(len(textureArray)) + " textures")
+			return
+		
+		textureimage = mesh.data.tessface_uv_textures[0].data[0].image
+		textureHash = HashAndCopyTexture( textureimage.filepath, self.filepath )
+		meshElement.set( "tex1", textureHash )
+		
+		self.__VertCache = []
+		indices = []
+		faceNum = 0
+		for face in self.__polygons:
+			material = mesh.material_slots[ face.material_index ].material
+			diffuse_color = material.diffuse_color
+			diffuse_intensity = material.diffuse_intensity
+			diffuse_color.r *= diffuse_intensity
+			diffuse_color.g *= diffuse_intensity
+			diffuse_color.b *= diffuse_intensity
+			specular_color = material.specular_color
+			specular_intensity = material.specular_intensity
+			specular_color.r *= specular_intensity
+			specular_color.g *= specular_intensity
+			specular_color.b *= specular_intensity
+			#uv1
+			uvdata = mesh.data.tessface_uv_textures[0].data[faceNum]
+			faceNum = faceNum + 1
+			uvs = [ uvdata.uv1, uvdata.uv2, uvdata.uv3 ]
+			index = 0
+			for vert in face.vertices:
+				thisVert = FCVertex()
+				if face.use_smooth:
+					thisVert.normal = self.__vertices[vert].normal
+				else:
+					thisVert.normal = face.normal
+				thisVert.pos = self.__vertices[vert].co
+				thisVert.diffuse_color = diffuse_color
+				thisVert.specular_color = specular_color
+				thisVert.specular_hardness = material.specular_hardness
+				thisVert.uv1 = uvs[index]
+				indices.append( self.indexInVertCache( thisVert ) )				
+				index = index + 1
+		meshElement.set( "numvertices", str(len(indices)) )
+
+		origOffset = self.__binFile.tell()
+		vertexBufferElement.set( "offset", str( origOffset ) )
+		for vertex in self.__VertCache:
+			float_array = array( 'f', [ vertex.pos.x, vertex.pos.y, vertex.pos.z ] )
+			float_array.tofile( self.__binFile )
+			float_array = array( 'h', [ int(vertex.normal.x * 32767), int(vertex.normal.y * 32767), int(vertex.normal.z * 32767), 0 ] )
+			float_array.tofile( self.__binFile )
+			float_array = array( 'B', [ int(vertex.diffuse_color.r * 255), int(vertex.diffuse_color.g * 255), int(vertex.diffuse_color.b * 255), 255 ] )
+			float_array.tofile( self.__binFile )
+			float_array = array( 'B', [ int(vertex.specular_color.r * 255), int(vertex.specular_color.g * 255), int(vertex.specular_color.b * 255), int(vertex.specular_hardness) ] )
+			float_array.tofile( self.__binFile )
+			float_array = array( 'f', [ vertex.uv1.x, vertex.uv1.y ] )
+			float_array.tofile( self.__binFile )
+		newOffset = self.__binFile.tell()
+		vertexBufferElement.set( "size", str( newOffset - origOffset ) )
+
+		self.writeStandardIndexBuffer( indices, indexBufferElement )
+
+	#-------------------------------------------------------------------------------------
+
+	def process1TexPLitShaderMesh( self, mesh, meshElement, vertexBufferElement, indexBufferElement ):
+		meshElement.set( "shader", "1tex_plit" )
+		self.__VertCache = []
+		indices = []
+		for face in self.__polygons:
+			material = mesh.material_slots[ face.material_index ].material
+			diffuse_color = material.diffuse_color
+			diffuse_intensity = material.diffuse_intensity
+			diffuse_color.r *= diffuse_intensity
+			diffuse_color.g *= diffuse_intensity
+			diffuse_color.b *= diffuse_intensity
+			specular_color = material.specular_color
+			specular_intensity = material.specular_intensity
+			specular_color.r *= specular_intensity
+			specular_color.g *= specular_intensity
+			specular_color.b *= specular_intensity
+			for vert in face.vertices:
+				thisVert = FCVertex()
+				if face.use_smooth:
+					thisVert.normal = self.__vertices[vert].normal
+				else:
+					thisVert.normal = face.normal
+				thisVert.pos = self.__vertices[vert].co
+				thisVert.diffuse_color = diffuse_color
+				thisVert.specular_color = specular_color
+				thisVert.specular_hardness = material.specular_hardness
+				indices.append( self.indexInVertCache( thisVert ) )				
+		meshElement.set( "numvertices", str(len(indices)) )
+
+		origOffset = self.__binFile.tell()
+		vertexBufferElement.set( "offset", str( origOffset ) )
+		for vertex in self.__VertCache:
+			float_array = array( 'f', [ vertex.pos.x, vertex.pos.y, vertex.pos.z ] )
+			float_array.tofile( self.__binFile )
+			float_array = array( 'h', [ int(vertex.normal.x * 32767), int(vertex.normal.y * 32767), int(vertex.normal.z * 32767), 0 ] )
+			float_array.tofile( self.__binFile )
+			float_array = array( 'B', [ int(vertex.diffuse_color.r * 255), int(vertex.diffuse_color.g * 255), int(vertex.diffuse_color.b * 255), 255 ] )
+			float_array.tofile( self.__binFile )
+			float_array = array( 'B', [ int(vertex.specular_color.r * 255), int(vertex.specular_color.g * 255), int(vertex.specular_color.b * 255), int(vertex.specular_hardness) ] )
+			float_array.tofile( self.__binFile )
+		newOffset = self.__binFile.tell()
+		vertexBufferElement.set( "size", str( newOffset - origOffset ) )
+
+		self.writeStandardIndexBuffer( indices, indexBufferElement )
+
+	#-------------------------------------------------------------------------------------
+
+	def processTestShaderMesh( self, mesh, meshElement, vertexBufferElement, indexBufferElement ):
+		meshElement.set( "shader", "test" )
+		self.__VertCache = []
+		indices = []
 		for face in self.__faces:
 			face.normal_update()
 			material = mesh.material_slots[ face.material_index ].material
@@ -360,95 +620,50 @@ class ExportFCR(bpy.types.Operator):
 		newOffset = self.__binFile.tell()
 		vertexBufferElement.set( "size", str( newOffset - origOffset ) )
 
-		origOffset = self.__binFile.tell()
-		indexBufferElement.set( "offset", str( origOffset ) )
-		for index in indices:
-			int_array = array( 'H', [ index ] )
-			int_array.tofile( self.__binFile )
-		newOffset = self.__binFile.tell()
-		indexBufferElement.set( "size", str( newOffset - origOffset ) )
-
-	#-------------------------------------------------------------------------------------
-
-	def processTestShaderMesh( self, mesh, bm, meshElement, vertexBufferElement, indexBufferElement ):
-		meshElement.set( "shader", "test" )
-		print("Processing Test shader mesh")
-		self.__VertCache = []
-		indices = []
-		print( "num faces " + str(len(self.__faces)) )
-		for face in self.__faces:
-			face.normal_update()
-			material = mesh.material_slots[ face.material_index ].material
-			diffuse_color = material.diffuse_color
-			diffuse_intensity = material.diffuse_intensity
-			diffuse_color.r *= diffuse_intensity
-			diffuse_color.g *= diffuse_intensity
-			diffuse_color.b *= diffuse_intensity
-			specular_color = material.specular_color
-			specular_intensity = material.specular_intensity
-			specular_color.r *= specular_intensity
-			specular_color.g *= specular_intensity
-			specular_color.b *= specular_intensity
-			for vert in face.verts:
-				thisVert = FCVertex()
-				if face.smooth:
-					thisVert.normal = vert.normal
-				else:
-					thisVert.normal = face.normal
-				thisVert.pos = vert.co
-				thisVert.diffuse_color = diffuse_color
-				thisVert.specular_color = specular_color
-				thisVert.specular_hardness = material.specular_hardness
-				indices.append( self.indexInVertCache( thisVert ) )				
-		meshElement.set( "numvertices", str(len(indices)) )
-
-		origOffset = self.__binFile.tell()
-		vertexBufferElement.set( "offset", str( origOffset ) )
-		for vertex in self.__VertCache:
-			float_array = array( 'f', [ vertex.pos.x, vertex.pos.y, vertex.pos.z ] )
-			float_array.tofile( self.__binFile )
-			float_array = array( 'h', [ int(vertex.normal.x * 32767), int(vertex.normal.y * 32767), int(vertex.normal.z * 32767), 0 ] )
-			float_array.tofile( self.__binFile )
-			float_array = array( 'B', [ int(vertex.diffuse_color.r * 255), int(vertex.diffuse_color.g * 255), int(vertex.diffuse_color.b * 255), 255 ] )
-			float_array.tofile( self.__binFile )
-			float_array = array( 'B', [ int(vertex.specular_color.r * 255), int(vertex.specular_color.g * 255), int(vertex.specular_color.b * 255), int(vertex.specular_hardness) ] )
-			float_array.tofile( self.__binFile )
-		newOffset = self.__binFile.tell()
-		vertexBufferElement.set( "size", str( newOffset - origOffset ) )
-
-		origOffset = self.__binFile.tell()
-		indexBufferElement.set( "offset", str( origOffset ) )
-		for index in indices:
-			int_array = array( 'H', [ index ] )
-			int_array.tofile( self.__binFile )
-		newOffset = self.__binFile.tell()
-		indexBufferElement.set( "size", str( newOffset - origOffset ) )
+		self.writeStandardIndexBuffer( indices, indexBufferElement )
 
 	#-------------------------------------------------------------------------------------
 		
 	def processMesh(self, mesh, meshElement, vertexBufferElement, indexBufferElement):
 		mesh.data.calc_tessface()
-		bm = bmesh.new()
-		bm.from_mesh( mesh.data )
-		#get vertices
-		self.__vertices = bm.verts
-		self.__faces = bm.faces
-		self.__edges = bm.edges
-#		meshElement.set( "shader", mesh.fc_shader_type )
-		meshElement.set( "numtriangles", str(len(self.__faces)) )
+		self.__vertices = mesh.data.vertices
+		self.__polygons = mesh.data.polygons
+		self.__edges = mesh.data.edges
+		
+		# Make sure polygons are triangulated
+		
+		for poly in self.__polygons:
+			if len( poly.vertices ) > 3:
+				print("ERROR - Non-triangulated mesh: " + mesh.data.name )
+				return
+		
+		print("Processing mesh with '" + mesh.fc_shader_type + "' shader")
+		
+		meshElement.set( "numtriangles", str(len(self.__polygons)) )
 		meshElement.set( "numedges", str(len(self.__edges)) )
 		if mesh.fc_shader_type == "Wireframe":
-			self.processWireframeShaderMesh( mesh, bm, meshElement, vertexBufferElement, indexBufferElement )
-		elif mesh.fc_shader_type == "Untextured":
-			self.processUntexturedShaderMesh( mesh, bm, meshElement, vertexBufferElement, indexBufferElement )
+			self.processWireframeShaderMesh( mesh, meshElement, vertexBufferElement, indexBufferElement )
 		elif mesh.fc_shader_type == "Flat unlit":
-			self.processFlatUnlitShaderMesh( mesh, bm, meshElement, vertexBufferElement, indexBufferElement )
+			self.processFlatUnlitShaderMesh( mesh, meshElement, vertexBufferElement, indexBufferElement )
 		elif mesh.fc_shader_type == "NoTex VLit":
-			self.processNoTexVLitShaderMesh( mesh, bm, meshElement, vertexBufferElement, indexBufferElement )
+			self.processNoTexVLitShaderMesh( mesh, meshElement, vertexBufferElement, indexBufferElement )
+		elif mesh.fc_shader_type == "NoTex PLit":
+			self.processNoTexPLitShaderMesh( mesh, meshElement, vertexBufferElement, indexBufferElement )
+		elif mesh.fc_shader_type == "1 Tex VLit":
+			self.process1TexVLitShaderMesh( mesh, meshElement, vertexBufferElement, indexBufferElement )
+		elif mesh.fc_shader_type == "1 Tex PLit":
+			self.process1TexPLitShaderMesh( mesh, meshElement, vertexBufferElement, indexBufferElement )
 		elif mesh.fc_shader_type == "Test":
-			self.processTestShaderMesh( mesh, bm, meshElement, vertexBufferElement, indexBufferElement )
+			self.processTestShaderMesh( mesh, meshElement, vertexBufferElement, indexBufferElement )
+		else:
+			print("Unknown shader type: " + mesh.fc_shader_type)
 		
+	#-------------------------------------------------------------------------------------
+
 	def processScene(self):
+	
+		print("Num actors in scene: " + str(len(self.__actors)) )
+	
 		for actor in self.__actors:
 			actorElement = ET.SubElement( self.__sceneElement, "actor" )
 			actorElement.set("id", actor.name)
@@ -460,7 +675,6 @@ class ExportFCR(bpy.types.Operator):
 			actorElement.set("offsetY", str(actor.location.y))
 			actorElement.set("offsetZ", str(actor.location.z))
 			children = actor.children
-			# are there any fixtures ?
 			fixtures = []
 			meshes = []
 			for obj in children:
@@ -475,7 +689,7 @@ class ExportFCR(bpy.types.Operator):
 				bodyElement.set( "id", actor.name )
 				self.processFixtures(fixtures, bodyElement)
 				
-			print( "num meshes " + str(len(meshes)) )
+			print( "Num meshes in scene: " + str(len(meshes)) )
 			
 			if len(meshes):
 				actorElement.set("model", actor.name)
@@ -494,10 +708,14 @@ class ExportFCR(bpy.types.Operator):
 					self.processMesh( mesh, meshElement, vertexBufferElement, indexBufferElement )
 	
 	def execute(self, context):
-		print("executed FCR export at " + self.filepath)
-		bpy.ops.object.mode_set()	# get back to OBJECT edit mode
-		# set up both filenames
+		print("----- Export FCR Resource -----")
+		print("Output file :" + self.filepath)
 		
+		#if objects are selected go back to OBJECT edit mode
+		if len(bpy.context.selected_objects):
+			bpy.ops.object.mode_set()
+
+		# set up both filenames		
 		strippedFilename = ""
 		suffixPos = self.filepath.find(".")
 		if suffixPos == -1:
@@ -516,14 +734,17 @@ class ExportFCR(bpy.types.Operator):
 
 		for obj in objs:
 			if obj.fc_object_type == "Actor":
+				print("Found actor: " + obj.name)
 				self.__actors.append( obj )
 			if obj.fc_object_type == "Fixture":
+				print("Found fixture: " + obj.name)
 				self.__fixtures.append( obj )
 			if obj.fc_object_type == "Mesh":
+				print("Found mesh: " + obj.name)
 				self.__meshes.append( obj )
 			if obj.fc_object_type == "Locator":
+				print("Found locator: " + obj.name)
 				self.__locators.append( obj )
-
 		
 		xmlRoot = ET.Element("fcr")
 		xmlRoot.set( 'version', '1' )
@@ -564,7 +785,13 @@ def register():
 	FCFixtureTypes = [("Circle", "Circle", "Circle"), ("Box", "Box", "Box"), ("Hull", "Hull", "Hull")]
 	bpy.types.Object.fc_fixture_type = bpy.props.EnumProperty( items=FCFixtureTypes, name="FixtureType", description="Fixture Type", default="Hull" )
 	
-	FCShaderTypes = [("Wireframe", "Wireframe", "Wireframe"), ("Untextured", "Untextured", "Untextured"), ("Flat unlit", "Flat unlit", "flat unlit"), ("NoTex VLit", "NoTex VLit", "NoTex VLit"), ("Test", "Test", "Test")]
+	FCShaderTypes = [("Wireframe", "Wireframe", "Wireframe"), \
+	("Flat unlit", "Flat unlit", "Flat unlit"), \
+	("NoTex VLit", "NoTex VLit", "NoTex VLit"), \
+	("NoTex PLit", "NoTex PLit", "NoTex PLit"), \
+	("1 Tex VLit", "1 Tex VLit", "1 Tex VLit"), \
+	("1 Tex PLit", "1 Tex PLit", "1 Tex PLit"), \
+	("Test", "Test", "Test")]
 	bpy.types.Object.fc_shader_type = bpy.props.EnumProperty( items=FCShaderTypes, name="ShaderType", description="Shader", default="Wireframe" )
 	
 	bpy.types.Object.fc_actor_dynamic = bpy.props.BoolProperty( name="Dynamic", description="Dynamic, moving actor" ) 

@@ -19,31 +19,61 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+ 
+#ifndef _FC_UTILITY_H
+#define _FC_UTILITY_H
 
-#import "FCRandom.h"
+#include <math.h>
 
 namespace FC
 {
-	
-	RandomNumber::RandomNumber()
-	{
-		// default initialisers
+	static const float kDegToRad = 0.01745329f;	
 		
-		m_w = 1;
-		m_z = 2;
+	template<class T>
+	void Swap(T& a, T& b)
+	{
+		T temp = a;
+		a = b;
+		b = temp;
 	}
 
-	void RandomNumber::Seed(int w, int z)
+	template<class T>
+	T Max(T a, T b)
 	{
-		m_w = w;
-		m_z = z;
+		if (a > b)
+			return a;
+		else
+			return b;
+	}
+
+	template<class T>
+	T Min(T a, T b)
+	{
+		if (a < b)
+			return a;
+		else
+			return b;
+	}
+
+	template<class T>
+	void Clamp(T& val, T min, T max)
+	{
+		if (val < min) val = min;
+		if (val > max) val = max;
 	}
 	
-	unsigned int RandomNumber::Get( void )
+	static float RoundWithTolerance( float in, float tolerance )
 	{
-		m_z = 36969 * (m_z & 65535) + (m_z >> 16);
-		m_w = 18000 * (m_w & 65535) + (m_w >> 16);
-		return (m_z << 16) + m_w;
+		int div = (int)(in / tolerance);
+		float lower = (float)div * tolerance;
+		float upper = (float)(div + ((in >= 0) ? 1 : -1)) * tolerance;
+		
+		if (fabsf(in - lower) < fabsf(in - upper)) 
+			return lower;
+		else 
+			return upper;
 	}
-	
 }
+
+#endif // _FC_UTILITY_H
+

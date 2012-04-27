@@ -65,7 +65,9 @@
 //	NSArray* statsArray = [[[FCAppContext instance] gameData] arrayForKeyPath:@"gamedata.stats.stat"];
 //	[[FCStats instance] prepareStatsFromArray:statsArray withPlayerId:self.localPlayerGameCenterId];
 
-	[[NSNotificationCenter defaultCenter] postNotificationName:kFCNotificationPlayerIDChanged object:nil];
+	
+	
+	[[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithUTF8String:kFCNotificationPlayerIDChanged.c_str()] object:nil];
 }
 
 #pragma mark -

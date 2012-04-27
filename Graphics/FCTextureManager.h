@@ -23,10 +23,26 @@
 #if defined(FC_GRAPHICS)
 
 #import <Foundation/Foundation.h>
+//#import <OpenGLES/ES2/gl.h>
+#import "FCGL.h"
 
-@interface FCTextureManager : NSObject <NSXMLParserDelegate>
+//@class FCTextureFile;
+//@class FCTexture;
+
+@interface FCTextureManager : NSObject <NSXMLParserDelegate> {
+//	NSMutableDictionary*	_textures;
+//	NSMutableDictionary*	_textureFiles;
+//	FCTextureFile*			_currentTextureFile;
+	GLuint					_debugTexture;
+}
+//@property(nonatomic, strong) NSMutableDictionary* textures;
+//@property(nonatomic, strong) NSMutableDictionary* textureFiles;
+//@property(nonatomic, strong) FCTextureFile* currentTextureFile;
+@property(nonatomic, readonly) GLuint debugTexture;
 
 +(FCTextureManager*)instance;
+
+-(void)bindDebugTextureTo:(GLuint)attributeHandle;
 
 @end
 

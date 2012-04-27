@@ -59,7 +59,7 @@
 	if (self) 
 	{	
 		_createDef = dictionary;
-		_id = [self.createDef valueForKey:kFCKeyId];
+		_id = [self.createDef valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]];
 		_handle = handle;
 				
 		// hardwired to 2D for now 8)
@@ -72,14 +72,14 @@
 			FC::Vector2f pos;
 			pos.Zero();
 			
-			pos.x += [[dictionary valueForKey:kFCKeyOffsetX] floatValue];
-			pos.y += [[dictionary valueForKey:kFCKeyOffsetY] floatValue];
+			pos.x += [[dictionary valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
+			pos.y += [[dictionary valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
 			
 			[bodyDef setPosition:pos];	// TODO: change to property access
 			bodyDef.angle = [[dictionary valueForKey:@"rotation"] floatValue];
 			bodyDef.actor = self;
 			
-			if ([[dictionary valueForKey:kFCKeyDynamic] isEqualToString:@"yes"]) {
+			if ([[dictionary valueForKey:[NSString stringWithUTF8String:kFCKeyDynamic.c_str()]] isEqualToString:@"yes"]) {
 				bodyDef.isStatic = NO;
 			} else {
 				bodyDef.isStatic = YES;
@@ -106,7 +106,7 @@
 				// physics but no model so build a physics mode
 				
 				NSMutableDictionary* dict = res.userData;
-				_model = [[FCModel alloc] initWithPhysicsBody:bodyDict color:[dict valueForKey:kFCKeyColor]];
+				_model = [[FCModel alloc] initWithPhysicsBody:bodyDict color:[dict valueForKey:[NSString stringWithUTF8String:kFCKeyColor.c_str()]]];
 			}
 		}
 #endif // defined(FC_GRAPHICS)
@@ -221,7 +221,7 @@
 #if defined (FC_GRAPHICS)
 -(void)render
 {
-	[_model render];
+//	[_model render];
 }
 #endif
 

@@ -20,3 +20,8 @@
  THE SOFTWARE.
  */
 
+#import "FCGL.h"
+
+GLuint FCGL_currentProgram = 0;
+
+

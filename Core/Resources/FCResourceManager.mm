@@ -25,13 +25,7 @@
 #import "FCCore.h"
 #import "FCResourceManager.h"
 #import "FCDevice.h"
-#import "FCTarFile.h"
 #import "FCXMLData.h"
-
-// make this look for zips and index the files in them - then auto-lookup via zip before normal resource.
-
-//static NSString* kIPadResourceName = @"iPadData";
-//static NSString* kIPhoneResourceName = @"iPhoneData";
 
 static NSString* kHDSuffix = @"_high";
 static NSString* kUDSuffix = @"_ultra";
@@ -74,11 +68,7 @@ static NSString* kUDSuffix = @"_ultra";
 	self = [super init];
 	if (self) 
 	{
-//		NSString* filename = [[NSBundle mainBundle] pathForResource:kIPhoneResourceName ofType:@"tar"];
-		
 		mSuffixedImageTypes = [NSSet setWithObjects:@"png", @"jpg", nil];
-		
-//		mTarData = [[FCTarFile alloc] initWithContentsOfFile:filename];		
 	}
 	return self;
 }

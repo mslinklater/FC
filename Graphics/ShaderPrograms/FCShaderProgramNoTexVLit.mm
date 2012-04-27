@@ -77,23 +77,23 @@
 	FC::Color4f ambientColor( 0.25f, 0.25f, 0.25f, 1.0f );
 	FC::Color4f lightColor( 1.0f, 1.0f, 1.0f, 1.0f );
 	
-	glUniform4fv(_ambientUniform.glLocation, 1, (GLfloat*)&ambientColor);
-	glUniform4fv(_lightColorUniform.glLocation, 1, (GLfloat*)&lightColor);
+	FCglUniform4fv(_ambientUniform.glLocation, 1, (GLfloat*)&ambientColor);
+	FCglUniform4fv(_lightColorUniform.glLocation, 1, (GLfloat*)&lightColor);
 }
 
 -(void)bindAttributesWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor; // Get rid of the vertex descriptor
 {
-	glVertexAttribPointer( _positionAttribute.glLocation, 3, GL_FLOAT, GL_FALSE, _stride, (void*)0);
-	glEnableVertexAttribArray( _positionAttribute.glLocation );
+	FCglVertexAttribPointer( _positionAttribute.glLocation, 3, GL_FLOAT, GL_FALSE, _stride, (void*)0);
+	FCglEnableVertexAttribArray( _positionAttribute.glLocation );
 	
-	glVertexAttribPointer( _normalAttribute.glLocation, 3, GL_SHORT, GL_TRUE, _stride, (void*)12);
-	glEnableVertexAttribArray( _normalAttribute.glLocation );
+	FCglVertexAttribPointer( _normalAttribute.glLocation, 3, GL_SHORT, GL_TRUE, _stride, (void*)12);
+	FCglEnableVertexAttribArray( _normalAttribute.glLocation );
 	
-	glVertexAttribPointer( _diffuseColorAttribute.glLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, _stride, (void*)20);
-	glEnableVertexAttribArray( _diffuseColorAttribute.glLocation );
+	FCglVertexAttribPointer( _diffuseColorAttribute.glLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, _stride, (void*)20);
+	FCglEnableVertexAttribArray( _diffuseColorAttribute.glLocation );
 	
-	glVertexAttribPointer( _specularColorAttribute.glLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, _stride, (void*)24);
-	glEnableVertexAttribArray( _specularColorAttribute.glLocation );
+	FCglVertexAttribPointer( _specularColorAttribute.glLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, _stride, (void*)24);
+	FCglEnableVertexAttribArray( _specularColorAttribute.glLocation );
 }
 
 @end

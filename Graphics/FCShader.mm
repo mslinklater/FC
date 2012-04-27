@@ -24,9 +24,7 @@
 
 #import "FCShader.h"
 #import "FCCore.h"
-
-#import <OpenGLES/EAGL.h>
-#import <OpenGLES/ES2/glext.h>
+#import "FCGL.h"
 
 @implementation FCShader
 @synthesize glHandle = _glHandle;
@@ -50,28 +48,28 @@
 				break;
 		}
 
-		_glHandle = glCreateShader( glShaderType );
+		_glHandle = FCglCreateShader( glShaderType );
 		if (self.glHandle == 0) {
 			FC_FATAL1(@"glCreateShader failed '%@'", source);
 		}
 		
-		glShaderSource(self.glHandle, 1, &shaderStr, NULL);
-		glCompileShader(self.glHandle);
+		FCglShaderSource(self.glHandle, 1, &shaderStr, NULL);
+		FCglCompileShader(self.glHandle);
 		
 		GLint status;
-		glGetShaderiv(self.glHandle, GL_COMPILE_STATUS, &status);
+		FCglGetShaderiv(self.glHandle, GL_COMPILE_STATUS, &status);
 		
 		if (!status) {
 			GLint infoLen;
-			glGetShaderiv(self.glHandle, GL_INFO_LOG_LENGTH, &infoLen);
+			FCglGetShaderiv(self.glHandle, GL_INFO_LOG_LENGTH, &infoLen);
 			if (infoLen > 1) {
 				char* infoLog = (char*)malloc(sizeof(char) * infoLen);
-				glGetShaderInfoLog(self.glHandle, infoLen, NULL, infoLog);
+				FCglGetShaderInfoLog(self.glHandle, infoLen, NULL, infoLog);
 				NSString* errorString = [NSString stringWithFormat:@"%s", infoLog];
 				FC_ERROR(errorString);
 				free(infoLog);
 			}
-			glDeleteShader(self.glHandle);
+			FCglDeleteShader(self.glHandle);
 		}		
 	}
 	return self;
@@ -79,7 +77,7 @@
 
 -(void)dealloc
 {
-	glDeleteShader(self.glHandle);
+	FCglDeleteShader(self.glHandle);
 }
 
 @end

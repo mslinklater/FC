@@ -19,60 +19,21 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
- 
-#ifndef _FC_UTILITY_H
-#define _FC_UTILITY_H
 
-namespace FC
-{
+namespace FC {
 	
-	static const float kDegToRad = 0.01745329f;	
+	class Color4f {
+	public:
+		Color4f(){}
+		Color4f( float rIn, float gIn, float bIn, float aIn ) : r(rIn), g(gIn), b(bIn), a(aIn) {}
+		Color4f( const Color4f& col ) : r(col.r), g(col.g), b(col.b), a(col.a) {}
 		
-	template<class T>
-	void Swap(T& a, T& b)
-	{
-		T temp = a;
-		a = b;
-		b = temp;
-	}
-
-	template<class T>
-	T Max(T a, T b)
-	{
-		if (a > b)
-			return a;
-		else
-			return b;
-	}
-
-	template<class T>
-	T Min(T a, T b)
-	{
-		if (a < b)
-			return a;
-		else
-			return b;
-	}
-
-	template<class T>
-	void Clamp(T& val, T min, T max)
-	{
-		if (val < min) val = min;
-		if (val > max) val = max;
-	}
-	
-	static float RoundWithTolerance( float in, float tolerance )
-	{
-		int div = (int)(in / tolerance);
-		float lower = (float)div * tolerance;
-		float upper = (float)(div + ((in >= 0) ? 1 : -1)) * tolerance;
+		void Zero( void ){ r = g = b = a = 0.0f; }
 		
-		if (fabsf(in - lower) < fabsf(in - upper)) 
-			return lower;
-		else 
-			return upper;
-	}
+		float	r;
+		float	g;
+		float	b;
+		float	a;
+	};
 }
-
-#endif // _FC_UTILITY_H
 

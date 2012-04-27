@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#import "FCTypes.h"
+#include "FCTypes.h"
 
 FCHandle NewFCHandle()
 {

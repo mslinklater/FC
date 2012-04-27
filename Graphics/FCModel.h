@@ -38,7 +38,7 @@
 @property(nonatomic) FC::Vector3f position;
 @property(nonatomic) float rotation;
 
--(void)render;
+//-(void)render;
 
 -(id)initWithModel:(NSDictionary*)modelDict resource:(FCResource*)res;
 -(id)initWithPhysicsBody:(NSDictionary*)bodyDict color:(UIColor*)color;// actorXOffset:(float)actorX actorYOffset:(float)actorY;

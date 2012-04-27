@@ -2,6 +2,7 @@ attribute vec4 position;
 attribute vec4 diffuse_color;
 attribute vec3 normal;
 attribute vec4 specular_color;
+attribute vec2 uv1;
 
 uniform vec4 light_color;
 uniform vec3 light_direction;
@@ -11,6 +12,7 @@ uniform mat4 projection;
 uniform mat4 modelview;
 
 varying lowp vec4 destinationcolor;
+varying vec2 texCoord;
 
 void main( void )
 {	
@@ -37,6 +39,6 @@ void main( void )
 	}
 	
 	destinationcolor = calculated_color;
-	
+	texCoord = uv1;
 	gl_Position = projection * modelview * position;
 }

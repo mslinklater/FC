@@ -20,7 +20,10 @@
  THE SOFTWARE.
  */
 
-#ifndef Collada2FCR_FCConstants_h
-#define Collada2FCR_FCConstants_h
+#ifndef CR1_FCResources_h
+#define CR1_FCResources_h
+
+#import "FCResource.h"
+#import "FCResourceManager.h"
 
 #endif

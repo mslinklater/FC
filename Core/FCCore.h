@@ -31,3 +31,4 @@
 #import "FCMaths.h"
 #import "FCCategories.h"
 #import "FCDebug.h"
+#import "FCSharedPtr.h"

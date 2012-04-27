@@ -32,6 +32,7 @@
 #import "FCShaderManager.h"
 #import "FCRenderer.h"
 #import "FCLua.h"
+#import "FCGL.h"
 
 static NSMutableDictionary* s_glViews;
 static FCGLView* s_currentLuaTarget;
@@ -224,8 +225,6 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 		
 		FCGLLogVersions();
 		FCGLLogCaps();
-		
-//		[[FCRenderer instance] prebuildShaders];
 	}
 	
 	return self;
@@ -236,10 +235,7 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 	if ([EAGLContext currentContext] == self.context)
         [EAGLContext setCurrentContext:nil];
 
-//    [context release];
-
     [self deleteFramebuffer];    
-//	self.context = nil;   
 	
 	[s_glViews removeObjectForKey:_managedName];
 }
@@ -268,35 +264,35 @@ static int lua_SetFrustumTranslation( lua_State* _state )
         [EAGLContext setCurrentContext:self.context];
         
         // Create normal buffer
-		glGenFramebuffers(1, &_normalFrameBuffer); GLCHECK;
-		glBindFramebuffer(GL_FRAMEBUFFER, _normalFrameBuffer); GLCHECK;
-        glGenRenderbuffers(1, &_normalColorRenderBuffer); GLCHECK;
-        glBindRenderbuffer(GL_RENDERBUFFER, _normalColorRenderBuffer); GLCHECK;
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _normalColorRenderBuffer); GLCHECK;
+		FCglGenFramebuffers(1, &_normalFrameBuffer); GLCHECK;
+		FCglBindFramebuffer(GL_FRAMEBUFFER, _normalFrameBuffer); GLCHECK;
+        FCglGenRenderbuffers(1, &_normalColorRenderBuffer); GLCHECK;
+        FCglBindRenderbuffer(GL_RENDERBUFFER, _normalColorRenderBuffer); GLCHECK;
+		FCglFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _normalColorRenderBuffer); GLCHECK;
 		
-		glGenFramebuffers(1, &_superFrameBuffer); GLCHECK;
-		glBindFramebuffer(GL_FRAMEBUFFER, _superFrameBuffer); GLCHECK;
+		FCglGenFramebuffers(1, &_superFrameBuffer); GLCHECK;
+		FCglBindFramebuffer(GL_FRAMEBUFFER, _superFrameBuffer); GLCHECK;
 
         // Create color render buffer and allocate backing store.
 		
         [self.context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
 		
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_frameBufferWidth); GLCHECK;
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_frameBufferHeight); GLCHECK;
+        FCglGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_frameBufferWidth); GLCHECK;
+        FCglGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_frameBufferHeight); GLCHECK;
         
 		// texture
-		glGenTextures(1, &_superOffScreenTexture); GLCHECK;
-		glBindTexture(GL_TEXTURE_2D, _superOffScreenTexture); GLCHECK;
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); GLCHECK;
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); GLCHECK;
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); GLCHECK;
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); GLCHECK;
+		FCglGenTextures(1, &_superOffScreenTexture); GLCHECK;
+		FCglBindTexture(GL_TEXTURE_2D, _superOffScreenTexture); GLCHECK;
+		FCglTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); GLCHECK;
+		FCglTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); GLCHECK;
+		FCglTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); GLCHECK;
+		FCglTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); GLCHECK;
 		
 		_supersampleBufferWidth = _frameBufferWidth * _superSamplingScale;
 		_supersampleBufferHeight = _frameBufferHeight * _superSamplingScale;
 
 		// try
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _supersampleBufferWidth, _supersampleBufferHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+		FCglTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _supersampleBufferWidth, _supersampleBufferHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 		
 		if (glGetError() != GL_NO_ERROR) {
 			// non POT texture sizes - try to find the smallest POT texture that fits round the frame - We're in MBX land here so keep it lean 8)
@@ -313,9 +309,9 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 			_supersampleBufferWidth = maxTextureWidth;
 			_supersampleBufferHeight = maxTextureHeight;
 			
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _supersampleBufferWidth, _supersampleBufferHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+			FCglTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _supersampleBufferWidth, _supersampleBufferHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
-			if (glGetError() != GL_NO_ERROR) {
+			if (FCglGetError() != GL_NO_ERROR) {
 				FC_FATAL(@"can't get supersampling working");
 				exit(1);
 			}
@@ -323,23 +319,23 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 		
 		if (self.depthBuffer)
 		{
-			glGenRenderbuffers(1, &_superDepthRenderBuffer); GLCHECK;
-			glBindRenderbuffer(GL_RENDERBUFFER, _superDepthRenderBuffer); GLCHECK;
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, _supersampleBufferWidth, _supersampleBufferHeight); GLCHECK;
-			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _superDepthRenderBuffer); GLCHECK;
+			FCglGenRenderbuffers(1, &_superDepthRenderBuffer); GLCHECK;
+			FCglBindRenderbuffer(GL_RENDERBUFFER, _superDepthRenderBuffer); GLCHECK;
+			FCglRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, _supersampleBufferWidth, _supersampleBufferHeight); GLCHECK;
+			FCglFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _superDepthRenderBuffer); GLCHECK;
 		}
 		
-		glGenRenderbuffers(1, &_superColorRenderBuffer); GLCHECK;
-		glBindRenderbuffer(GL_RENDERBUFFER, _superColorRenderBuffer); GLCHECK;
-		glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8_OES, _supersampleBufferWidth, _supersampleBufferHeight);	GLCHECK;
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _superColorRenderBuffer); GLCHECK;
+		FCglGenRenderbuffers(1, &_superColorRenderBuffer); GLCHECK;
+		FCglBindRenderbuffer(GL_RENDERBUFFER, _superColorRenderBuffer); GLCHECK;
+		FCglRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8_OES, _supersampleBufferWidth, _supersampleBufferHeight);	GLCHECK;
+		FCglFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _superColorRenderBuffer); GLCHECK;
 		
 		// generate texture and associate it with the FBO
 		
-		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _superOffScreenTexture, 0); GLCHECK;
+		FCglFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _superOffScreenTexture, 0); GLCHECK;
         
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            FC_FATAL1(@"Failed to make complete framebuffer object '%@'", FCGLStringForEnum( glCheckFramebufferStatus(GL_FRAMEBUFFER)));
+        if (FCglCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            FC_FATAL1(@"Failed to make complete framebuffer object '%@'", FCGLStringForEnum( FCglCheckFramebufferStatus(GL_FRAMEBUFFER)));
     }
 }
 
@@ -353,31 +349,31 @@ static int lua_SetFrustumTranslation( lua_State* _state )
         
         // Create default framebuffer object.
 		
-		glGenFramebuffers(1, &_normalFrameBuffer); GLCHECK;
-		glBindFramebuffer(GL_FRAMEBUFFER, _normalFrameBuffer); GLCHECK;
+		FCglGenFramebuffers(1, &_normalFrameBuffer); GLCHECK;
+		FCglBindFramebuffer(GL_FRAMEBUFFER, _normalFrameBuffer); GLCHECK;
         
         // Create color render buffer and allocate backing store.
-        glGenRenderbuffers(1, &_normalColorRenderBuffer); GLCHECK;
-        glBindRenderbuffer(GL_RENDERBUFFER, _normalColorRenderBuffer); GLCHECK;
+        FCglGenRenderbuffers(1, &_normalColorRenderBuffer); GLCHECK;
+        FCglBindRenderbuffer(GL_RENDERBUFFER, _normalColorRenderBuffer); GLCHECK;
 		
         [self.context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
 		
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_frameBufferWidth); GLCHECK;
-        glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_frameBufferHeight); GLCHECK;
+        FCglGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_frameBufferWidth); GLCHECK;
+        FCglGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_frameBufferHeight); GLCHECK;
         
 		// Create depth buffer
 		
 		if (self.depthBuffer) 
 		{
-			glGenRenderbuffers(1, &_normalDepthRenderBuffer); GLCHECK;
-			glBindRenderbuffer(GL_RENDERBUFFER, _normalDepthRenderBuffer); GLCHECK;
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, _frameBufferWidth, _frameBufferHeight); GLCHECK;
-			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _normalDepthRenderBuffer); GLCHECK;
+			FCglGenRenderbuffers(1, &_normalDepthRenderBuffer); GLCHECK;
+			FCglBindRenderbuffer(GL_RENDERBUFFER, _normalDepthRenderBuffer); GLCHECK;
+			FCglRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, _frameBufferWidth, _frameBufferHeight); GLCHECK;
+			FCglFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _normalDepthRenderBuffer); GLCHECK;
 		}
 
-		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _normalColorRenderBuffer); GLCHECK;
+		FCglFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _normalColorRenderBuffer); GLCHECK;
         
-        if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        if (FCglCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             FC_FATAL1(@"Failed to make complete framebuffer object %@", FCGLStringForEnum(glCheckFramebufferStatus(GL_FRAMEBUFFER)) );
     }
 }
@@ -390,37 +386,37 @@ static int lua_SetFrustumTranslation( lua_State* _state )
         
         if (_normalFrameBuffer)
         {
-            glDeleteFramebuffers(1, &_normalFrameBuffer);
+            FCglDeleteFramebuffers(1, &_normalFrameBuffer);
             _normalFrameBuffer = 0;
         }
         if (_normalColorRenderBuffer)
         {
-            glDeleteRenderbuffers(1, &_normalColorRenderBuffer);
+            FCglDeleteRenderbuffers(1, &_normalColorRenderBuffer);
             _normalColorRenderBuffer = 0;
         }
 		if( _normalDepthRenderBuffer )
 		{
-			glDeleteRenderbuffers(1, &_normalDepthRenderBuffer);
+			FCglDeleteRenderbuffers(1, &_normalDepthRenderBuffer);
 			_normalDepthRenderBuffer = 0;
 		}
 
 		if (_superOffScreenTexture) {
-			glDeleteTextures(1, &_superOffScreenTexture);
+			FCglDeleteTextures(1, &_superOffScreenTexture);
 			_superOffScreenTexture = 0;
 		}
 		if( _superFrameBuffer )
 		{
-			glDeleteRenderbuffers(1, &_superFrameBuffer);
+			FCglDeleteRenderbuffers(1, &_superFrameBuffer);
 			_superFrameBuffer = 0;
 		}
 		if( _superColorRenderBuffer )
 		{
-			glDeleteRenderbuffers(1, &_superColorRenderBuffer);
+			FCglDeleteRenderbuffers(1, &_superColorRenderBuffer);
 			_superColorRenderBuffer = 0;
 		}
 		if( _superDepthRenderBuffer )
 		{
-			glDeleteRenderbuffers(1, &_superDepthRenderBuffer);
+			FCglDeleteRenderbuffers(1, &_superDepthRenderBuffer);
 			_superDepthRenderBuffer = 0;
 		}
 	}
@@ -437,21 +433,21 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 			if (!_superFrameBuffer)
 				[self createSupersampledFramebuffer];
 			
-			glBindFramebuffer(GL_FRAMEBUFFER, _superFrameBuffer); GLCHECK;
-			glBindRenderbuffer(GL_RENDERBUFFER, _superColorRenderBuffer); GLCHECK;
-			glViewport(0, 0, _supersampleBufferWidth, _supersampleBufferHeight); GLCHECK;
+			FCglBindFramebuffer(GL_FRAMEBUFFER, _superFrameBuffer); GLCHECK;
+			FCglBindRenderbuffer(GL_RENDERBUFFER, _superColorRenderBuffer); GLCHECK;
+			FCglViewport(0, 0, _supersampleBufferWidth, _supersampleBufferHeight); GLCHECK;
 		}
 		else
 		{
 			if (!_normalFrameBuffer)
 				[self createNormalFramebuffer];
 
-			glBindFramebuffer(GL_FRAMEBUFFER, _normalFrameBuffer); GLCHECK;
-			glViewport(0, 0, _frameBufferWidth, _frameBufferHeight); GLCHECK;
+			FCglBindFramebuffer(GL_FRAMEBUFFER, _normalFrameBuffer); GLCHECK;
+			FCglViewport(0, 0, _frameBufferWidth, _frameBufferHeight); GLCHECK;
 		}
 		
 		if (self.depthBuffer) {
-			glEnable(GL_DEPTH_TEST); GLCHECK;
+			FCglEnable(GL_DEPTH_TEST); GLCHECK;
 		}
 
 		_aspectRatio = (float)_frameBufferHeight / (float)_frameBufferWidth;
@@ -490,19 +486,19 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 //		if (self.superSampling)
 		if (0) // MSL supersampling
 		{
-			glBindFramebuffer(GL_FRAMEBUFFER, _normalFrameBuffer);
-			glBindRenderbuffer(GL_RENDERBUFFER, _normalColorRenderBuffer);
-			glViewport(0, 0, _frameBufferWidth, _frameBufferHeight);			
+			FCglBindFramebuffer(GL_FRAMEBUFFER, _normalFrameBuffer);
+			FCglBindRenderbuffer(GL_RENDERBUFFER, _normalColorRenderBuffer);
+			FCglViewport(0, 0, _frameBufferWidth, _frameBufferHeight);			
 
-			glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
+			FCglClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+			FCglClear(GL_COLOR_BUFFER_BIT);
 
 			// render super buffer into normal renderbuffer
 			
-			glDisable(GL_DEPTH_TEST);
-			glDisable(GL_TEXTURE_2D);
-			glEnable(GL_TEXTURE_2D);
-			glBindTexture(GL_TEXTURE_2D, _superOffScreenTexture);
+			FCglDisable(GL_DEPTH_TEST);
+			FCglDisable(GL_TEXTURE_2D);
+			FCglEnable(GL_TEXTURE_2D);
+			FCglBindTexture(GL_TEXTURE_2D, _superOffScreenTexture);
 			
 			// draw poly
 //			glMatrixMode(GL_PROJECTION);
@@ -513,8 +509,8 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 //			glTranslatef(0.0f, 0.0f, -2.0f);
 			
 			// clear bound buffers
-			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); GLCHECK;
-			glBindBuffer(GL_ARRAY_BUFFER, 0); GLCHECK;
+			FCglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); GLCHECK;
+			FCglBindBuffer(GL_ARRAY_BUFFER, 0); GLCHECK;
 
 //			glVertexPointer(2, GL_FLOAT, 0, squareVertices);
 //			glEnableClientState(GL_VERTEX_ARRAY);
@@ -523,13 +519,13 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 //			glTexCoordPointer(2, GL_FLOAT, 0, squareTextures);
 //			glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		
-			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+			FCglDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-			glDisable(GL_TEXTURE_2D);
+			FCglDisable(GL_TEXTURE_2D);
 		}
 		else
 		{
-			glBindRenderbuffer(GL_RENDERBUFFER, _normalColorRenderBuffer);
+			FCglBindRenderbuffer(GL_RENDERBUFFER, _normalColorRenderBuffer);
 		}
         
         success = [self.context presentRenderbuffer:GL_RENDERBUFFER];
@@ -590,15 +586,15 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 
 -(void)clear
 {
-	glClearColor(_clearColor.r, _clearColor.g, _clearColor.b, _clearColor.a);
+	FCglClearColor(_clearColor.r, _clearColor.g, _clearColor.b, _clearColor.a);
 	
 	if (self.depthBuffer) 
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		FCglClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 	else
 	{
-		glClear(GL_COLOR_BUFFER_BIT);		
+		FCglClear(GL_COLOR_BUFFER_BIT);		
 	}
 }
 

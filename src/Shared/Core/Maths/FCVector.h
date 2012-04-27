@@ -20,7 +20,10 @@
  THE SOFTWARE.
  */
 
-#import "FCUtility.h"
+#ifndef FCVector_h
+#define FCVector_h
+
+#include "FCUtility.h"
 
 namespace FC {
 	
@@ -197,3 +200,4 @@ public:
 
 }
 
+#endif // FCVector_h

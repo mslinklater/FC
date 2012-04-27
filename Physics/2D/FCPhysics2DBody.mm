@@ -103,12 +103,12 @@
 	
 	for (NSDictionary* fixture in fixtures) 
 	{
-		NSString* type = [fixture valueForKey:kFCKeyType];
+		NSString* type = [fixture valueForKey:[NSString stringWithUTF8String:kFCKeyType.c_str()]];
 		FC_ASSERT(type);
 
 		b2FixtureDef fixtureDef;
 		
-		NSString* materialString = [fixture valueForKey:kFCKeyMaterial];
+		NSString* materialString = [fixture valueForKey:[NSString stringWithUTF8String:kFCKeyMaterial.c_str()]];
 		FC_ASSERT(materialString);
 
 		FCPhysicsMaterial* material = [[FCPhysics instance].materials valueForKey:materialString];
@@ -119,34 +119,34 @@
 		fixtureDef.restitution = material.restitution;
 		fixtureDef.userData = (__bridge void*)def.actor;
 				
-		if ([type isEqualToString:kFCKeyCircle]) 
+		if ([type isEqualToString:[NSString stringWithUTF8String:kFCKeyCircle.c_str()]]) 
 		{
 			b2CircleShape shape;
-			shape.m_radius = [[fixture valueForKey:kFCKeyRadius] floatValue];
+			shape.m_radius = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyRadius.c_str()]] floatValue];
 			b2Vec2 circlePos;
-			circlePos.x = [[fixture valueForKey:kFCKeyOffsetX] floatValue];
-			circlePos.y = [[fixture valueForKey:kFCKeyOffsetY] floatValue];
+			circlePos.x = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
+			circlePos.y = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
 			shape.m_p = circlePos;
 			fixtureDef.shape = &shape;
 			_b2Body->CreateFixture( &fixtureDef );
 		}
-		else if ([type isEqualToString:kFCKeyBox]) 
+		else if ([type isEqualToString:[NSString stringWithUTF8String:kFCKeyBox.c_str()]]) 
 		{
 			b2PolygonShape shape;
 			
 			b2Vec2 rectanglePos;
-			float rectangleAngle = [[fixture valueForKey:kFCKeyAngle] floatValue];
-			rectanglePos.x = [[fixture valueForKey:kFCKeyOffsetX] floatValue];
-			rectanglePos.y = [[fixture valueForKey:kFCKeyOffsetY] floatValue];
+			float rectangleAngle = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyAngle.c_str()]] floatValue];
+			rectanglePos.x = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
+			rectanglePos.y = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
 			
-			shape.SetAsBox( [[fixture valueForKey:kFCKeyXSize] floatValue] * 0.5f,	// box2D uses half height etc
-						   [[fixture valueForKey:kFCKeyYSize] floatValue] * 0.5f,
+			shape.SetAsBox( [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyXSize.c_str()]] floatValue] * 0.5f,	// box2D uses half height etc
+						   [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyYSize.c_str()]] floatValue] * 0.5f,
 						   rectanglePos, rectangleAngle);
 			
 			fixtureDef.shape = &shape;
 			_b2Body->CreateFixture( &fixtureDef );
 		}
-		else if ([type isEqualToString:kFCKeyHull]) 
+		else if ([type isEqualToString:[NSString stringWithUTF8String:kFCKeyHull.c_str()]]) 
 		{
 			b2PolygonShape shape;
 			
@@ -160,8 +160,8 @@
 			
 			b2Vec2* verts = (b2Vec2*)malloc(sizeof(b2Vec2) * numVerts );
 			
-			float xOffset = [[fixture valueForKey:kFCKeyOffsetX] floatValue];
-			float yOffset = [[fixture valueForKey:kFCKeyOffsetY] floatValue];
+			float xOffset = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
+			float yOffset = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
 			
 			for(int i = 0 ; i < numVerts ; i++ )	// backwards due to different winding between collada and box2d
 			{

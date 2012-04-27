@@ -64,11 +64,11 @@
 
 -(void)bindAttributesWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor; // Get rid of the vertex descriptor
 {
-	glVertexAttribPointer( _positionAttribute.glLocation, 3, GL_FLOAT, GL_FALSE, 16, (void*)0);
-	glEnableVertexAttribArray( _positionAttribute.glLocation );
+	FCglVertexAttribPointer( _positionAttribute.glLocation, 3, GL_FLOAT, GL_FALSE, 16, (void*)0);
+	FCglEnableVertexAttribArray( _positionAttribute.glLocation );
 
-	glVertexAttribPointer( _diffuseColorAttribute.glLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, 16, (void*)12);
-	glEnableVertexAttribArray( _diffuseColorAttribute.glLocation );
+	FCglVertexAttribPointer( _diffuseColorAttribute.glLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, 16, (void*)12);
+	FCglEnableVertexAttribArray( _diffuseColorAttribute.glLocation );
 }
 
 @end

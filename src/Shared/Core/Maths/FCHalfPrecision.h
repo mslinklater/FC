@@ -19,8 +19,45 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
- 
-#import "FCUtility.h"
-#import "FCVector.h"
-#import "FCMatrix.h"
-#import "FCRandom.h"
+
+#ifndef FCHalfPrecision_h
+#define FCHalfPrecision_h
+
+extern int singles2halfp(void *target, void *source, int numel);
+extern int doubles2halfp(void *target, void *source, int numel);
+extern int halfp2singles(void *target, void *source, int numel);
+extern int halfp2doubles(void *target, void *source, int numel);
+
+namespace FC {
+	typedef short float16;
+	
+	inline float16 toFloat16( float input )
+	{
+		float16 result;
+		singles2halfp( &result, &input, 1 );
+		return result;
+	}
+
+	inline float16 toFloat16( double input )
+	{
+		float16 result;
+		doubles2halfp( &result, &input, 1 );
+		return result;
+	}
+
+	inline float toFloat( float16 input )
+	{
+		float result;
+		halfp2singles( &result, &input, 1 );
+		return result;
+	}
+
+	inline double toFloat( float16 input )
+	{
+		double result;
+		halfp2doubles( &result, &input, 1 );
+		return result;
+	}
+}
+
+#endif FCHalfPrecision_h

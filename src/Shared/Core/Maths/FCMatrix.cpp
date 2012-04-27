@@ -20,22 +20,5 @@
  THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
-
-namespace FC {
-	
-	class Color4f {
-	public:
-		Color4f(){}
-		Color4f( float rIn, float gIn, float bIn, float aIn ) : r(rIn), g(gIn), b(bIn), a(aIn) {}
-		Color4f( const Color4f& col ) : r(col.r), g(col.g), b(col.b), a(col.a) {}
-		
-		void Zero( void ){ r = g = b = a = 0.0f; }
-		
-		float	r;
-		float	g;
-		float	b;
-		float	a;
-	};
-}
+#include "FCMatrix.h"
 

@@ -22,9 +22,7 @@
 
 #if defined (FC_GRAPHICS)
 
-#import <OpenGLES/EAGL.h>
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
+#import "FCGL.h"
 #import "FCMesh.h"
 #import "FCGLHelpers.h"
 #import "FCShaderManager.h"
@@ -39,6 +37,7 @@
 @end
 
 @implementation FCMesh
+@synthesize parentModel = _parentModel;
 @synthesize vertexBufferStride = _vertexBufferStride;
 @synthesize numVertices = _numVertices;
 @synthesize numTriangles = _numTriangles;
@@ -113,9 +112,9 @@
 
 -(void)dealloc
 {
-	glDeleteBuffers(1, &_indexBufferHandle);
+	FCglDeleteBuffers(1, &_indexBufferHandle);
 	GLCHECK;
-	glDeleteBuffers(1, &_vertexBufferHandle);
+	FCglDeleteBuffers(1, &_vertexBufferHandle);
 	GLCHECK;
 }
 
@@ -134,8 +133,8 @@
 
 	[self.shaderProgram use];
 	
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.indexBufferHandle);
-	glBindBuffer(GL_ARRAY_BUFFER, self.vertexBufferHandle);
+	FCglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.indexBufferHandle);
+	FCglBindBuffer(GL_ARRAY_BUFFER, self.vertexBufferHandle);
 	
 	[_shaderProgram bindUniformsWithMesh:self vertexDescriptor:self.vertexDescriptor];
 	[_shaderProgram bindAttributesWithVertexDescriptor:self.vertexDescriptor];
@@ -146,10 +145,10 @@
 
 	switch (_primitiveType) {
 		case GL_TRIANGLES:
-			glDrawElements(GL_TRIANGLES, self.numTriangles * 3, GL_UNSIGNED_SHORT, 0);
+			FCglDrawElements(GL_TRIANGLES, self.numTriangles * 3, GL_UNSIGNED_SHORT, 0);
 			break;
 		case GL_LINES:
-			glDrawElements(GL_LINES, self.numEdges * 2, GL_UNSIGNED_SHORT, 0);
+			FCglDrawElements(GL_LINES, self.numEdges * 2, GL_UNSIGNED_SHORT, 0);
 			break;			
 		default:
 			FC_HALT;
@@ -163,19 +162,13 @@
 	
 	// build VBOs
 	
-	glGenBuffers(1, &_vertexBufferHandle);
-	GLCHECK;
-	glBindBuffer(GL_ARRAY_BUFFER, self.vertexBufferHandle);
-	GLCHECK;
-	glBufferData(GL_ARRAY_BUFFER, _sizeVertexBuffer, self.pVertexBuffer, GL_STATIC_DRAW);
-	GLCHECK;
+	FCglGenBuffers(1, &_vertexBufferHandle);
+	FCglBindBuffer(GL_ARRAY_BUFFER, self.vertexBufferHandle);
+	FCglBufferData(GL_ARRAY_BUFFER, _sizeVertexBuffer, self.pVertexBuffer, GL_STATIC_DRAW);
 
-	glGenBuffers(1, &_indexBufferHandle);
-	GLCHECK;
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.indexBufferHandle);
-	GLCHECK;
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, _sizeIndexBuffer, self.pIndexBuffer, GL_STATIC_DRAW);
-	GLCHECK;
+	FCglGenBuffers(1, &_indexBufferHandle);
+	FCglBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.indexBufferHandle);
+	FCglBufferData(GL_ELEMENT_ARRAY_BUFFER, _sizeIndexBuffer, self.pIndexBuffer, GL_STATIC_DRAW);
 
 	// release working memory
 

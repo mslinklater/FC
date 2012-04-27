@@ -19,16 +19,28 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+ 
 
-#import "FCNotifications.h"
+#ifndef FCRandom_h
+#define FCRandom_h
 
-NSString* kFCNotificationContinue = @"FCN_Continue";
-NSString* kFCNotificationQuit = @"FCN_Quit";
-NSString* kFCNotificationRestart = @"FCN_Restart";
-NSString* kFCNotificationRetry = @"FCN_Retry";
+namespace FC
+{
+	// Based on the Multiply-with-carry method invented by George Marsaglia
+	// http://en.wikipedia.org/wiki/Random_number_generation#Computational_methods
+	
+	class RandomNumber
+	{
+	public:
+		RandomNumber();
+		
+		void Seed(int w, int z);
+		unsigned int	Get( void );
+	private:
+		unsigned int m_w;
+		unsigned int m_z;
+	};
+	
+}
 
-NSString* kFCNotificationPause = @"FCN_Pause";
-NSString* kFCNotificationResume = @"FCN_Resume";
-
-NSString* kFCNotificationPlayerIDChanged = @"FCN_PlayerIDChanged";
-NSString* kFCNotificationHighScoresChanged = @"FCN_HighScoresChanged";
+#endif // FCRandom_h

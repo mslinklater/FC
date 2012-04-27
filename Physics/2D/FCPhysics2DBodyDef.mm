@@ -70,7 +70,7 @@
 
 -(NSString*)Id
 {
-	return [_shapeDef valueForKey:kFCKeyId];
+	return [_shapeDef valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]];
 }
 
 @end

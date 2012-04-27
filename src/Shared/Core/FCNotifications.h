@@ -20,5 +20,20 @@
  THE SOFTWARE.
  */
 
-#import "FCVector.h"
+#ifndef FCNotifications_h
+#define FCNotifications_h
 
+#include <string>
+
+extern std::string kFCNotificationContinue;
+extern std::string kFCNotificationQuit;
+extern std::string kFCNotificationRestart;
+extern std::string kFCNotificationRetry;
+
+extern std::string kFCNotificationPause;
+extern std::string kFCNotificationResume;
+
+extern std::string kFCNotificationPlayerIDChanged;
+extern std::string kFCNotificationHighScoresChanged;
+
+#endif // FCNotifications_h

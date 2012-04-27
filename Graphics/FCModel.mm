@@ -79,20 +79,20 @@ static int kNumCircleSegments = 36;
 		{
 			NSString* type = [fixture valueForKey:@"type"];
 			
-			float fixtureX = [[fixture valueForKey:kFCKeyOffsetX] floatValue];// + actorX;
-			float fixtureY = [[fixture valueForKey:kFCKeyOffsetY] floatValue];// + actorY;
-			float fixtureZ = [[fixture valueForKey:kFCKeyOffsetZ] floatValue];// + actorZ;
+			float fixtureX = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];// + actorX;
+			float fixtureY = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];// + actorY;
+			float fixtureZ = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetZ.c_str()]] floatValue];// + actorZ;
 			
 			if ([type isEqualToString:@"box"]) 
 			{
 				// box
 				NSMutableDictionary* debugDict = [[NSMutableDictionary alloc] init];
-				[debugDict setValue:[NSNumber numberWithFloat:fixtureX] forKey:kFCKeyOffsetX];
-				[debugDict setValue:[NSNumber numberWithFloat:fixtureY] forKey:kFCKeyOffsetY];
-				[debugDict setValue:[NSNumber numberWithFloat:fixtureZ] forKey:kFCKeyOffsetZ];
-				[debugDict setValue:[fixture valueForKey:@"xSize"] forKey:kFCKeyXSize];
-				[debugDict setValue:[fixture valueForKey:@"ySize"] forKey:kFCKeyYSize];
-				[debugDict setValue:[fixture valueForKey:@"zSize"] forKey:kFCKeyZSize];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureX] forKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureY] forKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureZ] forKey:[NSString stringWithUTF8String:kFCKeyOffsetZ.c_str()]];
+				[debugDict setValue:[fixture valueForKey:@"xSize"] forKey:[NSString stringWithUTF8String:kFCKeyXSize.c_str()]];
+				[debugDict setValue:[fixture valueForKey:@"ySize"] forKey:[NSString stringWithUTF8String:kFCKeyYSize.c_str()]];
+				[debugDict setValue:[fixture valueForKey:@"zSize"] forKey:[NSString stringWithUTF8String:kFCKeyZSize.c_str()]];
 				
 				[self addDebugRectangle:debugDict color:color];
 			} 
@@ -100,10 +100,10 @@ static int kNumCircleSegments = 36;
 			{
 				// circle
 				NSMutableDictionary* debugDict = [[NSMutableDictionary alloc] init];
-				[debugDict setValue:[NSNumber numberWithFloat:fixtureX] forKey:kFCKeyOffsetX];
-				[debugDict setValue:[NSNumber numberWithFloat:fixtureY] forKey:kFCKeyOffsetY];
-				[debugDict setValue:[NSNumber numberWithFloat:fixtureZ] forKey:kFCKeyOffsetZ];
-				[debugDict setValue:[fixture valueForKey:@"radius"] forKey:kFCKeyRadius];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureX] forKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureY] forKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureZ] forKey:[NSString stringWithUTF8String:kFCKeyOffsetZ.c_str()]];
+				[debugDict setValue:[fixture valueForKey:@"radius"] forKey:[NSString stringWithUTF8String:kFCKeyRadius.c_str()]];
 				
 				[self addDebugCircle:debugDict color:color];				
 			} 
@@ -121,11 +121,11 @@ static int kNumCircleSegments = 36;
 
 				int numVerts = [floatArray count] / 3;
 				
-				[debugDict setValue:[NSString stringWithFormat:@"%d", numVerts] forKey:kFCKeyNumVertices];
+				[debugDict setValue:[NSString stringWithFormat:@"%d", numVerts] forKey:[NSString stringWithUTF8String:kFCKeyNumVertices.c_str()]];
 				[debugDict setValue:strippedVerts forKey:@"verts"];
-				[debugDict setValue:[NSNumber numberWithFloat:fixtureX] forKey:kFCKeyOffsetX];
-				[debugDict setValue:[NSNumber numberWithFloat:fixtureY] forKey:kFCKeyOffsetY];
-				[debugDict setValue:[NSNumber numberWithFloat:fixtureZ] forKey:kFCKeyOffsetZ];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureX] forKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureY] forKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]];
+				[debugDict setValue:[NSNumber numberWithFloat:fixtureZ] forKey:[NSString stringWithUTF8String:kFCKeyOffsetZ.c_str()]];
 				
 				[self addDebugPolygon:debugDict color:color];
 			}
@@ -139,29 +139,29 @@ static int kNumCircleSegments = 36;
 	self = [super init];
 	if (self) 
 	{
-		NSArray* meshArray = [modelDict arrayForKey:kFCKeyMesh];;
+		NSArray* meshArray = [modelDict arrayForKey:[NSString stringWithUTF8String:kFCKeyMesh.c_str()]];
 		NSArray* binaryPayloadArray = [res.xmlData arrayForKeyPath:@"fcr.binarypayload.chunk"];
 
 		self.meshes = [NSMutableArray array];
 		
 		for( NSDictionary* mesh in meshArray )
 		{
-			NSString* shaderName = [mesh valueForKey:kFCKeyShader];
+			NSString* shaderName = [mesh valueForKey:[NSString stringWithUTF8String:kFCKeyShader.c_str()]];
 			
 //			FC_ASSERT1([FCVertexDescriptor doesShaderExist:shaderName], @"Unknown shader");
 
-			NSString* indexBufferId = [mesh valueForKey:kFCKeyIndexBuffer];
-			NSString* vertexBufferId = [mesh valueForKey:kFCKeyVertexBuffer];
+			NSString* indexBufferId = [mesh valueForKey:[NSString stringWithUTF8String:kFCKeyIndexBuffer.c_str()]];
+			NSString* vertexBufferId = [mesh valueForKey:[NSString stringWithUTF8String:kFCKeyVertexBuffer.c_str()]];
 
 			NSDictionary* indexBufferDict = nil;
 			NSDictionary* vertexBufferDict = nil;
 			
 			for( NSDictionary* chunk in binaryPayloadArray )
 			{
-				if ([[chunk valueForKey:kFCKeyId] isEqualToString:indexBufferId]) {
+				if ([[chunk valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]] isEqualToString:indexBufferId]) {
 					indexBufferDict = chunk;
 				}
-				if ([[chunk valueForKey:kFCKeyId] isEqualToString:vertexBufferId]) {
+				if ([[chunk valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]] isEqualToString:vertexBufferId]) {
 					vertexBufferDict = chunk;
 				}
 			}
@@ -174,7 +174,7 @@ static int kNumCircleSegments = 36;
 			
 			GLenum primitiveType = GL_TRIANGLES;
 			
-			if ([shaderName isEqualToString:kFCKeyShaderWireframe]) {
+			if ([shaderName isEqualToString:[NSString stringWithUTF8String:kFCKeyShaderWireframe.c_str()]]) {
 				primitiveType = GL_LINES;
 			}
 			
@@ -183,9 +183,9 @@ static int kNumCircleSegments = 36;
 															primitiveType:primitiveType];
 			
 			
-			meshObject.numVertices = [[mesh valueForKey:kFCKeyNumVertices] intValue];
-			meshObject.numTriangles = [[mesh valueForKey:kFCKeyNumTriangles] intValue];
-			meshObject.numEdges = [[mesh valueForKey:kFCKeyNumEdges] intValue];
+			meshObject.numVertices = [[mesh valueForKey:[NSString stringWithUTF8String:kFCKeyNumVertices.c_str()]] intValue];
+			meshObject.numTriangles = [[mesh valueForKey:[NSString stringWithUTF8String:kFCKeyNumTriangles.c_str()]] intValue];
+			meshObject.numEdges = [[mesh valueForKey:[NSString stringWithUTF8String:kFCKeyNumEdges.c_str()]] intValue];
 			
 			// specular color
 			
@@ -208,7 +208,7 @@ static int kNumCircleSegments = 36;
 			NSUInteger vertexBufferSize = [[vertexBufferDict valueForKey:@"size"] intValue];
 			[res.binaryPayload getBytes:meshObject.pVertexBuffer range:NSMakeRange(vertexBufferOffset, vertexBufferSize)];
 					
-			NSString* diffuseString = [mesh valueForKey:kFCKeyDiffuseColor];
+			NSString* diffuseString = [mesh valueForKey:[NSString stringWithUTF8String:kFCKeyDiffuseColor.c_str()]];
 			if (diffuseString) {
 				NSArray* components = [diffuseString componentsSeparatedByString:@","];
 				meshObject.diffuseColor = FC::Color4f([[components objectAtIndex:0] floatValue], 
@@ -216,45 +216,45 @@ static int kNumCircleSegments = 36;
 													  [[components objectAtIndex:2] floatValue], 1.0f );
 			}
 
+			meshObject.parentModel = self;
 			[self.meshes addObject:meshObject];
 		}
 	}
 	return self;
 }
 
--(void)render
-{
-	FC::Matrix4f mat = FC::Matrix4f::Identity();
-	FC::Matrix4f trans = FC::Matrix4f::Translate(self.position.x, self.position.y, 0.0f);
-	FC::Matrix4f rot = FC::Matrix4f::Rotate(self.rotation, FC::Vector3f(0.0f, 0.0f, -1.0f) );
-//	FC::Matrix4f invRot = rot.Transpose();
+//-(void)render
+//{
+	// Remove this function entirely since rendering and sorting is done by mesh
 
-	FC::Vector3f lightDirection( 0.707f, 0.707f, 0.707f );
-
-	FC::Vector3f invLight = lightDirection * rot;
-	
-	mat = rot * trans;
-		
-	for (FCMesh* mesh in self.meshes) 
-	{
-		FCShaderUniform* uniform = [mesh.shaderProgram getUniform:@"modelview"];		
-		[mesh.shaderProgram setUniformValue:uniform to:&mat size:sizeof(mat)];
-
-		uniform = [mesh.shaderProgram getUniform:@"light_direction"];
-		if (uniform) {
-			[mesh.shaderProgram setUniformValue:uniform to:&invLight size:sizeof(invLight)];
-		}
-		
-		//		if( [key isEqualToString:@"light_direction"] )
-		//		{
-		//			FC::Vector3f lightDirection( 0.707f, 0.707f, 0.707f );
-		//			
-		//			[self setUniformValue:uniform to:&lightDirection size:sizeof(lightDirection)];			
-		//		}
-
-		[mesh render];
-	}
-}
+//	FC::Matrix4f mat = FC::Matrix4f::Identity();
+//	FC::Matrix4f trans = FC::Matrix4f::Translate(self.position.x, self.position.y, 0.0f);
+//	FC::Matrix4f rot = FC::Matrix4f::Rotate(self.rotation, FC::Vector3f(0.0f, 0.0f, -1.0f) );
+//
+//	FC::Vector3f lightDirection( 0.707f, 0.707f, 0.707f );
+//
+//	FC::Vector3f invLight = lightDirection * rot;
+//	
+//	mat = rot * trans;
+//		
+//	GLuint lastShaderProgram = 99999;
+//	
+//	for (FCMesh* mesh in self.meshes) 
+//	{
+//		if (lastShaderProgram != mesh.shaderProgram.glHandle) 
+//		{
+//			FCShaderUniform* uniform = [mesh.shaderProgram getUniform:@"modelview"];		
+//			[mesh.shaderProgram setUniformValue:uniform to:&mat size:sizeof(mat)];
+//			
+//			uniform = [mesh.shaderProgram getUniform:@"light_direction"];
+//			if (uniform) {
+//				[mesh.shaderProgram setUniformValue:uniform to:&invLight size:sizeof(invLight)];
+//			}
+//			lastShaderProgram = mesh.shaderProgram.glHandle;
+//		}
+//		[mesh render];
+//	}
+//}
 
 -(void)setDebugMeshColor:(FC::Color4f)color
 {
@@ -267,18 +267,19 @@ static int kNumCircleSegments = 36;
 -(void)addDebugCircle:(NSDictionary*)def color:(UIColor*)debugColor
 {
 	FCMesh* mesh = [[FCMesh alloc] initWithVertexDescriptor:nil 
-										   shaderName:kFCKeyShaderDebug primitiveType:GL_TRIANGLES];
+										   shaderName:[NSString stringWithUTF8String:kFCKeyShaderDebug.c_str()] primitiveType:GL_TRIANGLES];
 	[self.meshes addObject:mesh];
+	mesh.parentModel = self;
 
 	mesh.numVertices = kNumCircleSegments + 1;
 	mesh.numTriangles = kNumCircleSegments;
 	
-	float radius = [[def valueForKey:kFCKeyRadius] floatValue];
+	float radius = [[def valueForKey:[NSString stringWithUTF8String:kFCKeyRadius.c_str()]] floatValue];
 	
 	FC::Vector3f* pVert;
 	FC::Vector3f center;
-	center.x = [[def valueForKey:kFCKeyOffsetX] floatValue];
-	center.y = [[def valueForKey:kFCKeyOffsetY] floatValue];
+	center.x = [[def valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
+	center.y = [[def valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
 	center.z = 0.0f;
 
 	pVert = (FC::Vector3f*)((unsigned long)mesh.pVertexBuffer);
@@ -324,18 +325,20 @@ static int kNumCircleSegments = 36;
 -(void)addDebugRectangle:(NSDictionary*)def color:(UIColor *)debugColor
 {
 	FCMesh* mesh = [[FCMesh alloc] initWithVertexDescriptor:nil 
-												 shaderName:kFCKeyShaderDebug primitiveType:GL_TRIANGLES];
+												 shaderName:[NSString stringWithUTF8String:kFCKeyShaderDebug.c_str()] primitiveType:GL_TRIANGLES];
 //	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:[FCVertexDescriptor vertexDescriptorForShader:kFCKeyShaderWireframe] shaderName:kFCKeyShaderWireframe];
 	[self.meshes addObject:mesh];
+	mesh.parentModel = self;
 
 	mesh.numVertices = 4;
 	mesh.numTriangles = 2;
 	
-	FC::Vector2f size( [[def valueForKey:kFCKeyXSize] floatValue] * 0.5f, [[def valueForKey:kFCKeyYSize] floatValue] * 0.5f);
+	FC::Vector2f size( [[def valueForKey:[NSString stringWithUTF8String:kFCKeyXSize.c_str()]] floatValue] * 0.5f, 
+					  [[def valueForKey:[NSString stringWithUTF8String:kFCKeyYSize.c_str()]] floatValue] * 0.5f);
 
 	FC::Vector3f center;
-	center.x = [[def valueForKey:kFCKeyOffsetX] floatValue];
-	center.y = [[def valueForKey:kFCKeyOffsetY] floatValue];
+	center.x = [[def valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
+	center.y = [[def valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
 	center.z = 0.0f;
 
 	FC::Vector3f* pVert;
@@ -383,11 +386,12 @@ static int kNumCircleSegments = 36;
 -(void)addDebugPolygon:(NSDictionary*)def color:(UIColor *)debugColor
 {
 	FCMesh* mesh = [[FCMesh alloc] initWithVertexDescriptor:nil 
-												 shaderName:kFCKeyShaderDebug primitiveType:GL_TRIANGLES];
+												 shaderName:[NSString stringWithUTF8String:kFCKeyShaderDebug.c_str()] primitiveType:GL_TRIANGLES];
 //	FCMesh* mesh = [FCMesh fcMeshWithVertexDescriptor:[FCVertexDescriptor vertexDescriptorForShader:kFCKeyShaderWireframe] shaderName:kFCKeyShaderWireframe];
 	[self.meshes addObject:mesh];
-	
-	mesh.numVertices = [[def valueForKey:kFCKeyNumVertices] intValue];
+	mesh.parentModel = self;
+
+	mesh.numVertices = [[def valueForKey:[NSString stringWithUTF8String:kFCKeyNumVertices.c_str()]] intValue];
 	mesh.numTriangles = mesh.numVertices - 2;
 	
 	FC::Vector3f* pVert;
@@ -396,9 +400,9 @@ static int kNumCircleSegments = 36;
 
 	pVert = (FC::Vector3f*)((unsigned long)mesh.pVertexBuffer);
 	
-	float xOffset = [[def valueForKey:kFCKeyOffsetX] floatValue];
-	float yOffset = [[def valueForKey:kFCKeyOffsetY] floatValue];
-	float zOffset = [[def valueForKey:kFCKeyOffsetZ] floatValue];
+	float xOffset = [[def valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
+	float yOffset = [[def valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
+	float zOffset = [[def valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetZ.c_str()]] floatValue];
 	
 	pVert->x = [[vertsArray objectAtIndex:0] floatValue] + xOffset;
 	pVert->y = [[vertsArray objectAtIndex:1] floatValue] + yOffset;

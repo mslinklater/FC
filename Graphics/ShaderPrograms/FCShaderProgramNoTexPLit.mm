@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#import "FCShaderProgramDebug.h"
+#import "FCShaderProgramNoTexPLit.h"
 #import "FCCore.h"
 #import "FCMesh.h"
 #import "FCShaderAttribute.h"
@@ -28,33 +28,72 @@
 
 #import "FCGL.h"
 
+/*
+ 
+ stride = 16
+ 
+ float	x
+ float	y
+ float	z
+ short	nx
+ short	ny
+ short	nz
+ short	unused
+ uchar	r
+ uchar	g
+ uchar	b
+ uchar	a
+ 
+ */
 
-@implementation FCShaderProgramDebug
+@implementation FCShaderProgramNoTexPLit
 
-@synthesize diffuseColorUniform = _diffuseColorUniform;
+@synthesize ambientUniform = _ambientUniform;
+@synthesize lightColorUniform = _lightColorUniform;
+
 @synthesize positionAttribute = _positionAttribute;
+@synthesize normalAttribute = _normalAttribute;
+@synthesize diffuseColorAttribute = _diffuseColorAttribute;
+@synthesize specularColorAttribute = _specularColorAttribute;
 
 -(id)initWithVertex:(FCShader *)vertexShader andFragment:(FCShader *)fragmentShader
 {
 	self = [super initWithVertex:vertexShader andFragment:fragmentShader];
-	if (self) {
-		_stride = 12;
-		self.diffuseColorUniform = [self.uniforms valueForKey:@"diffuse_color"];		
+	if (self) {		
+		_stride = 28;
+		self.ambientUniform = [self.uniforms valueForKey:@"ambient_color"];
+		self.lightColorUniform = [self.uniforms valueForKey:@"light_color"];
+		
 		self.positionAttribute = [self.attributes valueForKey:@"position"];
+		self.normalAttribute = [self.attributes valueForKey:@"normal"];
+		self.diffuseColorAttribute = [self.attributes valueForKey:@"diffuse_color"];
+		self.specularColorAttribute = [self.attributes valueForKey:@"specular_color"];
 	}
 	return self;
 }
 
 -(void)bindUniformsWithMesh:(FCMesh*)mesh vertexDescriptor:(FCVertexDescriptor*)vertexDescriptor
 {
-	FC::Color4f diffuseColor = mesh.diffuseColor;
-	FCglUniform4fv(_diffuseColorUniform.glLocation, _diffuseColorUniform.num, (GLfloat*)&diffuseColor);
+	FC::Color4f ambientColor( 0.25f, 0.25f, 0.25f, 1.0f );
+	FC::Color4f lightColor( 1.0f, 1.0f, 1.0f, 1.0f );
+	
+	FCglUniform4fv(_ambientUniform.glLocation, 1, (GLfloat*)&ambientColor);
+	FCglUniform4fv(_lightColorUniform.glLocation, 1, (GLfloat*)&lightColor);
 }
 
 -(void)bindAttributesWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor; // Get rid of the vertex descriptor
 {
 	FCglVertexAttribPointer( _positionAttribute.glLocation, 3, GL_FLOAT, GL_FALSE, _stride, (void*)0);
 	FCglEnableVertexAttribArray( _positionAttribute.glLocation );
+	
+	FCglVertexAttribPointer( _normalAttribute.glLocation, 3, GL_SHORT, GL_TRUE, _stride, (void*)12);
+	FCglEnableVertexAttribArray( _normalAttribute.glLocation );
+	
+	FCglVertexAttribPointer( _diffuseColorAttribute.glLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, _stride, (void*)20);
+	FCglEnableVertexAttribArray( _diffuseColorAttribute.glLocation );
+	
+	FCglVertexAttribPointer( _specularColorAttribute.glLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, _stride, (void*)24);
+	FCglEnableVertexAttribArray( _specularColorAttribute.glLocation );
 }
 
 @end

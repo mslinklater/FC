@@ -20,21 +20,30 @@
  THE SOFTWARE.
  */
 
-#import "Core/Maths/FCMaths.h"
+#include "FCRandom.h"
 
-@class FCResource;
+namespace FC
+{
+	
+	RandomNumber::RandomNumber()
+	{
+		// default initialisers
+		
+		m_w = 1;
+		m_z = 2;
+	}
 
-
-//@protocol FCGameObjectLifetime
-//-(void)reset;
-//-(void)destroy;
-//@end
-
-@protocol FCGameObjectUpdate
--(void)update:(float)realTime gameTime:(float)gameTime;
-@end
-
-@protocol FCGameObjectRender
--(NSArray*)renderGather;
-@end
-
+	void RandomNumber::Seed(int w, int z)
+	{
+		m_w = w;
+		m_z = z;
+	}
+	
+	unsigned int RandomNumber::Get( void )
+	{
+		m_z = 36969 * (m_z & 65535) + (m_z >> 16);
+		m_w = 18000 * (m_w & 65535) + (m_w >> 16);
+		return (m_z << 16) + m_w;
+	}
+	
+}

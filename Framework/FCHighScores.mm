@@ -71,7 +71,7 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 			[[FCPersistentData instance] addObject:mScoresDictionary forKey:kPersistentDataKey];
 		}
 		
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerIdChanged:) name:kFCNotificationPlayerIDChanged object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playerIdChanged:) name:[NSString stringWithUTF8String:kFCNotificationPlayerIDChanged.c_str()] object:nil];
     }
     return self;
 }
@@ -84,7 +84,7 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 	mLeaderboardSet = nil;
 	mLeaderboardScoresDictionary = nil;
 	
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:kFCNotificationPlayerIDChanged object:nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:[NSString stringWithUTF8String:kFCNotificationPlayerIDChanged.c_str()] object:nil];
 	
 }
 
@@ -229,7 +229,7 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 							[mLeaderboardScoresDictionary setObject:[NSNumber numberWithInt:score.value] forKey:leaderboardId];
 						}
 						
-						dispatch_async(dispatch_get_main_queue(), ^{[[NSNotificationCenter defaultCenter] postNotificationName:kFCNotificationHighScoresChanged object:nil];});
+						dispatch_async(dispatch_get_main_queue(), ^{[[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithUTF8String:kFCNotificationHighScoresChanged.c_str()] object:nil];});
 					}
 				}];
 			}

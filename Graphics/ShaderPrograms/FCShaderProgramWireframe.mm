@@ -47,13 +47,13 @@
 -(void)bindUniformsWithMesh:(FCMesh*)mesh vertexDescriptor:(FCVertexDescriptor*)vertexDescriptor
 {
 	FC::Color4f diffuseColor = mesh.diffuseColor;
-	glUniform4fv(_diffuseColorUniform.glLocation, _diffuseColorUniform.num, (GLfloat*)&diffuseColor);
+	FCglUniform4fv(_diffuseColorUniform.glLocation, _diffuseColorUniform.num, (GLfloat*)&diffuseColor);
 }
 
 -(void)bindAttributesWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor; // Get rid of the vertex descriptor
 {
-	glVertexAttribPointer( _positionAttribute.glLocation, 3, GL_FLOAT, GL_FALSE, 12, (void*)0);
-	glEnableVertexAttribArray( _positionAttribute.glLocation );
+	FCglVertexAttribPointer( _positionAttribute.glLocation, 3, GL_FLOAT, GL_FALSE, 12, (void*)0);
+	FCglEnableVertexAttribArray( _positionAttribute.glLocation );
 }
 
 @end

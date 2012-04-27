@@ -59,7 +59,7 @@ static FCObjectManager* s_pInstance;
 //		NSString* objType = [obj valueForKey:kFCKeyType];
 		
 //		if ([objType isEqualToString:kFCKeyNull]) {
-			NSString* nullId = [obj valueForKey:kFCKeyName];
+			NSString* nullId = [obj valueForKey:[NSString stringWithUTF8String:kFCKeyName.c_str()]];
 			[_nulls setValue:obj forKey:nullId];
 //		}
 		// etc

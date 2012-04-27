@@ -27,9 +27,11 @@
 
 @class FCVertexDescriptor;
 @class FCShaderProgram;
+@class FCModel;
 
 @interface FCMesh : NSObject 
 {	
+	__weak FCModel*			_parentModel;
 	unsigned int			_vertexBufferStride;
 	unsigned int			_numVertices;
 	unsigned int			_numTriangles;
@@ -48,6 +50,7 @@
 	FC::Color4f				_diffuseColor;
 	FC::Color4f				_specularColor;
 }
+@property(nonatomic, weak) FCModel* parentModel;
 @property(nonatomic, readonly) unsigned int vertexBufferStride;
 @property(nonatomic) unsigned int numVertices;
 @property(nonatomic) unsigned int numTriangles;

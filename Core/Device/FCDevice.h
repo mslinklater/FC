@@ -21,7 +21,7 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "FCLuaClass.h"
+//#import "FCLuaClass.h"
 
 // enums for caps
 

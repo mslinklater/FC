@@ -26,6 +26,7 @@
 #import "FCCore.h"
 #import "FCGraphicsProtocols.h"
 #import "FCTextureFilePVR.h"
+#import "FCGL.h"
 
 @interface FCTextureFile()
 @property(nonatomic, weak) NSURL* url;
@@ -81,14 +82,14 @@
 {
 	if (self.hookCount == 0) {
 		// need to setup GL texture
-		glGenTextures(1, &_glHandle);
-		glBindTexture(GL_TEXTURE_2D, self.glHandle);
+		FCglGenTextures(1, &_glHandle);
+		FCglBindTexture(GL_TEXTURE_2D, self.glHandle);
 
 		[_delegate loadWithContentsOfURL:self.url];
 		
-		glBindTexture(GL_TEXTURE_2D, self.glHandle);
+		FCglBindTexture(GL_TEXTURE_2D, self.glHandle);
 		
-		glTexImage2D(GL_TEXTURE_2D, 0, [self.delegate format], [self.delegate width], [self.delegate height], 0, [self.delegate format], [self.delegate type], [self.delegate pixels]);
+		FCglTexImage2D(GL_TEXTURE_2D, 0, [self.delegate format], [self.delegate width], [self.delegate height], 0, [self.delegate format], [self.delegate type], [self.delegate pixels]);
 	}
 	_hookCount++;
 }
@@ -99,7 +100,7 @@
 		
 	if (self.hookCount > 0) {
 		// need to unbind texture here
-		glDeleteTextures(1, &_glHandle);
+		FCglDeleteTextures(1, &_glHandle);
 		_glHandle = 0;
 	}
 	

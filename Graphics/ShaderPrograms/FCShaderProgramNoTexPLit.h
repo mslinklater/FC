@@ -20,39 +20,31 @@
  THE SOFTWARE.
  */
 
-extern int singles2halfp(void *target, void *source, int numel);
-extern int doubles2halfp(void *target, void *source, int numel);
-extern int halfp2singles(void *target, void *source, int numel);
-extern int halfp2doubles(void *target, void *source, int numel);
+#import "FCShaderProgram.h"
 
-namespace FC {
-	typedef short float16;
+@class FCShader;
+@class FCShaderUniform;
+@class FCShaderAttribute;
+
+@interface FCShaderProgramNoTexPLit : FCShaderProgram {
 	
-	inline float16 toFloat16( float input )
-	{
-		float16 result;
-		singles2halfp( &result, &input, 1 );
-		return result;
-	}
-
-	inline float16 toFloat16( double input )
-	{
-		float16 result;
-		doubles2halfp( &result, &input, 1 );
-		return result;
-	}
-
-	inline float toFloat( float16 input )
-	{
-		float result;
-		halfp2singles( &result, &input, 1 );
-		return result;
-	}
-
-	inline double toFloat( float16 input )
-	{
-		double result;
-		halfp2doubles( &result, &input, 1 );
-		return result;
-	}
+	FCShaderUniform*	_ambientUniform;
+	FCShaderUniform*	_lightColorUniform;
+	
+	FCShaderAttribute*	_positionAttribute;
+	FCShaderAttribute*	_normalAttribute;
+	FCShaderAttribute*	_diffuseColorAttribute;
+	FCShaderAttribute*	_specularColorAttribute;
 }
+@property(nonatomic, strong) FCShaderUniform* ambientUniform;
+@property(nonatomic, strong) FCShaderUniform* lightColorUniform;
+
+@property(nonatomic, strong) FCShaderAttribute* positionAttribute;
+@property(nonatomic, strong) FCShaderAttribute* normalAttribute;
+@property(nonatomic, strong) FCShaderAttribute* diffuseColorAttribute;
+@property(nonatomic, strong) FCShaderAttribute* specularColorAttribute;
+
+-(id)initWithVertex:(FCShader *)vertexShader andFragment:(FCShader *)fragmentShader;
+-(void)bindUniformsWithMesh:(FCMesh*)mesh vertexDescriptor:(FCVertexDescriptor*)vertexDescriptor;
+-(void)bindAttributesWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor;
+@end

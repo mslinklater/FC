@@ -24,4 +24,7 @@
 
 @implementation FCScene
 
+// lighting information - multiple 'sets' so that different renderers can use different lighting
+
+
 @end

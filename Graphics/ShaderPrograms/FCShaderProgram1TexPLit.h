@@ -20,17 +20,31 @@
  THE SOFTWARE.
  */
 
-// DEPRECATE
+#import "FCShaderProgram.h"
 
-#import <Foundation/Foundation.h>
+@class FCShader;
+@class FCShaderUniform;
+@class FCShaderAttribute;
 
-@interface FCTarFile : NSObject {
-    NSMutableDictionary* mEntries;
-	NSData* mFileData;
+@interface FCShaderProgram1TexPLit : FCShaderProgram {
+	
+	FCShaderUniform*	_ambientUniform;
+	FCShaderUniform*	_lightColorUniform;
+	
+	FCShaderAttribute*	_positionAttribute;
+	FCShaderAttribute*	_normalAttribute;
+	FCShaderAttribute*	_diffuseColorAttribute;
+	FCShaderAttribute*	_specularColorAttribute;
 }
+@property(nonatomic, strong) FCShaderUniform* ambientUniform;
+@property(nonatomic, strong) FCShaderUniform* lightColorUniform;
 
--(id)initWithContentsOfFile:(NSString*)filename;
+@property(nonatomic, strong) FCShaderAttribute* positionAttribute;
+@property(nonatomic, strong) FCShaderAttribute* normalAttribute;
+@property(nonatomic, strong) FCShaderAttribute* diffuseColorAttribute;
+@property(nonatomic, strong) FCShaderAttribute* specularColorAttribute;
 
--(NSData*)dataForResource:(NSString*)name ofType:(NSString*)type;
-
+-(id)initWithVertex:(FCShader *)vertexShader andFragment:(FCShader *)fragmentShader;
+-(void)bindUniformsWithMesh:(FCMesh*)mesh vertexDescriptor:(FCVertexDescriptor*)vertexDescriptor;
+-(void)bindAttributesWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor;
 @end

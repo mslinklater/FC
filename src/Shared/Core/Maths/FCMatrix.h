@@ -20,10 +20,14 @@
  THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
-#import <math.h>
-#import "Core/FCError.h"
-#import "Core/Maths/FCVector.h"
+//#import <Foundation/Foundation.h>
+
+#ifndef FCMatrix_h
+#define FCMatrix_h
+
+#include <math.h>
+//#include "Core/FCError.h"
+#include "Core/Maths/FCVector.h"
 
 namespace FC {
 	
@@ -54,9 +58,9 @@ namespace FC {
 		}
 		
 		static Matrix4f Frustum( float left, float right, float bottom, float top, float near, float far ) {
-			FC_ASSERT(right != left);
-			FC_ASSERT(top != bottom);
-			FC_ASSERT(far != near);
+//			FC_ASSERT(right != left);
+//			FC_ASSERT(top != bottom);
+//			FC_ASSERT(far != near);
 
 			Matrix4f mat;
 			
@@ -143,3 +147,5 @@ namespace FC {
 	}
 	
 } // namespace FC
+
+#endif // FCMatrix_h

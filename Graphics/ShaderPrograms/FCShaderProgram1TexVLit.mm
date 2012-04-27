@@ -20,54 +20,41 @@
  THE SOFTWARE.
  */
 
-#import "FCShaderProgramTest.h"
+#import "FCShaderProgram1TexVLit.h"
 #import "FCCore.h"
 #import "FCMesh.h"
 #import "FCShaderAttribute.h"
 #import "FCShaderUniform.h"
+#import "FCTextureManager.h"
 
 #import "FCGL.h"
 
-/*
- 
- stride = 16
- 
- float	x
- float	y
- float	z
- short	nx
- short	ny
- short	nz
- short	unused
- uchar	r
- uchar	g
- uchar	b
- uchar	a
- 
- */
-
-@implementation FCShaderProgramTest
+@implementation FCShaderProgram1TexVLit
 
 @synthesize ambientUniform = _ambientUniform;
 @synthesize lightColorUniform = _lightColorUniform;
+@synthesize textureUniform = _textureUniform;
 
 @synthesize positionAttribute = _positionAttribute;
 @synthesize normalAttribute = _normalAttribute;
 @synthesize diffuseColorAttribute = _diffuseColorAttribute;
 @synthesize specularColorAttribute = _specularColorAttribute;
+@synthesize uv1Attribute = _uv1Attribute;
 
 -(id)initWithVertex:(FCShader *)vertexShader andFragment:(FCShader *)fragmentShader
 {
 	self = [super initWithVertex:vertexShader andFragment:fragmentShader];
 	if (self) {		
-		_stride = 28;
+		_stride = 36;
 		self.ambientUniform = [self.uniforms valueForKey:@"ambient_color"];
 		self.lightColorUniform = [self.uniforms valueForKey:@"light_color"];
+		self.textureUniform = [self.uniforms valueForKey:@"texture"];
 		
 		self.positionAttribute = [self.attributes valueForKey:@"position"];
 		self.normalAttribute = [self.attributes valueForKey:@"normal"];
 		self.diffuseColorAttribute = [self.attributes valueForKey:@"diffuse_color"];
 		self.specularColorAttribute = [self.attributes valueForKey:@"specular_color"];
+		self.uv1Attribute = [self.attributes valueForKey:@"uv1"];
 	}
 	return self;
 }
@@ -77,23 +64,34 @@
 	FC::Color4f ambientColor( 0.25f, 0.25f, 0.25f, 1.0f );
 	FC::Color4f lightColor( 1.0f, 1.0f, 1.0f, 1.0f );
 	
-	glUniform4fv(_ambientUniform.glLocation, 1, (GLfloat*)&ambientColor);
-	glUniform4fv(_lightColorUniform.glLocation, 1, (GLfloat*)&lightColor);
+	FCglUniform4fv(_ambientUniform.glLocation, 1, (GLfloat*)&ambientColor);
+	FCglUniform4fv(_lightColorUniform.glLocation, 1, (GLfloat*)&lightColor);
+
+	[[FCTextureManager instance] bindDebugTextureTo:_textureUniform.glLocation];
+	
+//	FCglUniform1i(_textureUniform.glLocation, 0);
 }
 
 -(void)bindAttributesWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor; // Get rid of the vertex descriptor
 {
 	FCglVertexAttribPointer( _positionAttribute.glLocation, 3, GL_FLOAT, GL_FALSE, _stride, (void*)0);
 	FCglEnableVertexAttribArray( _positionAttribute.glLocation );
-
+	
 	FCglVertexAttribPointer( _normalAttribute.glLocation, 3, GL_SHORT, GL_TRUE, _stride, (void*)12);
 	FCglEnableVertexAttribArray( _normalAttribute.glLocation );
-
+	
 	FCglVertexAttribPointer( _diffuseColorAttribute.glLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, _stride, (void*)20);
 	FCglEnableVertexAttribArray( _diffuseColorAttribute.glLocation );
-
+	
 	FCglVertexAttribPointer( _specularColorAttribute.glLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, _stride, (void*)24);
 	FCglEnableVertexAttribArray( _specularColorAttribute.glLocation );
+
+	FCglVertexAttribPointer( _uv1Attribute.glLocation, 2, GL_FLOAT, GL_FALSE, _stride, (void*)28);
+	FCglEnableVertexAttribArray( _uv1Attribute.glLocation );
+	
+//	if (_uv1Attribute) {
+//		[[FCTextureManager instance] bindDebugTextureTo:_uv1Attribute.glLocation];
+//	}
 }
 
 @end

@@ -19,16 +19,13 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+ 
+#ifndef FCMaths_h
+#define FCMaths_h
 
-#import <Foundation/Foundation.h>
+#include "FCUtility.h"
+#include "FCVector.h"
+#include "FCMatrix.h"
+#include "FCRandom.h"
 
-extern NSString* kFCNotificationContinue;
-extern NSString* kFCNotificationQuit;
-extern NSString* kFCNotificationRestart;
-extern NSString* kFCNotificationRetry;
-
-extern NSString* kFCNotificationPause;
-extern NSString* kFCNotificationResume;
-
-extern NSString* kFCNotificationPlayerIDChanged;
-extern NSString* kFCNotificationHighScoresChanged;
+#endif
