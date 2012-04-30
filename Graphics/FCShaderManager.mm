@@ -73,7 +73,7 @@
 		
 		NSString* path = [[NSBundle mainBundle] pathForResource:resourceName ofType:resourceType];
 
-		FC_ASSERT1(path, @"Shader not found");
+		FC_ASSERT_MSG( path, std::string("Shader not found: ") + [path UTF8String]);
 		
 		// load it
 		
@@ -92,7 +92,7 @@
 		
 		ret = [[FCShader alloc] initType:type withSource:source];
 		
-		FC_LOG1(@"Compiled GL shader %@", name);
+		FC_LOG( std::string("Compiled GL shader: ") + [name UTF8String]);
 
 		[self.shaders setValue:ret forKey:name];
 	}
@@ -151,10 +151,10 @@
 			ret = [[FCShaderProgramTest alloc] initWithVertex:vertexShader andFragment:fragmentShader];
 		} 
 		else {
-			FC_ERROR1(@"Unknown shader %@", name);
+			FC_FATAL( std::string("Unknown shader: ") + [name UTF8String]);
 		}
 		
-		FC_LOG1(@"Linked GL program %@", name);
+		FC_LOG( std::string("Linked GL program: ") + [name UTF8String]);
 		
 		[self.programs setValue:ret forKey:name];
 	}
@@ -168,7 +168,7 @@
 
 -(FCShaderProgram*)program:(NSString *)name
 {
-	FC_ASSERT1([self.programs valueForKey:name] != nil, @"Trying to use an unknown shader");
+	FC_ASSERT_MSG([self.programs valueForKey:name] != nil, "Trying to use an unknown shader");
 	return [self.programs valueForKey:name];
 }
 

@@ -60,7 +60,7 @@
 			_sourceFormat = kFCTextureFileSourcePVR;
 			_delegate = [[FCTextureFilePVR alloc] init];
 		} else {
-			FC_ERROR1(@"Unknown source type", fileTypeString);
+			FC_FATAL( std::string("Unknown source type") + [fileTypeString UTF8String]);
 		}
 	}
 	return self;

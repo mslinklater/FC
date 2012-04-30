@@ -34,16 +34,16 @@ void FCGLCheckErrors( void )
 	
 	switch (error) {
 		case GL_INVALID_ENUM:
-			FC_FATAL(@"GL_INVALID_ENUM");
+			FC_FATAL("GL_INVALID_ENUM");
 			break;
 		case GL_INVALID_VALUE:
-			FC_FATAL(@"GL_INVALID_VALUE");
+			FC_FATAL("GL_INVALID_VALUE");
 			break;
 		case GL_INVALID_OPERATION:
-			FC_FATAL(@"GL_INVALID_OPERATION");
+			FC_FATAL("GL_INVALID_OPERATION");
 			break;
 		case GL_OUT_OF_MEMORY:
-			FC_FATAL(@"GL_OUT_OF_MEMORY");
+			FC_FATAL("GL_OUT_OF_MEMORY");
 			break;
 		default:
 			break;
@@ -86,12 +86,13 @@ NSArray* FCGLQueryExtensions( void )
 
 void FCGLLogVersions( void )
 {
-	FC_LOG(@"---OpenGL Versions---");
-	FC_LOG1(@"Vendor:%@", FCGLQueryVendor());
-	FC_LOG1(@"Version:%@", FCGLQueryVersion());
-	FC_LOG1(@"Renderer:%@", FCGLQueryRenderer());
-	FC_LOG1(@"Shading language version:%@", FCGLQueryShadingLanguageVersion());
-	FC_LOG1(@"Extensions:%@", FCGLQueryExtensions());
+	FC_LOG("---OpenGL Versions---");
+	FC_LOG( std::string("Vendor: ") + [FCGLQueryVendor() UTF8String]);	
+	FC_LOG( std::string("Vendor: ") + [FCGLQueryVendor() UTF8String]);
+	FC_LOG( std::string("Version: ") + [FCGLQueryVersion() UTF8String]);
+	FC_LOG( std::string("Renderer: ") + [FCGLQueryRenderer() UTF8String]);
+	FC_LOG( std::string("Shading language version: ") + [FCGLQueryShadingLanguageVersion() UTF8String]);
+	FC_LOG( std::string("Extensions: ") + [[FCGLQueryExtensions() description] UTF8String]);
 }
 
 #pragma mark - Caps
@@ -102,87 +103,89 @@ void FCGLLogCaps( void )
 	GLint intValue[16];
 	GLfloat floatValue[16];
 	
-	FC_LOG(@"---OpenGL Caps---");
+	
+	FC_LOG("---OpenGL Caps---");
 	
 	glGetIntegerv(GL_SUBPIXEL_BITS, intValue);
-	tempString = [NSString stringWithFormat:@"GL_SUBPIXEL_BITS: %d", intValue[0]];
-	FC_LOG(tempString);
+	std::stringstream ss;
+	ss << intValue[0];
+	FC_LOG( std::string("GL_SUBPIXEL_BITS: ") + ss.str());
 	
 	glGetIntegerv(GL_MAX_TEXTURE_SIZE, intValue);
 	tempString = [NSString stringWithFormat:@"GL_MAX_TEXTURE_SIZE: %d",intValue[0]];
-	FC_LOG(tempString);
+	FC_LOG([tempString UTF8String]);
 	
 	glGetIntegerv(GL_MAX_CUBE_MAP_TEXTURE_SIZE, intValue);
 	tempString = [NSString stringWithFormat:@"GL_MAX_CUBE_MAP_TEXTURE_SIZE: %d", intValue[0]];
-	FC_LOG(tempString);
+	FC_LOG([tempString UTF8String]);
 	
 	glGetIntegerv(GL_MAX_VIEWPORT_DIMS, intValue);
 	tempString = [NSString stringWithFormat:@"GL_MAX_VIEWPORT_DIMS: %d %d", intValue[0], intValue[1]];
-	FC_LOG(tempString);
+	FC_LOG([tempString UTF8String]);
 	
 	glGetFloatv(GL_ALIASED_POINT_SIZE_RANGE, floatValue);
 	tempString = [NSString stringWithFormat:@"GL_ALIASED_POINT_SIZE_RANGE: %f %f", floatValue[0], floatValue[1]];
-	FC_LOG(tempString);
+	FC_LOG([tempString UTF8String]);
 	
 	glGetFloatv(GL_ALIASED_LINE_WIDTH_RANGE, floatValue);
 	tempString = [NSString stringWithFormat:@"GL_ALIASED_LINE_WIDTH_RANGE: %f %f", floatValue[0], floatValue[1]];
-	FC_LOG(tempString);
+	FC_LOG([tempString UTF8String]);
 	
 	glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, intValue);
 	int numCompressedTextureFormats = intValue[0];
 	tempString = [NSString stringWithFormat:@"GL_NUM_COMPRESSED_TEXTURE_FORMATS: %d", intValue[0]];
-	FC_LOG(tempString);
+	FC_LOG([tempString UTF8String]);
 
 	glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS, intValue);
 	for (int i = 0; i < numCompressedTextureFormats; i++) {
 		// blah
 		NSString* format = FCGLStringForEnum(intValue[i]);
-		FC_LOG(format);
+		FC_LOG([format UTF8String]);
 	}
 	
 	glGetIntegerv(GL_RED_BITS, intValue);
 	tempString = [NSString stringWithFormat:@"GL_RED_BITS: %d", intValue[0]];
-	FC_LOG(tempString);
+	FC_LOG([tempString UTF8String]);
 	
 	glGetIntegerv(GL_GREEN_BITS, intValue);
 	tempString = [NSString stringWithFormat:@"GL_GREEN_BITS: %d", intValue[0]];
-	FC_LOG(tempString);
+	FC_LOG([tempString UTF8String]);
 
 	glGetIntegerv(GL_BLUE_BITS, intValue);
 	tempString = [NSString stringWithFormat:@"GL_BLUE_BITS: %d", intValue[0]];
-	FC_LOG(tempString);
+	FC_LOG([tempString UTF8String]);
 
 	glGetIntegerv(GL_ALPHA_BITS, intValue);
 	tempString = [NSString stringWithFormat:@"GL_ALPHA_BITS: %d", intValue[0]];
-	FC_LOG(tempString);
+	FC_LOG([tempString UTF8String]);
 
 	glGetIntegerv(GL_DEPTH_BITS, intValue);
 	tempString = [NSString stringWithFormat:@"GL_DEPTH_BITS: %d", intValue[0]];
-	FC_LOG(tempString);
+	FC_LOG([tempString UTF8String]);
 
 	glGetIntegerv(GL_STENCIL_BITS, intValue);
 	tempString = [NSString stringWithFormat:@"GL_STENCIL_BITS: %d", intValue[0]];
-	FC_LOG(tempString);
+	FC_LOG([tempString UTF8String]);
 
 	glGetIntegerv(GL_MAX_VERTEX_UNIFORM_VECTORS, intValue);
 	tempString = [NSString stringWithFormat:@"GL_MAX_VERTEX_UNIFORM_VECTORS: %d", intValue[0]];
-	FC_LOG(tempString);
+	FC_LOG([tempString UTF8String]);
 
 	glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_VECTORS, intValue);
 	tempString = [NSString stringWithFormat:@"GL_MAX_FRAGMENT_UNIFORM_VECTORS: %d", intValue[0]];
-	FC_LOG(tempString);
+	FC_LOG([tempString UTF8String]);
 
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, intValue);
 	tempString = [NSString stringWithFormat:@"GL_MAX_VERTEX_ATTRIBS: %d", intValue[0]];
-	FC_LOG(tempString);
+	FC_LOG([tempString UTF8String]);
 
 	glGetIntegerv(GL_MAX_VARYING_VECTORS, intValue);
 	tempString = [NSString stringWithFormat:@"GL_MAX_VARYING_VECTORS: %d", intValue[0]];
-	FC_LOG(tempString);
+	FC_LOG([tempString UTF8String]);
 
 	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, intValue);
 	tempString = [NSString stringWithFormat:@"GL_MAX_TEXTURE_IMAGE_UNITS: %d", intValue[0]];
-	FC_LOG(tempString);
+	FC_LOG([tempString UTF8String]);
 }
 
 NSString* FCGLStringForEnum( GLenum thisEnum )
@@ -293,7 +296,7 @@ NSString* FCGLStringForEnum( GLenum thisEnum )
 						
 		default:
 			NSString* tempString = [NSString stringWithFormat:@"%d", thisEnum];
-			FC_WARNING1(@"unknown GLenum", tempString);
+			FC_WARNING( std::string("unknown GLenum") + [tempString UTF8String] );
 			break;
 	}
 	return nil;
@@ -312,7 +315,7 @@ void FCGLLogState( void )
 {
 	NSString* entry;
 	entry = [NSString stringWithFormat:@"%d", FCGLCapsMaxTextureSize()];
-	FC_LOG1(@"Max Texture Size:%@", entry );
+	FC_LOG( std::string("Max Texture Size:") + [entry UTF8String] );
 }
 
 #endif // defined(FC_GRAPHICS)

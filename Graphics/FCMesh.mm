@@ -80,8 +80,8 @@
 -(void)setNumVertices:(unsigned int)numVertices
 {
 	FC_ASSERT(_vertexBufferStride);
-	FC_ASSERT1(self.numVertices == 0, @"numVertices already set - cannot do twice");
-	FC_ASSERT1(numVertices < 65535, @"Cannot cope with meshes with more than 65535 verts yet");
+	FC_ASSERT_MSG(self.numVertices == 0, "numVertices already set - cannot do twice");
+	FC_ASSERT_MSG(numVertices < 65535, "Cannot cope with meshes with more than 65535 verts yet");
 	_numVertices = numVertices;
 	_sizeVertexBuffer = self.numVertices * _vertexBufferStride;
 	_pVertexBuffer = malloc(_sizeVertexBuffer);
@@ -91,7 +91,7 @@
 {
 	if(_primitiveType == GL_TRIANGLES)
 	{
-		FC_ASSERT1(self.numTriangles == 0, @"numTriangles already set - cannot do twice");
+		FC_ASSERT_MSG(self.numTriangles == 0, "numTriangles already set - cannot do twice");
 		_numTriangles = numTriangles;
 		_sizeIndexBuffer = self.numTriangles * 3 * sizeof(unsigned short);
 		_pIndexBuffer = (unsigned short*)malloc(_sizeIndexBuffer);		
@@ -102,7 +102,7 @@
 {
 	if(_primitiveType == GL_LINES)
 	{
-		FC_ASSERT1(self.numEdges == 0, @"numEdges already set - cannot do twice");
+		FC_ASSERT_MSG(self.numEdges == 0, "numEdges already set - cannot do twice");
 		_numEdges = numEdges;
 		_sizeIndexBuffer = self.numEdges * 2 * sizeof(unsigned short);
 		_pIndexBuffer = (unsigned short*)malloc(_sizeIndexBuffer);		

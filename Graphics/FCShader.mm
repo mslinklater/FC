@@ -50,7 +50,7 @@
 
 		_glHandle = FCglCreateShader( glShaderType );
 		if (self.glHandle == 0) {
-			FC_FATAL1(@"glCreateShader failed '%@'", source);
+			FC_FATAL( std::string("glCreateShader failed ") + [source UTF8String]);
 		}
 		
 		FCglShaderSource(self.glHandle, 1, &shaderStr, NULL);
@@ -66,7 +66,7 @@
 				char* infoLog = (char*)malloc(sizeof(char) * infoLen);
 				FCglGetShaderInfoLog(self.glHandle, infoLen, NULL, infoLog);
 				NSString* errorString = [NSString stringWithFormat:@"%s", infoLog];
-				FC_ERROR(errorString);
+				FC_FATAL([errorString UTF8String]);
 				free(infoLog);
 			}
 			FCglDeleteShader(self.glHandle);

@@ -405,7 +405,7 @@ static int lua_PrintViews( lua_State* _state )
 
 //		[self printViewsUnder:subView withTab:0];
 		
-		FC_LOG(line);
+		FC_LOG([line UTF8String]);
 	}	
 }
 
@@ -591,7 +591,7 @@ static int lua_PrintViews( lua_State* _state )
 #if defined (DEBUG)
 	else 
 	{
-		FC_FATAL1(@"Sending 'setText' to a view which does not respond to setText - %@", thisView);
+		FC_FATAL( std::string("Sending 'setText' to a view which does not respond to setText - ") + [[thisView description] UTF8String]);
 	}
 #endif
 }
@@ -622,7 +622,7 @@ static int lua_PrintViews( lua_State* _state )
 			[invocation setArgument:&color atIndex:2];
 			[invocation invoke];
 		} else {
-			FC_FATAL1(@"Sending 'setTextColor' to a view which does not respond to setTextColor - %@", thisView);
+			FC_FATAL( std::string("Sending 'setTextColor' to a view which does not respond to setTextColor - ") + [[thisView description] UTF8String]);
 		}	
 	}
 }
@@ -670,7 +670,7 @@ static int lua_PrintViews( lua_State* _state )
 		}];
 #endif
 	} else {
-		FC_FATAL1(@"Sending 'setFrame' to a view which does not respond to setFrame - %@", thisView);
+		FC_FATAL( std::string("Sending 'setFrame' to a view which does not respond to setFrame - ") + [[thisView description] UTF8String]);
 	}
 	
 }
@@ -717,7 +717,7 @@ static int lua_PrintViews( lua_State* _state )
 			}];
 #endif
 		} else {
-			FC_FATAL1(@"Sending 'setAlpha' to a view which does not respond to setAlpha - %@", thisView);
+			FC_FATAL( std::string("Sending 'setAlpha' to a view which does not respond to setAlpha - ") + [[thisView description] UTF8String]);
 		}			
 	}
 }
@@ -742,7 +742,7 @@ static int lua_PrintViews( lua_State* _state )
 		[invocation invoke];
 
 	} else {
-		FC_FATAL1(@"Sending 'setAlpha' to a view which does not respond to setAlpha - %@", thisView);
+		FC_FATAL( std::string("Sending 'setAlpha' to a view which does not respond to setAlpha - ") + [[thisView description] UTF8String]);
 	}	
 
 }
@@ -767,9 +767,8 @@ static int lua_PrintViews( lua_State* _state )
 		[invocation invoke];
 		
 	} else {
-		FC_FATAL1(@"Sending 'setImage' to a view which does not respond to setImage - %@", thisView);
-	}	
-	
+		FC_FATAL( std::string("Sending 'setImage' to a view which does not respond to setImage - ") + [[thisView description] UTF8String]);
+	}
 }
 
 -(void)setView:(NSString*)viewName url:(NSString *)url
@@ -792,7 +791,7 @@ static int lua_PrintViews( lua_State* _state )
 		[invocation invoke];
 		
 	} else {
-		FC_FATAL1(@"Sending 'setURL' to a view which does not respond to setURL - %@", thisView);
+		FC_FATAL( std::string("Sending 'setURL' to a view which does not respond to setURL - ") + [[thisView description] UTF8String]);
 	}	
 }
 

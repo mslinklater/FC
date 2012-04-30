@@ -20,77 +20,33 @@
  THE SOFTWARE.
  */
 
-#ifndef FCSharedPtr_h
-#define FCSharedPtr_h
+#import "FCError_apple.h"
 
-#include <algorithm>
+#include <string>
 
-template<typename T>
-class FCSharedPtr
+void plt_FCHalt();
+void plt_FCLog(std::string log);
+void plt_FCWarning(std::string message);
+void plt_FCFatal(std::string message);
+
+void plt_FCHalt()
 {
-public:
-	
-	FCSharedPtr( T* pObject = 0 )
-	: m_pObject( pObject )
-	{
-		m_pRefCount = new unsigned int;
-		*m_pRefCount = 1;
-	}
+	int* pHalt = 0;
+	*pHalt = 0xff;
+}
 
-	FCSharedPtr( const FCSharedPtr<T> &other )
-	: m_pObject( other.m_pObject )
-	, m_pRefCount( other.m_pRefCount )
-	{
-		(*m_pRefCount)++;
-	}
-	
-	~FCSharedPtr()
-	{
-		(*m_pRefCount)--;
-		if (*m_pRefCount <= 0) {
-			delete m_pObject;
-			m_pObject = 0;
-			delete m_pRefCount;
-			m_pRefCount = 0;
-		}
-	}
+void plt_FCLog( std::string log )
+{
+	NSLog( @"Log: %@", [NSString stringWithUTF8String:log.c_str()] );
+}
 
-	FCSharedPtr& operator=( const FCSharedPtr<T> &rhs )
-	{
-		FCSharedPtr<T> temp(rhs);
-		swap(temp);
-		return *this;
-	}
+void plt_FCWarning( std::string log )
+{
+	NSLog( @"Warning: %@", [NSString stringWithUTF8String:log.c_str()] );	
+}
 
-	T& operator*() const
-	{
-		return *m_pObject;
-	}
-
-	T* operator->() const
-	{
-		return m_pObject;
-	}
-
-	operator bool() const
-	{
-		return m_pObject != 0;
-	}
-	
-	T* get() const
-	{
-		return m_pObject;
-	}
-	
-	void swap( FCSharedPtr<T> &other )
-	{
-		std::swap( m_pObject, other.m_pObject );
-		std::swap( m_pRefCount, other.m_pRefCount );
-	}
-	
-private:
-	unsigned int*	m_pRefCount;
-	T*				m_pObject;
-};
-
-#endif
+void plt_FCFatal( std::string log )
+{
+	NSLog( @"FATAL: %@", [NSString stringWithUTF8String:log.c_str()] );	
+	plt_FCHalt();
+}

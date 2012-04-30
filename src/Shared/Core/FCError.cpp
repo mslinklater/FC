@@ -20,22 +20,30 @@
  THE SOFTWARE.
  */
 
-#include <Foundation/Foundation.h>
+#include "FCError.h"
 
-#include <mach/mach.h>
-#include <mach/mach_time.h>
+extern void plt_FCHalt();
+extern void plt_FCLog( std::string log );
+extern void plt_FCWarning( std::string log );
+extern void plt_FCFatal( std::string log );
 
-@interface FCPerformanceCounter : NSObject
+void FCHalt()
 {
-	uint64_t					mZeroTime;
-	mach_timebase_info_data_t	mInfo;
+	plt_FCHalt();
 }
 
--(id)init;
--(void)zero;
--(double)nanoValue;
--(double)microValue;
--(double)milliValue;
--(double)secondsValue;
+void FCLog( std::string log )
+{
+	plt_FCLog(log);
+}
 
-@end
+void FCWarning( std::string message )
+{
+	plt_FCWarning(message);
+}
+
+void FCFatal( std::string message )
+{
+	plt_FCFatal(message);
+}
+

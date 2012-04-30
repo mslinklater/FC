@@ -211,9 +211,9 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 		_context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 		
 		if (!self.context)
-			FC_FATAL(@"Failed to create ES context");
+			FC_FATAL("Failed to create ES context");
 		else if (![EAGLContext setCurrentContext:self.context])
-			FC_FATAL(@"Failed to set ES context current");
+			FC_FATAL("Failed to set ES context current");
 
 		// setup some defaults
 		
@@ -312,7 +312,7 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 			FCglTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _supersampleBufferWidth, _supersampleBufferHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
 			if (FCglGetError() != GL_NO_ERROR) {
-				FC_FATAL(@"can't get supersampling working");
+				FC_FATAL("Can't get supersampling working");
 				exit(1);
 			}
 		}
@@ -335,7 +335,7 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 		FCglFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, _superOffScreenTexture, 0); GLCHECK;
         
         if (FCglCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            FC_FATAL1(@"Failed to make complete framebuffer object '%@'", FCGLStringForEnum( FCglCheckFramebufferStatus(GL_FRAMEBUFFER)));
+            FC_FATAL( std::string("Failed to make complete framebuffer object ") + [FCGLStringForEnum( FCglCheckFramebufferStatus(GL_FRAMEBUFFER)) UTF8String] );
     }
 }
 
@@ -374,7 +374,7 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 		FCglFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _normalColorRenderBuffer); GLCHECK;
         
         if (FCglCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-            FC_FATAL1(@"Failed to make complete framebuffer object %@", FCGLStringForEnum(glCheckFramebufferStatus(GL_FRAMEBUFFER)) );
+            FC_FATAL( std::string("Failed to make complete framebuffer object ") + [FCGLStringForEnum(glCheckFramebufferStatus(GL_FRAMEBUFFER)) UTF8String]);
     }
 }
 

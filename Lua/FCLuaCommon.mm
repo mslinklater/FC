@@ -28,7 +28,7 @@ void FCLua_DumpStack( lua_State* _state )
 {
 	NSString* hexAddress = [NSString stringWithFormat:@"0x%08x", _state];
 	FC_UNUSED(hexAddress);
-	FC_LOG1(@"-- FCLuaVM:dumpStack (%@) --", hexAddress);
+	FC_LOG( std::string("-- FCLuaVM:dumpStack (") + [hexAddress UTF8String] + ") --");
 	int i;
 	int top = lua_gettop(_state);
 	for( i = 1 ; i <= top ; i++ )
@@ -36,24 +36,26 @@ void FCLua_DumpStack( lua_State* _state )
 		int t = lua_type(_state, i);
 		int negIndex = -(top - i) -1;
 		FC_UNUSED(negIndex);
+		std::stringstream ss;
 		switch(t)
 		{
 			case LUA_TSTRING:
-				FC_LOG3(@"(%@/%@) string '%@'", [NSNumber numberWithInt:i], [NSNumber numberWithInt:negIndex], [NSString stringWithUTF8String:lua_tostring(_state, i)]);
+				ss << "(" << i << "/" << negIndex << std::string(") string ") + lua_tostring(_state, i);
 				break;
 			case LUA_TBOOLEAN:
-				FC_LOG3(@"(%@/%@) boolean %@", [NSNumber numberWithInt:i], [NSNumber numberWithInt:negIndex], (lua_toboolean(_state, i) ? @"true" : @"false") );
+				ss << "(" << i << "/" << negIndex << std::string(") boolean ") + (lua_toboolean(_state, i) ? "true" : "false");
 				break;
 			case LUA_TNUMBER:
-				FC_LOG3(@"(%@/%@) number %@", [NSNumber numberWithInt:i], [NSNumber numberWithInt:negIndex], [NSNumber numberWithDouble:lua_tonumber(_state, i)]);
+				ss << "(" << i << "/" << negIndex << std::string(") number ") << lua_tonumber(_state, i);
 				break;
 			case LUA_TLIGHTUSERDATA:
-				FC_LOG2(@"(%@/%@) userdata", [NSNumber numberWithInt:i], [NSNumber numberWithInt:negIndex] );
+				ss << "(" << i << "/" << negIndex << std::string(") userdata");
 				break;
 			default:
-				FC_LOG3(@"(%@/%@) %@", [NSNumber numberWithInt:i], [NSNumber numberWithInt:negIndex], [NSString stringWithUTF8String:lua_typename(_state, t)]);
+				ss << "(" << i << "/" << negIndex << std::string(")") << lua_typename(_state, t);
 				break;
 		}
+		FC_LOG( ss.str() );
 	}
 }
 

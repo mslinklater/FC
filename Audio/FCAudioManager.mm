@@ -422,25 +422,25 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 	{
 		switch (error) {
 			case AL_INVALID_NAME:
-				FC_ASSERT1(0, @"OpenAL: Invalid name");
+				FC_ASSERT_MSG(0, "OpenAL: Invalid name");
 				break;
 			case AL_INVALID_ENUM:
-				FC_ASSERT1(0, @"OpenAL: Invalid enum");
+				FC_ASSERT_MSG(0, "OpenAL: Invalid enum");
 				break;
 			case AL_INVALID_VALUE:
-				FC_ASSERT1(0, @"OpenAL: Invalid value");
+				FC_ASSERT_MSG(0, "OpenAL: Invalid value");
 				break;
 			case AL_INVALID_OPERATION:
-				FC_ASSERT1(0, @"OpenAL: Invalid operation");
+				FC_ASSERT_MSG(0, "OpenAL: Invalid operation");
 				break;
 			case AL_OUT_OF_MEMORY:
-				FC_ASSERT1(0, @"OpenAL: Out of memory");
+				FC_ASSERT_MSG(0, "OpenAL: Out of memory");
 				break;
 				
 			default:
 				NSLog(@"%@", [FCAudioManager instance].activeSources);
 				NSString* string = [NSString stringWithFormat:@"Unknown AL error %d", error];
-				FC_LOG( string );
+				FC_LOG( [string UTF8String] );
 				break;
 		}
 	}

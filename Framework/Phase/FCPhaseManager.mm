@@ -117,8 +117,8 @@ static int lua_DeactivatePhase( lua_State* _state )
 			return;
 		}
 	}
-	
-	FC_FATAL1(@"Phase %@ is not active", name);
+
+	FC_FATAL( std::string("Phase ") + [name UTF8String] + " is not active" );
 }
 
 -(void)update:(float)dt

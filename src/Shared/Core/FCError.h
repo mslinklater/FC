@@ -20,12 +20,53 @@
  THE SOFTWARE.
  */
 
-#import "FCColor.h"
-#import "FCKeys.h"
+#ifndef CR1_FCError_h
+#define CR1_FCError_h
 
-typedef uint32_t FCHandle;	// should last a while 8)
+#include <string>
+#include <sstream>
 
-static const FCHandle kFCHandleInvalid = 0;
-static const FCHandle kFCHandleFirstValid = 1;
+class lua_State;
 
-extern FCHandle NewFCHandle( void );
+//extern void FCError_RegisterLuaFunctions( lua_State* _state );
+
+extern void FCHalt();
+
+extern void FCLog( std::string log );
+
+//extern void FCAssert( bool condition );
+
+extern void FCFatal( std::string message );
+
+extern void FCWarning( std::string message );
+
+// Always present ----------------------------
+
+#define FC_HALT FCHalt()
+#define FC_UNUSED( n ) (void)n
+
+// Only when debug ---------------------------
+
+#if defined (DEBUG)
+
+#define FC_LOG( n ) FCLog( n )
+#define FC_WARNING( n ) FCWarning( n )
+					
+// Release stubs -----------------------------
+
+#else // DEBUG
+
+#define
+
+#define FC_LOG( n )
+#define FC_WARNING( n )
+
+#endif // DEBUG
+
+// Always present ----------------------------
+
+#define FC_ASSERT( n ) if(!(n)) FC_HALT
+#define FC_ASSERT_MSG( n, msg ) if(!(n)){ FC_LOG( msg ); FC_HALT; }
+#define FC_FATAL( n ) FCFatal( n )
+
+#endif

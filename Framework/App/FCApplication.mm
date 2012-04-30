@@ -27,7 +27,7 @@
 #import "FCPersistentData.h"
 #import "FCAnalytics.h"
 #import "FCDevice.h"
-#import "FCError.h"
+#import "Shared/Core/FCError.h"
 #import "FCConnect.h"
 #import "FCPhaseManager.h"
 #import "FCPerformanceCounter.h"
@@ -53,7 +53,7 @@ static CADisplayLink*			s_displayLink;
 #endif
 
 static id<FCAppDelegate>		s_delegate;
-static FCPerformanceCounter*	s_perfCounter;
+static FCPerformanceCounterPtr	s_perfCounter;
 static BOOL						s_paused;
 
 #if defined (FC_LUA)
@@ -195,7 +195,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	s_viewController = vc;
 #endif
 	s_delegate = delegate;
-	s_perfCounter = [[FCPerformanceCounter alloc] init];
+//	s_perfCounter = [[FCPerformanceCounter alloc] init];
+	s_perfCounter = new FCPerformanceCounter;
 	
 #if TARGET_OS_IPHONE
 	s_displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(update)];
@@ -219,7 +220,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 
 //	[FCAnalytics registerLuaFunctions:s_lua];
 
-	[FCError registerLuaFunctions:s_lua];
+//	FCError_RegisterLuaFunctions( s_lua.state );
 
 	[s_lua createGlobalTable:@"FCApp"];
 	[s_lua registerCFunction:lua_ShowStatusBar as:@"FCApp.ShowStatusBar"];
@@ -297,14 +298,13 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	static int fps = 0;
 	static float seconds = 0.0f;
 
-	FCPerformanceCounter* localCounter = [[FCPerformanceCounter alloc] init];
-	[localCounter zero];
+	FCPerformanceCounterPtr localCounter = new FCPerformanceCounter;
+//	[localCounter zero];
+	localCounter->Zero();
 	
 	static float pauseSmooth = 0.0f;
-	float dt = (float)[s_perfCounter secondsValue];
-	[s_perfCounter zero];
-
-		
+	float dt = (float)s_perfCounter->MilliValue() / 1000.0f;
+	s_perfCounter->Zero();		
 	
 	FC::Clamp<float>(dt, 0, 0.1);
 	

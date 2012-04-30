@@ -62,7 +62,7 @@ void common_LoadScriptForState(NSString* path, lua_State* _state, BOOL optional)
 	if(filePath == nil)
 	{ 
 		if (!optional) {
-			FC_FATAL1(@"Cannot load Lua file '%@'", path);
+			FC_FATAL( std::string("Cannot load Lua file: ") + [path UTF8String]);
 		} else {
 			return;
 		}
@@ -73,23 +73,23 @@ void common_LoadScriptForState(NSString* path, lua_State* _state, BOOL optional)
 	switch (ret) {
 		case LUA_ERRSYNTAX:
 			FCLua_DumpStack(_state);
-			FC_FATAL1(@"Syntax error on load of Lua file '%@'", path);
+			FC_FATAL( std::string("Syntax error on load of Lua file: ") + [path UTF8String]);
 			break;			
 		case LUA_ERRMEM:
 			FCLua_DumpStack(_state);
-			FC_FATAL1(@"Memory error on load of Lua file '%@'", path);
+			FC_FATAL( std::string("Memory error on load of Lua file: ") + [path UTF8String]);
 			break;			
 		case LUA_ERRFILE:
 			FCLua_DumpStack(_state);
-			FC_FATAL1(@"File error on load of Lua file '%@'", path);
+			FC_FATAL( std::string("File error on load of Lua file: ") + [path UTF8String]);
 			break;			
 		case LUA_ERRERR:
 			FCLua_DumpStack(_state);
-			FC_FATAL1(@"Error on load of Lua file '%@'", path);
+			FC_FATAL( std::string("Error on load of Lua file: ") + [path UTF8String]);
 			break;			
 		case LUA_ERRRUN:
 			FCLua_DumpStack(_state);
-			FC_FATAL1(@"Run error on load of Lua file '%@'", path);
+			FC_FATAL( std::string("Run error on load of Lua file: ") + [path UTF8String]);
 			break;			
 		default:
 			break;
@@ -100,13 +100,13 @@ void common_LoadScriptForState(NSString* path, lua_State* _state, BOOL optional)
 	switch (ret) {
 		case LUA_ERRRUN:
 			FCLua_DumpStack(_state);
-			FC_FATAL1(@"Runtime error in Lua file '%@'", path);
+			FC_FATAL( std::string("Runtime error in Lua file: ") + [path UTF8String]);
 			break;
 		case LUA_ERRMEM:
-			FC_FATAL1(@"Memory error in Lua file '%@'", path);
+			FC_FATAL( std::string("Memory error in Lua file: ") + [path UTF8String]);
 			break;
 		case LUA_ERRERR:
-			FC_FATAL1(@"Error while running error handling function in Lua file '%@'", path);
+			FC_FATAL( std::string("Error while running error handling function in Lua file: ") + [path UTF8String]);
 			break;			
 		default:
 			break;
@@ -139,7 +139,7 @@ static int panic (lua_State *L) {
 	(void)L;  /* to avoid warnings */
 	const char* pString = lua_tostring(L, -1);
 	FCLua_DumpStack(L);
-	FC_FATAL1(@"PANIC: unprotected error in call to Lua API '%@'", [NSString stringWithCString:pString encoding:NSUTF8StringEncoding]);
+	FC_FATAL( std::string("PANIC: unprotected error in call to Lua API: ") + pString );
 	return 0;
 }
 
@@ -160,7 +160,7 @@ static int panic (lua_State *L) {
 		}
 		
 		if (!_state) {
-			FC_FATAL(@"lua_newstate");
+			FC_FATAL("lua_newstate");
 		}
 		
 		// load core functions
@@ -193,10 +193,10 @@ static int panic (lua_State *L) {
 	
 	switch (ret) {
 		case LUA_ERRSYNTAX:
-			FC_ERROR1(@"Syntax error on load of Lua line '%@'", line);
+			FC_FATAL( std::string("Syntax error on load of Lua line: ") + [line UTF8String]);
 			break;			
 		case LUA_ERRMEM:
-			FC_ERROR1(@"Memory error on load of Lua line '%@'", line);
+			FC_FATAL( std::string("Memory error on load of Lua line: ") + [line UTF8String]);
 			break;			
 		default:
 			break;
@@ -207,13 +207,13 @@ static int panic (lua_State *L) {
 	switch (ret) {
 		case LUA_ERRRUN:
 			FCLua_DumpStack(_state);
-			FC_ERROR1(@"Runtime error in Lua line '%@'", line);
+			FC_FATAL( std::string("Runtime error in Lua line: ") + [line UTF8String]);
 			break;
 		case LUA_ERRMEM:
-			FC_ERROR1(@"Memory error in Lua line '%@'", line);
+			FC_FATAL( std::string("Memory error in Lua line: ") + [line UTF8String]);
 			break;
 		case LUA_ERRERR:
-			FC_ERROR1(@"Error while running error handling function in Lua line '%@'", line);
+			FC_FATAL( std::string("Error while running error handling function in Lua line: ") + [line UTF8String]);
 			break;
 		default:
 			break;
@@ -335,7 +335,7 @@ static int panic (lua_State *L) {
 	
 	lua_getglobal(_state, [name UTF8String]);
 	if (!lua_isnumber(_state, -1)) {
-		NSLog(@"ERROR - Global '%@' is not a number", name);
+		FC_FATAL(std::string("Global is not a number: ") + [name UTF8String]);
 		exit(1);
 	}
 	return lua_tointeger(_state, -1);
@@ -348,7 +348,7 @@ static int panic (lua_State *L) {
 	
 	lua_getglobal(_state, [name UTF8String]);
 	if (!lua_istable(_state, -1)) {
-		NSLog(@"ERROR - Global '%@' is not a color", name);
+		FC_FATAL( std::string("Global is not a color: ") + [name UTF8String]);
 		exit(1);
 	}	
 	// TODO: table size check
@@ -464,7 +464,7 @@ static int panic (lua_State *L) {
 	
 	if (lua_isnil(_state, -1)) {
 		if (required) {
-			FC_FATAL1(@"Can't find function '%@'", func);
+			FC_FATAL( std::string("Can't find function: ") + [func UTF8String]);
 		} else {
 			lua_pop(_state, lua_gettop(_state));
 			FC_ASSERT(lua_gettop(_state) == 0);
@@ -482,7 +482,7 @@ static int panic (lua_State *L) {
 
 	if (!lua_isfunction(_state, -1)) {
 		if (required) {
-			FC_FATAL1(@"Calling a function defined in Lua '%@'", func);
+			FC_FATAL( std::string("Calling a function defined in Lua: ") + [func UTF8String]);
 		} else
 		{
 			lua_pop(_state, lua_gettop(_state));
@@ -514,8 +514,8 @@ static int panic (lua_State *L) {
 				lua_getglobal(_state, tableName);
 				if (!lua_istable(_state, -1)) 
 				{
-					NSString* tableNSString = [NSString stringWithFormat:@"%s", tableName];
-					FC_FATAL1(@"Trying to pass table argument which is not a table", tableNSString);
+//					NSString* tableNSString = [NSString stringWithFormat:@"%s", tableName];
+					FC_FATAL( std::string("Trying to pass table argument which is not a table: ") + tableName);
 				}					
 				break;
 			}
@@ -534,7 +534,7 @@ endargs:
 	nres = (int)strlen(csig);
 	
 	if (lua_pcall(_state, narg, nres, 0) != 0) {
-		FC_LOG2(@"ERROR calling '%@': %@", func, [NSString stringWithUTF8String:lua_tostring(_state, -1)]);
+		FC_LOG( std::string("Error calling ") + [func UTF8String] + " : " + lua_tostring(_state, -1));
 		[self dumpCallstack];
 		FC_HALT;
 	}
@@ -566,7 +566,7 @@ endargs:
 				break;
 
 			default:
-				FC_FATAL(@"Unknown Lua function return type" );
+				FC_FATAL( "Unknown Lua function return type" );
 				break;
 		}
 		nres++;

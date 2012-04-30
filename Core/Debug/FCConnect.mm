@@ -67,7 +67,7 @@ static NSString* kFCConnectLog = @"Log_";
 
 static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void* data, void* info)
 {
-	FC_LOG(@"FCConnect connection established");
+	FC_LOG("FCConnect connection established");
 	
 	if (type == kCFSocketAcceptCallBack) {
 		CFSocketNativeHandle nativeSocketHandle = *(CFSocketNativeHandle*)data;

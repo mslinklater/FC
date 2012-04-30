@@ -20,77 +20,27 @@
  THE SOFTWARE.
  */
 
-#ifndef FCSharedPtr_h
-#define FCSharedPtr_h
+#ifndef CR1_FCPerformanceCounter_h
+#define CR1_FCPerformanceCounter_h
 
-#include <algorithm>
+#include <stdint.h>
 
-template<typename T>
-class FCSharedPtr
+#include "Shared/Core/FCSharedPtr.h"
+
+class FCPerformanceCounter
 {
 public:
+	FCPerformanceCounter();
+	~FCPerformanceCounter();
 	
-	FCSharedPtr( T* pObject = 0 )
-	: m_pObject( pObject )
-	{
-		m_pRefCount = new unsigned int;
-		*m_pRefCount = 1;
-	}
-
-	FCSharedPtr( const FCSharedPtr<T> &other )
-	: m_pObject( other.m_pObject )
-	, m_pRefCount( other.m_pRefCount )
-	{
-		(*m_pRefCount)++;
-	}
-	
-	~FCSharedPtr()
-	{
-		(*m_pRefCount)--;
-		if (*m_pRefCount <= 0) {
-			delete m_pObject;
-			m_pObject = 0;
-			delete m_pRefCount;
-			m_pRefCount = 0;
-		}
-	}
-
-	FCSharedPtr& operator=( const FCSharedPtr<T> &rhs )
-	{
-		FCSharedPtr<T> temp(rhs);
-		swap(temp);
-		return *this;
-	}
-
-	T& operator*() const
-	{
-		return *m_pObject;
-	}
-
-	T* operator->() const
-	{
-		return m_pObject;
-	}
-
-	operator bool() const
-	{
-		return m_pObject != 0;
-	}
-	
-	T* get() const
-	{
-		return m_pObject;
-	}
-	
-	void swap( FCSharedPtr<T> &other )
-	{
-		std::swap( m_pObject, other.m_pObject );
-		std::swap( m_pRefCount, other.m_pRefCount );
-	}
-	
+	void Zero();
+	double	NanoValue();
+	double	MicroValue();
+	double	MilliValue();
+	double	SecondsValue();
 private:
-	unsigned int*	m_pRefCount;
-	T*				m_pObject;
 };
+
+typedef FCSharedPtr<FCPerformanceCounter> FCPerformanceCounterPtr;
 
 #endif

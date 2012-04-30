@@ -27,7 +27,7 @@
 
 #include <math.h>
 //#include "Core/FCError.h"
-#include "Core/Maths/FCVector.h"
+#include "Shared/Core/Maths/FCVector.h"
 
 namespace FC {
 	

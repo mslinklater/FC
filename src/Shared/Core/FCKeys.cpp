@@ -157,3 +157,45 @@ std::string kFCKeyModels = "models";
 std::string kFCKeyBuffers = "buffers";
 std::string kFCKeyMesh = "mesh";
 std::string kFCKeyCamera = "camera";
+
+// Caps
+
+std::string kFCDeviceTrue = "true";
+std::string kFCDeviceFalse = "false";
+
+std::string kFCDevicePresent = "present";
+std::string kFCDeviceNotPresent = "not present";
+std::string kFCDeviceUnknown = "unknown";
+
+std::string kFCDevicePlatformPhone = "platform_iphone";
+std::string kFCDevicePlatformPhoneRetina = "platform_iphone_retina";
+std::string kFCDevicePlatformPhoneOnPad = "platform_iphone_on_ipad";
+std::string kFCDevicePlatformPad = "platform_ipad";
+std::string kFCDevicePlatformPadRetina = "platform_ipad_retina";
+
+//------- keys
+
+std::string kFCDeviceDisplayAspectRatio = "display_aspect_ratio";
+std::string kFCDeviceDisplayLogicalXRes = "display_logical_xres";
+std::string kFCDeviceDisplayLogicalYRes = "display_logical_yres";
+std::string kFCDeviceDisplayPhysicalXRes = "display_physical_xres";
+std::string kFCDeviceDisplayPhysicalYRes = "display_physical_yres";
+std::string kFCDeviceDisplayScale = "display_scale";
+
+std::string kFCDeviceHardwareModelID = "hardware_model_id";
+std::string kFCDeviceHardwareModel = "hardware_model";
+std::string kFCDeviceHardwareUDID = "hardware_udid";
+std::string kFCDeviceHardwareName = "hardware_name";
+
+std::string kFCDeviceLocale = "locale";
+
+std::string kFCDeviceOSVersion = "os_version";
+std::string kFCDeviceOSName = "os_name";
+std::string kFCDeviceOSGameCenter = "os_gamecenter";
+
+std::string kFCDevicePlatform = "platform";
+
+std::string kFCDeviceSimulator = "simulator";
+
+std::string kFCDeviceAppPirated = "pirated";
+

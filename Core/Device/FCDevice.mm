@@ -110,44 +110,6 @@ static int lua_GetGameCenterID( lua_State* _state )
 
 #pragma mark - Constants
 
-NSString* kFCDeviceTrue = @"true";
-NSString* kFCDeviceFalse = @"false";
-
-NSString* kFCDevicePresent = @"present";
-NSString* kFCDeviceNotPresent = @"not present";
-NSString* kFCDeviceUnknown = @"unknown";
-
-NSString* kFCDevicePlatformPhone = @"platform_iphone";
-NSString* kFCDevicePlatformPhoneRetina = @"platform_iphone_retina";
-NSString* kFCDevicePlatformPhoneOnPad = @"platform_iphone_on_ipad";
-NSString* kFCDevicePlatformPad = @"platform_ipad";
-NSString* kFCDevicePlatformPadRetina = @"platform_ipad_retina";
-
-//------- keys
-
-NSString* kFCDeviceDisplayAspectRatio = @"display_aspect_ratio";
-NSString* kFCDeviceDisplayLogicalXRes = @"display_logical_xres";
-NSString* kFCDeviceDisplayLogicalYRes = @"display_logical_yres";
-NSString* kFCDeviceDisplayPhysicalXRes = @"display_physical_xres";
-NSString* kFCDeviceDisplayPhysicalYRes = @"display_physical_yres";
-NSString* kFCDeviceDisplayScale = @"display_scale";
-
-NSString* kFCDeviceHardwareModelID = @"hardware_model_id";
-NSString* kFCDeviceHardwareModel = @"hardware_model";
-NSString* kFCDeviceHardwareUDID = @"hardware_udid";
-NSString* kFCDeviceHardwareName = @"hardware_name";
-
-NSString* kFCDeviceLocale = @"locale";
-
-NSString* kFCDeviceOSVersion = @"os_version";
-NSString* kFCDeviceOSName = @"os_name";
-NSString* kFCDeviceOSGameCenter = @"os_gamecenter";
-
-NSString* kFCDevicePlatform = @"platform";
-
-NSString* kFCDeviceSimulator = @"simulator";
-
-NSString* kFCDeviceAppPirated = @"pirated";
 
 #pragma mark - Implementation
 
@@ -311,14 +273,14 @@ static FCDevice* pInstance;
 
 	// push values into caps
 	
-	[_caps setValue:[NSNumber numberWithFloat:scale] forKey:kFCDeviceDisplayScale];
-	[_caps setValue:[NSNumber numberWithFloat:aspectRatio] forKey:kFCDeviceDisplayAspectRatio];
+	[_caps setValue:[NSNumber numberWithFloat:scale] forKey:[NSString stringWithUTF8String:kFCDeviceDisplayScale.c_str()]];
+	[_caps setValue:[NSNumber numberWithFloat:aspectRatio] forKey:[NSString stringWithUTF8String:kFCDeviceDisplayAspectRatio.c_str()]];
 	
-	[_caps setValue:[NSNumber numberWithFloat:bounds.size.width] forKey:kFCDeviceDisplayLogicalXRes];
-	[_caps setValue:[NSNumber numberWithFloat:bounds.size.height] forKey:kFCDeviceDisplayLogicalYRes];
+	[_caps setValue:[NSNumber numberWithFloat:bounds.size.width] forKey:[NSString stringWithUTF8String:kFCDeviceDisplayLogicalXRes.c_str()]];
+	[_caps setValue:[NSNumber numberWithFloat:bounds.size.height] forKey:[NSString stringWithUTF8String:kFCDeviceDisplayLogicalYRes.c_str()]];
 	
-	[_caps setValue:[NSNumber numberWithFloat:screenSize.width] forKey:kFCDeviceDisplayPhysicalXRes];
-	[_caps setValue:[NSNumber numberWithFloat:screenSize.height] forKey:kFCDeviceDisplayPhysicalYRes];
+	[_caps setValue:[NSNumber numberWithFloat:screenSize.width] forKey:[NSString stringWithUTF8String:kFCDeviceDisplayPhysicalXRes.c_str()]];
+	[_caps setValue:[NSNumber numberWithFloat:screenSize.height] forKey:[NSString stringWithUTF8String:kFCDeviceDisplayPhysicalYRes.c_str()]];
 	
 	// work out the the platform designation
 	
@@ -329,23 +291,23 @@ static FCDevice* pInstance;
 		if (scale == 2.0)	// retina
 		{
 			if (bounds.size.width == 320) 
-				[_caps setValue:kFCDevicePlatformPhoneRetina forKey:kFCDevicePlatform];
+				[_caps setValue:[NSString stringWithUTF8String:kFCDevicePlatformPhoneRetina.c_str()] forKey:[NSString stringWithUTF8String:kFCDevicePlatform.c_str()]];
 			else
-				[_caps setValue:kFCDevicePlatformPadRetina forKey:kFCDevicePlatform];				
+				[_caps setValue:[NSString stringWithUTF8String:kFCDevicePlatformPadRetina.c_str()] forKey:[NSString stringWithUTF8String:kFCDevicePlatform.c_str()]];				
 		}
 		else
 		{
 			if (bounds.size.width == 320) 
-				[_caps setValue:kFCDevicePlatformPhone forKey:kFCDevicePlatform];
+				[_caps setValue:[NSString stringWithUTF8String:kFCDevicePlatformPhone.c_str()] forKey:[NSString stringWithUTF8String:kFCDevicePlatform.c_str()]];
 			else
-				[_caps setValue:kFCDevicePlatformPad forKey:kFCDevicePlatform];				
+				[_caps setValue:[NSString stringWithUTF8String:kFCDevicePlatformPad.c_str()] forKey:[NSString stringWithUTF8String:kFCDevicePlatform.c_str()]];				
 		}
 	}
 	else
 	{
 		// non-native, so iPhone running on iPad
 		
-		[_caps setValue:kFCDevicePlatformPhoneOnPad forKey:kFCDevicePlatform];		
+		[_caps setValue:[NSString stringWithUTF8String:kFCDevicePlatformPhoneOnPad.c_str()] forKey:[NSString stringWithUTF8String:kFCDevicePlatform.c_str()]];		
 	}
 #endif
 }
@@ -354,19 +316,19 @@ static FCDevice* pInstance;
 {	
 	// get the OS version...
 #if TARGET_OS_IPHONE
-	[_caps setValue:[UIDevice currentDevice].systemVersion forKey:kFCDeviceOSVersion];
+	[_caps setValue:[UIDevice currentDevice].systemVersion forKey:[NSString stringWithUTF8String:kFCDeviceOSVersion.c_str()]];
 
 	// OS name
 
-	[_caps setValue:[UIDevice currentDevice].systemName forKey:kFCDeviceOSName];
+	[_caps setValue:[UIDevice currentDevice].systemName forKey:[NSString stringWithUTF8String:kFCDeviceOSName.c_str()]];
 
 	// name
 
-	[_caps setValue:[UIDevice currentDevice].name forKey:kFCDeviceHardwareName];
+	[_caps setValue:[UIDevice currentDevice].name forKey:[NSString stringWithUTF8String:kFCDeviceHardwareName.c_str()]];
 #endif
 	// hardware model ID
 	
-	[_caps setValue:[self machine] forKey:kFCDeviceHardwareModelID];
+	[_caps setValue:[self machine] forKey:[NSString stringWithUTF8String:kFCDeviceHardwareModelID.c_str()]];
 	
 	// Check for frameworks
 	
@@ -387,15 +349,15 @@ static FCDevice* pInstance;
 	// detect if pirated ?
 
 	if ([[[NSBundle mainBundle] infoDictionary] objectForKey: @"SignerIdentity"] == nil) {
-		[_caps setValue:kFCDeviceTrue forKey:kFCDeviceAppPirated];
+		[_caps setValue:[NSString stringWithUTF8String:kFCDeviceTrue.c_str()] forKey:[NSString stringWithUTF8String:kFCDeviceAppPirated.c_str()]];
 	} else {
-		[_caps setValue:kFCDeviceFalse forKey:kFCDeviceAppPirated];		
+		[_caps setValue:[NSString stringWithUTF8String:kFCDeviceFalse.c_str()] forKey:[NSString stringWithUTF8String:kFCDeviceAppPirated.c_str()]];		
 	}
 	
 	// Locale
 	
 	NSString* localeCode = [[NSLocale preferredLanguages] objectAtIndex:0];
-	[_caps setValue:localeCode forKey:kFCDeviceLocale];
+	[_caps setValue:localeCode forKey:[NSString stringWithUTF8String:kFCDeviceLocale.c_str()]];
 
 	// game center
 
@@ -414,12 +376,12 @@ static FCDevice* pInstance;
 	 {
 		 if (error == nil)
 		 {
-			 [_caps setValue:kFCDevicePresent forKey:kFCDeviceOSGameCenter];
+			 [_caps setValue:[NSString stringWithUTF8String:kFCDevicePresent.c_str()] forKey:[NSString stringWithUTF8String:kFCDeviceOSGameCenter.c_str()]];
 			 _gameCenterID = [[GKLocalPlayer localPlayer] playerID];
 		 }
 		 else
 		 {
-			 [_caps setValue:kFCDeviceNotPresent forKey:kFCDeviceOSGameCenter];
+			 [_caps setValue:[NSString stringWithUTF8String:kFCDeviceNotPresent.c_str()] forKey:[NSString stringWithUTF8String:kFCDeviceOSGameCenter.c_str()]];
 			 _gameCenterID = @"local";
 		 }
 	 }];
@@ -428,7 +390,7 @@ static FCDevice* pInstance;
 
 -(void)print
 {
-	FC_LOG1(@"Caps - %@", self.caps);
+	FC_LOG( std::string("Caps: ") + [[self.caps description] UTF8String]);
 }
 
 -(id)valueForKey:(NSString *)key
@@ -443,7 +405,7 @@ static FCDevice* pInstance;
 
 -(BOOL)isPresent:(NSString*)key
 {
-	return [[self.caps valueForKey:key] isEqualToString:kFCDevicePresent];	
+	return [[self.caps valueForKey:key] isEqualToString:[NSString stringWithUTF8String:kFCDevicePresent.c_str()]];	
 }
 
 @end

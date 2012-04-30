@@ -20,10 +20,11 @@
  THE SOFTWARE.
  */
 
+// NOTE - Not sure if this even works anymore... Should probably remove it.
+
 #if TARGET_OS_IPHONE
 
 #import "FCRasterView.h"
-#import "FCPerformanceCounter.h"
 
 static const int kMaxTags = 10;
 static const int kNumMaxFrames = 10;
@@ -57,28 +58,29 @@ static const int kNumMaxFrames = 10;
 -(id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self) {
-        mPerformanceCounter = [[FCPerformanceCounter alloc] init];
-		mEntries = [[NSMutableArray alloc] init];
-		mMaxTime = 0.0f;
-		mMaxCount = 0;
-		mMaxEntries = [[NSArray alloc] init];
+    if (self) 
+	{
+        m_performanceCounter = new FCPerformanceCounter;
+		
+		m_entries = [[NSMutableArray alloc] init];
+		m_maxTime = 0.0f;
+		m_maxCount = 0;
+		m_maxEntries = [[NSArray alloc] init];
     }
     return self;
 }
 
 -(void)dealloc
 {
-	mEntries = nil;
-	mMaxEntries = nil;
-	mPerformanceCounter = nil;
+	m_entries = nil;
+	m_maxEntries = nil;
 }
 
 -(void)frameStart
 {
 	
-	[mEntries removeAllObjects];
-	[mPerformanceCounter zero];
+	[m_entries removeAllObjects];
+	m_performanceCounter->Zero();
 	[self setNeedsDisplay];
 }
 
@@ -86,9 +88,9 @@ static const int kNumMaxFrames = 10;
 {
 	FCRasterViewEntry* entry = [[FCRasterViewEntry alloc] init];
 	entry.color = color;
-	entry.size = [mPerformanceCounter milliValue];
-	[mPerformanceCounter zero];
-	[mEntries addObject:entry];
+	entry.size = m_performanceCounter->MilliValue();
+	m_performanceCounter->Zero();
+	[m_entries addObject:entry];
 
 }
 
@@ -109,7 +111,7 @@ static const int kNumMaxFrames = 10;
 	thisRect.origin.x = 0;
 	thisRect.size.width = rect.size.width / 2;
 	
-	for( FCRasterViewEntry* entry in mEntries )
+	for( FCRasterViewEntry* entry in m_entries )
 	{
 		CGContextSetFillColorWithColor(c, entry.color.CGColor);
 		thisRect.origin.y = currentPos;
@@ -118,21 +120,21 @@ static const int kNumMaxFrames = 10;
 		CGContextFillRect(c, thisRect);
 	}
 
-	if ((currentPos > mMaxTime) || (mMaxCount > 50) ){
-		mMaxEntries = [mEntries copy];
-		mMaxTime = currentPos;
-		mMaxCount = 0;
+	if ((currentPos > m_maxTime) || (m_maxCount > 50) ){
+		m_maxEntries = [m_entries copy];
+		m_maxTime = currentPos;
+		m_maxCount = 0;
 	}
 	else
 	{
-		mMaxCount++;
+		m_maxCount++;
 	}
 
 	thisRect.origin.x = rect.size.width / 2;
 	thisRect.size.width = rect.size.width / 2;
 	currentPos = 0;
 	
-	for( FCRasterViewEntry* entry in mMaxEntries )
+	for( FCRasterViewEntry* entry in m_maxEntries )
 	{
 		CGContextSetFillColorWithColor(c, entry.color.CGColor);
 		thisRect.origin.y = currentPos;
@@ -140,10 +142,6 @@ static const int kNumMaxFrames = 10;
 		currentPos += thisRect.size.height;		
 		CGContextFillRect(c, thisRect);
 	}
-
-	// 
-	
-	
 	return;
 }
 

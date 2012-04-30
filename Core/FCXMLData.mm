@@ -41,7 +41,7 @@
 	
 	if (![dict isKindOfClass:[NSMutableDictionary class]]) 
 	{
-		FC_FATAL(@"GameData:dumpContents - not NSMutableDictionary class");
+		FC_FATAL("GameData:dumpContents - not NSMutableDictionary class");
 	}
 	
 	for( NSString* key in dict )	// iterate through keys
@@ -51,27 +51,27 @@
 		if( [value isKindOfClass:[NSString class]] )
 		{
 			NSString* blah = [NSString stringWithFormat:@"%@Key '%@' Value '%@'", tab, key, value];
-			FC_LOG(blah);
+			FC_LOG([blah UTF8String]);
 			(void)blah;
 		}
 		if( [value isKindOfClass:[NSArray class]] )
 		{
 			NSString* blah = [NSString stringWithFormat:@"%@Array of '%@'", tab, key];
-			FC_LOG(blah);
+			FC_LOG([blah UTF8String]);
 			for( NSMutableDictionary* entry in value )
 			{
 				[self dumpContents:entry tab:tabLevel + 1];	
 			}
 			blah = [NSString stringWithFormat:@"%@End Array of '%@'", tab, key];
-			FC_LOG(blah);
+			FC_LOG([blah UTF8String]);
 		}
 		if( [value isKindOfClass:[NSDictionary class]] )
 		{
 			NSString* blah = [NSString stringWithFormat:@"%@Dictionary '%@'", tab, key];
-			FC_LOG(blah);
+			FC_LOG([blah UTF8String]);
 			[self dumpContents:value tab:tabLevel + 1];
 			blah = [NSString stringWithFormat:@"%@End Dictionary '%@'", tab, key];
-			FC_LOG(blah);
+			FC_LOG([blah UTF8String]);
 		}
 	}
 }
@@ -94,7 +94,7 @@
 		NSData* fileData = [NSData dataWithContentsOfFile:filePath options:nil error:&error];
 
 		if (error) {
-			FC_FATAL([error description]);
+			FC_FATAL([[error description] UTF8String]);
 		}
 		
 		self = [self initWithData:fileData];
@@ -128,7 +128,7 @@
 		NSData* fileData = [NSData dataWithContentsOfURL:url options:nil error:&error];
 		
 		if (error) {
-			FC_FATAL([error description]);
+			FC_FATAL([[error description] UTF8String]);
 		}
 		
 		self = [self initWithData:fileData];
@@ -176,7 +176,7 @@
 	id found = [mRoot valueForKeyPath:keyPath];
 	if (!found || ![found isKindOfClass:[NSMutableDictionary class]]) 
 	{
-		FC_FATAL(@"Object found at keypath is not a dictionary");
+		FC_FATAL("Object found at keypath is not a dictionary");
 	}
 	return found;
 }
@@ -186,7 +186,7 @@
 	id found = [mRoot valueForKeyPath:keyPath];
 	if (!found || ![found isKindOfClass:[NSMutableString class]]) 
 	{
-		FC_FATAL(@"Object found at keypath is not a string");
+		FC_FATAL("Object found at keypath is not a string");
 	}
 	return found;
 }

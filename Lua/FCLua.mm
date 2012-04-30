@@ -127,13 +127,13 @@ static unsigned int common_newThread( lua_State* _state )
 	s_recurseCount++;
 
 	if (s_recurseCount > 100) {
-		FC_FATAL(@"Recursive Lua thread creation - try inserting FCWait(0)");
+		FC_FATAL("Recursive Lua thread creation - try inserting FCWait(0)");
 	}
 	
 	FCLua* fcLua = [FCLua instance];
 
 	if ([fcLua.threadsDict count] > 1024) {
-		FC_FATAL(@"Too many Lua threads");
+		FC_FATAL("Too many Lua threads");
 	}
 	
 	FCHandle handle = NewFCHandle();
@@ -164,7 +164,7 @@ static int lua_NewThread( lua_State* _state )
 		lua_pushinteger( _state, threadId );
 		return 1;
 	}
-	FC_FATAL(@"Creating thread from not a string");
+	FC_FATAL("Creating thread from not a string");
 	return 0;
 }
 
@@ -186,7 +186,7 @@ static int lua_WaitThread( lua_State* _state )
 			return yieldVal;
 		}
 	}
-	FC_FATAL(@"Cannot find thread");
+	FC_FATAL("Cannot find thread");
 	return 0;
 }
 
@@ -208,7 +208,7 @@ static int lua_WaitGameThread( lua_State* _state )
 			return yieldVal;
 		}
 	}
-	FC_FATAL(@"Cannot find thread");
+	FC_FATAL("Cannot find thread");
 	return 0;
 }
 
@@ -218,7 +218,7 @@ static int lua_KillThread( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
 	if (!lua_isnumber(_state, -1)) {
-		FC_FATAL(@"Trying to pass a non-number to thread kill");
+		FC_FATAL("Trying to pass a non-number to thread kill");
 	}
 	int killid = (int)lua_tointeger(_state, -1);
 	
@@ -232,7 +232,7 @@ static int lua_KillThread( lua_State* _state )
 		[thread die];
 	} else
 	{
-		FC_WARNING(@"Trying to kill non-existent Lua thread");
+		FC_WARNING("Trying to kill non-existent Lua thread");
 //		FC_HALT;
 	}
 	return 0;
@@ -243,6 +243,30 @@ static int lua_PrintStats( lua_State* _state )
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	
 	[[FCLua instance] printStats];
+	return 0;
+}
+
+static int lua_Log( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LOG(lua_tostring(_state, 1));
+	return 0;
+}
+
+static int lua_Warning( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_WARNING(lua_tostring(_state, 1));
+	return 0;
+}
+
+static int lua_Fatal( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_FATAL(lua_tostring(_state, 1));
 	return 0;
 }
 
@@ -257,7 +281,7 @@ static int lua_PrintStats( lua_State* _state )
 
 @implementation FCLua
 @synthesize threadsDict = _threadsDict;
-@synthesize perfCounter = _perfCounter;
+@synthesize perfCounter = m_perfCounter;
 @synthesize maxCPUTime = _maxCPUTime;
 @synthesize avgCount = _avgCount;
 @synthesize avgCPUTime = _avgCPUTime;
@@ -277,7 +301,7 @@ static int lua_PrintStats( lua_State* _state )
 {
 	// check for stack crawl
 		
-	[_perfCounter zero];
+	m_perfCounter->Zero();
 	
 	// update threads
 	NSArray* keys = [self.threadsDict allKeys];
@@ -292,7 +316,8 @@ static int lua_PrintStats( lua_State* _state )
 		}
 	}
 	
-	float millisecs = [_perfCounter milliValue];
+	float millisecs = m_perfCounter->MilliValue();
+	
 	if (millisecs > _maxCPUTime) {
 		_maxCPUTime = millisecs;
 	}
@@ -327,11 +352,15 @@ static int lua_PrintStats( lua_State* _state )
 		[m_coreVM registerCFunction:lua_WaitThread as:@"FCWait"];
 		[m_coreVM registerCFunction:lua_WaitGameThread as:@"FCWaitGame"];
 		[m_coreVM registerCFunction:lua_KillThread as:@"FCKillThread"];
+		[m_coreVM registerCFunction:lua_Log as:@"FCLog"];
+		[m_coreVM registerCFunction:lua_Warning as:@"FCWarning"];
+		[m_coreVM registerCFunction:lua_Fatal as:@"FCFatal"];
 		
 		[m_coreVM createGlobalTable:@"FCLua"];
 		[m_coreVM registerCFunction:lua_PrintStats as:@"FCLua.PrintStats"];
 		
-		_perfCounter = [[FCPerformanceCounter alloc] init];
+		m_perfCounter = new FCPerformanceCounter;
+		
 		_maxCPUTime = 0.0f;
 		_avgCPUTime = 0.0f;
 		_avgCount = 0;
@@ -346,13 +375,13 @@ static int lua_PrintStats( lua_State* _state )
 
 -(void)printStats
 {
-	FC_LOG(@"---FCLua Stats---");
-	FC_LOG1(@"Num threads: %@", [NSNumber numberWithInt:[_threadsDict count]]);
-	FC_LOG1(@"Threads: %@", _threadsDict);
-	FC_LOG1(@"Memory: %@ allocs", [NSNumber numberWithInt:[FCLuaMemory instance].numAllocs] );
-	FC_LOG1(@"Memory: %@ bytes", [NSNumber numberWithInt:[FCLuaMemory instance].totalMemory] );
-	FC_LOG1(@"CPU: %@ max", [NSNumber numberWithFloat:_maxCPUTime] );
-	FC_LOG1(@"CPU: %@ avg", [NSNumber numberWithFloat:_avgCPUTime / _avgCount] );
+	FC_LOG("---FCLua Stats--- To be done !");
+//	FC_LOG( std::string("Num threads: ") + [NSNumber numberWithInt:[_threadsDict count]] );
+//	FC_LOG(@"Threads: %@", _threadsDict);
+//	FC_LOG(@"Memory: %@ allocs", [NSNumber numberWithInt:[FCLuaMemory instance].numAllocs] );
+//	FC_LOG(@"Memory: %@ bytes", [NSNumber numberWithInt:[FCLuaMemory instance].totalMemory] );
+//	FC_LOG(@"CPU: %@ max", [NSNumber numberWithFloat:_maxCPUTime] );
+//	FC_LOG(@"CPU: %@ avg", [NSNumber numberWithFloat:_avgCPUTime / _avgCount] );
 }
 
 -(void)dealloc

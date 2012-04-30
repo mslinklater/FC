@@ -23,29 +23,40 @@
 #ifndef CR1_FCLuaAsserts_h
 #define CR1_FCLuaAsserts_h
 
+#include <sstream>
+
 #if defined(DEBUG)
 
 #define FC_LUA_ASSERT_TYPE( stackpos, type )	\
 {							\
 	if( lua_type( _state, stackpos ) != type )	\
 	{	\
-		NSString* error = [NSString stringWithFormat:@"LUA (%s): Wrong type at assert, wanted %s, but found %s", __FUNCTION__, lua_typename( _state, type), lua_typename( _state, lua_type( _state, stackpos))];	\
-		FC_LOG(error);	\
+		std::stringstream error;	\
+		error << "Lua (" << __FUNCTION__ << "): Wrong type of assert, wanted " << lua_typename( _state, type) << ", but found " << lua_typename( _state, lua_type( _state, stackpos));	\
+		FC_LOG(error.str());	\
 		FCLua_DumpStack( _state );	\
 		return 0;	\
 	}	\
 }
 
+//char error[256];	\
+//sprintf(error, "LUA (%s): Wrong type at assert, wanted %s, but found %s", __FUNCTION__, lua_typename( _state, type), lua_typename( _state, lua_type( _state, stackpos)));	\
+
+//NSString* error = [NSString stringWithFormat:@"LUA (%s): Wrong type at assert, wanted %s, but found %s", __FUNCTION__, lua_typename( _state, type), lua_typename( _state, lua_type( _state, stackpos))];	\
+
 #define FC_LUA_ASSERT_NUMPARAMS( n )	\
 {										\
 	if( lua_gettop( _state ) != n )		\
 	{									\
-		NSString* error = [NSString stringWithFormat:@"LUA (%s): Wrong number of paramaters. Expected %d but received %d", __FUNCTION__, n, lua_gettop( _state )];	\
-		FC_LOG(error);	\
+		std::stringstream error;	\
+		error << "Lua (" << __FUNCTION__ << "): Wrong number of parameters. Expected " << n << " but received " << lua_gettop( _state );	\
+		FC_LOG(error.str());	\
 		FCLua_DumpStack( _state );		\
 		return 0;	\
 	}			\
 }
+
+//NSString* error = [NSString stringWithFormat:@"LUA (%s): Wrong number of paramaters. Expected %d but received %d", __FUNCTION__, n, lua_gettop( _state )];	\
 
 #else
 

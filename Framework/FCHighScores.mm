@@ -109,7 +109,7 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 	
 	// add all points for high scores with same leaderboard as this one and upload
 	
-	FC_LOG(mScoresDictionary);
+	FC_LOG([[mScoresDictionary description] UTF8String]);
 	
 	NSString* gameCenterId = [FCAppContext instance].localPlayerGameCenterId;
 
@@ -134,7 +134,7 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 			[mLeaderboardScoresDictionary setValue:[NSNumber numberWithInt:totalLeaderboardScore] forKey:leaderboardId];
 			[[FCPersistentData instance] saveData];
 
-			FC_LOG(mLeaderboardScoresDictionary);
+			FC_LOG([[mLeaderboardScoresDictionary description] UTF8String]);
 
 			// push score to leaderboard
 			
@@ -145,17 +145,17 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 				scoreReporter.value = totalLeaderboardScore;
 				
 				NSString* blah = [NSString stringWithFormat:@"Pushing %d score to leaderboard %@", totalLeaderboardScore, leaderboardId];
-				FC_LOG(blah);
+				FC_LOG([blah UTF8String]);
 				FC_UNUSED(blah);
 				
 				[scoreReporter reportScoreWithCompletionHandler:^(NSError *error) {
 					if (error != nil)
 					{
-						FC_ERROR(@"Error reporting score to Leaderboard");
+						FC_FATAL("Error reporting score to Leaderboard");
 					}
 					else
 					{
-						FC_ERROR(@"Score push with no errors");					
+						FC_FATAL("Score push with no errors");					
 					}
 				}];				
 #endif
@@ -179,13 +179,13 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 	
 	// check if logged in
 
-	FC_LOG([FCAppContext instance].localPlayerGameCenterId);
+	FC_LOG([[FCAppContext instance].localPlayerGameCenterId UTF8String]);
 
 	NSString* gameCenterId = [FCAppContext instance].localPlayerGameCenterId;
 	
 	if ([gameCenterId isEqualToString:@"local"] || (gameCenterId == nil)) 
 	{
-		FC_LOG(@"FCHighScores - sync with leaderboards failed");
+		FC_LOG("FCHighScores - sync with leaderboards failed");
 		// update leaderboard scores with local scores
 		
 		for(NSString* leaderboardId in mLeaderboardSet)
@@ -199,7 +199,7 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 	else
 	{
 		// logged in - go through leaderboards and download the scores
-		FC_LOG(@"FCHighScores - sync with leaderboards working");
+		FC_LOG("FCHighScores - sync with leaderboards working");
 		
 		for(NSString* leaderboardId in mLeaderboardSet)
 		{
@@ -214,8 +214,7 @@ static NSString* kLeaderboardsKey = @"FCHighScoresLeaderboards";
 				[leaderboardRequest loadScoresWithCompletionHandler: ^(NSArray *scores, NSError *error) {
 					if (error != nil)
 					{
-						// handle the error.
-						FC_ERROR1(@"Retreive error %@", [error description]);
+						FC_FATAL( std::string("Retreive error ") + [[error description] UTF8String]);
 					}
 					if (scores != nil)
 					{

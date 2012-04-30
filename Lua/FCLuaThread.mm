@@ -75,19 +75,19 @@ extern "C" {
 			break;
 		case LUA_ERRRUN:
 			FCLua_DumpStack(_luaState);
-			FC_FATAL(@"LUA_ERRRUN");
+			FC_FATAL("LUA_ERRRUN");
 			break;
 		case LUA_ERRSYNTAX:
 			FCLua_DumpStack(_luaState);
-			FC_FATAL(@"LUA_ERRSYNTAX");
+			FC_FATAL("LUA_ERRSYNTAX");
 			break;
 		case LUA_ERRMEM:
 			FCLua_DumpStack(_luaState);
-			FC_FATAL(@"LUA_ERRMEM");
+			FC_FATAL("LUA_ERRMEM");
 			break;
 		case LUA_ERRERR:
 			FCLua_DumpStack(_luaState);
-			FC_FATAL(@"LUA_ERRERR");
+			FC_FATAL("LUA_ERRERR");
 			break;
 		default:
 			break;
@@ -110,22 +110,22 @@ extern "C" {
 						break;
 					case LUA_ERRRUN:
 						FCLua_DumpStack(_luaState);
-						FC_FATAL(@"LUA_ERRRUN");
+						FC_FATAL("LUA_ERRRUN");
 						break;
 					case LUA_ERRSYNTAX:
 						FCLua_DumpStack(_luaState);
-						FC_FATAL(@"LUA_ERRSYNTAX");
+						FC_FATAL("LUA_ERRSYNTAX");
 						break;
 					case LUA_ERRMEM:
 						FCLua_DumpStack(_luaState);
-						FC_FATAL(@"LUA_ERRMEM");
+						FC_FATAL("LUA_ERRMEM");
 						break;
 					case LUA_ERRERR:
 						FCLua_DumpStack(_luaState);
-						FC_FATAL(@"LUA_ERRERR");
+						FC_FATAL("LUA_ERRERR");
 						break;
 					default:
-						FC_FATAL(@"default fallthrough");
+						FC_FATAL("default fallthrough");
 						break;
 				}
 			}

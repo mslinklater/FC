@@ -231,7 +231,7 @@ static int lua_GetNumber( lua_State* _state )
 
 -(void)loadData
 {
-	FC_LOG(@"FCPersisteneData:loadData");
+	FC_LOG("FCPersisteneData:loadData");
 	self.dataRoot = [NSKeyedUnarchiver unarchiveObjectWithFile:[self filename]];
 	
 	if (!self.dataRoot) {
@@ -241,7 +241,7 @@ static int lua_GetNumber( lua_State* _state )
 
 -(void)saveData
 {
-	FC_LOG(@"FCPersisteneData:saveData");
+	FC_LOG("FCPersisteneData:saveData");
 
 	// threaded
 	
@@ -259,7 +259,7 @@ static int lua_GetNumber( lua_State* _state )
 
 -(void)printData
 {
-	FC_LOG(self.dataRoot);
+	FC_LOG([[self.dataRoot description ] UTF8String]);
 }
 
 -(id)objectForKey:(NSString*)key

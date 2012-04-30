@@ -23,17 +23,17 @@
 
 #if TARGET_OS_IPHONE
 #import <Foundation/Foundation.h>
-
 #import <UIKit/UIKit.h>
 
-@class FCPerformanceCounter;
+#include "FCCore.h"
 
 @interface FCRasterView : UIView {
-	FCPerformanceCounter* mPerformanceCounter;
-	NSMutableArray* mEntries;
-	NSArray*	mMaxEntries;
-	float		mMaxTime;
-	uint32_t	mMaxCount;
+	FCPerformanceCounterPtr m_performanceCounter;
+	
+	NSMutableArray* m_entries;
+	NSArray*		m_maxEntries;
+	float			m_maxTime;
+	uint32_t		m_maxCount;
 }
 
 -(void)frameStart;

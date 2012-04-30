@@ -20,49 +20,17 @@
  THE SOFTWARE.
  */
 
-#include "FCPerformanceCounter.h"
+#ifndef FCTypes_h
+#define FCTypes_h
 
-#pragma mark Methods
+#include "FCColor.h"
+#include "FCKeys.h"
 
-@implementation FCPerformanceCounter
+typedef uint32_t FCHandle;	// should last a while 8)
 
--(id)init
-{
-	self = [super init];
-	if (self) {
-		mach_timebase_info(&mInfo);
-		[self zero];
-	}
-	return self;
-}
+static const FCHandle kFCHandleInvalid = 0;
+static const FCHandle kFCHandleFirstValid = 1;
 
--(void)zero
-{
-	mZeroTime = mach_absolute_time();
-}
+extern FCHandle NewFCHandle( void );
 
--(double)nanoValue
-{
-	uint64_t timeNow = mach_absolute_time();
-	uint64_t duration = timeNow - mZeroTime;
-	duration *= mInfo.numer;
-	duration /= mInfo.denom;
-	return (double)duration;	
-}
-
--(double)microValue
-{
-	return [self nanoValue] * 0.001;
-}
-
--(double)milliValue
-{
-	return [self nanoValue] * 0.000001;
-}
-
--(double)secondsValue
-{
-	return [self nanoValue] * 0.000000001;
-}
-
-@end
+#endif // FCTypes_h

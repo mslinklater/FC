@@ -48,18 +48,17 @@
 
 -(void)checkAchievements
 {
-	FC_LOG(@"Checking achievements");
+	FC_LOG("Checking achievements");
 }
 
 -(void)getAchievementsFromServer
 {
-	FC_LOG(@"Get achievements from server");
+	FC_LOG("Get achievements from server");
 	
 	[GKAchievement loadAchievementsWithCompletionHandler:^(NSArray *achievements, NSError *error) {
 		if (error != nil)
 		{
-			// handle errors
-			FC_ERROR1(@"achievements error: %@", error);
+			FC_WARNING( std::string("achievements error: ") + [[error description] UTF8String] );
 		}
 		if (achievements != nil)
 		{
@@ -67,7 +66,7 @@
 			
 			for(GKAchievement* ach in achievements)
 			{
-				FC_LOG(ach.identifier);
+				FC_LOG([ach.identifier UTF8String]);
 			}
 		}
 	}];

@@ -20,77 +20,24 @@
  THE SOFTWARE.
  */
 
-#ifndef FCSharedPtr_h
-#define FCSharedPtr_h
+#include <Foundation/Foundation.h>
 
-#include <algorithm>
+#include <mach/mach.h>
+#include <mach/mach_time.h>
 
-template<typename T>
-class FCSharedPtr
+void plt_FCPerformanceCounter_New( void* instance );
+void plt_FCPerformanceCounter_Delete( void* instance );
+void plt_FCPerformanceCounter_Zero( void* instance );
+double plt_FCPerformanceCounter_NanoValue( void* instance );
+
+@interface FCPerformanceCounter : NSObject
 {
-public:
-	
-	FCSharedPtr( T* pObject = 0 )
-	: m_pObject( pObject )
-	{
-		m_pRefCount = new unsigned int;
-		*m_pRefCount = 1;
-	}
+	uint64_t					mZeroTime;
+	mach_timebase_info_data_t	mInfo;
+}
 
-	FCSharedPtr( const FCSharedPtr<T> &other )
-	: m_pObject( other.m_pObject )
-	, m_pRefCount( other.m_pRefCount )
-	{
-		(*m_pRefCount)++;
-	}
-	
-	~FCSharedPtr()
-	{
-		(*m_pRefCount)--;
-		if (*m_pRefCount <= 0) {
-			delete m_pObject;
-			m_pObject = 0;
-			delete m_pRefCount;
-			m_pRefCount = 0;
-		}
-	}
+-(id)init;
+-(void)zero;
+-(double)nanoValue;
 
-	FCSharedPtr& operator=( const FCSharedPtr<T> &rhs )
-	{
-		FCSharedPtr<T> temp(rhs);
-		swap(temp);
-		return *this;
-	}
-
-	T& operator*() const
-	{
-		return *m_pObject;
-	}
-
-	T* operator->() const
-	{
-		return m_pObject;
-	}
-
-	operator bool() const
-	{
-		return m_pObject != 0;
-	}
-	
-	T* get() const
-	{
-		return m_pObject;
-	}
-	
-	void swap( FCSharedPtr<T> &other )
-	{
-		std::swap( m_pObject, other.m_pObject );
-		std::swap( m_pRefCount, other.m_pRefCount );
-	}
-	
-private:
-	unsigned int*	m_pRefCount;
-	T*				m_pObject;
-};
-
-#endif
+@end

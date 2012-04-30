@@ -84,12 +84,12 @@ static NSString* kUDSuffix = @"_ultra";
 	{
 		if (!self.suffixImages) 
 		{
-			if ( [[[FCDevice instance] valueForKey:kFCDevicePlatform] isEqualToString:kFCDevicePlatformPad] ||
-				[[[FCDevice instance] valueForKey:kFCDevicePlatform] isEqualToString:kFCDevicePlatformPhoneRetina] ) 
+			if ( [[[FCDevice instance] valueForKey:[NSString stringWithUTF8String:kFCDevicePlatform.c_str()]] isEqualToString:[NSString stringWithUTF8String:kFCDevicePlatformPad.c_str()]] ||
+				[[[FCDevice instance] valueForKey:[NSString stringWithUTF8String:kFCDevicePlatform.c_str()]] isEqualToString:[NSString stringWithUTF8String:kFCDevicePlatformPhoneRetina.c_str()]] ) 
 			{
 				self.suffixImages = kHDSuffix;
 			}
-			else if( [[[FCDevice instance] valueForKey:kFCDevicePlatform] isEqualToString:kFCDevicePlatformPadRetina] )
+			else if( [[[FCDevice instance] valueForKey:[NSString stringWithUTF8String:kFCDevicePlatform.c_str()]] isEqualToString:[NSString stringWithUTF8String:kFCDevicePlatformPadRetina.c_str()]] )
 			{
 				self.suffixImages = kUDSuffix;				
 			}
@@ -124,7 +124,7 @@ static NSString* kUDSuffix = @"_ultra";
 
 	if (path == nil) 
 	{
-		FC_FATAL2(@"File not found %@ %@", actualResourceName, type);
+		FC_FATAL( std::string("File not found: ") + [actualResourceName UTF8String] + "." + [type UTF8String]);
 		return nil;
 	}
 	

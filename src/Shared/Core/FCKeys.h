@@ -167,4 +167,43 @@ extern std::string kFCKeyBuffers;
 extern std::string kFCKeyMesh;
 extern std::string kFCKeyCamera;
 
+// Caps
+
+extern std::string kFCDeviceTrue;
+extern std::string kFCDeviceFalse;
+
+extern std::string kFCDevicePresent;
+extern std::string kFCDeviceNotPresent;
+extern std::string kFCDeviceUnknown;
+
+extern std::string kFCDevicePlatformPhone;
+extern std::string kFCDevicePlatformPhoneRetina;
+extern std::string kFCDevicePlatformPhoneOnPad;
+extern std::string kFCDevicePlatformPad;
+extern std::string kFCDevicePlatformPadRetina;
+
+// actual caps
+
+extern std::string kFCDeviceDisplayAspectRatio;
+extern std::string kFCDeviceDisplayLogicalXRes;
+extern std::string kFCDeviceDisplayLogicalYRes;
+extern std::string kFCDeviceDisplayPhysicalXRes;
+extern std::string kFCDeviceDisplayPhysicalYRes;
+extern std::string kFCDeviceDisplayScale;
+
+extern std::string kFCDeviceHardwareModelID;
+extern std::string kFCDeviceHardwareModel;
+extern std::string kFCDeviceHardwareUDID;
+extern std::string kFCDeviceHardwareName;
+
+extern std::string kFCDeviceLocale;
+
+extern std::string kFCDeviceOSVersion;
+extern std::string kFCDeviceOSName;
+extern std::string kFCDeviceOSGameCenter;
+extern std::string kFCDevicePlatform;
+extern std::string kFCDeviceSimulator;
+
+extern std::string kFCDeviceAppPirated;
+
 #endif // FCKeys_h

@@ -26,7 +26,7 @@
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 
-#import "FCCategories.h"
+//#import "FCCategories.h"
 #import "FCModel.h"
 #import "FCMaths.h"
 #import "FCKeys.h"
@@ -139,7 +139,15 @@ static int kNumCircleSegments = 36;
 	self = [super init];
 	if (self) 
 	{
-		NSArray* meshArray = [modelDict arrayForKey:[NSString stringWithUTF8String:kFCKeyMesh.c_str()]];
+		NSArray* meshArray;
+		id val = [modelDict valueForKey:[NSString stringWithUTF8String:kFCKeyMesh.c_str()]];
+
+		if ([val isKindOfClass:[NSArray class]]) {
+			meshArray = val;
+		} else {
+			meshArray = [NSArray arrayWithObject:val];
+		}
+
 		NSArray* binaryPayloadArray = [res.xmlData arrayForKeyPath:@"fcr.binarypayload.chunk"];
 
 		self.meshes = [NSMutableArray array];
@@ -148,8 +156,6 @@ static int kNumCircleSegments = 36;
 		{
 			NSString* shaderName = [mesh valueForKey:[NSString stringWithUTF8String:kFCKeyShader.c_str()]];
 			
-//			FC_ASSERT1([FCVertexDescriptor doesShaderExist:shaderName], @"Unknown shader");
-
 			NSString* indexBufferId = [mesh valueForKey:[NSString stringWithUTF8String:kFCKeyIndexBuffer.c_str()]];
 			NSString* vertexBufferId = [mesh valueForKey:[NSString stringWithUTF8String:kFCKeyVertexBuffer.c_str()]];
 
@@ -192,8 +198,8 @@ static int kNumCircleSegments = 36;
 			if ([mesh valueForKey:@"specular_r"] && [mesh valueForKey:@"specular_g"] && [mesh valueForKey:@"specular_b"]) {
 				FC::Color4f specular;
 				specular.r = [[mesh valueForKey:@"specular_r"] floatValue];
-				specular.g = [[mesh valueForKey:@"specular_r"] floatValue];
-				specular.b = [[mesh valueForKey:@"specular_r"] floatValue];
+				specular.g = [[mesh valueForKey:@"specular_g"] floatValue];
+				specular.b = [[mesh valueForKey:@"specular_b"] floatValue];
 				specular.a = 1.0f;
 				meshObject.specularColor = specular;
 			}
