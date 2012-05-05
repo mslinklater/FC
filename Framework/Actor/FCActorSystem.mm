@@ -160,13 +160,20 @@ static int lua_ApplyImpulse( lua_State* _state )
 		_actorHandleDictionary = [[NSMutableDictionary alloc] init];
 		
 #if defined (FC_LUA)
-		[[FCLua instance].coreVM createGlobalTable:@"FCActorSystem"];
-		[[FCLua instance].coreVM registerCFunction:lua_Reset as:@"FCActorSystem.Reset"];
-		[[FCLua instance].coreVM registerCFunction:lua_GetActorPosition as:@"FCActorSystem.GetPosition"];
-		[[FCLua instance].coreVM registerCFunction:lua_SetActorPosition as:@"FCActorSystem.SetPosition"];
-		[[FCLua instance].coreVM registerCFunction:lua_GetActorLinearVelocity as:@"FCActorSystem.GetLinearVelocity"];
-		[[FCLua instance].coreVM registerCFunction:lua_SetActorLinearVelocity as:@"FCActorSystem.SetLinearVelocity"];
-		[[FCLua instance].coreVM registerCFunction:lua_SetActorLinearVelocity as:@"FCActorSystem.ApplyImpulse"];
+//		[[FCLua instance].coreVM createGlobalTable:@"FCActorSystem"];
+		FCLua::Instance()->CoreVM()->CreateGlobalTable("FCActorSystem");
+//		[[FCLua instance].coreVM registerCFunction:lua_Reset as:@"FCActorSystem.Reset"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Reset, "FCActorSystem.Reset");
+//		[[FCLua instance].coreVM registerCFunction:lua_GetActorPosition as:@"FCActorSystem.GetPosition"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_GetActorPosition, "FCActorSystem.GetPosition");
+//		[[FCLua instance].coreVM registerCFunction:lua_SetActorPosition as:@"FCActorSystem.SetPosition"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetActorPosition, "FCActorSystem.SetPosition");
+//		[[FCLua instance].coreVM registerCFunction:lua_GetActorLinearVelocity as:@"FCActorSystem.GetLinearVelocity"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_GetActorLinearVelocity, "FCActorSystem.GetLinearVelocity");
+//		[[FCLua instance].coreVM registerCFunction:lua_GetActorLinearVelocity as:@"FCActorSystem.SetLinearVelocity"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetActorLinearVelocity, "FCActorSystem.SetLinearVelocity");
+//		[[FCLua instance].coreVM registerCFunction:lua_SetActorLinearVelocity as:@"FCActorSystem.ApplyImpulse"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_ApplyImpulse, "FCActorSystem.ApplyImpulse");
 #endif
 	}
 

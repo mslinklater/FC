@@ -20,24 +20,29 @@
  THE SOFTWARE.
  */
 
+#include "FCStringUtils.h"
 
-#if TARGET_OS_IPHONE
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-
-#include "FCCore.h"
-
-@interface FCRasterView : UIView {
-	FCPerformanceCounterPtr m_performanceCounter;
+FCStringVector FCStringUtils_ComponentsSeparatedByString( const std::string& data, const std::string& sep )
+{
+	FCStringVector ret;
 	
-	NSMutableArray* m_entries;
-	NSArray*		m_maxEntries;
-	float			m_maxTime;
-	uint32_t		m_maxCount;
+	size_t prevSearchPos = 0;
+	size_t searchPos = data.find(sep, prevSearchPos);
+
+	if( searchPos == data.npos )
+	{
+		ret.push_back(data);
+		return ret;
+	}
+	
+	while (searchPos != data.npos) 
+	{
+		ret.push_back(data.substr(prevSearchPos, searchPos));
+		prevSearchPos = searchPos + sep.length();
+		searchPos = data.find(sep, prevSearchPos);
+	}
+	
+	ret.push_back(data.substr(prevSearchPos, sep.length() - prevSearchPos));
+	
+	return ret;
 }
-
--(void)frameStart;
--(void)tagColour:(UIColor*)color;
-@end
-
-#endif // TARGET_OS_IPHONE

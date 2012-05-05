@@ -180,12 +180,18 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 			
 			// register C Functions
 			
-			[[FCLua instance].coreVM createGlobalTable:@"GLView"];
-			[[FCLua instance].coreVM registerCFunction:lua_SetCurrentView as:@"GLView.SetCurrent"];
-			[[FCLua instance].coreVM registerCFunction:lua_SetClearColor as:@"GLView.SetClearColor"];
-			[[FCLua instance].coreVM registerCFunction:lua_SetFOV as:@"GLView.SetFOV"];
-			[[FCLua instance].coreVM registerCFunction:lua_SetNearFarClip as:@"GLView.SetNearFarClip"];
-			[[FCLua instance].coreVM registerCFunction:lua_SetFrustumTranslation as:@"GLView.SetFrustumTranslation"];
+//			[[FCLua instance].coreVM createGlobalTable:@"GLView"];
+			FCLua::Instance()->CoreVM()->CreateGlobalTable("GLView");
+//			[[FCLua instance].coreVM registerCFunction:lua_SetCurrentView as:@"GLView.SetCurrent"];
+			FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetCurrentView, "GLView.SetCurrent");
+//			[[FCLua instance].coreVM registerCFunction:lua_SetClearColor as:@"GLView.SetClearColor"];
+			FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetClearColor, "GLView.SetClearColor");
+//			[[FCLua instance].coreVM registerCFunction:lua_SetFOV as:@"GLView.SetFOV"];
+			FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetFOV, "GLView.SetFOV");
+//			[[FCLua instance].coreVM registerCFunction:lua_SetNearFarClip as:@"GLView.SetNearFarClip"];
+			FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetNearFarClip, "GLView.SetNearFarClip");
+//			[[FCLua instance].coreVM registerCFunction:lua_SetFrustumTranslation as:@"GLView.SetFrustumTranslation"];
+			FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetFrustumTranslation, "GLView.SetFrustumTranslation");
 		}
 
 		FC_ASSERT([s_glViews valueForKey:managedName] == nil);

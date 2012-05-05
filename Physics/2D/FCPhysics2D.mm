@@ -350,19 +350,30 @@ static int lua_GetBodyAngularVelocity( lua_State* _state )
 		_bodiesByName = [NSMutableDictionary dictionary];
 		
 #if defined (FC_LUA)
-		[[FCLua instance].coreVM createGlobalTable:@"FCPhysics2D"];
-		[[FCLua instance].coreVM registerCFunction:lua_CreateDistanceJoint as:@"FCPhysics2D.CreateDistanceJoint"];
-		[[FCLua instance].coreVM registerCFunction:lua_CreateRevoluteJoint as:@"FCPhysics2D.CreateRevoluteJoint"];
-		[[FCLua instance].coreVM registerCFunction:lua_CreatePrismaticJoint as:@"FCPhysics2D.CreatePrismaticJoint"];
-		[[FCLua instance].coreVM registerCFunction:lua_CreatePulleyJoint as:@"FCPhysics2D.CreatePulleyJoint"];
-		[[FCLua instance].coreVM registerCFunction:lua_CreateRopeJoint as:@"FCPhysics2D.CreateRopeJoint"];
+//		[[FCLua instance].coreVM createGlobalTable:@"FCPhysics2D"];
+		FCLua::Instance()->CoreVM()->CreateGlobalTable("FCPhysics2D");
+//		[[FCLua instance].coreVM registerCFunction:lua_CreateDistanceJoint as:@"FCPhysics2D.CreateDistanceJoint"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_CreateDistanceJoint, "FCPhysics2D.CreateDistanceJoint");
+//		[[FCLua instance].coreVM registerCFunction:lua_CreateRevoluteJoint as:@"FCPhysics2D.CreateRevoluteJoint"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_CreateRevoluteJoint, "FCPhysics2D.CreateRevoluteJoint");
+//		[[FCLua instance].coreVM registerCFunction:lua_CreatePrismaticJoint as:@"FCPhysics2D.CreatePrismaticJoint"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_CreatePrismaticJoint, "FCPhysics2D.CreatePrismaticJoint");
+//		[[FCLua instance].coreVM registerCFunction:lua_CreatePulleyJoint as:@"FCPhysics2D.CreatePulleyJoint"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_CreatePulleyJoint, "FCPhysics2D.CreatePulleyJoint");
+//		[[FCLua instance].coreVM registerCFunction:lua_CreateRopeJoint as:@"FCPhysics2D.CreateRopeJoint"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_CreateRopeJoint, "FCPhysics2D.CreateRopeJoint");
 		
-		[[FCLua instance].coreVM registerCFunction:lua_SetRevoluteJointMotor as:@"FCPhysics2D.SetRevoluteJointMotor"];
-		[[FCLua instance].coreVM registerCFunction:lua_SetRevoluteJointLimits as:@"FCPhysics2D.SetRevoluteJointLimits"];
-		[[FCLua instance].coreVM registerCFunction:lua_SetPrismaticJointMotor as:@"FCPhysics2D.SetPrismaticJointMotor"];
-		[[FCLua instance].coreVM registerCFunction:lua_SetPrismaticJointLimits as:@"FCPhysics2D.SetPrismaticJointLimits"];
+//		[[FCLua instance].coreVM registerCFunction:lua_SetRevoluteJointMotor as:@"FCPhysics2D.SetRevoluteJointMotor"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetRevoluteJointMotor, "FCPhysics2D.SetRevoluteJointMotor");
+//		[[FCLua instance].coreVM registerCFunction:lua_SetRevoluteJointLimits as:@"FCPhysics2D.SetRevoluteJointLimits"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetRevoluteJointLimits, "FCPhysics2D.SetRevoluteJointLimits");
+//		[[FCLua instance].coreVM registerCFunction:lua_SetPrismaticJointMotor as:@"FCPhysics2D.SetPrismaticJointMotor"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetPrismaticJointMotor, "FCPhysics2D.SetPrismaticJointMotor");
+//		[[FCLua instance].coreVM registerCFunction:lua_SetPrismaticJointLimits as:@"FCPhysics2D.SetPrismaticJointLimits"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetPrismaticJointLimits, "FCPhysics2D.SetPrismaticJointLimits");
 
-		[[FCLua instance].coreVM registerCFunction:lua_GetBodyAngularVelocity as:@"FCPhysics2D.GetAngularVelocity"];
+//		[[FCLua instance].coreVM registerCFunction:lua_GetBodyAngularVelocity as:@"FCPhysics2D.GetAngularVelocity"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_GetBodyAngularVelocity, "FCPhysics2D.GetAngularVelocity");
 #endif
 		
 		_joints = [NSMutableDictionary dictionary];

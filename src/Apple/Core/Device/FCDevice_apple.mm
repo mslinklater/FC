@@ -20,49 +20,22 @@
  THE SOFTWARE.
  */
 
-#if defined(FC_LUA)
+#import "FCDevice_apple.h"
+#include "Shared/Core/Device/FCDevice.h"
 
-#import <Foundation/Foundation.h>
+void plt_FCDevice_ColdProbe();
+void plt_FCDevice_WarmProbe();
 
-#import "FCCore.h"
-#import "FCLuaVM.h"
-#import "FCLuaThread.h"
-#import "FCLuaClass.h"
-#import "FCLuaCommon.h"
-#import "FCLuaMemory.h"
-#import "FCLuaAsserts.h"
-
-// Some helpers, which should probably be moved out
-
-void lua_pushvector3f( lua_State* _state, FC::Vector3f& vec );
-FC::Vector2f lua_tovector2f( lua_State* _state );
-FC::Vector3f lua_tovector3f( lua_State* _state );
-FC::Color4f lua_tocolor4f( lua_State* _state );
-
-@interface FCLua : NSObject {
-	NSMutableDictionary*	_threadsDict;
+void plt_FCDevice_ColdProbe()
+{
 	
-	FCPerformanceCounterPtr	m_perfCounter;
-	float					_maxCPUTime;
-	float					_avgCPUTime;
-	int						_avgCount;
 }
-@property(nonatomic, readonly) NSMutableDictionary* threadsDict;
-@property(nonatomic) FCPerformanceCounterPtr perfCounter;
-@property(nonatomic) float maxCPUTime;
-@property(nonatomic) float avgCPUTime;
-@property(nonatomic) int avgCount;
 
-+(FCLua*)instance;
+void plt_FCDevice_WarmProbe()
+{
+	
+}
 
--(void)updateThreadsRealTime:(float)dt gameTime:(float)dt;
-
--(FCLuaVM*)coreVM;
--(FCLuaVM*)newVM;
-
--(void)executeLine:(NSString*)line;
--(void)printStats;
+@implementation FCDevice_apple
 
 @end
-
-#endif // defined(FC_LUA)

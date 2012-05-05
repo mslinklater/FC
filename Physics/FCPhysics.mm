@@ -104,12 +104,15 @@ static int lua_SetMaterial( lua_State* _state )
 	{
 		// Register Lua functions
 		
-		[[FCLua instance].coreVM createGlobalTable:@"FCPhysics"];		
+//		[[FCLua instance].coreVM createGlobalTable:@"FCPhysics"];		
+		FCLua::Instance()->CoreVM()->CreateGlobalTable("FCPhysics");
 		
-		[[FCLua instance].coreVM registerCFunction:lua_Create2DSystem	as:@"FCPhysics.Create2DSystem"];
-//		[[FCLua instance].coreVM registerCFunction:lua_Destroy2DSystem	as:@"FCPhysics.Destroy2DSystem"];
-		[[FCLua instance].coreVM registerCFunction:lua_Reset			as:@"FCPhysics.Reset"];
-		[[FCLua instance].coreVM registerCFunction:lua_SetMaterial		as:@"FCPhysics.SetMaterial"];
+//		[[FCLua instance].coreVM registerCFunction:lua_Create2DSystem	as:@"FCPhysics.Create2DSystem"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Create2DSystem, "FCPhysics.Create2DSystem");
+//		[[FCLua instance].coreVM registerCFunction:lua_Reset			as:@"FCPhysics.Reset"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Reset, "FCPhysics.Reset");
+//		[[FCLua instance].coreVM registerCFunction:lua_SetMaterial		as:@"FCPhysics.SetMaterial"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetMaterial, "FCPhysics.SetMaterial");
 
 		_materials = [[NSMutableDictionary alloc] init];
 	}
@@ -118,7 +121,8 @@ static int lua_SetMaterial( lua_State* _state )
 
 -(void)dealloc
 {
-	[[FCLua instance].coreVM destroyGlobalTable:@"FCPhysics"];
+//	[[FCLua instance].coreVM destroyGlobalTable:@"FCPhysics"];
+	FCLua::Instance()->CoreVM()->DestroyGlobalTable("FCPhysics");
 	s_pPhysics = 0;
 }
 

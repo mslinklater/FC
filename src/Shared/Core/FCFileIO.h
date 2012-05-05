@@ -20,16 +20,11 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#ifndef CR1_FileIO_h
+#define CR1_FileIO_h
 
-#import <Foundation/Foundation.h>
-//#import "FCLuaClass.h"
+#include <string>
 
-//@interface FCGameCenter : NSObject <FCLuaClass> {
-@interface FCGameCenter : NSObject {
-	
-}
-+(FCGameCenter*)instance;
-@end
+extern std::string plt_PathForFileInBundle( std::string filename );
 
-#endif // TARGET_OS_IPHONE
+#endif

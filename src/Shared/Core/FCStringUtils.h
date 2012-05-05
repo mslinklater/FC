@@ -20,11 +20,11 @@
  THE SOFTWARE.
  */
 
-@class FCLuaVM;
+#ifndef CR1_FCStringUtils_h
+#define CR1_FCStringUtils_h
 
-@protocol FCLuaClass <NSObject>
+#include "FCTypes.h"
 
-+(void)registerLuaFunctions:(FCLuaVM*)lua;
+extern FCStringVector FCStringUtils_ComponentsSeparatedByString( const std::string& data, const std::string& sep );
 
-@end
-
+#endif

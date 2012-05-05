@@ -356,27 +356,45 @@ static int lua_PrintViews( lua_State* _state )
 #if defined (FC_LUA)
 +(void)registerLuaFunctions:(FCLuaVM *)lua
 {
-	[lua createGlobalTable:@"FCViewManager"];
-	[lua registerCFunction:lua_SetText as:@"FCViewManager.SetText"];
-	[lua registerCFunction:lua_SetTextColor as:@"FCViewManager.SetTextColor"];
-	[lua registerCFunction:lua_GetFrame as:@"FCViewManager.GetFrame"];
-	[lua registerCFunction:lua_SetFrame as:@"FCViewManager.SetFrame"];
-	[lua registerCFunction:lua_SetAlpha as:@"FCViewManager.SetAlpha"];
-	[lua registerCFunction:lua_SetOnSelectLuaFunction as:@"FCViewManager.SetOnSelectLuaFunction"];
-	[lua registerCFunction:lua_SetImage as:@"FCViewManager.SetImage"];
-	[lua registerCFunction:lua_SetURL as:@"FCViewManager.SetURL"];
+//	[lua createGlobalTable:@"FCViewManager"];
+	lua->CreateGlobalTable("FCViewManager");
+//	[lua registerCFunction:lua_SetText as:@"FCViewManager.SetText"];
+	lua->RegisterCFunction(lua_SetText, "FCViewManager.SetText");
+//	[lua registerCFunction:lua_SetTextColor as:@"FCViewManager.SetTextColor"];
+	lua->RegisterCFunction(lua_SetTextColor, "FCViewManager.SetTextColor");
+//	[lua registerCFunction:lua_GetFrame as:@"FCViewManager.GetFrame"];
+	lua->RegisterCFunction(lua_GetFrame, "FCViewManager.GetFrame");
+//	[lua registerCFunction:lua_SetFrame as:@"FCViewManager.SetFrame"];
+	lua->RegisterCFunction(lua_SetFrame, "FCViewManager.SetFrame");
+//	[lua registerCFunction:lua_SetAlpha as:@"FCViewManager.SetAlpha"];
+	lua->RegisterCFunction(lua_SetAlpha, "FCViewManager.SetAlpha");
+//	[lua registerCFunction:lua_SetOnSelectLuaFunction as:@"FCViewManager.SetOnSelectLuaFunction"];
+	lua->RegisterCFunction(lua_SetOnSelectLuaFunction, "FCViewManager.SetOnSelectLuaFunction");
+//	[lua registerCFunction:lua_SetImage as:@"FCViewManager.SetImage"];
+	lua->RegisterCFunction(lua_SetImage, "FCViewManager.SetImage");
+//	[lua registerCFunction:lua_SetURL as:@"FCViewManager.SetURL"];
+	lua->RegisterCFunction(lua_SetURL, "FCViewManager.SetURL");
 
-	[lua registerCFunction:lua_CreateView as:@"FCViewManager.CreateView"];
-	[lua registerCFunction:lua_DestroyView as:@"FCViewManager.DestroyView"];
+//	[lua registerCFunction:lua_CreateView as:@"FCViewManager.CreateView"];
+	lua->RegisterCFunction(lua_CreateView, "FCViewManager.CreateView");
+//	[lua registerCFunction:lua_DestroyView as:@"FCViewManager.DestroyView"];
+	lua->RegisterCFunction(lua_DestroyView, "FCViewManager.DestroyView");
 
-	[lua registerCFunction:lua_CreateGroup as:@"FCViewManager.CreateGroup"];
-	[lua registerCFunction:lua_RemoveGroup as:@"FCViewManager.RemoveGroup"];
-	[lua registerCFunction:lua_AddToGroup as:@"FCViewManager.AddToGroup"];
-	[lua registerCFunction:lua_RemoveFromGroup as:@"FCViewManager.RemoveFromGroup"];
+//	[lua registerCFunction:lua_CreateGroup as:@"FCViewManager.CreateGroup"];
+	lua->RegisterCFunction(lua_CreateGroup, "FCViewManager.CreateGroup");
+//	[lua registerCFunction:lua_RemoveGroup as:@"FCViewManager.RemoveGroup"];
+	lua->RegisterCFunction(lua_RemoveGroup, "FCViewManager.RemoveGroup");
+//	[lua registerCFunction:lua_AddToGroup as:@"FCViewManager.AddToGroup"];
+	lua->RegisterCFunction(lua_AddToGroup, "FCViewManager.AddToGroup");
+//	[lua registerCFunction:lua_RemoveFromGroup as:@"FCViewManager.RemoveFromGroup"];
+	lua->RegisterCFunction(lua_RemoveFromGroup, "FCViewManager.RemoveFromGroup");
 
-	[lua registerCFunction:lua_PrintViews as:@"FCViewManager.PrintViews"];
-	[lua registerCFunction:lua_SetViewPropertyInteger as:@"FCViewManager.SetViewPropertyInteger"];
-	[lua registerCFunction:lua_SetViewPropertyString as:@"FCViewManager.SetViewPropertyString"];
+//	[lua registerCFunction:lua_PrintViews as:@"FCViewManager.PrintViews"];
+	lua->RegisterCFunction(lua_PrintViews, "FCViewManager.PrintViews");
+//	[lua registerCFunction:lua_SetViewPropertyInteger as:@"FCViewManager.SetViewPropertyInteger"];
+	lua->RegisterCFunction(lua_SetViewPropertyInteger, "FCViewManager.SetViewPropertyInteger");
+//	[lua registerCFunction:lua_SetViewPropertyString as:@"FCViewManager.SetViewPropertyString"];
+	lua->RegisterCFunction(lua_SetViewPropertyString, "FCViewManager.SetViewPropertyString");
 }
 #endif // defined(FC_LUA)
 

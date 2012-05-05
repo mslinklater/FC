@@ -370,13 +370,14 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 		
 		if( luaFunc )
 		{
-			[[FCLua instance].coreVM call:luaFunc required:YES withSig:@"iiffff>",
+//			[[FCLua instance].coreVM call:luaFunc required:YES withSig:@"iiffff>",
+			FCLua::Instance()->CoreVM()->CallFuncWithSig([luaFunc UTF8String], true, "iiffff>",
 				pCollisionInfo->hActor1,
 				pCollisionInfo->hActor2,
 				pCollisionInfo->x,
 				pCollisionInfo->y,
 				pCollisionInfo->z,
-				pCollisionInfo->velocity];
+				pCollisionInfo->velocity);
 		}
 		else 
 		{
@@ -453,35 +454,59 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 		
 		// Lua stuff
 		
-		[[FCLua instance].coreVM createGlobalTable:@"FCAudio"];
-		[[FCLua instance].coreVM registerCFunction:lua_PlayMusic as:@"FCAudio.PlayMusic"];
-		[[FCLua instance].coreVM registerCFunction:lua_SetMusicVolume as:@"FCAudio.SetMusicVolume"];
-		[[FCLua instance].coreVM registerCFunction:lua_SetSFXVolume as:@"FCAudio.SetSFXVolume"];
-		[[FCLua instance].coreVM registerCFunction:lua_SetMusicFinishedCallback as:@"FCAudio.SetMusicFinishedCallback"];
-		[[FCLua instance].coreVM registerCFunction:lua_PauseMusic as:@"FCAudio.PauseMusic"];
-		[[FCLua instance].coreVM registerCFunction:lua_ResumeMusic as:@"FCAudio.ResumeMusic"];
-		[[FCLua instance].coreVM registerCFunction:lua_StopMusic as:@"FCAudio.StopMusic"];
+//		[[FCLua instance].coreVM createGlobalTable:@"FCAudio"];
+		FCLua::Instance()->CoreVM()->CreateGlobalTable("FCAudio");
+//		[[FCLua instance].coreVM registerCFunction:lua_PlayMusic as:@"FCAudio.PlayMusic"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_PlayMusic, "FCAudio.PlayMusic");
+//		[[FCLua instance].coreVM registerCFunction:lua_SetMusicVolume as:@"FCAudio.SetMusicVolume"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetMusicVolume, "FCAudio.SetMusicVolume");
+//		[[FCLua instance].coreVM registerCFunction:lua_SetSFXVolume as:@"FCAudio.SetSFXVolume"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetSFXVolume, "FCAudio.SetSFXVolume");
+//		[[FCLua instance].coreVM registerCFunction:lua_SetMusicFinishedCallback as:@"FCAudio.SetMusicFinishedCallback"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetMusicFinishedCallback, "FCAudio.SetMusicFinishedCallback");
+//		[[FCLua instance].coreVM registerCFunction:lua_PauseMusic as:@"FCAudio.PauseMusic"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_PauseMusic, "FCAudio.PauseMusic");
+//		[[FCLua instance].coreVM registerCFunction:lua_ResumeMusic as:@"FCAudio.ResumeMusic"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_ResumeMusic, "FCAudio.ResumeMusic");
+//		[[FCLua instance].coreVM registerCFunction:lua_StopMusic as:@"FCAudio.StopMusic"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_StopMusic, "FCAudio.StopMusic");
 
-		[[FCLua instance].coreVM registerCFunction:lua_CreateBufferWithFile as:@"FCAudio.CreateBuffer"];
-		[[FCLua instance].coreVM registerCFunction:lua_DeleteBuffer as:@"FCAudio.DeleteBuffer"];
+//		[[FCLua instance].coreVM registerCFunction:lua_CreateBufferWithFile as:@"FCAudio.CreateBuffer"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_CreateBufferWithFile, "FCAudio.CreateBuffer");
+//		[[FCLua instance].coreVM registerCFunction:lua_DeleteBuffer as:@"FCAudio.DeleteBuffer"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_DeleteBuffer, "FCAudio.DeleteBuffer");
 
-		[[FCLua instance].coreVM registerCFunction:lua_PrepareSourceWithBuffer as:@"FCAudio.PrepareSourceWithBuffer"];
-		[[FCLua instance].coreVM registerCFunction:lua_SourceSetVolume as:@"FCAudio.SourceSetVolume"];
-		[[FCLua instance].coreVM registerCFunction:lua_SourcePlay as:@"FCAudio.SourcePlay"];
-		[[FCLua instance].coreVM registerCFunction:lua_SourceStop as:@"FCAudio.SourceStop"];
-		[[FCLua instance].coreVM registerCFunction:lua_SourcePosition as:@"FCAudio.SourcePosition"];
-		[[FCLua instance].coreVM registerCFunction:lua_SourcePitch as:@"FCAudio.SourcePitch"];
-		[[FCLua instance].coreVM registerCFunction:lua_SourceLooping as:@"FCAudio.SourceLooping"];
+//		[[FCLua instance].coreVM registerCFunction:lua_PrepareSourceWithBuffer as:@"FCAudio.PrepareSourceWithBuffer"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_PrepareSourceWithBuffer, "FCAudio.PrepareSourceWithBuffer");
+//		[[FCLua instance].coreVM registerCFunction:lua_SourceSetVolume as:@"FCAudio.SourceSetVolume"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourceSetVolume, "FCAudio.SourceSetVolume");
+//		[[FCLua instance].coreVM registerCFunction:lua_SourcePlay as:@"FCAudio.SourcePlay"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourcePlay, "FCAudio.SourcePlay");
+//		[[FCLua instance].coreVM registerCFunction:lua_SourceStop as:@"FCAudio.SourceStop"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourceStop, "FCAudio.SourceStop");
+//		[[FCLua instance].coreVM registerCFunction:lua_SourcePosition as:@"FCAudio.SourcePosition"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourcePosition, "FCAudio.SourcePosition");
+//		[[FCLua instance].coreVM registerCFunction:lua_SourcePitch as:@"FCAudio.SourcePitch"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourcePitch, "FCAudio.SourcePitch");
+//		[[FCLua instance].coreVM registerCFunction:lua_SourceLooping as:@"FCAudio.SourceLooping"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourceLooping, "FCAudio.SourceLooping");
 
-		[[FCLua instance].coreVM registerCFunction:lua_AddCollisionTypeHandler as:@"FCAudio.AddCollisionTypeHandler"];
-		[[FCLua instance].coreVM registerCFunction:lua_RemoveCollisionTypeHandler as:@"FCAudio.RemoveCollisionTypeHandler"];
+//		[[FCLua instance].coreVM registerCFunction:lua_AddCollisionTypeHandler as:@"FCAudio.AddCollisionTypeHandler"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_AddCollisionTypeHandler, "FCAudio.AddCollisionTypeHandler");
+//		[[FCLua instance].coreVM registerCFunction:lua_RemoveCollisionTypeHandler as:@"FCAudio.RemoveCollisionTypeHandler"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_RemoveCollisionTypeHandler, "FCAudio.RemoveCollisionTypeHandler");
 		
-		[[FCLua instance].coreVM registerCFunction:lua_LoadSimpleSound as:@"FCAudio.LoadSimpleSound"];
-		[[FCLua instance].coreVM registerCFunction:lua_UnloadSimpleSound as:@"FCAudio.UnloadSimpleSound"];
-		[[FCLua instance].coreVM registerCFunction:lua_PlaySimpleSound as:@"FCAudio.PlaySimpleSound"];
+//		[[FCLua instance].coreVM registerCFunction:lua_LoadSimpleSound as:@"FCAudio.LoadSimpleSound"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_LoadSimpleSound, "FCAudio.LoadSimpleSound");
+//		[[FCLua instance].coreVM registerCFunction:lua_UnloadSimpleSound as:@"FCAudio.UnloadSimpleSound"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_UnloadSimpleSound, "FCAudio.UnloadSimpleSound");
+//		[[FCLua instance].coreVM registerCFunction:lua_PlaySimpleSound as:@"FCAudio.PlaySimpleSound"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_PlaySimpleSound, "FCAudio.PlaySimpleSound");
 
-		[[FCLua instance].coreVM registerCFunction:lua_SubscribeToPhysics2D as:@"FCAudio.SubscribeToPhysics2D"];
-		[[FCLua instance].coreVM registerCFunction:lua_UnsubscribeFromPhysics2D as:@"FCAudio.UnsubscribeFromPhysics2D"];
+//		[[FCLua instance].coreVM registerCFunction:lua_SubscribeToPhysics2D as:@"FCAudio.SubscribeToPhysics2D"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SubscribeToPhysics2D, "FCAudio.SubscribeToPhysics2D");
+//		[[FCLua instance].coreVM registerCFunction:lua_UnsubscribeFromPhysics2D as:@"FCAudio.UnsubscribeFromPhysics2D"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_UnsubscribeFromPhysics2D, "FCAudio.UnsubscribeFromPhysics2D");
 
 		_listener = [[FCAudioListener alloc] init];
 		_activeSources = [NSMutableDictionary dictionary];
@@ -813,7 +838,8 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 	{
 		if (_musicFinishedLuaCallback) 
 		{
-			[[FCLua instance].coreVM call:_musicFinishedLuaCallback required:NO withSig:@">"];
+//			[[FCLua instance].coreVM call:_musicFinishedLuaCallback required:NO withSig:@">"];
+			FCLua::Instance()->CoreVM()->CallFuncWithSig([_musicFinishedLuaCallback UTF8String], false, ">");
 		}
 		return;
 	}

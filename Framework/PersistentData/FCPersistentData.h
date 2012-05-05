@@ -37,19 +37,22 @@
 
 #import <Foundation/Foundation.h>
 #import "FCProtocols.h"
-#if defined (FC_LUA)
-#import "FCLuaClass.h"
-#endif
+//#if defined (FC_LUA)
+//#import "FCLuaClass.h"
+//#endif
 
-#if defined (FC_LUA)
-@interface FCPersistentData : NSObject <FCLuaClass>
-#else
+class FCLuaVM;
+
+//#if defined (FC_LUA)
+//@interface FCPersistentData : NSObject <FCLuaClass>
+//#else
 @interface FCPersistentData : NSObject
-#endif
+//#endif
 {
 }
 @property(strong) NSMutableDictionary* dataRoot;
 +(FCPersistentData*)instance;
++(void)registerLuaFunctions:(FCLuaVM*)lua;
 -(void)loadData;
 -(void)saveData;
 -(void)clearData;
@@ -57,5 +60,6 @@
 
 -(void)addObject:(id)object forKey:(NSString*)key;
 -(id)objectForKey:(NSString*)key;
+
 
 @end

@@ -20,16 +20,8 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
-
 #import <Foundation/Foundation.h>
-//#import "FCLuaClass.h"
 
-//@interface FCGameCenter : NSObject <FCLuaClass> {
-@interface FCGameCenter : NSObject {
-	
-}
-+(FCGameCenter*)instance;
+@interface FCDevice_apple : NSObject
+
 @end
-
-#endif // TARGET_OS_IPHONE

@@ -19,60 +19,43 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
+#if 0
 #if defined (FC_LUA)
 
 #import <Foundation/Foundation.h>
+#import "FCLuaVM.h"
 
-#if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
-#endif
+enum eLuaThreadState {
+	kLuaThreadStateNew,
+	kLuaThreadStateRunning,
+	kLuaThreadStateSleeping,
+	kLuaThreadStateDying,
+	kLuaThreadStateDead
+};
 
-extern "C" {
-	#include <lua.h>
+@interface FCLuaThread : NSObject {
+	eLuaThreadState	_state;
+	double			_sleepRealTimeRemaining;
+	double			_sleepGameTimeRemaining;
+	unsigned int	_threadId;
+	lua_State*		_luaState;
+	int				_numResumeArgs;
 }
+@property(nonatomic, readonly) eLuaThreadState state;
+@property(nonatomic, readonly) double sleepRealTimeRemaining;
+@property(nonatomic, readonly) double sleepGameTimeRemaining;
+@property(nonatomic, readonly) unsigned int threadId;
+@property(nonatomic, readonly) lua_State* luaState;
+@property(nonatomic, readonly) int numResumeArgs;
 
-class luaL_Reg;
-typedef int(*tLuaCallableCFunction)(lua_State*);
+-(id)initFromState:(lua_State*)state withId:(unsigned int)threadId;
+-(void)resume;
+-(void)updateRealTime:(float)dt gameTime:(float)gt;
+-(void)pauseRealTime:(float)seconds;
+-(void)pauseGameTime:(float)seconds;
+-(void)die;
 
-@interface FCLuaVM : NSObject {
-	lua_State* _state;
-}
-@property(nonatomic, readonly) lua_State* state;
-
--(void)loadScript:(NSString*)path;
--(void)loadScriptOptional:(NSString*)path;
--(void)executeLine:(NSString*)line;
--(void)addStandardLibraries;
--(void)createGlobalTable:(NSString*)tableName;
--(void)destroyGlobalTable:(NSString*)tableName;
--(void)registerCFunction:(tLuaCallableCFunction)func as:(NSString*)name;
--(void)removeCFunction:(NSString*)name;
-//-(void)newLib:(luaL_Reg*)functions as:(NSString*)name;
--(int)getStackSize;
-
-// Get
--(long)globalNumber:(NSString*)name;
-
-
--(UIColor*)globalColor:(NSString*)name;
-
-
-// Set
--(void)setGlobal:(NSString*)global integer:(long)number;
--(void)setGlobal:(NSString*)global number:(double)number;
--(void)setGlobal:(NSString*)global boolean:(BOOL)value;
-
-
--(void)setGlobal:(NSString*)global color:(UIColor*)color;
-
-
-// Function calling
--(void)call:(NSString*)func required:(BOOL)required withSig:(NSString*)sig, ...;
-
-// Debug functions
--(void)dumpStack;
--(void)dumpCallstack;
 @end
 
 #endif // defined(FC_LUA)
+#endif

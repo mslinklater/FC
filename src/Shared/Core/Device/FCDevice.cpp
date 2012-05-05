@@ -20,16 +20,63 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if 0
 
-#import <Foundation/Foundation.h>
-//#import "FCLuaClass.h"
+#include "FCDevice.h"
+#include "Shared/Core/FCError.h"
 
-//@interface FCGameCenter : NSObject <FCLuaClass> {
-@interface FCGameCenter : NSObject {
+extern void plt_FCDevice_ColdProbe();
+extern void plt_FCDevice_WarmProbe();
+
+static FCDevice* s_pInstance = 0;
+
+FCDevice* FCDevice::Instance()
+{
+	if (!s_pInstance) {
+		s_pInstance = new FCDevice;
+	}
+	return s_pInstance;
+}
+
+FCDevice::FCDevice()
+{
 	
 }
-+(FCGameCenter*)instance;
-@end
 
-#endif // TARGET_OS_IPHONE
+FCDevice::~FCDevice()
+{
+	
+}
+
+void FCDevice::ColdProbe()
+{
+	plt_FCDevice_ColdProbe();
+}
+
+void FCDevice::WarmProbe()
+{
+	plt_FCDevice_WarmProbe();	
+}
+
+std::string FCDevice::GetCap(std::string cap)
+{
+	if (m_caps.find(cap) == m_caps.end()) {
+		return std::string("");
+	} else {
+		return m_caps[ cap ];
+	}
+}
+
+void FCDevice::SetCap(std::string cap, std::string value)
+{
+	m_caps[ cap ] = value;
+}
+
+void FCDevice::Print()
+{
+	for (CapMapConstIter i = m_caps.begin(); i != m_caps.end(); ++i) {
+		FC_LOG( i->first + " : " + i->second );
+	}
+}
+
+#endif

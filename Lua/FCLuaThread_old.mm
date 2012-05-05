@@ -19,7 +19,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
+#if 0
 #if defined (FC_LUA)
 
 #import "FCLuaThread.h"
@@ -204,3 +204,4 @@ extern "C" {
 @end
 
 #endif // defined(FC_LUA)
+#endif

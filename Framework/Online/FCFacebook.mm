@@ -90,11 +90,16 @@ static FCFacebook* s_pInstance;
 	{
 		_loginStatus = kOffline;
 #if defined (FC_LUA)
-		[[FCLua instance].coreVM createGlobalTable:@"FCFacebook"];
-		[[FCLua instance].coreVM registerCFunction:lua_ConnectWithAppId as:@"FCFacebook.ConnectWithAppId"];
-		[[FCLua instance].coreVM registerCFunction:lua_IsLoggedIn as:@"FCFacebook.IsLoggedIn"];
-		[[FCLua instance].coreVM registerCFunction:lua_Login as:@"FCFacebook.Login"];
-		[[FCLua instance].coreVM registerCFunction:lua_Login as:@"FCFacebook.Logout"];
+//		[[FCLua instance].coreVM createGlobalTable:@"FCFacebook"];
+		FCLua::Instance()->CoreVM()->CreateGlobalTable("FCFacebook");
+//		[[FCLua instance].coreVM registerCFunction:lua_ConnectWithAppId as:@"FCFacebook.ConnectWithAppId"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_ConnectWithAppId, "FCFacebook.ConnectWithAppId");
+//		[[FCLua instance].coreVM registerCFunction:lua_IsLoggedIn as:@"FCFacebook.IsLoggedIn"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_IsLoggedIn, "FCFacebook.IsLoggedIn");
+//		[[FCLua instance].coreVM registerCFunction:lua_Login as:@"FCFacebook.Login"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Login, "FCFacebook.IsLoggedIn");
+//		[[FCLua instance].coreVM registerCFunction:lua_Login as:@"FCFacebook.Logout"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Logout, "FCFacebook.Logout");
 #endif
 	}
 	return self;

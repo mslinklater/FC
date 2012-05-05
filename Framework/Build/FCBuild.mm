@@ -50,8 +50,10 @@ static int lua_Debug( lua_State* _state )
 #if defined (FC_LUA)
 +(void)registerLuaFunctions:(FCLuaVM*)lua
 {
-	[lua createGlobalTable:@"FCBuild"];
-	[lua registerCFunction:lua_Debug as:@"FCBuild.Debug"];
+//	[lua createGlobalTable:@"FCBuild"];
+	lua->CreateGlobalTable("FCBuild");
+//	[lua registerCFunction:lua_Debug as:@"FCBuild.Debug"];
+	lua->RegisterCFunction(lua_Debug, "FCBuild.Debug");
 }
 #endif
 @end

@@ -20,16 +20,46 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if 0
 
-#import <Foundation/Foundation.h>
-//#import "FCLuaClass.h"
+#ifndef CR1_Device_h
+#define CR1_Device_h
 
-//@interface FCGameCenter : NSObject <FCLuaClass> {
-@interface FCGameCenter : NSObject {
+/*
+ 
+ This is a singleton class. Access the global object via the 'Instance'
+ method.
+ 
+ */
+
+#include <map>
+
+#include "Shared/Core/FCTypes.h"
+
+class FCDevice {
+public:
+	static FCDevice* Instance();
 	
-}
-+(FCGameCenter*)instance;
-@end
+	FCDevice();
+	~FCDevice();
 
-#endif // TARGET_OS_IPHONE
+	void ColdProbe();	// Once, on boot probes.
+	void WarmProbe();	// Repeatable, changeable probes.
+	
+	std::string GetCap( std::string cap );
+	void SetCap( std::string cap, std::string value );
+	
+	void Print();
+	
+private:
+	// assignment operator ?
+	
+	typedef std::map<std::string, std::string> CapMap;
+	typedef CapMap::const_iterator CapMapConstIter;
+	
+	CapMap m_caps;
+};
+
+#endif
+
+#endif

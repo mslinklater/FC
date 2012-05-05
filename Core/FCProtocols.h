@@ -19,16 +19,11 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+#if defined (__OBJC__)
 
 #import "Shared/Core/Maths/FCMaths.h"
 
 @class FCResource;
-
-
-//@protocol FCGameObjectLifetime
-//-(void)reset;
-//-(void)destroy;
-//@end
 
 @protocol FCGameObjectUpdate
 -(void)update:(float)realTime gameTime:(float)gameTime;
@@ -38,3 +33,4 @@
 -(NSArray*)renderGather;
 @end
 
+#endif // __cplusplus

@@ -19,42 +19,50 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
-#if defined (FC_LUA)
+#if 0
+#if defined(FC_LUA)
 
 #import <Foundation/Foundation.h>
+
+#import "FCCore.h"
 #import "FCLuaVM.h"
+#import "FCLuaThread.h"
+#import "FCLuaCommon.h"
+#import "FCLuaMemory.h"
+#import "FCLuaAsserts.h"
 
-enum eLuaThreadState {
-	kLuaThreadStateNew,
-	kLuaThreadStateRunning,
-	kLuaThreadStateSleeping,
-	kLuaThreadStateDying,
-	kLuaThreadStateDead
-};
+// Some helpers, which should probably be moved out
 
-@interface FCLuaThread : NSObject {
-	eLuaThreadState	_state;
-	double			_sleepRealTimeRemaining;
-	double			_sleepGameTimeRemaining;
-	unsigned int	_threadId;
-	lua_State*		_luaState;
-	int				_numResumeArgs;
+void lua_pushvector3f( lua_State* _state, FC::Vector3f& vec );
+FC::Vector2f lua_tovector2f( lua_State* _state );
+FC::Vector3f lua_tovector3f( lua_State* _state );
+FC::Color4f lua_tocolor4f( lua_State* _state );
+
+@interface FCLua : NSObject {
+	NSMutableDictionary*	_threadsDict;
+	
+	FCPerformanceCounterPtr	m_perfCounter;
+	float					_maxCPUTime;
+	float					_avgCPUTime;
+	int						_avgCount;
 }
-@property(nonatomic, readonly) eLuaThreadState state;
-@property(nonatomic, readonly) double sleepRealTimeRemaining;
-@property(nonatomic, readonly) double sleepGameTimeRemaining;
-@property(nonatomic, readonly) unsigned int threadId;
-@property(nonatomic, readonly) lua_State* luaState;
-@property(nonatomic, readonly) int numResumeArgs;
+@property(nonatomic, readonly) NSMutableDictionary* threadsDict;
+@property(nonatomic) FCPerformanceCounterPtr perfCounter;
+@property(nonatomic) float maxCPUTime;
+@property(nonatomic) float avgCPUTime;
+@property(nonatomic) int avgCount;
 
--(id)initFromState:(lua_State*)state withId:(unsigned int)threadId;
--(void)resume;
--(void)updateRealTime:(float)dt gameTime:(float)gt;
--(void)pauseRealTime:(float)seconds;
--(void)pauseGameTime:(float)seconds;
--(void)die;
++(FCLua*)instance;
+
+-(void)updateThreadsRealTime:(float)dt gameTime:(float)dt;
+
+-(FCLuaVM*)coreVM;
+-(FCLuaVM*)newVM;
+
+-(void)executeLine:(NSString*)line;
+-(void)printStats;
 
 @end
 
 #endif // defined(FC_LUA)
+#endif

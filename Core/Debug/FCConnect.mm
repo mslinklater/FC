@@ -323,7 +323,8 @@ static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
 				NSUInteger bytesRead = [m_inputStream read:&pBuffer[0] maxLength:bufferSize];
 				pBuffer[bytesRead] = 0;
 //				NSLog(@"Received: %s", pBuffer);
-				[[FCLua instance] executeLine:[NSString stringWithFormat:@"%s", &pBuffer[0]]];
+//				[[FCLua instance] executeLine:[NSString stringWithFormat:@"%s", &pBuffer[0]]];
+				FCLua::Instance()->ExecuteLine( (char*)(&pBuffer[0]) );
 				break;
 			}
 			case NSStreamEventHasSpaceAvailable:

@@ -20,16 +20,21 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#import "FCFileIO_apple.h"
+#include "Shared/Core/FCError.h"
 
-#import <Foundation/Foundation.h>
-//#import "FCLuaClass.h"
+#include <string>
 
-//@interface FCGameCenter : NSObject <FCLuaClass> {
-@interface FCGameCenter : NSObject {
+std::string plt_PathForFileInBundle( std::string filename );
+
+std::string plt_PathForFileInBundle( std::string filename )
+{
+	NSArray* components = [[NSString stringWithUTF8String:filename.c_str()] componentsSeparatedByString:@"."];
+	NSString* fullPath = [[NSBundle mainBundle] pathForResource:[components objectAtIndex:0] ofType:[components objectAtIndex:1]];
 	
+	if (fullPath) {
+		return [fullPath UTF8String];
+	} else {
+		return "";
+	}
 }
-+(FCGameCenter*)instance;
-@end
-
-#endif // TARGET_OS_IPHONE

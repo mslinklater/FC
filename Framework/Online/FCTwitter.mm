@@ -84,11 +84,16 @@ static int lua_Send( lua_State* _state )
 	self = [super init];
 	if (self) {
 		_vc = [[TWTweetComposeViewController alloc] init];
-		[[FCLua instance].coreVM createGlobalTable:@"FCTwitter"];
-		[[FCLua instance].coreVM registerCFunction:lua_CanTweet as:@"FCTwitter.CanSendTweet"];
-		[[FCLua instance].coreVM registerCFunction:lua_TweetWithText as:@"FCTwitter.TweetWithText"];
-		[[FCLua instance].coreVM registerCFunction:lua_AddHyperlink as:@"FCTwitter.AddHyperlink"];
-		[[FCLua instance].coreVM registerCFunction:lua_Send as:@"FCTwitter.Send"];
+//		[[FCLua instance].coreVM createGlobalTable:@"FCTwitter"];
+		FCLua::Instance()->CoreVM()->CreateGlobalTable("FCTwitter");
+//		[[FCLua instance].coreVM registerCFunction:lua_CanTweet as:@"FCTwitter.CanSendTweet"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_CanTweet, "FCTwitter.CanSendTweet");
+//		[[FCLua instance].coreVM registerCFunction:lua_TweetWithText as:@"FCTwitter.TweetWithText"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_TweetWithText, "FCTwitter.TweetWithText");
+//		[[FCLua instance].coreVM registerCFunction:lua_AddHyperlink as:@"FCTwitter.AddHyperlink"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_AddHyperlink, "FCTwitter.AddHyperlink");
+//		[[FCLua instance].coreVM registerCFunction:lua_Send as:@"FCTwitter.Send"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Send, "FCTwitter.Send");
 	}
 	return self;
 }

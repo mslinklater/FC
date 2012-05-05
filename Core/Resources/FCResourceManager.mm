@@ -84,15 +84,17 @@ static NSString* kUDSuffix = @"_ultra";
 	{
 		if (!self.suffixImages) 
 		{
-			if ( [[[FCDevice instance] valueForKey:[NSString stringWithUTF8String:kFCDevicePlatform.c_str()]] isEqualToString:[NSString stringWithUTF8String:kFCDevicePlatformPad.c_str()]] ||
-				[[[FCDevice instance] valueForKey:[NSString stringWithUTF8String:kFCDevicePlatform.c_str()]] isEqualToString:[NSString stringWithUTF8String:kFCDevicePlatformPhoneRetina.c_str()]] ) 
-			{
-				self.suffixImages = kHDSuffix;
-			}
-			else if( [[[FCDevice instance] valueForKey:[NSString stringWithUTF8String:kFCDevicePlatform.c_str()]] isEqualToString:[NSString stringWithUTF8String:kFCDevicePlatformPadRetina.c_str()]] )
-			{
-				self.suffixImages = kUDSuffix;				
-			}
+			// Need a universal solution to this... not just iOS biased
+			
+//			if ( [[[FCDevice instance] valueForKey:[NSString stringWithUTF8String:kFCDevicePlatform.c_str()]] isEqualToString:[NSString stringWithUTF8String:kFCDevicePlatformPad.c_str()]] ||
+//				[[[FCDevice instance] valueForKey:[NSString stringWithUTF8String:kFCDevicePlatform.c_str()]] isEqualToString:[NSString stringWithUTF8String:kFCDevicePlatformPhoneRetina.c_str()]] ) 
+//			{
+//				self.suffixImages = kHDSuffix;
+//			}
+//			else if( [[[FCDevice instance] valueForKey:[NSString stringWithUTF8String:kFCDevicePlatform.c_str()]] isEqualToString:[NSString stringWithUTF8String:kFCDevicePlatformPadRetina.c_str()]] )
+//			{
+//				self.suffixImages = kUDSuffix;				
+//			}
 
 			if (!self.suffixImages) self.suffixImages = @"";
 		}

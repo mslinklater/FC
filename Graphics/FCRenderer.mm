@@ -73,8 +73,10 @@ static int lua_SetCurrentRenderer( lua_State* _state )
 		if (!s_renderers) // one off init
 		{
 			s_renderers = [[NSMutableDictionary alloc] init];
-			[[FCLua instance].coreVM createGlobalTable:@"FCRenderer"];
-			[[FCLua instance].coreVM registerCFunction:lua_SetCurrentRenderer as:@"FCRenderer.SetCurrentRenderer"];
+//			[[FCLua instance].coreVM createGlobalTable:@"FCRenderer"];
+			FCLua::Instance()->CoreVM()->CreateGlobalTable("FCRenderer");
+//			[[FCLua instance].coreVM registerCFunction:lua_SetCurrentRenderer as:@"FCRenderer.SetCurrentRenderer"];
+			FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetCurrentRenderer, "FCRenderer.SetCurrentRenderer");
 		}
 		
 		[s_renderers setValue:self forKey:name];

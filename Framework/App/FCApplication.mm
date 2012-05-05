@@ -26,7 +26,7 @@
 #import "FCApplication.h"
 #import "FCPersistentData.h"
 #import "FCAnalytics.h"
-#import "FCDevice.h"
+#import "FCDevice_old.h"
 #import "Shared/Core/FCError.h"
 #import "FCConnect.h"
 #import "FCPhaseManager.h"
@@ -210,7 +210,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	// register system lua hooks
 
 #if defined (FC_LUA)
-	s_lua = [[FCLua instance] coreVM];
+//	s_lua = [[FCLua instance] coreVM];
+	s_lua = FCLua::Instance()->CoreVM();
 	
 	[FCPersistentData registerLuaFunctions:s_lua];
 	[FCPhaseManager registerLuaFunctions:s_lua];
@@ -222,16 +223,25 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 
 //	FCError_RegisterLuaFunctions( s_lua.state );
 
-	[s_lua createGlobalTable:@"FCApp"];
-	[s_lua registerCFunction:lua_ShowStatusBar as:@"FCApp.ShowStatusBar"];
-	[s_lua registerCFunction:lua_SetBackgroundColor as:@"FCApp.SetBackgroundColor"];
-	[s_lua registerCFunction:lua_ShowGameCenterLeaderboards as:@"FCApp.ShowGameCenterLeaderboards"];
-	[s_lua registerCFunction:lua_LaunchExternalURL as:@"FCApp.LaunchExternalURL"];
-	[s_lua registerCFunction:lua_MainViewSize as:@"FCApp.MainViewSize"];
-	[s_lua registerCFunction:lua_PauseGame as:@"FCApp.Pause"];
-	[s_lua registerCFunction:lua_SetUpdateFrequency as:@"FCApp.SetUpdateFrequency"];
+//	[s_lua createGlobalTable:@"FCApp"];
+	s_lua->CreateGlobalTable("FCApp");
+//	[s_lua registerCFunction:lua_ShowStatusBar as:@"FCApp.ShowStatusBar"];
+	s_lua->RegisterCFunction(lua_ShowStatusBar, "FCApp.ShowStatusBar");
+//	[s_lua registerCFunction:lua_SetBackgroundColor as:@"FCApp.SetBackgroundColor"];
+	s_lua->RegisterCFunction(lua_SetBackgroundColor, "FCApp.SetBackgroundColor");
+//	[s_lua registerCFunction:lua_ShowGameCenterLeaderboards as:@"FCApp.ShowGameCenterLeaderboards"];
+	s_lua->RegisterCFunction(lua_ShowGameCenterLeaderboards, "FCApp.ShowGameCenterLeaderboards");
+//	[s_lua registerCFunction:lua_LaunchExternalURL as:@"FCApp.LaunchExternalURL"];
+	s_lua->RegisterCFunction(lua_LaunchExternalURL, "FCApp.LaunchExternalURL");
+//	[s_lua registerCFunction:lua_MainViewSize as:@"FCApp.MainViewSize"];
+	s_lua->RegisterCFunction(lua_MainViewSize, "FCApp.MainViewSize");
+//	[s_lua registerCFunction:lua_PauseGame as:@"FCApp.Pause"];
+	s_lua->RegisterCFunction(lua_PauseGame, "FCApp.Pause");
+//	[s_lua registerCFunction:lua_SetUpdateFrequency as:@"FCApp.SetUpdateFrequency"];
+	s_lua->RegisterCFunction(lua_SetUpdateFrequency, "FCApp.SetUpdateFrequency");
 	
-	[s_lua setGlobal:@"FCApp.paused" boolean:NO];
+//	[s_lua setGlobal:@"FCApp.paused" boolean:NO];
+	s_lua->SetGlobalBool("FCApp.paused", false);
 #endif
 	
 #if TARGET_OS_IPHONE
@@ -245,6 +255,9 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 #endif
 	[[FCDevice instance] probe];
 	[[FCDevice instance] warmProbe];
+
+//	FCDevice::Instance()->ColdProbe();
+//	FCDevice::Instance()->WarmProbe();
 	
 	[[FCPersistentData instance] loadData];
 #if defined (FC_PHYSICS)
@@ -253,8 +266,10 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	[FCActorSystem instance];
 	
 #if defined(FC_LUA)
-	[s_lua loadScript:@"main"];
-	[s_lua call:@"FCApp.ColdBoot" required:YES withSig:@""];
+//	[s_lua loadScript:@"main"];
+	s_lua->LoadScript("main");
+//	[s_lua call:@"FCApp.ColdBoot" required:YES withSig:@""];
+	s_lua->CallFuncWithSig("FCApp.ColdBoot", true, "");
 #endif
 	[self warmBoot];
 }
@@ -265,7 +280,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	[s_delegate initialiseSystems];
 	
 #if defined (FC_LUA)
-	[s_lua call:@"FCApp.WarmBoot" required:YES withSig:@""];
+//	[s_lua call:@"FCApp.WarmBoot" required:YES withSig:@""];
+	s_lua->CallFuncWithSig("FCApp.WarmBoot", true, "");
 #endif
 }
 
@@ -278,7 +294,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	s_delegate = nil;
 	
 #if defined (FC_LUA)
-	[s_lua call:@"FCApp.Shutdown" required:YES withSig:@""];
+//	[s_lua call:@"FCApp.Shutdown" required:YES withSig:@""];
+	s_lua->CallFuncWithSig("FCApp.Shutdown", true, "");
 	s_lua = nil;
 #endif
 }
@@ -324,7 +341,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	[s_delegate updateRealTime:dt gameTime:gameTime];
 	
 #if defined (FC_LUA)
-	[[FCLua instance] updateThreadsRealTime:dt gameTime:gameTime];
+//	[[FCLua instance] updateThreadsRealTime:dt gameTime:gameTime];
+	FCLua::Instance()->UpdateThreads(dt, gameTime);
 #endif
 	
 	// update the game systems here...
@@ -364,7 +382,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 {
 	s_paused = YES;
 #if defined (FC_LUA)
-	[[FCLua instance].coreVM setGlobal:@"FCApp.paused" boolean:YES];
+//	[[FCLua instance].coreVM setGlobal:@"FCApp.paused" boolean:YES];
+	s_lua->SetGlobalBool("FCApp.paused", true);
 #endif
 	[[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithUTF8String:kFCNotificationPause.c_str()] object:nil];
 }
@@ -373,7 +392,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 {
 	s_paused = NO;
 #if defined (FC_LUA)
-	[[FCLua instance].coreVM setGlobal:@"FCApp.paused" boolean:NO];
+//	[[FCLua instance].coreVM setGlobal:@"FCApp.paused" boolean:NO];
+	s_lua->SetGlobalBool("FCApp.paused", false);
 #endif
 	[[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithUTF8String:kFCNotificationResume.c_str()] object:nil];
 }
@@ -391,21 +411,24 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	[[FCPersistentData instance] saveData];
 	
 #if defined (FC_LUA)
-	[s_lua call:@"FCApp.WillResignActive" required:NO withSig:@""];
+//	[s_lua call:@"FCApp.WillResignActive" required:NO withSig:@""];
+	s_lua->CallFuncWithSig("FCApp.WillResignActive", false, "");
 #endif
 }
 
 -(void)didEnterBackground
 {
 #if defined (FC_LUA)
-	[s_lua call:@"FCApp.DidEnterBackground" required:NO withSig:@""];
+//	[s_lua call:@"FCApp.DidEnterBackground" required:NO withSig:@""];
+	s_lua->CallFuncWithSig("FCApp.DidEnterBackground", false, "");
 #endif
 }
 
 -(void)willEnterForeground
 {
 #if defined (FC_LUA)
-	[s_lua call:@"FCApp.WillEnterForeground" required:NO withSig:@""];	
+//	[s_lua call:@"FCApp.WillEnterForeground" required:NO withSig:@""];	
+	s_lua->CallFuncWithSig("FCApp.WillEnterForeground", false, "");
 #endif
 }
 
@@ -421,7 +444,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 #endif
 	
 #if defined (FC_LUA)
-	[s_lua call:@"FCApp.DidBecomeActive" required:NO withSig:@""];		
+//	[s_lua call:@"FCApp.DidBecomeActive" required:NO withSig:@""];		
+	s_lua->CallFuncWithSig("FCApp.DidBecomeActive", false, "");
 #endif
 }
 
@@ -432,7 +456,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 #endif
 	
 #if defined (FC_LUA)
-	[s_lua call:@"FCApp.WillTerminate" required:NO withSig:@""];		
+//	[s_lua call:@"FCApp.WillTerminate" required:NO withSig:@""];		
+	s_lua->CallFuncWithSig("FCApp.WillTerminate", false, "");
 #endif
 }
 
@@ -441,10 +466,12 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 {
 	BOOL ret = YES;
 	if (UIInterfaceOrientationIsLandscape(interfaceOrientation)) {
-		[[[FCLua instance] coreVM] call:@"FCApp.SupportsLandscape" required:NO withSig:@">b", &ret];
+//		[[[FCLua instance] coreVM] call:@"FCApp.SupportsLandscape" required:NO withSig:@">b", &ret];
+		FCLua::Instance()->CoreVM()->CallFuncWithSig("FCApp.SupportsLandscape", false, ">b", &ret);
 	}
 	if (UIInterfaceOrientationIsPortrait(interfaceOrientation)) {
-		[[[FCLua instance] coreVM] call:@"FCApp.SupportsPortrait" required:NO withSig:@">b", &ret];
+//		[[[FCLua instance] coreVM] call:@"FCApp.SupportsPortrait" required:NO withSig:@">b", &ret];
+		FCLua::Instance()->CoreVM()->CallFuncWithSig("FCApp.SupportsPortrait", false, ">b", &ret);
 	}
 	return ret;
 }

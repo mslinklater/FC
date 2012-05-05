@@ -30,7 +30,7 @@
 #endif
 
 #if defined(FC_LUA)
-#import "Lua/FCLua.h"
+#import "Shared/Lua/FCLua.h"
 #endif
 
 @class FCPhaseManager;

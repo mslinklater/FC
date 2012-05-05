@@ -23,15 +23,17 @@
 #import <Foundation/Foundation.h>
 #import "FCPhase.h"
 
-#if defined (FC_LUA)
-#import "FCLuaClass.h"
-#endif
+//#if defined (FC_LUA)
+//#import "FCLuaClass.h"
+//#endif
 
-#if defined (FC_LUA)
-@interface FCPhaseManager : NSObject <FCLuaClass>
-#else
+class FCLuaVM;
+
+//#if defined (FC_LUA)
+//@interface FCPhaseManager : NSObject <FCLuaClass>
+//#else
 @interface FCPhaseManager : NSObject
-#endif
+//#endif
 {
 	FCPhase* _rootPhase;
 	NSMutableArray* _phaseQueue;
@@ -42,7 +44,7 @@
 @property(nonatomic, strong) NSMutableArray* activePhases;
 
 +(FCPhaseManager*)instance;
-
++(void)registerLuaFunctions:(FCLuaVM*)lua;
 -(void)update:(float)dt;
 -(FCPhase*)createPhaseWithName:(NSString*)name;
 -(void)attachPhase:(FCPhase*)phase toParent:(FCPhase*)parentPhase;

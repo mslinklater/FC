@@ -19,57 +19,31 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+#if 1
+#import <Foundation/Foundation.h>
 
-#import "FCLuaMemory.h"
+// enums for caps
 
-// global memory allocation routine
 
-void* FCLuaAlloc( void* ud, void* ptr, size_t osize, size_t nsize )
-{
-	if (nsize) {
-		[FCLuaMemory instance].totalMemory += nsize - osize;
-		
-		if (osize) {
-			return realloc(ptr, nsize);
-		} else {
-			[FCLuaMemory instance].numAllocs++;
-			return malloc(nsize);			
-		}
-	} else {
-		[FCLuaMemory instance].totalMemory -= osize;
-		if (osize) {
-			[FCLuaMemory instance].numAllocs--;
-			free(ptr);
-		}
-		return NULL;
-	}
+@interface FCDevice : NSObject {
+	NSMutableDictionary* _caps;
+	NSString* _gameCenterID;
 }
+@property(strong, nonatomic,readonly) NSMutableDictionary* caps;
+@property(nonatomic, strong, readonly) NSString* gameCenterID;
 
-@implementation FCLuaMemory
-@synthesize totalMemory = _totalMemory;
-@synthesize numAllocs = _numAllocs;
++(FCDevice*)instance;
 
-+(id)instance
-{
-	static FCLuaMemory* pInstance;
-	if (!pInstance) {
-		pInstance = [[FCLuaMemory alloc] init];
-	}
-	return pInstance;
-}
+-(void)probe;
+-(void)warmProbe;
 
--(id)init
-{
-	self = [super init];
-	if (self) {
-		// blah
-	}
-	return self;
-}
+-(void)print;
+-(void)getScreenCaps;
 
--(void)setTotalMemory:(int)totalMemory
-{
-	_totalMemory = totalMemory;
-}
+-(id)valueForKey:(NSString*)key;
+-(BOOL)valueForKey:(NSString*)key equalTo:(NSString*)key2;
+-(BOOL)isPresent:(NSString*)key;
 
 @end
+
+#endif

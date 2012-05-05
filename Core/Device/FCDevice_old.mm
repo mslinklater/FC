@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-
+#if 1
 
 #include <sys/types.h>
 #include <sys/sysctl.h>
@@ -30,7 +30,7 @@
 #endif
 
 #import "FCCore.h"
-#import "FCDevice.h"
+#import "FCDevice_old.h"
 
 #import "FCXMLData.h"
 #import "FCMaths.h"
@@ -115,12 +115,6 @@ static int lua_GetGameCenterID( lua_State* _state )
 
 static FCDevice* pInstance;
 
-//@interface FCDevice() {
-////	FCLuaVM* _luaVM;
-//}
-////@property(nonatomic, strong) FCLuaVM* luaVM;
-//@end
-
 @implementation FCDevice
 
 @synthesize caps = _caps;
@@ -149,15 +143,23 @@ static FCDevice* pInstance;
 #endif
 
 #if defined (FC_LUA)
-		FCLuaVM* lua = [FCLua instance].coreVM;
+//		FCLuaVM* lua = [FCLua instance].coreVM;
+		FCLuaVM* lua = FCLua::Instance()->CoreVM();
 		
-		[lua createGlobalTable:@"FCDevice"];
-		[lua registerCFunction:lua_Probe as:@"FCDevice.Probe"];
-		[lua registerCFunction:lua_WarmProbe as:@"FCDevice.WarmProbe"];
-		[lua registerCFunction:lua_Print as:@"FCDevice.Print"];
-		[lua registerCFunction:lua_GetDeviceString as:@"FCDevice.GetString"];
-		[lua registerCFunction:lua_GetDeviceNumber as:@"FCDevice.GetNumber"];
-		[lua registerCFunction:lua_GetGameCenterID as:@"FCDevice.GetGameCenterID"];
+//		[lua createGlobalTable:@"FCDevice"];
+		lua->CreateGlobalTable("FCDevice");
+//		[lua registerCFunction:lua_Probe as:@"FCDevice.Probe"];
+		lua->RegisterCFunction(lua_Probe, "FCDevice.Probe");
+//		[lua registerCFunction:lua_WarmProbe as:@"FCDevice.WarmProbe"];
+		lua->RegisterCFunction(lua_WarmProbe, "FCDevice.WarmProbe");
+//		[lua registerCFunction:lua_Print as:@"FCDevice.Print"];
+		lua->RegisterCFunction(lua_Print, "FCDevice.Print");
+//		[lua registerCFunction:lua_GetDeviceString as:@"FCDevice.GetString"];
+		lua->RegisterCFunction(lua_GetDeviceString, "FCDevice.GetString");
+//		[lua registerCFunction:lua_GetDeviceNumber as:@"FCDevice.GetNumber"];
+		lua->RegisterCFunction(lua_GetDeviceNumber, "FCDevice.GetNumber");
+//		[lua registerCFunction:lua_GetGameCenterID as:@"FCDevice.GetGameCenterID"];
+		lua->RegisterCFunction(lua_GetGameCenterID, "FCDevice.GetGameCenterID");
 #endif // defined(FC_LUA)
 	}
 	return self;
@@ -410,4 +412,4 @@ static FCDevice* pInstance;
 
 @end
 
-
+#endif

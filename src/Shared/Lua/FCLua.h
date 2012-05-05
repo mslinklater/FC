@@ -20,16 +20,47 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#ifndef CR1_FCLua_h
+#define CR1_FCLua_h
 
-#import <Foundation/Foundation.h>
-//#import "FCLuaClass.h"
+#include <map>
 
-//@interface FCGameCenter : NSObject <FCLuaClass> {
-@interface FCGameCenter : NSObject {
+#include "FCCore.h"
+#include "FCLuaVM.h"
+#include "FCLuaThread.h"
+#include "FCLuaCommon.h"
+#include "FCLuaMemory.h"
+#include "FCLuaAsserts.h"
+
+// Some helpers which shold probably be moved out
+
+void lua_pushvector3f( lua_State* _state, FC::Vector3f& vec );
+FC::Vector2f lua_tovector2f( lua_State* _state );
+FC::Vector3f lua_tovector3f( lua_State* _state );
+FC::Color4f lua_tocolor4f( lua_State* _state );
+
+class FCLua {
+public:
+	FCLua();
+	~FCLua();
 	
-}
-+(FCGameCenter*)instance;
-@end
+	static FCLua* Instance();
+	void UpdateThreads( float realDelta, float gameDelta );
+	FCLuaVM* CoreVM(){ return m_coreVM; }
+	FCLuaVM* NewVM();
+	void ExecuteLine( std::string line );
+	void PrintStats();
 
-#endif // TARGET_OS_IPHONE
+	FCLuaThreadMap	m_threadsMap;
+	
+private:
+	static FCLua*	s_pInstance;
+	FCLuaVM*		m_coreVM;
+
+	FCPerformanceCounterPtr	m_perfCounter;
+	float					m_maxCPUTime;
+	float					m_avgCPUTime;
+	uint32_t				m_avgCount;
+};
+
+#endif

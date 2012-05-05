@@ -20,21 +20,42 @@
  THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
+#ifndef CR1_FCLuaAsserts_h
+#define CR1_FCLuaAsserts_h
 
-extern "C" {
-#include "lua.h"
+#include <sstream>
+
+#if defined(DEBUG)
+
+#define FC_LUA_ASSERT_TYPE( stackpos, type )	\
+{							\
+	if( lua_type( _state, stackpos ) != type )	\
+	{	\
+		std::stringstream error;	\
+		error << "Lua (" << __FUNCTION__ << "): Wrong type of assert, wanted " << lua_typename( _state, type) << ", but found " << lua_typename( _state, lua_type( _state, stackpos));	\
+		FC_LOG(error.str());	\
+		FCLua_DumpStack( _state );	\
+		return 0;	\
+	}	\
 }
 
-extern void* FCLuaAlloc(void*, void*, size_t, size_t);
-
-@interface FCLuaMemory : NSObject
-{
-	int _totalMemory;
-	int	_numAllocs;
+#define FC_LUA_ASSERT_NUMPARAMS( n )	\
+{										\
+	if( lua_gettop( _state ) != n )		\
+	{									\
+		std::stringstream error;	\
+		error << "Lua (" << __FUNCTION__ << "): Wrong number of parameters. Expected " << n << " but received " << lua_gettop( _state );	\
+		FC_LOG(error.str());	\
+		FCLua_DumpStack( _state );		\
+		return 0;	\
+	}			\
 }
-@property(nonatomic) int totalMemory;
-@property(nonatomic) int numAllocs;
 
-+(FCLuaMemory*)instance;
-@end
+#else
+
+#define FC_LUA_ASSERT_TYPE(stackpos, type){}
+#define FC_LUA_ASSERT_NUMPARAMS( n ){}
+
+#endif	// DEBUG
+
+#endif

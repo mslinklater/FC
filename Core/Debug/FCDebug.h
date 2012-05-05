@@ -24,7 +24,6 @@
 #define HeadPopper_FCDebug_h
 
 #import "FCPerformanceCounter.h"
-#import "FCRasterView.h"
 #import "FCConnect.h"
 
 #endif

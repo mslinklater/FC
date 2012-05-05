@@ -19,7 +19,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
+#if 0
 #if defined (FC_LUA)
 
 #import "FCLuaVM.h"
@@ -274,12 +274,6 @@ static int panic (lua_State *L) {
 	
 	lua_pop(_state, (int)(numComponents - 1));
 }
-
-//-(void)newLib:(luaL_Reg *)functions as:(NSString*)name
-//{
-//	luaL_
-////	luaL_newlib(_state, functions);
-//}
 
 -(void)createGlobalTable:(NSString*)tableName
 {
@@ -611,4 +605,4 @@ endargs:
 @end
 
 #endif // defined(FC_LUA)
-
+#endif

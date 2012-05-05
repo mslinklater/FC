@@ -20,30 +20,46 @@
  THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
-
-// enums for caps
-
-
-@interface FCDevice : NSObject {
-	NSMutableDictionary* _caps;
-	NSString* _gameCenterID;
+extern "C" {
+#include "lua.h"
 }
-@property(strong, nonatomic,readonly) NSMutableDictionary* caps;
-@property(nonatomic, strong, readonly) NSString* gameCenterID;
 
-+(FCDevice*)instance;
+#include <stdint.h>
 
--(void)probe;
--(void)warmProbe;
+extern void* FCLuaAlloc(void*, void*, size_t, size_t);
 
--(void)print;
--(void)getScreenCaps;
+class FCLuaMemory
+{
+public:
+	FCLuaMemory()
+	{
+		m_totalMemory = 0;
+		m_numAllocs = 0;
+	}
+	~FCLuaMemory();
 
--(id)valueForKey:(NSString*)key;
--(BOOL)valueForKey:(NSString*)key equalTo:(NSString*)key2;
--(BOOL)isPresent:(NSString*)key;
+	static FCLuaMemory* Instance()
+	{
+		if (!s_pInstance) {
+			s_pInstance = new FCLuaMemory;
+		}
+		return s_pInstance;
+	}
+	
+	uint32_t	NumAllocs(){ return m_numAllocs; }
+	uint32_t	TotalMemory(){ return m_totalMemory; }
+	
+	void TotalMemoryDelta( uint32_t delta )
+	{
+		m_totalMemory += delta;
+	}
+	void NumAllocsDelta( uint32_t delta )
+	{
+		m_numAllocs += delta;
+	}
 
-@end
-
-
+private:
+	static FCLuaMemory* s_pInstance;
+	uint32_t m_totalMemory;
+	uint32_t m_numAllocs;
+};

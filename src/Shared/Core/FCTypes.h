@@ -26,11 +26,18 @@
 #include "FCColor.h"
 #include "FCKeys.h"
 
+#include <string>
+#include <vector>
+
 typedef uint32_t FCHandle;	// should last a while 8)
 
 static const FCHandle kFCHandleInvalid = 0;
 static const FCHandle kFCHandleFirstValid = 1;
 
 extern FCHandle NewFCHandle( void );
+
+typedef std::vector<std::string>		FCStringVector;
+typedef FCStringVector::iterator		FCStringVectorIter;
+typedef FCStringVector::const_iterator	FCStringVectorConstIter;
 
 #endif // FCTypes_h

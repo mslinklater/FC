@@ -20,7 +20,10 @@
  THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
+#ifndef FCLuaCommon_h
+#define FCLuaCommon_h
+
+#include <string>
 
 extern "C" {
 #import "lua.h"
@@ -30,10 +33,8 @@ extern "C" {
 
 extern void			FCLua_DumpStack( lua_State* _state );
 extern double		FCLua_GetTableNumber( lua_State* _state, int stackIdx, const char* name );
-extern NSString*	FCLua_GetTableString( lua_State* _state, int stackIdx, const char* name );
-extern BOOL			FCLua_GetTableBool( lua_State* _state, int stackIdx, const char* name );
-extern BOOL			FCLua_GetTableIsTable( lua_State* _state, int stackIdx, const char* name );
+extern std::string	FCLua_GetTableString( lua_State* _state, int stackIdx, const char* name );
+extern bool			FCLua_GetTableBool( lua_State* _state, int stackIdx, const char* name );
+extern bool			FCLua_GetTableIsTable( lua_State* _state, int stackIdx, const char* name );
 
-
-
-
+#endif // FCLuaCommon_h

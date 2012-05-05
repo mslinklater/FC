@@ -76,9 +76,12 @@ static int lua_DeactivatePhase( lua_State* _state )
 #if defined (FC_LUA)
 +(void)registerLuaFunctions:(FCLuaVM *)lua
 {	
-	[lua createGlobalTable:@"FCPhaseManager"];
-	[lua registerCFunction:lua_AddPhaseToQueue as:@"FCPhaseManager.AddPhaseToQueue"];
-	[lua registerCFunction:lua_DeactivatePhase as:@"FCPhaseManager.DeactivatePhase"];
+//	[lua createGlobalTable:@"FCPhaseManager"];
+	lua->CreateGlobalTable("FCPhaseManager");
+//	[lua registerCFunction:lua_AddPhaseToQueue as:@"FCPhaseManager.AddPhaseToQueue"];
+	lua->RegisterCFunction(lua_AddPhaseToQueue, "FCPhaseManager.AddPhaseToQueue");
+//	[lua registerCFunction:lua_DeactivatePhase as:@"FCPhaseManager.DeactivatePhase"];
+	lua->RegisterCFunction(lua_DeactivatePhase, "FCPhaseManager.DeactivatePhase");
 }
 #endif
 

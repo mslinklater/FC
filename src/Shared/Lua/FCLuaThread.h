@@ -20,16 +20,50 @@
  THE SOFTWARE.
  */
 
-#import "FCTypes.h"
-#import "FCKeys.h"
-#import "FCMacros.h"
-#import "FCColor.h"
-#import "FCProtocols.h"
-#import "FCNotifications.h"
+#ifndef CR1_FCLuaThread_h
+#define CR1_FCLuaThread_h
 
-#import "FCMaths.h"
-#import "FCDebug.h"
+#include <map>
 
+#include "FCLuaVM.h"
+#include "Shared/Core/FCTypes.h"
 #include "Shared/Core/FCSharedPtr.h"
-#include "Shared/Core/FCStringUtils.h"
-#include "Shared/Core/FCError.h"
+
+enum eLuaThreadState {
+	kLuaThreadStateNew,
+	kLuaThreadStateRunning,
+	kLuaThreadStateSleeping,
+	kLuaThreadStateDying,
+	kLuaThreadStateDead
+};
+
+class FCLuaThread {
+public:
+	FCLuaThread( lua_State* state, FCHandle handle );
+	~FCLuaThread();
+	
+	void Resume();
+	void Update( float realDelta, float gameDelta );
+	void PauseRealTime( float seconds );
+	void PauseGameTime( float seconds );
+	void Die();
+	FCHandle Handle(){ return m_handle; }
+	lua_State* LuaState(){ return m_luaState; }
+	eLuaThreadState ThreadState(){ return m_threadState; }
+	
+private:
+	eLuaThreadState	m_threadState;
+	double			m_sleepRealTimeRemaining;
+	double			m_sleepGameTimeRemaining;
+	FCHandle		m_handle;
+	lua_State*		m_luaState;
+	int32_t			m_numResumedArgs;
+};
+
+typedef FCSharedPtr<FCLuaThread> FCLuaThreadPtr;
+
+typedef std::map<FCHandle, FCLuaThreadPtr> FCLuaThreadMap;
+typedef FCLuaThreadMap::iterator FCLuaThreadMapIter;
+typedef FCLuaThreadMap::const_iterator FCLuaThreadMapConstIter;
+
+#endif

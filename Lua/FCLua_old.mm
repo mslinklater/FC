@@ -19,7 +19,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
+#if 0
 #if defined (FC_LUA)
 
 #import <QuartzCore/QuartzCore.h>
@@ -233,7 +233,6 @@ static int lua_KillThread( lua_State* _state )
 	} else
 	{
 		FC_WARNING("Trying to kill non-existent Lua thread");
-//		FC_HALT;
 	}
 	return 0;
 }
@@ -406,3 +405,4 @@ static int lua_Fatal( lua_State* _state )
 @end
 
 #endif // defined(FC_LUA)
+#endif

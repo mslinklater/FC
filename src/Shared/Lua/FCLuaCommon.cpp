@@ -20,15 +20,13 @@
  THE SOFTWARE.
  */
 
-#import "FCLuaCommon.h"
+#include "FCLuaCommon.h"
 
-#import "FCError.h"
+#include "Shared/Core/FCError.h"
 
 void FCLua_DumpStack( lua_State* _state )
 {
-	NSString* hexAddress = [NSString stringWithFormat:@"0x%08x", _state];
-	FC_UNUSED(hexAddress);
-	FC_LOG( std::string("-- FCLuaVM:dumpStack (") + [hexAddress UTF8String] + ") --");
+	FC_LOG( "-- FCLuaVM:dumpStack --" );
 	int i;
 	int top = lua_gettop(_state);
 	for( i = 1 ; i <= top ; i++ )
@@ -70,34 +68,34 @@ double FCLua_GetTableNumber( lua_State* _state, int stackIdx, const char* name )
 	return ret;
 }
 
-NSString* FCLua_GetTableString( lua_State* _state, int stackIdx, const char* name )
+std::string FCLua_GetTableString( lua_State* _state, int stackIdx, const char* name )
 {
 	lua_getfield(_state, stackIdx, name);
 	
 	FC_ASSERT( lua_isstring(_state, stackIdx) );
 
-	NSString* ret = [NSString stringWithUTF8String:lua_tostring(_state, stackIdx)];
+	std::string ret = lua_tostring(_state, stackIdx);
 	lua_pop(_state, 1);
 	return ret;
 }
 
-BOOL FCLua_GetTableBool( lua_State* _state, int stackIdx, const char* name )
+bool FCLua_GetTableBool( lua_State* _state, int stackIdx, const char* name )
 {
 	lua_getfield(_state, stackIdx, name);
 	
 	FC_ASSERT( lua_isboolean(_state, stackIdx) );
 
-	BOOL ret = lua_toboolean(_state, stackIdx);
+	bool ret = lua_toboolean(_state, stackIdx);
 	lua_pop(_state, 1);
 	
 	return ret;
 }
 
-BOOL FCLua_GetTableIsTable( lua_State* _state, int stackIdx, const char* name )
+bool FCLua_GetTableIsTable( lua_State* _state, int stackIdx, const char* name )
 {
 	lua_getfield(_state, stackIdx, name);
 
-	BOOL ret = lua_istable(_state, stackIdx);
+	bool ret = lua_istable(_state, stackIdx);
 	lua_pop(_state, 1);
 	return ret;
 }

@@ -20,16 +20,32 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#include "FCLuaMemory.h"
 
-#import <Foundation/Foundation.h>
-//#import "FCLuaClass.h"
+#include <stdlib.h>
 
-//@interface FCGameCenter : NSObject <FCLuaClass> {
-@interface FCGameCenter : NSObject {
-	
+// global memory allocation routine
+
+FCLuaMemory* FCLuaMemory::s_pInstance = 0;
+
+void* FCLuaAlloc( void* ud, void* ptr, size_t osize, size_t nsize )
+{
+	if (nsize) {
+		FCLuaMemory::Instance()->TotalMemoryDelta( nsize - osize );
+		
+		if (osize) {
+			return realloc(ptr, nsize);
+		} else {
+			FCLuaMemory::Instance()->NumAllocsDelta( 1 );
+			return malloc(nsize);			
+		}
+	} else {
+		FCLuaMemory::Instance()->TotalMemoryDelta( -osize );
+		if (osize) {
+			FCLuaMemory::Instance()->NumAllocsDelta(-1);
+			free(ptr);
+		}
+		return NULL;
+	}
 }
-+(FCGameCenter*)instance;
-@end
 
-#endif // TARGET_OS_IPHONE

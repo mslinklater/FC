@@ -82,10 +82,14 @@ static int lua_EndTimedEvent( lua_State* _state )
 		pInstance = [[FCAnalytics alloc] init];
 
 #if defined (FC_LUA)
-		[[FCLua instance].coreVM createGlobalTable:@"FCAnalytics"];
-		[[FCLua instance].coreVM registerCFunction:lua_RegisterEvent as:@"FCAnalytics.RegisterEvent"];
-		[[FCLua instance].coreVM registerCFunction:lua_BeginTimedEvent as:@"FCAnalytics.BeginTimedEvent"];
-		[[FCLua instance].coreVM registerCFunction:lua_EndTimedEvent as:@"FCAnalytics.EndTimedEvent"];
+//		[[FCLua instance].coreVM createGlobalTable:@"FCAnalytics"];
+		FCLua::Instance()->CoreVM()->CreateGlobalTable("FCAnalytics");
+//		[[FCLua instance].coreVM registerCFunction:lua_RegisterEvent as:@"FCAnalytics.RegisterEvent"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_RegisterEvent, "FCAnalytics.RegisterEvent");
+//		[[FCLua instance].coreVM registerCFunction:lua_BeginTimedEvent as:@"FCAnalytics.BeginTimedEvent"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_BeginTimedEvent, "FCAnalytics.BeginTimedEvent");
+//		[[FCLua instance].coreVM registerCFunction:lua_EndTimedEvent as:@"FCAnalytics.EndTimedEvent"];
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_EndTimedEvent, "FCAnalytics.EndTimedEvent");
 #endif // FC_LUA
 		
 	}
