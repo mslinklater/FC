@@ -19,50 +19,18 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-#if 0
-#if defined(FC_LUA)
 
-#import <Foundation/Foundation.h>
+#include "FCCrypto.h"
+#include "sha1.h"
 
-#import "FCCore.h"
-#import "FCLuaVM.h"
-#import "FCLuaThread.h"
-#import "FCLuaCommon.h"
-#import "FCLuaMemory.h"
-#import "FCLuaAsserts.h"
-
-// Some helpers, which should probably be moved out
-
-void lua_pushvector3f( lua_State* _state, FC::Vector3f& vec );
-FC::Vector2f lua_tovector2f( lua_State* _state );
-FC::Vector3f lua_tovector3f( lua_State* _state );
-FC::Color4f lua_tocolor4f( lua_State* _state );
-
-@interface FCLua : NSObject {
-	NSMutableDictionary*	_threadsDict;
+std::string FCCrypto_SHA1ForData( void* pData, uint32_t size)
+{
+	uint8_t hashResult[20];
+	uint8_t hexResult[41];
 	
-	FCPerformanceCounterPtr	m_perfCounter;
-	float					_maxCPUTime;
-	float					_avgCPUTime;
-	int						_avgCount;
+	sha1::calc(pData, size, &hashResult[0]);
+	
+	sha1::toHexString(&hashResult[0], (char*)&hexResult[0]);
+	
+	return std::string((char*)&hexResult[0]);
 }
-@property(nonatomic, readonly) NSMutableDictionary* threadsDict;
-@property(nonatomic) FCPerformanceCounterPtr perfCounter;
-@property(nonatomic) float maxCPUTime;
-@property(nonatomic) float avgCPUTime;
-@property(nonatomic) int avgCount;
-
-+(FCLua*)instance;
-
--(void)updateThreadsRealTime:(float)dt gameTime:(float)dt;
-
--(FCLuaVM*)coreVM;
--(FCLuaVM*)newVM;
-
--(void)executeLine:(NSString*)line;
--(void)printStats;
-
-@end
-
-#endif // defined(FC_LUA)
-#endif

@@ -26,6 +26,8 @@
 
 #import "FCCore.h"
 
+#include "Shared/Core/FCXML.h"
+
 class b2World;
 
 @interface FCPhysics2DBodyDef : NSObject 
@@ -34,7 +36,8 @@ class b2World;
 	BOOL			_isStatic;
 	BOOL			_canSleep;
 	float			_linearDamping;
-	NSDictionary*	_shapeDef;
+//	NSDictionary*	_shapeDef;
+	FCXMLNode		_shapeXML;
 	b2World*		_world;
 	id __weak		_actor;	// deprecate
 	FCHandle		_hActor;
@@ -45,7 +48,8 @@ class b2World;
 @property(nonatomic) BOOL isStatic;
 @property(nonatomic) BOOL canSleep;
 @property(nonatomic) float linearDamping;
-@property(nonatomic, strong) NSDictionary* shapeDef;
+//@property(nonatomic, strong) NSDictionary* shapeDef;
+@property(nonatomic) FCXMLNode shapeXML;
 @property(nonatomic) b2World* world;
 @property(nonatomic, weak) id actor;
 @property(nonatomic) FCHandle hActor;

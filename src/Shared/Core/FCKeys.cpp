@@ -83,6 +83,7 @@ std::string kFCKeyOffset = "offset";
 std::string kFCKeyOffsetX = "offsetX";
 std::string kFCKeyOffsetY = "offsetY";
 std::string kFCKeyOffsetZ = "offsetZ";
+std::string kFCKeyRotation = "rotation";
 std::string kFCKeyRotationX = "rotationX";
 std::string kFCKeyRotationY = "rotationY";
 std::string kFCKeyRotationZ = "rotationZ";
@@ -167,11 +168,10 @@ std::string kFCDevicePresent = "present";
 std::string kFCDeviceNotPresent = "not present";
 std::string kFCDeviceUnknown = "unknown";
 
-std::string kFCDevicePlatformPhone = "platform_iphone";
-std::string kFCDevicePlatformPhoneRetina = "platform_iphone_retina";
-std::string kFCDevicePlatformPhoneOnPad = "platform_iphone_on_ipad";
-std::string kFCDevicePlatformPad = "platform_ipad";
-std::string kFCDevicePlatformPadRetina = "platform_ipad_retina";
+std::string kFCDevicePlatformiOS = "iOS";
+std::string kFCDevicePlatformOSX = "OSX";
+std::string kFCDevicePlatformWindows8 = "Windows8";
+std::string kFCDevicePlatformAndroid = "Android";
 
 //------- keys
 
@@ -199,3 +199,4 @@ std::string kFCDeviceSimulator = "simulator";
 
 std::string kFCDeviceAppPirated = "pirated";
 
+std::string kFCDeviceGameCenterID = "gamecenterid";

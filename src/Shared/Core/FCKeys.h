@@ -92,6 +92,7 @@ extern std::string kFCKeyOffset;
 extern std::string kFCKeyOffsetX;
 extern std::string kFCKeyOffsetY;
 extern std::string kFCKeyOffsetZ;
+extern std::string kFCKeyRotation;
 extern std::string kFCKeyRotationX;
 extern std::string kFCKeyRotationY;
 extern std::string kFCKeyRotationZ;
@@ -176,11 +177,10 @@ extern std::string kFCDevicePresent;
 extern std::string kFCDeviceNotPresent;
 extern std::string kFCDeviceUnknown;
 
-extern std::string kFCDevicePlatformPhone;
-extern std::string kFCDevicePlatformPhoneRetina;
-extern std::string kFCDevicePlatformPhoneOnPad;
-extern std::string kFCDevicePlatformPad;
-extern std::string kFCDevicePlatformPadRetina;
+extern std::string kFCDevicePlatformiOS;
+extern std::string kFCDevicePlatformOSX;
+extern std::string kFCDevicePlatformWindows8;
+extern std::string kFCDevicePlatformAndroid;
 
 // actual caps
 
@@ -205,5 +205,7 @@ extern std::string kFCDevicePlatform;
 extern std::string kFCDeviceSimulator;
 
 extern std::string kFCDeviceAppPirated;
+
+extern std::string kFCDeviceGameCenterID;
 
 #endif // FCKeys_h

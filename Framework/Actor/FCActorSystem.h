@@ -26,6 +26,8 @@
 
 #import "FCActor.h"
 
+#include "Shared/Core/FCXML.h"
+
 @class FCActor;
 
 @interface FCActorSystem : NSObject <FCGameObjectUpdate, FCGameObjectRender> {
@@ -67,7 +69,7 @@
 				  withResource:(FCResource*)res
 						  name:(NSString*)name;
 
--(id)createActor:(NSDictionary*)actorDict 
+-(id)createActor:(FCXMLNode)actorXML
 		 ofClass:(NSString*)actorClass 
 	withResource:(FCResource*)res
 			name:(NSString*)name;

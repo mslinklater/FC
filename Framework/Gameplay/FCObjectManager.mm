@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
+#include "Shared/Core/FCError.h"
 #import "FCObjectManager.h"
-#import "FCXMLData.h"
 #import "FCTypes.h"
 
 static FCObjectManager* s_pInstance;
@@ -52,18 +52,21 @@ static FCObjectManager* s_pInstance;
 -(void)addObjectsFromResource:(FCResource*)resource
 {
 	// add locators
-	NSArray* locators = [resource.xmlData arrayForKeyPath:@"fcr.gameplay.locator"];
-
-	for( NSDictionary* obj in locators )
+//	NSArray* locators = [resource.xmlData arrayForKeyPath:@"fcr.gameplay.locator"];
+	FCXMLNodeVec locators = resource.xml->VectorForKeyPath("fcr.gameplay.locator");
+	
+	for (FCXMLNodeVecIter i = locators.begin(); i != locators.end(); i++) 
 	{
-//		NSString* objType = [obj valueForKey:kFCKeyType];
-		
-//		if ([objType isEqualToString:kFCKeyNull]) {
-			NSString* nullId = [obj valueForKey:[NSString stringWithUTF8String:kFCKeyName.c_str()]];
-			[_nulls setValue:obj forKey:nullId];
-//		}
-		// etc
+//		FCXMLAttributeMap attributes = FCXML::AttributesForNode( *i );
+		std::string name = FCXML::StringValueForNodeAttribute( *i, kFCKeyName );
 	}
+	
+//	FC_HALT;
+//	for( NSDictionary* obj in locators )
+//	{
+//		NSString* nullId = [obj valueForKey:[NSString stringWithUTF8String:kFCKeyName.c_str()]];
+//		[_nulls setValue:obj forKey:nullId];
+//	}
 }
 
 -(void)reset

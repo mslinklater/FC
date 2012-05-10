@@ -29,7 +29,7 @@
 #import "FCLeaderboard.h"
 #import "FCMisc.h"
 #import "FCUserDefaults.h"
-#import "FCXMLData.h"
+//#import "FCXMLData.h"
 
 // folders
 

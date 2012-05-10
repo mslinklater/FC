@@ -25,7 +25,7 @@
 #endif
 
 #import "FCAppContext.h"
-#import "FCXMLData.h"
+//#import "FCXMLData.h"
 #import "FCViewManager.h"
 #import "FCResourceManager.h"
 #import "FCDevice.h"
@@ -45,7 +45,7 @@
 
 @implementation FCAppContext
 
-@synthesize gameData = _gameData;
+@synthesize xml = _xml;
 @synthesize localPlayerGameCenterId = _localPlayerGameCenterID;
 @synthesize gameRoot = _gameRoot;
 @synthesize mainGameView = _mainGameView;
@@ -86,9 +86,12 @@
 
 		[FCResourceManager instance];
 		
-		_gameData = [[FCXMLData alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"gamedata" ofType:@"xml"]];
+//		_gameData = [[FCXMLData alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"gamedata" ofType:@"xml"]];
 		
-		[[FCUserDefaults instance] registerDefaults:self.gameData];
+//		_xml = new FCXML;
+//		_xml->I
+
+//		[[FCUserDefaults instance] registerDefaults:self.xml];
 		
 		//[[FCRenderer instance] addToGatherList:[FCActorSystem instance]];
 		
@@ -131,7 +134,7 @@
 
 -(void)dealloc
 {
-	_gameData = nil;
+//	_gameData = nil;
 }
 
 -(void)setValue:(id)value forKey:(NSString *)key

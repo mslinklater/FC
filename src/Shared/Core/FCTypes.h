@@ -26,6 +26,7 @@
 #include "FCColor.h"
 #include "FCKeys.h"
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -36,8 +37,14 @@ static const FCHandle kFCHandleFirstValid = 1;
 
 extern FCHandle NewFCHandle( void );
 
+// Some common container types.
+
 typedef std::vector<std::string>		FCStringVector;
 typedef FCStringVector::iterator		FCStringVectorIter;
 typedef FCStringVector::const_iterator	FCStringVectorConstIter;
+
+typedef std::map<std::string, std::string>	FCStringStringMap;
+typedef FCStringStringMap::iterator			FCStringStringMapIter;
+typedef FCStringStringMap::const_iterator	FCStringStringMapConstIter;
 
 #endif // FCTypes_h

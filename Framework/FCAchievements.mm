@@ -20,14 +20,15 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+//#if TARGET_OS_IPHONE
+#if 0
 
 #import <GameKit/GameKit.h>
 
 #import "FCCore.h"
 #import "FCAchievements.h"
 #import "FCAppContext.h"
-#import "FCXMLData.h"
+//#import "FCXMLData.h"
 #import "FCNotifications.h"
 
 @implementation FCAchievements

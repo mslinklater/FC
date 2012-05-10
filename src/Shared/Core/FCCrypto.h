@@ -20,27 +20,11 @@
  THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
+#ifndef CR1_FCCrypto_h
+#define CR1_FCCrypto_h
 
-@interface FCXMLData : NSObject <NSXMLParserDelegate> {
-	NSMutableArray* mCurrentNodeStack;
-	NSMutableDictionary* mCurrentNode;
-	NSMutableDictionary* mRoot;
-}
+#include "Shared/Core/FCTypes.h"
 
--(id)initWithData:(NSData*)data;
+std::string FCCrypto_SHA1ForData( void* pData, uint32_t size);
 
--(id)initWithContentsOfFile:(NSString*)filePath;
-+(FCXMLData*)fcxmlDataWithContentsOfFile:(NSString*)filePath;
-
--(id)initWithContentsOfURL:(NSURL*)url;
-+(FCXMLData*)fcxmlDataWithContentsOfURL:(NSURL*)url;
-
-
--(NSArray*)arrayForKeyPath:(NSString*)keyPath;
--(NSDictionary*)dictionaryForKeyPath:(NSString*)keyPath;
--(NSString*)stringForKeyPath:(NSString*)keyPath;
-
--(BOOL)validate;
-@end
-
+#endif

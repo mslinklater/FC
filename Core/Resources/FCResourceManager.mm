@@ -25,7 +25,6 @@
 #import "FCCore.h"
 #import "FCResourceManager.h"
 #import "FCDevice.h"
-#import "FCXMLData.h"
 
 static NSString* kHDSuffix = @"_high";
 static NSString* kUDSuffix = @"_ultra";
@@ -84,18 +83,6 @@ static NSString* kUDSuffix = @"_ultra";
 	{
 		if (!self.suffixImages) 
 		{
-			// Need a universal solution to this... not just iOS biased
-			
-//			if ( [[[FCDevice instance] valueForKey:[NSString stringWithUTF8String:kFCDevicePlatform.c_str()]] isEqualToString:[NSString stringWithUTF8String:kFCDevicePlatformPad.c_str()]] ||
-//				[[[FCDevice instance] valueForKey:[NSString stringWithUTF8String:kFCDevicePlatform.c_str()]] isEqualToString:[NSString stringWithUTF8String:kFCDevicePlatformPhoneRetina.c_str()]] ) 
-//			{
-//				self.suffixImages = kHDSuffix;
-//			}
-//			else if( [[[FCDevice instance] valueForKey:[NSString stringWithUTF8String:kFCDevicePlatform.c_str()]] isEqualToString:[NSString stringWithUTF8String:kFCDevicePlatformPadRetina.c_str()]] )
-//			{
-//				self.suffixImages = kUDSuffix;				
-//			}
-
 			if (!self.suffixImages) self.suffixImages = @"";
 		}
 		
@@ -144,13 +131,14 @@ static NSString* kUDSuffix = @"_ultra";
 	NSString* xmlPath = [self actualResourceName:resourcePath ofType:@"fcr"];
 	NSString* payloadPath = [self actualResourceName:resourcePath ofType:@"bin"];
 	
-	NSData* xmlData = [self dataForResource:xmlPath ofType:@"fcr"];
-	FCXMLData* fcxmlData = [[FCXMLData alloc] initWithData:xmlData];
+	FCXMLPtr xml = new FCXML;
+	xml->InitWithContentsOfFile(std::string("Assets/") + std::string([xmlPath UTF8String]) + ".fcr");
+	
 	NSData* payloadData = [self dataForResource:payloadPath ofType:@"bin"];
 
 	FCResource* resource = [FCResource resource];
 
-	resource.xmlData = fcxmlData;
+	resource.xml = xml;
 	resource.binaryPayload = payloadData;
 	resource.name = resourcePath;
 	

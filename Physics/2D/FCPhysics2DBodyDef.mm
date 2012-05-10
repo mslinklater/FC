@@ -30,7 +30,8 @@
 @synthesize Id = _Id;
 @synthesize angle = _angle;
 @synthesize isStatic = _isStatic;
-@synthesize shapeDef = _shapeDef;
+//@synthesize shapeDef = _shapeDef;
+@synthesize shapeXML = _shapeXML;
 @synthesize canSleep = _canSleep;
 @synthesize linearDamping = _linearDamping;
 @synthesize world = _world;
@@ -46,7 +47,7 @@
 	def.angle = 0.0f;
 	def.actor = nil;
 	def.isStatic = NO;
-	def.shapeDef = nil;
+	def.shapeXML = 0;
 	def.canSleep = YES;
 	def.linearDamping = kFCInvalidFloat;
 	def.world = 0;
@@ -62,7 +63,7 @@
 	[ret appendFormat:@"linear damping %f\n", _linearDamping];
 	[ret appendFormat:@"static %@\n", (_isStatic) ? @"yes" : @"no"];
 	[ret appendFormat:@"can sleep %@\n", (_canSleep) ? @"yes" : @"no"];
-	[ret appendFormat:@"shapeDef %@\n", _shapeDef];
+//	[ret appendFormat:@"shapeDef %@\n", _shapeDef];
 	[ret appendFormat:@"actor %@\n", _actor];
 	[ret appendFormat:@"hActor %d\n", _hActor];
 	return ret;
@@ -70,7 +71,8 @@
 
 -(NSString*)Id
 {
-	return [_shapeDef valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]];
+//	return [_shapeDef valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]];
+	return [NSString stringWithUTF8String:FCXML::StringValueForNodeAttribute(_shapeXML, kFCKeyId).c_str()];
 }
 
 @end

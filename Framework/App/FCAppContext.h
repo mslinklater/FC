@@ -23,12 +23,15 @@
 #import <Foundation/Foundation.h>
 #import "FCDevice.h"
 
-@class FCXMLData;
+//#include <rapidxml.hpp>
+#include "Shared/Core/FCXML.h"
+
+//@class FCXMLData;
 @class FCGLView;
 
 @interface FCAppContext : NSObject
 
-@property(nonatomic, strong, readonly) FCXMLData* gameData;
+@property(nonatomic, readonly) FCXMLPtr xml;
 @property(nonatomic, strong) id gameRoot;
 @property(nonatomic, strong) NSString* localPlayerGameCenterId;
 @property(nonatomic, strong) FCGLView* mainGameView;

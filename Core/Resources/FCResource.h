@@ -21,17 +21,16 @@
  */
 
 #import <Foundation/Foundation.h>
-
-@class FCXMLData;
+#include "Shared/Core/FCXML.h"
 
 @interface FCResource : NSObject {
 	NSData* _binaryPayload;
-	FCXMLData* _xmlData;
+	FCXMLPtr _xml;
 	NSString* _name;
 	id _userData;
 }
 @property(nonatomic, strong) NSData* binaryPayload;
-@property(nonatomic, strong) FCXMLData* xmlData;
+@property(nonatomic) FCXMLPtr xml;
 @property(nonatomic, strong) NSString* name;
 @property(nonatomic, strong) id userData;	/// Mainly used for tools to attach metadata to a resource for processing
 

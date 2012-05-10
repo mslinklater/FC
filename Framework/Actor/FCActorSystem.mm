@@ -23,7 +23,7 @@
 #import "FCActorSystem.h"
 #import "FCActor.h"
 #import "FCPhysics.h"
-#import "FCXMLData.h"
+//#import "FCXMLData.h"
 #import "FCResource.h"
 #import "FCCore.h"
 #import "FCLua.h"
@@ -187,60 +187,93 @@ static int lua_ApplyImpulse( lua_State* _state )
 	// Test is the actor class type you are requesting actually exists
 	FC_ASSERT(NSClassFromString(actorClass));
 	
-	NSMutableArray* newActors = [NSMutableArray array];
+	NSMutableArray* createdActors = [NSMutableArray array];
 
-	NSArray* actors = [res.xmlData arrayForKeyPath:@"fcr.scene.actor"];
+//	NSArray* actors = [res.xmlData arrayForKeyPath:@"fcr.scene.actor"];
+	FCXMLNodeVec actors = res.xml->VectorForKeyPath("fcr.scene.actor");
 	
 	// create actors
-	
-	for(NSDictionary* actorDict in actors)
-	{
-		[newActors addObject:[self createActor:actorDict ofClass:actorClass withResource:res name:name]];
-	}	
 
-	NSArray* retArray = [NSArray arrayWithArray:newActors];
+//	FC_HALT;
+//	for(NSDictionary* actorDict in actors)
+//	{
+//		[newActors addObject:[self createActor:actorDict ofClass:actorClass withResource:res name:name]];
+//	}	
+
+	for (FCXMLNodeVecIter i = actors.begin(); i != actors.end(); i++) {
+		id createdActor = [self createActor:*i ofClass:actorClass withResource:res name:name];
+		[createdActors addObject:createdActor];
+	}
+	
+	NSArray* retArray = [NSArray arrayWithArray:createdActors];
 	return retArray;
 }
 
--(id)createActor:(NSDictionary*)actorDict ofClass:(NSString *)actorClass withResource:(FCResource *)res name:(NSString *)name
+//-(id)createActor:(NSDictionary*)actorDict ofClass:(NSString *)actorClass withResource:(FCResource *)res name:(NSString *)name
+-(id)createActor:(FCXMLNode)actorXML ofClass:(NSString *)actorClass withResource:(FCResource *)res name:(NSString *)name
 {
 	// get body
 	
-	NSString* bodyId = [actorDict valueForKey:[NSString stringWithUTF8String:kFCKeyBody.c_str()]];	
-	NSArray* bodies = [res.xmlData arrayForKeyPath:@"fcr.physics.bodies.body"];
+//	NSString* bodyId = [actorDict valueForKey:[NSString stringWithUTF8String:kFCKeyBody.c_str()]];	
+	std::string bodyId = FCXML::StringValueForNodeAttribute(actorXML, kFCKeyBody);
+	
+	FCXMLNodeVec bodies = res.xml->VectorForKeyPath("fcr.physics.bodies.body");
+//	NSArray* bodies = [res.xmlData arrayForKeyPath:@"fcr.physics.bodies.body"];
 	
 	// Find the body associated with this actor
 	
-	NSDictionary* bodyDict = nil;
-	for(NSDictionary* body in bodies)
-	{
-		NSString* thisId = [body valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]];
-		
-		if ([thisId isEqualToString:bodyId]) 
-		{
-			bodyDict = body;
+//	NSDictionary* bodyDict = nil;
+//	for(NSDictionary* body in bodies)
+//	{
+//		NSString* thisId = [body valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]];
+//		
+//		if ([thisId isEqualToString:bodyId]) 
+//		{
+//			bodyDict = body;
+//			break;
+//		}
+//	}
+
+	FCXMLNode bodyXML = 0;
+	for (FCXMLNodeVecIter i = bodies.begin(); i != bodies.end(); i++) {
+		std::string thisId = FCXML::StringValueForNodeAttribute(*i, kFCKeyId);
+		if (thisId == bodyId) {
+			bodyXML = *i;
 			break;
 		}
 	}
 	
 	// get model
 
-	NSDictionary* modelDict = nil;
-	NSString* modelId = [actorDict valueForKey:[NSString stringWithUTF8String:kFCKeyModel.c_str()]];
-	if (modelId) 
+//	NSDictionary* modelDict = nil;
+//	NSString* modelId = [actorDict valueForKey:[NSString stringWithUTF8String:kFCKeyModel.c_str()]];
+	FCXMLNode modelXML = 0;
+	std::string modelId = FCXML::StringValueForNodeAttribute(actorXML, kFCKeyModel);
+//	if (modelId) 
+	if (modelId.length())
 	{
-		NSArray* models = [res.xmlData arrayForKeyPath:@"fcr.models.model"];
+		FCXMLNodeVec models = res.xml->VectorForKeyPath("fcr.models.model");
 		
-		for(NSDictionary* model in models)
-		{
-			NSString* thisId = [model valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]];
-			
-			if ([thisId isEqualToString:modelId]) 
-			{
-				modelDict = model;
+		for (FCXMLNodeVecIter i = models.begin(); i != models.end(); i++) {
+			std::string thisId = FCXML::StringValueForNodeAttribute(*i, kFCKeyId);
+			if (modelId == thisId) {
+				modelXML = *i;
 				break;
 			}
 		}
+		
+//		NSArray* models = [res.xmlData arrayForKeyPath:@"fcr.models.model"];		
+//		FC_HALT;
+//		for(NSDictionary* model in models)
+//		{
+//			NSString* thisId = [model valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]];
+//			
+//			if ([thisId isEqualToString:modelId]) 
+//			{
+//				modelDict = model;
+//				break;
+//			}
+//		}
 	}
 
 	// instantiate actor
@@ -249,16 +282,17 @@ static int lua_ApplyImpulse( lua_State* _state )
 
 	FCHandle handle = NewFCHandle();
 	
-	actor = [actor initWithDictionary:actorDict body:bodyDict model:modelDict resource:res name:name handle:handle];
-//	((FCActor*)actor).handle = handle;
+//	actor = [actor initWithDictionary:actorDict body:bodyDict model:modelDict resource:res name:name handle:handle];
+	actor = [actor initWithXML:actorXML body:bodyXML model:modelXML resource:res name:name handle:handle];
 
 	// some more checks etc
 
-	NSString* actorId = [actorDict valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]];
+//	NSString* actorId = [actorDict valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]];
+	std::string actorId = FCXML::StringValueForNodeAttribute(actorXML, kFCKeyId);
 
 	if (name) // id is optional
 	{
-		((FCActor*)actor).fullName = [NSString stringWithFormat:@"%@_%@", name, actorId];
+		((FCActor*)actor).fullName = [NSString stringWithFormat:@"%@_%s", name, actorId.c_str()];
 		FC_ASSERT([_actorFullNameDictionary valueForKey:((FCActor*)actor).fullName] == nil);
 		[_actorFullNameDictionary setValue:actor forKey:((FCActor*)actor).fullName];
 	}

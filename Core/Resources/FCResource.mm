@@ -21,12 +21,11 @@
  */
 
 #import "FCResource.h"
-#import "FCXMLData.h"
 
 @implementation FCResource
 
 @synthesize binaryPayload = _binaryPayload;
-@synthesize xmlData = _xmlData;
+@synthesize xml = _xml;
 @synthesize name = _name;
 @synthesize userData = _userData;
 
@@ -52,7 +51,9 @@
 		NSURL* fcrURL = [[url URLByDeletingPathExtension] URLByAppendingPathExtension:@"fcr"];
 		NSURL* binURL = [[url URLByDeletingPathExtension] URLByAppendingPathExtension:@"bin"];
 		
-		self.xmlData = [FCXMLData fcxmlDataWithContentsOfURL:fcrURL];
+		_xml = new FCXML;
+		_xml->InitWithContentsOfFile([[fcrURL absoluteString] UTF8String]);
+		
 		self.binaryPayload = [NSData dataWithContentsOfURL:binURL];
 	}
 	return self;
@@ -72,7 +73,6 @@
 	[retString appendFormat:@"Name: %@\n", self.name];
 	[retString appendFormat:@"Size: %d\n", [self.binaryPayload length]];
 	[retString appendFormat:@"UserData: %@\n", self.userData];
-	[retString appendFormat:@"XMLData: %@\n", self.xmlData];
 	return [NSString stringWithString:retString];
 }
 #endif

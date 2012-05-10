@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if 0
+#if 1
 
 #ifndef CR1_Device_h
 #define CR1_Device_h
@@ -52,12 +52,7 @@ public:
 	void Print();
 	
 private:
-	// assignment operator ?
-	
-	typedef std::map<std::string, std::string> CapMap;
-	typedef CapMap::const_iterator CapMapConstIter;
-	
-	CapMap m_caps;
+	FCStringStringMap m_caps;
 };
 
 #endif

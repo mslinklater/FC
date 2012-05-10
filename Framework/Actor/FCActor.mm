@@ -35,7 +35,7 @@
 @synthesize handle = _handle;
 @synthesize name = _name;
 @synthesize fullName = _fullName;
-@synthesize createDef = _createDef;
+@synthesize createXML = _createXML;
 @synthesize Id = _id;
 
 #if defined (FC_GRAPHICS)
@@ -48,23 +48,23 @@
 
 #pragma mark - Initializers
 
--(id)initWithDictionary:(NSDictionary*)dictionary 
-				   body:(NSDictionary*)bodyDict 
-				  model:(NSDictionary*)modelDict 
-			   resource:(FCResource*)res
-				   name:(NSString*)name
-				 handle:(FCHandle)handle
+-(id)initWithXML:(FCXMLNode)xml 
+			body:(FCXMLNode)bodyXML 
+		   model:(FCXMLNode)modelXML 
+		resource:(FCResource*)res
+			name:(NSString*)name
+		  handle:(FCHandle)handle
 {
 	self = [super init];
 	if (self) 
 	{	
-		_createDef = dictionary;
-		_id = [self.createDef valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]];
+		_createXML = xml;
+		_id = [NSString stringWithUTF8String:FCXML::StringValueForNodeAttribute(_createXML, kFCKeyId).c_str()];
 		_handle = handle;
 				
 		// hardwired to 2D for now 8)
 		
-		if (bodyDict) 
+		if (bodyXML) 
 		{
 #if defined (FC_PHYSICS)
 			FCPhysics2DBodyDef* bodyDef = [FCPhysics2DBodyDef defaultDef];
@@ -72,21 +72,20 @@
 			FC::Vector2f pos;
 			pos.Zero();
 			
-			pos.x += [[dictionary valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
-			pos.y += [[dictionary valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
+			pos.x += FCXML::FloatValueForNodeAttribute(_createXML, kFCKeyOffsetX);
+			pos.y += FCXML::FloatValueForNodeAttribute(_createXML, kFCKeyOffsetY);
 			
 			[bodyDef setPosition:pos];	// TODO: change to property access
-			bodyDef.angle = [[dictionary valueForKey:@"rotation"] floatValue];
+			bodyDef.angle = FCXML::FloatValueForNodeAttribute(_createXML, kFCKeyRotation);
 			bodyDef.actor = self;
 			
-			if ([[dictionary valueForKey:[NSString stringWithUTF8String:kFCKeyDynamic.c_str()]] isEqualToString:@"yes"]) {
+			if( FCXML::BoolValueForNodeAttribute(_createXML, kFCKeyDynamic) )
 				bodyDef.isStatic = NO;
-			} else {
+			else
 				bodyDef.isStatic = YES;
-			}
 			
 			bodyDef.canSleep = NO;
-			bodyDef.shapeDef = bodyDict;
+			bodyDef.shapeXML = bodyXML;
 			
 			_physicsBody = [[[FCPhysics instance] twoD] createBodyWithDef:bodyDef name:name actorHandle:handle];
 #endif
@@ -94,19 +93,18 @@
 		
 		// now create a model
 #if defined (FC_GRAPHICS)
-		if (modelDict) 
-//		if ( 0 )
+		if (modelXML) 
 		{
-			_model = [[FCModel alloc] initWithModel:modelDict resource:res];
+			_model = [[FCModel alloc] initWithModel:modelXML resource:res];
 		}
 		else
 		{
-			if (bodyDict) 
+			if (bodyXML) 
 			{
 				// physics but no model so build a physics mode
 				
 				NSMutableDictionary* dict = res.userData;
-				_model = [[FCModel alloc] initWithPhysicsBody:bodyDict color:[dict valueForKey:[NSString stringWithUTF8String:kFCKeyColor.c_str()]]];
+				_model = [[FCModel alloc] initWithPhysicsBody:bodyXML color:[dict valueForKey:[NSString stringWithUTF8String:kFCKeyColor.c_str()]]];
 			}
 		}
 #endif // defined(FC_GRAPHICS)
@@ -119,7 +117,7 @@
 	[[[FCPhysics instance] twoD] destroyBody:_physicsBody];	
 	_physicsBody = nil;
 	_model = nil;
-	_createDef = nil;
+//	_createDef = nil;
 	_id = nil;
 	_fullName = nil;
 	_name = nil;

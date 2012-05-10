@@ -26,7 +26,7 @@
 #import "FCApplication.h"
 #import "FCPersistentData.h"
 #import "FCAnalytics.h"
-#import "FCDevice_old.h"
+//#import "FCDevice_old.h"
 #import "Shared/Core/FCError.h"
 #import "FCConnect.h"
 #import "FCPhaseManager.h"
@@ -40,6 +40,8 @@
 #import "FCFacebook.h"
 #import "FCTwitter.h"
 #import "FCAudioManager.h"
+
+#include "Shared/Core/Device/FCDevice.h"
 
 #if defined (FC_LUA)
 static FCLuaVM*					s_lua;
@@ -253,11 +255,11 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	[FCTwitter instance];
 	[FCAudioManager instance];
 #endif
-	[[FCDevice instance] probe];
-	[[FCDevice instance] warmProbe];
+//	[[FCDevice instance] probe];
+//	[[FCDevice instance] warmProbe];
 
-//	FCDevice::Instance()->ColdProbe();
-//	FCDevice::Instance()->WarmProbe();
+	FCDevice::Instance()->ColdProbe();
+	FCDevice::Instance()->WarmProbe();
 	
 	[[FCPersistentData instance] loadData];
 #if defined (FC_PHYSICS)

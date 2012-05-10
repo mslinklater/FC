@@ -237,11 +237,11 @@ void FCLua::UpdateThreads( float realDelta, float gameDelta )
 	m_avgCount++;
 }
 
-FCLuaVM* FCLua::NewVM()
-{
-	FC_HALT;
-	return 0;
-}
+//FCLuaVM* FCLua::NewVM()
+//{
+//	FC_HALT;
+//	return 0;
+//}
 
 void FCLua::ExecuteLine( std::string line )
 {
@@ -256,22 +256,22 @@ void FCLua::PrintStats()
 	ss << m_threadsMap.size();
 	FC_LOG(ss.str());
 	
-	ss.clear();
+	ss.str("");
 	ss << "Memory Allocs: ";
 	ss << FCLuaMemory::Instance()->NumAllocs();
 	FC_LOG(ss.str());
 	
-	ss.clear();
+	ss.str("");
 	ss << "Memory Bytes: ";
 	ss << FCLuaMemory::Instance()->TotalMemory();
 	FC_LOG(ss.str());
 	
-	ss.clear();
+	ss.str("");
 	ss << "Max CPU: ";
 	ss << m_maxCPUTime;
 	FC_LOG(ss.str());
 	
-	ss.clear();
+	ss.str("");
 	ss << "Avg CPU: ";
 	ss << m_avgCPUTime;
 	FC_LOG(ss.str());	

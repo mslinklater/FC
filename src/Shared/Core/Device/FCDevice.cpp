@@ -20,13 +20,68 @@
  THE SOFTWARE.
  */
 
-#if 0
+#if 1
 
 #include "FCDevice.h"
 #include "Shared/Core/FCError.h"
+#include "Shared/Lua/FCLua.h"
 
 extern void plt_FCDevice_ColdProbe();
 extern void plt_FCDevice_WarmProbe();
+
+static int lua_ColdProbe( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(0);
+	plt_FCDevice_ColdProbe();
+	return 0;
+}
+
+static int lua_WarmProbe( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(0);
+	plt_FCDevice_WarmProbe();
+	return 0;
+}
+
+static int lua_Print( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(0);
+	FCDevice::Instance()->Print();
+	return 0;
+}
+
+static int lua_GetDeviceString( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	
+	std::string key = lua_tostring(_state, 1);
+		
+	lua_pushstring(_state, FCDevice::Instance()->GetCap(key).c_str() );
+	
+	return 1;
+}
+
+static int lua_GetDeviceNumber( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	
+	std::string key = lua_tostring(_state, 1);
+	
+	float value;
+	sscanf("%f", FCDevice::Instance()->GetCap(key).c_str(), &value);
+	
+	lua_pushnumber(_state, value);
+	return 1;
+}
+
+static int lua_GetGameCenterID( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(0);
+	lua_pushstring(_state, FCDevice::Instance()->GetCap(kFCDeviceGameCenterID).c_str());
+	return 1;
+}
 
 static FCDevice* s_pInstance = 0;
 
@@ -40,7 +95,15 @@ FCDevice* FCDevice::Instance()
 
 FCDevice::FCDevice()
 {
+	FCLuaVM* lua = FCLua::Instance()->CoreVM();
 	
+	lua->CreateGlobalTable("FCDevice");
+	lua->RegisterCFunction(lua_ColdProbe, "FCDevice.ColdProbe");
+	lua->RegisterCFunction(lua_WarmProbe, "FCDevice.WarmProbe");
+	lua->RegisterCFunction(lua_Print, "FCDevice.Print");
+	lua->RegisterCFunction(lua_GetDeviceString, "FCDevice.GetString");
+	lua->RegisterCFunction(lua_GetDeviceNumber, "FCDevice.GetNumber");
+	lua->RegisterCFunction(lua_GetGameCenterID, "FCDevice.GetGameCenterID");
 }
 
 FCDevice::~FCDevice()
@@ -74,7 +137,7 @@ void FCDevice::SetCap(std::string cap, std::string value)
 
 void FCDevice::Print()
 {
-	for (CapMapConstIter i = m_caps.begin(); i != m_caps.end(); ++i) {
+	for (FCStringStringMapConstIter i = m_caps.begin(); i != m_caps.end(); ++i) {
 		FC_LOG( i->first + " : " + i->second );
 	}
 }

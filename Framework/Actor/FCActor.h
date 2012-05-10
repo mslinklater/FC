@@ -30,6 +30,8 @@
 #import "FCGraphics.h"
 #import "FCPhysics.h"
 
+#include "Shared/Core/FCXML.h"
+
 #if defined (FC_GRAPHICS)
 @class FCModel;
 #endif
@@ -64,7 +66,7 @@
 	NSString*			_name;
 	NSString*			_id;			// deprecate
 	NSString*			_fullName;
-	NSDictionary*		_createDef;
+	FCXMLNode			_createXML;
 #if defined (FC_GRAPHICS)
 	FCModel*			_model;
 #endif
@@ -76,7 +78,7 @@
 @property(nonatomic, strong) NSString* name;
 @property(nonatomic, strong, readonly) NSString* Id;
 @property(nonatomic, strong) NSString* fullName;
-@property(nonatomic, strong, readonly) NSDictionary* createDef;
+@property(nonatomic, readonly) FCXMLNode createXML;
 #if defined (FC_GRAPHICS)
 @property(nonatomic, strong, readonly) FCModel* model;
 #endif
@@ -84,12 +86,12 @@
 @property(nonatomic, strong, readonly) id<FCPhysicsBody>	physicsBody;
 #endif
 
--(id)initWithDictionary:(NSDictionary*)dictionary 
-				   body:(NSDictionary*)bodyDict 
-				  model:(NSDictionary*)modelDict 
-			   resource:(FCResource*)res
-				   name:(NSString*)name
-				 handle:(FCHandle)handle;
+-(id)initWithXML:(FCXMLNode)xml 
+			body:(FCXMLNode)bodyXML 
+		   model:(FCXMLNode)modelXML 
+		resource:(FCResource*)res
+			name:(NSString*)name
+		  handle:(FCHandle)handle;
 
 // TODO: Get these two into a property
 -(void)setPosition:(FC::Vector3f)pos;

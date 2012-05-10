@@ -26,7 +26,7 @@
 
 #import "FCPhysics2DBody.h"
 #import "FCMacros.h"
-#import "FCXMLData.h"
+//#import "FCXMLData.h"
 #import "FCPhysics.h"
 #import "FCMaths.h"
 #import "FCPhysics2DBodyDef.h"
@@ -93,22 +93,27 @@
 
 -(void)createFixturesFromDef:(FCPhysics2DBodyDef*)def
 {
-	NSArray* fixtures;
+//	NSArray* fixtures;
+//	if ([[def.shapeDef valueForKey:@"fixture"] isKindOfClass:[NSDictionary class]]) {
+//		fixtures = [NSArray arrayWithObject:[def.shapeDef valueForKey:@"fixture"]];
+//	} else {
+//		fixtures = [def.shapeDef valueForKey:@"fixture"];
+//	}
+
+	FCXMLNode shapeXML = def.shapeXML;
+	FCXMLNodeVec fixtures = FCXML::VectorForChildNodesOfType( shapeXML, "fixture" );
 	
-	if ([[def.shapeDef valueForKey:@"fixture"] isKindOfClass:[NSDictionary class]]) {
-		fixtures = [NSArray arrayWithObject:[def.shapeDef valueForKey:@"fixture"]];
-	} else {
-		fixtures = [def.shapeDef valueForKey:@"fixture"];
-	}
-	
-	for (NSDictionary* fixture in fixtures) 
+//	for (NSDictionary* fixture in fixtures) 
+	for (FCXMLNodeVecIter fixture = fixtures.begin(); fixture != fixtures.end(); fixture++)
 	{
-		NSString* type = [fixture valueForKey:[NSString stringWithUTF8String:kFCKeyType.c_str()]];
+//		NSString* type = [fixture valueForKey:[NSString stringWithUTF8String:kFCKeyType.c_str()]];
+		NSString* type = [NSString stringWithUTF8String:FCXML::StringValueForNodeAttribute(*fixture, kFCKeyType).c_str()];
 		FC_ASSERT(type);
 
 		b2FixtureDef fixtureDef;
 		
-		NSString* materialString = [fixture valueForKey:[NSString stringWithUTF8String:kFCKeyMaterial.c_str()]];
+//		NSString* materialString = [fixture valueForKey:[NSString stringWithUTF8String:kFCKeyMaterial.c_str()]];
+		NSString* materialString = [NSString stringWithUTF8String:FCXML::StringValueForNodeAttribute(*fixture, kFCKeyMaterial).c_str()];
 		FC_ASSERT(materialString);
 
 		FCPhysicsMaterial* material = [[FCPhysics instance].materials valueForKey:materialString];
@@ -122,10 +127,13 @@
 		if ([type isEqualToString:[NSString stringWithUTF8String:kFCKeyCircle.c_str()]]) 
 		{
 			b2CircleShape shape;
-			shape.m_radius = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyRadius.c_str()]] floatValue];
+//			shape.m_radius = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyRadius.c_str()]] floatValue];
+			shape.m_radius = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyRadius);
 			b2Vec2 circlePos;
-			circlePos.x = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
-			circlePos.y = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
+//			circlePos.x = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
+			circlePos.x = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyOffsetX);
+//			circlePos.y = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
+			circlePos.y = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyOffsetY);
 			shape.m_p = circlePos;
 			fixtureDef.shape = &shape;
 			_b2Body->CreateFixture( &fixtureDef );
@@ -135,13 +143,19 @@
 			b2PolygonShape shape;
 			
 			b2Vec2 rectanglePos;
-			float rectangleAngle = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyAngle.c_str()]] floatValue];
-			rectanglePos.x = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
-			rectanglePos.y = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
+//			float rectangleAngle = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyAngle.c_str()]] floatValue];
+			float rectangleAngle = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyAngle);
+//			rectanglePos.x = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
+			rectanglePos.x = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyOffsetX);
+//			rectanglePos.y = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
+			rectanglePos.y = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyOffsetY);
 			
-			shape.SetAsBox( [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyXSize.c_str()]] floatValue] * 0.5f,	// box2D uses half height etc
-						   [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyYSize.c_str()]] floatValue] * 0.5f,
-						   rectanglePos, rectangleAngle);
+//			shape.SetAsBox( [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyXSize.c_str()]] floatValue] * 0.5f,	// box2D uses half height etc
+//						   [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyYSize.c_str()]] floatValue] * 0.5f,
+//						   rectanglePos, rectangleAngle);
+			shape.SetAsBox( FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyXSize) * 0.5f,	// box2D uses half height etc
+							FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyYSize) * 0.5f,
+							rectanglePos, rectangleAngle);
 			
 			fixtureDef.shape = &shape;
 			_b2Body->CreateFixture( &fixtureDef );
@@ -150,7 +164,9 @@
 		{
 			b2PolygonShape shape;
 			
-			NSString* strippedVerts = [[fixture valueForKey:@"verts"] stringByReplacingOccurrencesOfString:@"," withString:@" "];
+//			NSString* strippedVerts = [[fixture valueForKey:@"verts"] stringByReplacingOccurrencesOfString:@"," withString:@" "];
+			NSString* vertsString = [NSString stringWithUTF8String:FCXML::StringValueForNodeAttribute(*fixture, "verts").c_str()];
+			NSString* strippedVerts = [vertsString stringByReplacingOccurrencesOfString:@"," withString:@" "];
 			strippedVerts = [strippedVerts stringByReplacingOccurrencesOfString:@"(" withString:@""];
 			strippedVerts = [strippedVerts stringByReplacingOccurrencesOfString:@")" withString:@""];
 			
@@ -160,9 +176,11 @@
 			
 			b2Vec2* verts = (b2Vec2*)malloc(sizeof(b2Vec2) * numVerts );
 			
-			float xOffset = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
-			float yOffset = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
-			
+//			float xOffset = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
+			float xOffset = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyOffsetX);
+//			float yOffset = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
+			float yOffset = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyOffsetY);
+
 			for(int i = 0 ; i < numVerts ; i++ )	// backwards due to different winding between collada and box2d
 			{
 				verts[numVerts - 1 - i].x = [[vertsArray objectAtIndex:i * 3] floatValue] + xOffset;

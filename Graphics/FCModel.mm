@@ -30,7 +30,7 @@
 #import "FCModel.h"
 #import "FCMaths.h"
 #import "FCKeys.h"
-#import "FCXMLData.h"
+//#import "FCXMLData.h"
 #import "FCMesh.h"
 #import "FCResource.h"
 #import "FCShaderManager.h"
@@ -59,7 +59,7 @@ static int kNumCircleSegments = 36;
 #pragma mark -
 #pragma mark Initialisers
 
--(id)initWithPhysicsBody:(NSDictionary *)bodyDict color:(UIColor*)color	//actorXOffset:(float)actorX actorYOffset:(float)actorY
+-(id)initWithPhysicsBody:(FCXMLNode)bodyXML color:(UIColor*)color	//actorXOffset:(float)actorX actorYOffset:(float)actorY
 {
 	self = [super init];
 	if (self) {
@@ -67,21 +67,27 @@ static int kNumCircleSegments = 36;
 		
 		self.meshes = [NSMutableArray array];
 		
-		NSArray* fixtures;
+//		NSArray* fixtures;		
+//		if ([[bodyDict valueForKey:@"fixture"] isKindOfClass:[NSDictionary class]]) {
+//			fixtures = [NSArray arrayWithObject:[bodyDict valueForKey:@"fixture"]];
+//		} else {
+//			fixtures = [bodyDict valueForKey:@"fixture"];
+//		}
 		
-		if ([[bodyDict valueForKey:@"fixture"] isKindOfClass:[NSDictionary class]]) {
-			fixtures = [NSArray arrayWithObject:[bodyDict valueForKey:@"fixture"]];
-		} else {
-			fixtures = [bodyDict valueForKey:@"fixture"];
-		}
+		FCXMLNodeVec fixtures = FCXML::VectorForChildNodesOfType(bodyXML, "fixture");
 		
-		for (NSDictionary* fixture in fixtures) 
+//		for (NSDictionary* fixture in fixtures) 
+		for (FCXMLNodeVecIter fixture = fixtures.begin(); fixture != fixtures.end(); fixture++)
 		{
-			NSString* type = [fixture valueForKey:@"type"];
+//			NSString* type = [fixture valueForKey:@"type"];
+			NSString* type = [NSString stringWithUTF8String:FCXML::StringValueForNodeAttribute(*fixture, "type").c_str()];
 			
-			float fixtureX = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];// + actorX;
-			float fixtureY = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];// + actorY;
-			float fixtureZ = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetZ.c_str()]] floatValue];// + actorZ;
+//			float fixtureX = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];// + actorX;
+			float fixtureX = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyOffsetX);
+//			float fixtureY = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];// + actorY;
+			float fixtureY = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyOffsetY);
+//			float fixtureZ = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetZ.c_str()]] floatValue];// + actorZ;
+			float fixtureZ = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyOffsetZ);
 			
 			if ([type isEqualToString:@"box"]) 
 			{
@@ -90,9 +96,12 @@ static int kNumCircleSegments = 36;
 				[debugDict setValue:[NSNumber numberWithFloat:fixtureX] forKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]];
 				[debugDict setValue:[NSNumber numberWithFloat:fixtureY] forKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]];
 				[debugDict setValue:[NSNumber numberWithFloat:fixtureZ] forKey:[NSString stringWithUTF8String:kFCKeyOffsetZ.c_str()]];
-				[debugDict setValue:[fixture valueForKey:@"xSize"] forKey:[NSString stringWithUTF8String:kFCKeyXSize.c_str()]];
-				[debugDict setValue:[fixture valueForKey:@"ySize"] forKey:[NSString stringWithUTF8String:kFCKeyYSize.c_str()]];
-				[debugDict setValue:[fixture valueForKey:@"zSize"] forKey:[NSString stringWithUTF8String:kFCKeyZSize.c_str()]];
+//				[debugDict setValue:[fixture valueForKey:@"xSize"] forKey:[NSString stringWithUTF8String:kFCKeyXSize.c_str()]];
+//				[debugDict setValue:[fixture valueForKey:@"ySize"] forKey:[NSString stringWithUTF8String:kFCKeyYSize.c_str()]];
+//				[debugDict setValue:[fixture valueForKey:@"zSize"] forKey:[NSString stringWithUTF8String:kFCKeyZSize.c_str()]];
+				[debugDict setValue:[NSNumber numberWithFloat:FCXML::FloatValueForNodeAttribute(*fixture, "xSize")] forKey:[NSString stringWithUTF8String:kFCKeyXSize.c_str()]];
+				[debugDict setValue:[NSNumber numberWithFloat:FCXML::FloatValueForNodeAttribute(*fixture, "ySize")] forKey:[NSString stringWithUTF8String:kFCKeyYSize.c_str()]];
+				[debugDict setValue:[NSNumber numberWithFloat:FCXML::FloatValueForNodeAttribute(*fixture, "zSize")] forKey:[NSString stringWithUTF8String:kFCKeyZSize.c_str()]];
 				
 				[self addDebugRectangle:debugDict color:color];
 			} 
@@ -103,7 +112,8 @@ static int kNumCircleSegments = 36;
 				[debugDict setValue:[NSNumber numberWithFloat:fixtureX] forKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]];
 				[debugDict setValue:[NSNumber numberWithFloat:fixtureY] forKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]];
 				[debugDict setValue:[NSNumber numberWithFloat:fixtureZ] forKey:[NSString stringWithUTF8String:kFCKeyOffsetZ.c_str()]];
-				[debugDict setValue:[fixture valueForKey:@"radius"] forKey:[NSString stringWithUTF8String:kFCKeyRadius.c_str()]];
+//				[debugDict setValue:[fixture valueForKey:@"radius"] forKey:[NSString stringWithUTF8String:kFCKeyRadius.c_str()]];
+				[debugDict setValue:[NSNumber numberWithFloat:FCXML::FloatValueForNodeAttribute(*fixture, "radius")] forKey:[NSString stringWithUTF8String:kFCKeyRadius.c_str()]];
 				
 				[self addDebugCircle:debugDict color:color];				
 			} 
@@ -112,7 +122,8 @@ static int kNumCircleSegments = 36;
 				// polygon
 				NSMutableDictionary* debugDict = [[NSMutableDictionary alloc] init];
 
-				NSString* strippedVerts = [fixture valueForKey:@"verts"];
+//				NSString* strippedVerts = [fixture valueForKey:@"verts"];
+				NSString* strippedVerts = [NSString stringWithUTF8String:FCXML::StringValueForNodeAttribute(*fixture, "verts").c_str()];
 				strippedVerts = [strippedVerts stringByReplacingOccurrencesOfString:@"," withString:@" "];
 				strippedVerts = [strippedVerts stringByReplacingOccurrencesOfString:@"(" withString:@""];
 				strippedVerts = [strippedVerts stringByReplacingOccurrencesOfString:@")" withString:@""];
@@ -134,88 +145,118 @@ static int kNumCircleSegments = 36;
 	return self;
 }
 
--(id)initWithModel:(NSDictionary*)modelDict resource:(FCResource*)res
+-(id)initWithModel:(FCXMLNode)modelXML resource:(FCResource*)res
 {
 	self = [super init];
 	if (self) 
 	{
-		NSArray* meshArray;
-		id val = [modelDict valueForKey:[NSString stringWithUTF8String:kFCKeyMesh.c_str()]];
+//		NSArray* meshArray;
+//		id val = [modelDict valueForKey:[NSString stringWithUTF8String:kFCKeyMesh.c_str()]];
+//		if ([val isKindOfClass:[NSArray class]]) {
+//			meshArray = val;
+//		} else {
+//			meshArray = [NSArray arrayWithObject:val];
+//		}
 
-		if ([val isKindOfClass:[NSArray class]]) {
-			meshArray = val;
-		} else {
-			meshArray = [NSArray arrayWithObject:val];
-		}
+		FCXMLNodeVec meshArray = FCXML::VectorForChildNodesOfType(modelXML, kFCKeyMesh);
+		
+//		NSArray* binaryPayloadArray = [res.xmlData arrayForKeyPath:@"fcr.binarypayload.chunk"];
+		FCXMLNodeVec binaryPayloadArray = res.xml->VectorForKeyPath("fcr.binarypayload.chunk");
 
-		NSArray* binaryPayloadArray = [res.xmlData arrayForKeyPath:@"fcr.binarypayload.chunk"];
-
+		
 		self.meshes = [NSMutableArray array];
 		
-		for( NSDictionary* mesh in meshArray )
+//		for( NSDictionary* mesh in meshArray )
+		for (FCXMLNodeVecIter mesh = meshArray.begin(); mesh != meshArray.end(); mesh++)
 		{
-			NSString* shaderName = [mesh valueForKey:[NSString stringWithUTF8String:kFCKeyShader.c_str()]];
+//			NSString* shaderName = [mesh valueForKey:[NSString stringWithUTF8String:kFCKeyShader.c_str()]];
+			std::string shaderName = FCXML::StringValueForNodeAttribute(*mesh, kFCKeyShader);
 			
-			NSString* indexBufferId = [mesh valueForKey:[NSString stringWithUTF8String:kFCKeyIndexBuffer.c_str()]];
-			NSString* vertexBufferId = [mesh valueForKey:[NSString stringWithUTF8String:kFCKeyVertexBuffer.c_str()]];
+//			NSString* indexBufferId = [mesh valueForKey:[NSString stringWithUTF8String:kFCKeyIndexBuffer.c_str()]];
+			std::string indexBufferId = FCXML::StringValueForNodeAttribute(*mesh, kFCKeyIndexBuffer);
+//			NSString* vertexBufferId = [mesh valueForKey:[NSString stringWithUTF8String:kFCKeyVertexBuffer.c_str()]];
+			std::string vertexBufferId = FCXML::StringValueForNodeAttribute(*mesh, kFCKeyVertexBuffer);
 
-			NSDictionary* indexBufferDict = nil;
-			NSDictionary* vertexBufferDict = nil;
+//			NSDictionary* indexBufferDict = nil;
+//			NSDictionary* vertexBufferDict = nil;
+			FCXMLNode indexBufferXML = 0;
+			FCXMLNode vertexBufferXML = 0;
 			
-			for( NSDictionary* chunk in binaryPayloadArray )
+//			FC_HALT;
+//			for( NSDictionary* chunk in binaryPayloadArray )
+			for (FCXMLNodeVecIter chunk = binaryPayloadArray.begin(); chunk != binaryPayloadArray.end(); chunk++) 
 			{
-				if ([[chunk valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]] isEqualToString:indexBufferId]) {
-					indexBufferDict = chunk;
+				if (FCXML::StringValueForNodeAttribute(*chunk, kFCKeyId) == indexBufferId) {
+					indexBufferXML = *chunk;
 				}
-				if ([[chunk valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]] isEqualToString:vertexBufferId]) {
-					vertexBufferDict = chunk;
+				if (FCXML::StringValueForNodeAttribute(*chunk, kFCKeyId) == vertexBufferId) {
+					vertexBufferXML = *chunk;
 				}
 			}
+//			{
+//				if ([[chunk valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]] isEqualToString:indexBufferId]) {
+//					indexBufferDict = chunk;
+//				}
+//				if ([[chunk valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]] isEqualToString:vertexBufferId]) {
+//					vertexBufferDict = chunk;
+//				}
+//			}
 			
-			FC_ASSERT( indexBufferDict && vertexBufferDict );
+			FC_ASSERT( indexBufferXML && vertexBufferXML );
 			
 			// all looks good so far - lets build the mesh
 
-//			FCVertexDescriptor* vertexDescriptor = [FCVertexDescriptor vertexDescriptorForShader:shaderName];
-			
 			GLenum primitiveType = GL_TRIANGLES;
 			
-			if ([shaderName isEqualToString:[NSString stringWithUTF8String:kFCKeyShaderWireframe.c_str()]]) {
+			if (shaderName == kFCKeyShaderWireframe ) {
 				primitiveType = GL_LINES;
 			}
 			
 			FCMesh* meshObject = [[FCMesh alloc] initWithVertexDescriptor:nil 
-															   shaderName:shaderName
+															   shaderName:[NSString stringWithUTF8String:shaderName.c_str()]
 															primitiveType:primitiveType];
 			
 			
-			meshObject.numVertices = [[mesh valueForKey:[NSString stringWithUTF8String:kFCKeyNumVertices.c_str()]] intValue];
-			meshObject.numTriangles = [[mesh valueForKey:[NSString stringWithUTF8String:kFCKeyNumTriangles.c_str()]] intValue];
-			meshObject.numEdges = [[mesh valueForKey:[NSString stringWithUTF8String:kFCKeyNumEdges.c_str()]] intValue];
+//			meshObject.numVertices = [[mesh valueForKey:[NSString stringWithUTF8String:kFCKeyNumVertices.c_str()]] intValue];
+//			meshObject.numTriangles = [[mesh valueForKey:[NSString stringWithUTF8String:kFCKeyNumTriangles.c_str()]] intValue];
+//			meshObject.numEdges = [[mesh valueForKey:[NSString stringWithUTF8String:kFCKeyNumEdges.c_str()]] intValue];
+
+			meshObject.numVertices = FCXML::IntValueForNodeAttribute(*mesh, kFCKeyNumVertices);
+			meshObject.numTriangles = FCXML::IntValueForNodeAttribute(*mesh, kFCKeyNumTriangles);
+			meshObject.numEdges = FCXML::IntValueForNodeAttribute(*mesh, kFCKeyNumEdges);
 			
 			// specular color
 			
-			if ([mesh valueForKey:@"specular_r"] && [mesh valueForKey:@"specular_g"] && [mesh valueForKey:@"specular_b"]) {
+//			if ([mesh valueForKey:@"specular_r"] && [mesh valueForKey:@"specular_g"] && [mesh valueForKey:@"specular_b"]) {
+			if ((FCXML::StringValueForNodeAttribute(*mesh, "specular_r").size()) && 
+				(FCXML::StringValueForNodeAttribute(*mesh, "specular_g").size()) && 
+				(FCXML::StringValueForNodeAttribute(*mesh, "specular_b").size()))
+			{
 				FC::Color4f specular;
-				specular.r = [[mesh valueForKey:@"specular_r"] floatValue];
-				specular.g = [[mesh valueForKey:@"specular_g"] floatValue];
-				specular.b = [[mesh valueForKey:@"specular_b"] floatValue];
+				specular.r = FCXML::FloatValueForNodeAttribute(*mesh, "specular_r");		//[[mesh valueForKey:@"specular_r"] floatValue];
+				specular.g = FCXML::FloatValueForNodeAttribute(*mesh, "specular_g");	//[[mesh valueForKey:@"specular_g"] floatValue];
+				specular.b = FCXML::FloatValueForNodeAttribute(*mesh, "specular_b");	//[[mesh valueForKey:@"specular_b"] floatValue];
 				specular.a = 1.0f;
 				meshObject.specularColor = specular;
 			}
 			
 			// copy across vertex and index buffers
 
-			NSUInteger indexBufferOffset = [[indexBufferDict valueForKey:@"offset"] intValue];
-			NSUInteger indexBufferSize = [[indexBufferDict valueForKey:@"size"] intValue];
+//			NSUInteger indexBufferOffset = [[indexBufferDict valueForKey:@"offset"] intValue];
+//			NSUInteger indexBufferSize = [[indexBufferDict valueForKey:@"size"] intValue];
+			NSUInteger indexBufferOffset = (NSUInteger)FCXML::IntValueForNodeAttribute(indexBufferXML, "offset");
+			NSUInteger indexBufferSize = (NSUInteger)FCXML::IntValueForNodeAttribute(indexBufferXML, "size");
 			[res.binaryPayload getBytes:meshObject.pIndexBuffer range:NSMakeRange(indexBufferOffset, indexBufferSize)];
 			
-			NSUInteger vertexBufferOffset = [[vertexBufferDict valueForKey:@"offset"] intValue];
-			NSUInteger vertexBufferSize = [[vertexBufferDict valueForKey:@"size"] intValue];
+//			NSUInteger vertexBufferOffset = [[vertexBufferDict valueForKey:@"offset"] intValue];
+//			NSUInteger vertexBufferSize = [[vertexBufferDict valueForKey:@"size"] intValue];
+			NSUInteger vertexBufferOffset = (NSUInteger)FCXML::IntValueForNodeAttribute(vertexBufferXML, "offset");
+			NSUInteger vertexBufferSize = (NSUInteger)FCXML::IntValueForNodeAttribute(vertexBufferXML, "size");
 			[res.binaryPayload getBytes:meshObject.pVertexBuffer range:NSMakeRange(vertexBufferOffset, vertexBufferSize)];
 					
-			NSString* diffuseString = [mesh valueForKey:[NSString stringWithUTF8String:kFCKeyDiffuseColor.c_str()]];
-			if (diffuseString) {
+//			NSString* diffuseString = [mesh valueForKey:[NSString stringWithUTF8String:kFCKeyDiffuseColor.c_str()]];
+			NSString* diffuseString = [NSString stringWithUTF8String:FCXML::StringValueForNodeAttribute(*mesh, kFCKeyDiffuseColor).c_str()];
+			if (diffuseString && [diffuseString length]) {
 				NSArray* components = [diffuseString componentsSeparatedByString:@","];
 				meshObject.diffuseColor = FC::Color4f([[components objectAtIndex:0] floatValue], 
 													  [[components objectAtIndex:1] floatValue], 

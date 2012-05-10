@@ -22,6 +22,14 @@
 
 #import <Foundation/Foundation.h>
 
-@interface FCDevice_apple : NSObject
+@interface FCDevice_apple : NSObject {
+	
+}
++(FCDevice_apple*)instance;
+
+-(void)screenRotateResponder:(NSNotification*)note;
+-(void)getScreenCaps;
+-(void)coldBoot;
+-(void)warmBoot;
 
 @end

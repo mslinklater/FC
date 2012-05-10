@@ -23,7 +23,6 @@
 #ifndef HeadPopper_FCDebug_h
 #define HeadPopper_FCDebug_h
 
-#import "FCPerformanceCounter.h"
 #import "FCConnect.h"
 
 #endif

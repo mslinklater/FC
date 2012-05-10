@@ -24,7 +24,7 @@
 
 #import <Foundation/Foundation.h>
 
-@class FCXMLData;
+#include "Shared/Core/FCXML.h"
 
 @interface FCUserDefaults : NSObject {
     
@@ -32,7 +32,7 @@
 
 +(FCUserDefaults*)instance;
 
--(void)registerDefaults:(FCXMLData*)gameData;
+-(void)registerDefaults:(FCXMLPtr)gameData;
 @end
 
 

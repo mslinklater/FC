@@ -24,7 +24,7 @@
 
 #import "FCUserDefaults.h"
 #import "FCAppContext.h"
-#import "FCXMLData.h"
+//#import "FCXMLData.h"
 
 static FCUserDefaults* pInstance;
 
@@ -51,39 +51,39 @@ static FCUserDefaults* pInstance;
 
 //----------------------------------------------------------------------------------------------------------------------
 
--(void)registerDefaults:(FCXMLData*)gameData
+-(void)registerDefaults:(FCXMLPtr)gameData
 {
-	NSArray* gameDataArray = [gameData arrayForKeyPath:@"gamedata.defaults.default"];
-	
-	NSMutableDictionary* defaultsDictionary = [[NSMutableDictionary alloc] init];
-	
-	for( NSDictionary* entry in gameDataArray )
-	{
-		NSString* defaultKey = [entry valueForKey:@"id"];
-		NSString* value = [entry valueForKey:@"value"];
-		
-		if ([[entry valueForKey:@"type"] isEqualToString:@"bool"]) 
-		{
-			if ([value isEqualToString:@"true"]) 
-			{
-				[defaultsDictionary setObject:[NSNumber numberWithBool:YES] forKey:defaultKey];
-			}
-			else
-			{
-				[defaultsDictionary setObject:[NSNumber numberWithBool:NO] forKey:defaultKey];				
-			}
-		}
-		else if ([[entry valueForKey:@"type"] isEqualToString:@"float"])
-		{
-			[defaultsDictionary setObject:[NSNumber numberWithFloat:[value floatValue]] forKey:defaultKey];			
-		}
-		else
-		{
-			NSAssert(0, @"unknown default type");	// unknown default type
-		}
-	}
-	
-	[[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDictionary];
+//	NSArray* gameDataArray = [gameData arrayForKeyPath:@"gamedata.defaults.default"];
+//	
+//	NSMutableDictionary* defaultsDictionary = [[NSMutableDictionary alloc] init];
+//	
+//	for( NSDictionary* entry in gameDataArray )
+//	{
+//		NSString* defaultKey = [entry valueForKey:@"id"];
+//		NSString* value = [entry valueForKey:@"value"];
+//		
+//		if ([[entry valueForKey:@"type"] isEqualToString:@"bool"]) 
+//		{
+//			if ([value isEqualToString:@"true"]) 
+//			{
+//				[defaultsDictionary setObject:[NSNumber numberWithBool:YES] forKey:defaultKey];
+//			}
+//			else
+//			{
+//				[defaultsDictionary setObject:[NSNumber numberWithBool:NO] forKey:defaultKey];				
+//			}
+//		}
+//		else if ([[entry valueForKey:@"type"] isEqualToString:@"float"])
+//		{
+//			[defaultsDictionary setObject:[NSNumber numberWithFloat:[value floatValue]] forKey:defaultKey];			
+//		}
+//		else
+//		{
+//			NSAssert(0, @"unknown default type");	// unknown default type
+//		}
+//	}
+//	
+//	[[NSUserDefaults standardUserDefaults] registerDefaults:defaultsDictionary];
 
 }
 

@@ -25,6 +25,8 @@
 
 #include <map>
 
+#include "Shared/Core/Debug/FCPerformanceCounter.h"
+
 #include "FCCore.h"
 #include "FCLuaVM.h"
 #include "FCLuaThread.h"
@@ -47,7 +49,7 @@ public:
 	static FCLua* Instance();
 	void UpdateThreads( float realDelta, float gameDelta );
 	FCLuaVM* CoreVM(){ return m_coreVM; }
-	FCLuaVM* NewVM();
+//	FCLuaVM* NewVM();
 	void ExecuteLine( std::string line );
 	void PrintStats();
 

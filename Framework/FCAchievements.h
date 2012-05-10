@@ -20,7 +20,8 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+//#if TARGET_OS_IPHONE
+#if 0
 
 #import <Foundation/Foundation.h>
 #import "FCProtocols.h"

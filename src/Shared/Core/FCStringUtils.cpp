@@ -21,6 +21,7 @@
  */
 
 #include "FCStringUtils.h"
+#include "FCError.h"
 
 FCStringVector FCStringUtils_ComponentsSeparatedByString( const std::string& data, const std::string& sep )
 {
@@ -37,12 +38,16 @@ FCStringVector FCStringUtils_ComponentsSeparatedByString( const std::string& dat
 	
 	while (searchPos != data.npos) 
 	{
-		ret.push_back(data.substr(prevSearchPos, searchPos));
+		ret.push_back(data.substr(prevSearchPos, searchPos - prevSearchPos));
 		prevSearchPos = searchPos + sep.length();
 		searchPos = data.find(sep, prevSearchPos);
 	}
 	
-	ret.push_back(data.substr(prevSearchPos, sep.length() - prevSearchPos));
+	ret.push_back(data.substr(prevSearchPos, data.length() - prevSearchPos));
+	
+//	for (FCStringVectorConstIter i = ret.begin(); i != ret.end(); i++) {
+//		FC_LOG(*i);
+//	}
 	
 	return ret;
 }
