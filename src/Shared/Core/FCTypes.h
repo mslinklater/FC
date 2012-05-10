@@ -30,6 +30,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <set>
 
 typedef uint32_t FCHandle;	// should last a while 8)
 
@@ -47,5 +48,7 @@ typedef FCStringVector::const_iterator	FCStringVectorConstIter;
 typedef std::map<std::string, std::string>	FCStringStringMap;
 typedef FCStringStringMap::iterator			FCStringStringMapIter;
 typedef FCStringStringMap::const_iterator	FCStringStringMapConstIter;
+
+typedef std::set<std::string>	FCStringSet;
 
 #endif // FCTypes_h

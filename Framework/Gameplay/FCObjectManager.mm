@@ -44,7 +44,6 @@ static FCObjectManager* s_pInstance;
 {
 	self = [super init];
 	if (self) {
-		_nulls = [NSMutableDictionary dictionary];
 	}
 	return self;
 }
@@ -57,20 +56,14 @@ static FCObjectManager* s_pInstance;
 	for (FCXMLNodeVecIter i = locators.begin(); i != locators.end(); i++) 
 	{
 		std::string name = FCXML::StringValueForNodeAttribute( *i, kFCKeyName );
-		FC_HALT;
+		
+		_nulls[name] = *i;
 	}
-	
-//	FC_HALT;
-//	for( NSDictionary* obj in locators )
-//	{
-//		NSString* nullId = [obj valueForKey:[NSString stringWithUTF8String:kFCKeyName.c_str()]];
-//		[_nulls setValue:obj forKey:nullId];
-//	}
 }
 
 -(void)reset
 {
-	_nulls = [NSMutableDictionary dictionary];
+	_nulls.clear();
 }
 
 @end

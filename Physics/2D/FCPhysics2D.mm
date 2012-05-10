@@ -26,6 +26,7 @@
 #import "FCPhysics2DJoint.h"
 
 #import "FCFramework.h"
+#include "Shared/Core/FCXML.h"
 
 static FCPhysics2D* s_pInstance = 0;
 
@@ -58,10 +59,11 @@ static int lua_CreateDistanceJoint( lua_State* _state )
 	else 
 	{
 		obj2NameStackPos = 3;
-		NSDictionary* null = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
-		FC_ASSERT(null);
-		def.pos1 = FC::Vector2f( [[null valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue], 
-								[[null valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue] );
+//		NSDictionary* null = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
+		FCXMLNode null = [FCObjectManager instance].nulls[ std::string(lua_tostring(_state, 2)) ];
+//		FC_ASSERT(null);
+		def.pos1 = FC::Vector2f( FCXML::FloatValueForNodeAttribute(null, kFCKeyOffsetX), FCXML::FloatValueForNodeAttribute(null, kFCKeyOffsetY) ); 
+//								[[null valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue] );
 	}
 	
 	FC_LUA_ASSERT_TYPE(obj2NameStackPos, LUA_TSTRING);
@@ -80,12 +82,13 @@ static int lua_CreateDistanceJoint( lua_State* _state )
 	} 
 	else 
 	{
-		NSDictionary* null = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, obj2NameStackPos+1)]];
+//		NSDictionary* null = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, obj2NameStackPos+1)]];
+		FCXMLNode null = [FCObjectManager instance].nulls[ std::string(lua_tostring(_state, obj2NameStackPos+1)) ];
 		FC_ASSERT(null);
-		def.pos2 = FC::Vector2f( [[null valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue], 
-								[[null valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue] );
+		def.pos2 = FC::Vector2f( FCXML::FloatValueForNodeAttribute(null, kFCKeyOffsetX), FCXML::FloatValueForNodeAttribute(null, kFCKeyOffsetY));
+//								[[null valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue] );
 	}
-	
+
 	// call through to OBJ-C
 
 	FCHandle hJoint = [s_pInstance createJoint:def];
@@ -115,10 +118,11 @@ static int lua_CreateRevoluteJoint( lua_State* _state )
 		def.pos = pos;
 	} else
 	{
-		NSDictionary* null = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 3)]];
+//		NSDictionary* null = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 3)]];
+		FCXMLNode null = [FCObjectManager instance].nulls[ std::string(lua_tostring(_state, 3)) ];
 		FC_ASSERT(null);
-		def.pos = FC::Vector2f( [[null valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue], 
-							   [[null valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue] );
+		def.pos = FC::Vector2f( FCXML::FloatValueForNodeAttribute(null, kFCKeyOffsetX), FCXML::FloatValueForNodeAttribute(null, kFCKeyOffsetY) );
+//							   [[null valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue] );
 	}
 
 	FCHandle hJoint = [s_pInstance createJoint:def];
@@ -142,10 +146,11 @@ static int lua_CreatePrismaticJoint( lua_State* _state )
 	def.body2 = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
 	FC_ASSERT(def.body2);
 	
-	NSDictionary* null = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 3)]];
+//	NSDictionary* null = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 3)]];
+	FCXMLNode null = [FCObjectManager instance].nulls[std::string(lua_tostring(_state, 3))];
 	FC_ASSERT(null);
 	
-	float angle = [[null valueForKey:[NSString stringWithUTF8String:kFCKeyRotationZ.c_str()]] floatValue];
+	float angle = FCXML::FloatValueForNodeAttribute(null, kFCKeyRotationZ);
 	angle = FCDegToRad(angle);
 	FC::Vector2f axis( sin(angle), cos(angle) );
 	def.axis = axis;
@@ -175,25 +180,21 @@ static int lua_CreatePulleyJoint( lua_State* _state )
 	def.body2 = [s_pInstance bodyWithName:[NSString stringWithUTF8String:lua_tostring(_state, 2)]];
 	FC_ASSERT(def.body2);
 
-	NSDictionary* groundAnchor1 = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 3)]];
+	FCXMLNode groundAnchor1 = [FCObjectManager instance].nulls[std::string(lua_tostring(_state, 3))];
 	FC_ASSERT(groundAnchor1);
-	def.groundAnchor1 = FC::Vector2f( [[groundAnchor1 valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue], 
-									 [[groundAnchor1 valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue] );
+	def.groundAnchor1 = FC::Vector2f( FCXML::FloatValueForNodeAttribute(groundAnchor1, kFCKeyOffsetX), FCXML::FloatValueForNodeAttribute(groundAnchor1, kFCKeyOffsetX) );
 
-	NSDictionary* groundAnchor2 = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 4)]];
+	FCXMLNode groundAnchor2 = [FCObjectManager instance].nulls[std::string(lua_tostring(_state, 4))];
 	FC_ASSERT(groundAnchor2);
-	def.groundAnchor2 = FC::Vector2f( [[groundAnchor2 valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue], 
-									 [[groundAnchor2 valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue] );
+	def.groundAnchor2 = FC::Vector2f( FCXML::FloatValueForNodeAttribute(groundAnchor2, kFCKeyOffsetX), FCXML::FloatValueForNodeAttribute(groundAnchor2, kFCKeyOffsetY) );
 
-	NSDictionary* bodyAnchor1 = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 5)]];
+	FCXMLNode bodyAnchor1 = [FCObjectManager instance].nulls[std::string(lua_tostring(_state, 5))];
 	FC_ASSERT(bodyAnchor1);
-	def.bodyAnchor1 = FC::Vector2f( [[bodyAnchor1 valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue], 
-								   [[bodyAnchor1 valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue] );
+	def.bodyAnchor1 = FC::Vector2f( FCXML::FloatValueForNodeAttribute(bodyAnchor1, kFCKeyOffsetX), FCXML::FloatValueForNodeAttribute(bodyAnchor1, kFCKeyOffsetY) );
 
-	NSDictionary* bodyAnchor2 = [[FCObjectManager instance].nulls valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 6)]];
+	FCXMLNode bodyAnchor2 = [FCObjectManager instance].nulls[std::string(lua_tostring(_state, 6))];
 	FC_ASSERT(bodyAnchor2);
-	def.bodyAnchor2 = FC::Vector2f( [[bodyAnchor2 valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue], 
-								   [[bodyAnchor2 valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue] );
+	def.bodyAnchor2 = FC::Vector2f( FCXML::FloatValueForNodeAttribute(bodyAnchor2, kFCKeyOffsetX), FCXML::FloatValueForNodeAttribute(bodyAnchor2, kFCKeyOffsetY) );
 
 	def.ratio = lua_tonumber(_state, 7);
 	

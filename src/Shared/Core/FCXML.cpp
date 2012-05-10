@@ -208,6 +208,6 @@ bool FCXML::BoolValueForNodeAttribute(FCXMLNode& node, std::string name, uint32_
 FCXMLAttributeMap FCXML::AttributesForNode(FCXMLNode &node, uint32_t flags)
 {
 	FCXMLAttributeMap ret;
-	FC_HALT;
+	FC_HALT;	// TBD
 	return ret;
 }

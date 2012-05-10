@@ -20,10 +20,51 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCResources_h
-#define CR1_FCResources_h
+#include "FCResourceManager.h"
+#include "Shared/Core/FCStringUtils.h"
 
-#import "FCResource.h"
-#import "FCResourceManager.h"
+static FCResourceManager* s_pInstance = 0;
 
-#endif
+FCResourceManager* FCResourceManager::Instance()
+{
+	if (!s_pInstance) {
+		s_pInstance = new FCResourceManager;
+	}
+	return s_pInstance;
+}
+
+FCResourceManager::FCResourceManager()
+{
+	m_suffixedFileTypes.insert("png");
+	m_suffixedFileTypes.insert("jpg");
+}
+
+FCResourcePtr FCResourceManager::ResourceWithPath(std::string path)
+{
+	std::string assetPath = std::string("Assets/") + ActualResourceName(path);
+	
+	FCResourcePtr resource = new FCResource;
+	resource->InitWithContentsOfFile( assetPath );
+	resource->SetName( assetPath );
+	
+	return resource;
+}
+
+std::string FCResourceManager::ActualResourceName( std::string path )
+{
+	std::string actualResourceName;
+	
+	FCStringVector components = FCStringUtils_ComponentsSeparatedByString(path, ".");
+
+	actualResourceName = path;
+
+	if (components.size() > 1) 
+	{
+		std::string suffix = components[1];
+		
+		if ( m_suffixedFileTypes.find(suffix) != m_suffixedFileTypes.end()) {
+			actualResourceName = path;
+		}
+	}
+	return actualResourceName;
+}

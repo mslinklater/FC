@@ -24,9 +24,9 @@
 #import "FCResource.h"
 
 @interface FCObjectManager : NSObject {
-	NSMutableDictionary* _nulls;
+	FCXMLNodeMapByString	_nulls;
 }
-@property(nonatomic, strong) NSMutableDictionary* nulls;
+@property(nonatomic) FCXMLNodeMapByString nulls;
 
 +(FCObjectManager*)instance;
 

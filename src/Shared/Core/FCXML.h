@@ -32,6 +32,8 @@ typedef std::vector< FCXMLNode >		FCXMLNodeVec;
 typedef FCXMLNodeVec::iterator			FCXMLNodeVecIter;
 typedef FCXMLNodeVec::const_iterator	FCXMLNodeVecConstIter;
 
+typedef std::map<std::string, FCXMLNode>	FCXMLNodeMapByString;
+
 typedef rapidxml::xml_attribute<>*				FCXMLAttribute;
 typedef std::map<std::string, FCXMLAttribute>	FCXMLAttributeMap;
 

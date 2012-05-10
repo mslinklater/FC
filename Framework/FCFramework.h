@@ -42,7 +42,7 @@
 #import "FCOnline.h"
 #import "FCPersistentData.h"
 #import "FCPhase.h"
-#import "FCResources.h"
+//#import "FCResources.h"
 #import "FCUI.h"
 
 #endif

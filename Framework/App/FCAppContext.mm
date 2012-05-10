@@ -27,7 +27,7 @@
 #import "FCAppContext.h"
 //#import "FCXMLData.h"
 #import "FCViewManager.h"
-#import "FCResourceManager.h"
+//#import "FCResourceManager.h"
 #import "FCDevice.h"
 #import "FCRenderer.h"
 #import "FCActorSystem.h"
@@ -37,6 +37,8 @@
 #import "FCUserDefaults.h"
 #import "FCAnalytics.h"
 #import "FCNotifications.h"
+
+#include "Shared/Core/Resources/FCResourceManager.h"
 
 @interface FCAppContext() {
 	NSMutableDictionary* m_dict;
@@ -84,7 +86,8 @@
 		
 		[FCViewManager instance];
 
-		[FCResourceManager instance];
+//		[FCResourceManager instance];
+		FCResourceManager::Instance();
 		
 //		_gameData = [[FCXMLData alloc] initWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"gamedata" ofType:@"xml"]];
 		

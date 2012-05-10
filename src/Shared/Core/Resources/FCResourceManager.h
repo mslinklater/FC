@@ -20,18 +20,23 @@
  THE SOFTWARE.
  */
 
+#ifndef CR1_FCResourceManager_h
+#define CR1_FCResourceManager_h
 
+#include "FCResource.h"
 
-#import <Foundation/Foundation.h>
-#import "FCResource.h"
+class FCResourceManager {
+public:
+	FCResourceManager();
+	~FCResourceManager(){}
+	
+	static FCResourceManager* Instance();
+	
+	FCResourcePtr ResourceWithPath( std::string path );
+private:
+	std::string ActualResourceName( std::string path );
+	
+	FCStringSet	m_suffixedFileTypes;
+};
 
-@interface FCResourceManager : NSObject
-
-+(FCResourceManager*)instance;
-
--(NSData*)dataForResource:(NSString*)resource ofType:(NSString*)type;
--(FCResourcePtr)resourceWithPath:(NSString*)resourcePath;
-
-@end
-
-
+#endif
