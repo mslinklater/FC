@@ -30,7 +30,7 @@
 
 +(FCObjectManager*)instance;
 
--(void)addObjectsFromResource:(FCResource*)resource;
+-(void)addObjectsFromResource:(FCResourcePtr)resource;
 
 -(void)reset;
 

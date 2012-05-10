@@ -23,6 +23,7 @@
 #ifndef FCTypes_h
 #define FCTypes_h
 
+#include "FCSharedPtr.h"
 #include "FCColor.h"
 #include "FCKeys.h"
 

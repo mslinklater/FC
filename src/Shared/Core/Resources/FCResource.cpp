@@ -20,18 +20,27 @@
  THE SOFTWARE.
  */
 
+#include "FCResource.h"
 
+#include "Shared/Core/FCFileIO.h"
 
-#import <Foundation/Foundation.h>
-#import "FCResource.h"
-
-@interface FCResourceManager : NSObject
-
-+(FCResourceManager*)instance;
-
--(NSData*)dataForResource:(NSString*)resource ofType:(NSString*)type;
--(FCResourcePtr)resourceWithPath:(NSString*)resourcePath;
-
-@end
-
-
+void FCResource::InitWithContentsOfFile(std::string filename)
+{
+	std::string fcrFilename = filename + ".fcr";
+	std::string binFilename = filename + ".bin";
+	
+	m_xml = new FCXML;
+	m_xml->InitWithContentsOfFile(fcrFilename);
+	
+	FILE* hFile = fopen(plt_PathForFileInBundle(binFilename).c_str(), "rb");
+	
+	fseek(hFile, 0, SEEK_END);
+	m_binaryPayloadSize = ftell(hFile);
+	fseek(hFile, 0, SEEK_SET);
+	
+	m_binaryPayload = new char[ m_binaryPayloadSize ];
+	
+	fread( m_binaryPayload, 1, m_binaryPayloadSize, hFile);
+	
+	fclose(hFile);
+}

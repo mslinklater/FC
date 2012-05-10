@@ -27,8 +27,7 @@
 #import "FCCore.h"
 
 #include "Shared/Core/FCXML.h"
-
-@class FCResource;
+#include "Shared/Core/Resources/FCResource.h"
 
 @interface FCModel : NSObject {	
 	NSMutableArray* _meshes;
@@ -42,9 +41,7 @@
 
 //-(void)render;
 
-//-(id)initWithModel:(NSDictionary*)modelDict resource:(FCResource*)res;
-//-(id)initWithPhysicsBody:(NSDictionary*)bodyDict color:(UIColor*)color;// actorXOffset:(float)actorX actorYOffset:(float)actorY;
--(id)initWithModel:(FCXMLNode)modelXML resource:(FCResource*)res;
+-(id)initWithModel:(FCXMLNode)modelXML resource:(FCResourcePtr)res;
 -(id)initWithPhysicsBody:(FCXMLNode)bodyXML color:(UIColor*)color;// actorXOffset:(float)actorX actorYOffset:(float)actorY;
 -(void)setDebugMeshColor:(FC::Color4f)color;
 @end

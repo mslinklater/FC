@@ -51,7 +51,7 @@
 -(id)initWithXML:(FCXMLNode)xml 
 			body:(FCXMLNode)bodyXML 
 		   model:(FCXMLNode)modelXML 
-		resource:(FCResource*)res
+		resource:(FCResourcePtr)res
 			name:(NSString*)name
 		  handle:(FCHandle)handle
 {
@@ -103,7 +103,7 @@
 			{
 				// physics but no model so build a physics mode
 				
-				NSMutableDictionary* dict = res.userData;
+				NSMutableDictionary* dict = (__bridge NSMutableDictionary*)res->UserData();
 				_model = [[FCModel alloc] initWithPhysicsBody:bodyXML color:[dict valueForKey:[NSString stringWithUTF8String:kFCKeyColor.c_str()]]];
 			}
 		}
@@ -117,7 +117,6 @@
 	[[[FCPhysics instance] twoD] destroyBody:_physicsBody];	
 	_physicsBody = nil;
 	_model = nil;
-//	_createDef = nil;
 	_id = nil;
 	_fullName = nil;
 	_name = nil;

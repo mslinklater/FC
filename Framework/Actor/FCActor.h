@@ -31,19 +31,19 @@
 #import "FCPhysics.h"
 
 #include "Shared/Core/FCXML.h"
+#include "FCResource.h"
 
 #if defined (FC_GRAPHICS)
 @class FCModel;
 #endif
 
-@class FCResource;
 
 @protocol FCActorBase
 
 -(id)initWithDictionary:(NSDictionary*)dictionary 
 				   body:(NSDictionary*)bodyDict 
 				  model:(NSDictionary*)modelDict 
-			   resource:(FCResource*)res 
+			   resource:(FCResourcePtr)res 
 				   name:(NSString*)name
 				 handle:(FCHandle)handle;
 
@@ -89,7 +89,7 @@
 -(id)initWithXML:(FCXMLNode)xml 
 			body:(FCXMLNode)bodyXML 
 		   model:(FCXMLNode)modelXML 
-		resource:(FCResource*)res
+		resource:(FCResourcePtr)res
 			name:(NSString*)name
 		  handle:(FCHandle)handle;
 

@@ -49,16 +49,15 @@ static FCObjectManager* s_pInstance;
 	return self;
 }
 
--(void)addObjectsFromResource:(FCResource*)resource
+-(void)addObjectsFromResource:(FCResourcePtr)resource
 {
 	// add locators
-//	NSArray* locators = [resource.xmlData arrayForKeyPath:@"fcr.gameplay.locator"];
-	FCXMLNodeVec locators = resource.xml->VectorForKeyPath("fcr.gameplay.locator");
+	FCXMLNodeVec locators = resource->XML()->VectorForKeyPath("fcr.gameplay.locator");
 	
 	for (FCXMLNodeVecIter i = locators.begin(); i != locators.end(); i++) 
 	{
-//		FCXMLAttributeMap attributes = FCXML::AttributesForNode( *i );
 		std::string name = FCXML::StringValueForNodeAttribute( *i, kFCKeyName );
+		FC_HALT;
 	}
 	
 //	FC_HALT;

@@ -27,6 +27,7 @@
 #import "FCActor.h"
 
 #include "Shared/Core/FCXML.h"
+#include "FCResource.h"
 
 @class FCActor;
 
@@ -66,12 +67,12 @@
 -(NSArray*)getActorsOfClass:(NSString*)actorClass;
 
 -(NSArray*)createActorsOfClass:(NSString*)actorClass 
-				  withResource:(FCResource*)res
+				  withResource:(FCResourcePtr)res
 						  name:(NSString*)name;
 
 -(id)createActor:(FCXMLNode)actorXML
 		 ofClass:(NSString*)actorClass 
-	withResource:(FCResource*)res
+	withResource:(FCResourcePtr)res
 			name:(NSString*)name;
 
 @end

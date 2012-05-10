@@ -23,7 +23,7 @@
 
 #import "Shared/Core/Maths/FCMaths.h"
 
-@class FCResource;
+//@class FCResource;
 
 @protocol FCGameObjectUpdate
 -(void)update:(float)realTime gameTime:(float)gameTime;

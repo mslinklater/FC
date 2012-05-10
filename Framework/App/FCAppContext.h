@@ -23,10 +23,8 @@
 #import <Foundation/Foundation.h>
 #import "FCDevice.h"
 
-//#include <rapidxml.hpp>
 #include "Shared/Core/FCXML.h"
 
-//@class FCXMLData;
 @class FCGLView;
 
 @interface FCAppContext : NSObject

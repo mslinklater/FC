@@ -23,7 +23,6 @@
 #import "FCActorSystem.h"
 #import "FCActor.h"
 #import "FCPhysics.h"
-//#import "FCXMLData.h"
 #import "FCResource.h"
 #import "FCCore.h"
 #import "FCLua.h"
@@ -160,19 +159,12 @@ static int lua_ApplyImpulse( lua_State* _state )
 		_actorHandleDictionary = [[NSMutableDictionary alloc] init];
 		
 #if defined (FC_LUA)
-//		[[FCLua instance].coreVM createGlobalTable:@"FCActorSystem"];
 		FCLua::Instance()->CoreVM()->CreateGlobalTable("FCActorSystem");
-//		[[FCLua instance].coreVM registerCFunction:lua_Reset as:@"FCActorSystem.Reset"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Reset, "FCActorSystem.Reset");
-//		[[FCLua instance].coreVM registerCFunction:lua_GetActorPosition as:@"FCActorSystem.GetPosition"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_GetActorPosition, "FCActorSystem.GetPosition");
-//		[[FCLua instance].coreVM registerCFunction:lua_SetActorPosition as:@"FCActorSystem.SetPosition"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetActorPosition, "FCActorSystem.SetPosition");
-//		[[FCLua instance].coreVM registerCFunction:lua_GetActorLinearVelocity as:@"FCActorSystem.GetLinearVelocity"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_GetActorLinearVelocity, "FCActorSystem.GetLinearVelocity");
-//		[[FCLua instance].coreVM registerCFunction:lua_GetActorLinearVelocity as:@"FCActorSystem.SetLinearVelocity"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetActorLinearVelocity, "FCActorSystem.SetLinearVelocity");
-//		[[FCLua instance].coreVM registerCFunction:lua_SetActorLinearVelocity as:@"FCActorSystem.ApplyImpulse"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_ApplyImpulse, "FCActorSystem.ApplyImpulse");
 #endif
 	}
@@ -182,23 +174,16 @@ static int lua_ApplyImpulse( lua_State* _state )
 
 #pragma mark - New FCR Based methods
 
--(NSArray*)createActorsOfClass:(NSString *)actorClass withResource:(FCResource *)res name:(NSString *)name
+-(NSArray*)createActorsOfClass:(NSString *)actorClass withResource:(FCResourcePtr)res name:(NSString *)name
 {
 	// Test is the actor class type you are requesting actually exists
 	FC_ASSERT(NSClassFromString(actorClass));
 	
 	NSMutableArray* createdActors = [NSMutableArray array];
 
-//	NSArray* actors = [res.xmlData arrayForKeyPath:@"fcr.scene.actor"];
-	FCXMLNodeVec actors = res.xml->VectorForKeyPath("fcr.scene.actor");
+	FCXMLNodeVec actors = res->XML()->VectorForKeyPath("fcr.scene.actor");
 	
 	// create actors
-
-//	FC_HALT;
-//	for(NSDictionary* actorDict in actors)
-//	{
-//		[newActors addObject:[self createActor:actorDict ofClass:actorClass withResource:res name:name]];
-//	}	
 
 	for (FCXMLNodeVecIter i = actors.begin(); i != actors.end(); i++) {
 		id createdActor = [self createActor:*i ofClass:actorClass withResource:res name:name];
@@ -209,35 +194,22 @@ static int lua_ApplyImpulse( lua_State* _state )
 	return retArray;
 }
 
-//-(id)createActor:(NSDictionary*)actorDict ofClass:(NSString *)actorClass withResource:(FCResource *)res name:(NSString *)name
--(id)createActor:(FCXMLNode)actorXML ofClass:(NSString *)actorClass withResource:(FCResource *)res name:(NSString *)name
+-(id)createActor:(FCXMLNode)actorXML ofClass:(NSString *)actorClass withResource:(FCResourcePtr)res name:(NSString *)name
 {
 	// get body
 	
-//	NSString* bodyId = [actorDict valueForKey:[NSString stringWithUTF8String:kFCKeyBody.c_str()]];	
 	std::string bodyId = FCXML::StringValueForNodeAttribute(actorXML, kFCKeyBody);
 	
-	FCXMLNodeVec bodies = res.xml->VectorForKeyPath("fcr.physics.bodies.body");
-//	NSArray* bodies = [res.xmlData arrayForKeyPath:@"fcr.physics.bodies.body"];
+	FCXMLNodeVec bodies = res->XML()->VectorForKeyPath("fcr.physics.bodies.body");
 	
 	// Find the body associated with this actor
 	
-//	NSDictionary* bodyDict = nil;
-//	for(NSDictionary* body in bodies)
-//	{
-//		NSString* thisId = [body valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]];
-//		
-//		if ([thisId isEqualToString:bodyId]) 
-//		{
-//			bodyDict = body;
-//			break;
-//		}
-//	}
-
 	FCXMLNode bodyXML = 0;
-	for (FCXMLNodeVecIter i = bodies.begin(); i != bodies.end(); i++) {
+	for (FCXMLNodeVecIter i = bodies.begin(); i != bodies.end(); i++) 
+	{
 		std::string thisId = FCXML::StringValueForNodeAttribute(*i, kFCKeyId);
-		if (thisId == bodyId) {
+		if (thisId == bodyId) 
+		{
 			bodyXML = *i;
 			break;
 		}
@@ -245,49 +217,33 @@ static int lua_ApplyImpulse( lua_State* _state )
 	
 	// get model
 
-//	NSDictionary* modelDict = nil;
-//	NSString* modelId = [actorDict valueForKey:[NSString stringWithUTF8String:kFCKeyModel.c_str()]];
 	FCXMLNode modelXML = 0;
 	std::string modelId = FCXML::StringValueForNodeAttribute(actorXML, kFCKeyModel);
-//	if (modelId) 
 	if (modelId.length())
 	{
-		FCXMLNodeVec models = res.xml->VectorForKeyPath("fcr.models.model");
+		FCXMLNodeVec models = res->XML()->VectorForKeyPath("fcr.models.model");
 		
-		for (FCXMLNodeVecIter i = models.begin(); i != models.end(); i++) {
+		for (FCXMLNodeVecIter i = models.begin(); i != models.end(); i++) 
+		{
 			std::string thisId = FCXML::StringValueForNodeAttribute(*i, kFCKeyId);
-			if (modelId == thisId) {
+			if (modelId == thisId) 
+			{
 				modelXML = *i;
 				break;
 			}
 		}
-		
-//		NSArray* models = [res.xmlData arrayForKeyPath:@"fcr.models.model"];		
-//		FC_HALT;
-//		for(NSDictionary* model in models)
-//		{
-//			NSString* thisId = [model valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]];
-//			
-//			if ([thisId isEqualToString:modelId]) 
-//			{
-//				modelDict = model;
-//				break;
-//			}
-//		}
 	}
-
+	
 	// instantiate actor
 	
 	id actor = [self actorOfClass:NSClassFromString(actorClass)];
 
 	FCHandle handle = NewFCHandle();
 	
-//	actor = [actor initWithDictionary:actorDict body:bodyDict model:modelDict resource:res name:name handle:handle];
 	actor = [actor initWithXML:actorXML body:bodyXML model:modelXML resource:res name:name handle:handle];
 
 	// some more checks etc
 
-//	NSString* actorId = [actorDict valueForKey:[NSString stringWithUTF8String:kFCKeyId.c_str()]];
 	std::string actorId = FCXML::StringValueForNodeAttribute(actorXML, kFCKeyId);
 
 	if (name) // id is optional

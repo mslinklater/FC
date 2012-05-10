@@ -20,24 +20,37 @@
  THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
+#ifndef FCRESOURCE_H
+#define FCRESOURCE_H
+
+#include "Shared/Core/FCTypes.h"
 #include "Shared/Core/FCXML.h"
 
-@interface FCResource : NSObject {
-	NSData* _binaryPayload;
-	FCXMLPtr _xml;
-	NSString* _name;
-	id _userData;
-}
-@property(nonatomic, strong) NSData* binaryPayload;
-@property(nonatomic) FCXMLPtr xml;
-@property(nonatomic, strong) NSString* name;
-@property(nonatomic, strong) id userData;	/// Mainly used for tools to attach metadata to a resource for processing
+class FCResource {
+public:
+	
+	FCResource()
+	: m_binaryPayload(0)
+	, m_userData(0)
+	{}
+	~FCResource(){}
+	
+	void InitWithContentsOfFile( std::string filename );
+	
+	void*		UserData(){ return m_userData; }
+	void		SetUserData( void* ud ){ m_userData = ud; }
+	FCXMLPtr	XML(){ return m_xml; }
+	char*		BinaryPayload(){ return m_binaryPayload; }
+	void		SetName( std::string name ){ m_name = name; }
+	
+private:
+	char*	m_binaryPayload;
+	uint32_t m_binaryPayloadSize;
+	FCXMLPtr m_xml;
+	std::string m_name;
+	void* m_userData;
+};
 
--(id)init;	// Designated initialiser
-+(id)resource;
+typedef FCSharedPtr<FCResource> FCResourcePtr;
 
--(id)initWithContentsOfURL:(NSURL*)url;
-+(FCResource*)resourceWithContentsOfURL:(NSURL*)url;
-
-@end
+#endif // FCRESOURCE_H

@@ -122,27 +122,22 @@ static NSString* kUDSuffix = @"_ultra";
 
 #pragma mark - Public API
 
--(FCResource*)resourceWithPath:(NSString*)resourcePath
+-(FCResourcePtr)resourceWithPath:(NSString*)resourcePath
 {
 	// resourcePath should not have a file suffix
 	
 	NSAssert([[resourcePath pathExtension] length] == 0, @"Should not put path extensions to resouce loads");
 	
-	NSString* xmlPath = [self actualResourceName:resourcePath ofType:@"fcr"];
-	NSString* payloadPath = [self actualResourceName:resourcePath ofType:@"bin"];
+	NSString* assetPath = [NSString stringWithFormat:@"Assets/%@", resourcePath];
 	
-	FCXMLPtr xml = new FCXML;
-	xml->InitWithContentsOfFile(std::string("Assets/") + std::string([xmlPath UTF8String]) + ".fcr");
-	
-	NSData* payloadData = [self dataForResource:payloadPath ofType:@"bin"];
+//	FCResourcePTR resource = [[FCResource alloc] initWithContentsOfFile:[assetPath UTF8String]];
 
-	FCResource* resource = [FCResource resource];
+	FCResourcePtr resource = new FCResource;
+	resource->InitWithContentsOfFile( [assetPath UTF8String] );
 
-	resource.xml = xml;
-	resource.binaryPayload = payloadData;
-	resource.name = resourcePath;
-	
-	
+	resource->SetName( [resourcePath UTF8String] );
+//	resource.name = [resourcePath UTF8String];
+		
 	return resource;
 }
 
