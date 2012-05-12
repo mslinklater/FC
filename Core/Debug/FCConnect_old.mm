@@ -28,26 +28,26 @@
 #include <CFNetwork/CFSocketStream.h>
 
 #import "FCError.h"
-#import "FCConnect.h"
+#import "FCConnect_old.h"
 #import "FCLua.h"
 
 static NSString* s_ErrorDomain = @"FCConnectErrorDomain";
-static FCConnect* s_connect;
+static FCConnec_oldt* s_connect;
 
 static NSString* kFCConnectLua = @"Lua_";
 static NSString* kFCConnectLog = @"Log_";
 
-@implementation FCConnect
+@implementation FCConnect_old
 
 @synthesize connected = _connected;
 
 #pragma mark - Object Lifecycle
 
-+(FCConnect*)instance
++(FCConnect_old*)instance
 {
-	static FCConnect* pInstance;
+	static FCConnect_old* pInstance;
 	if (!pInstance) {
-		pInstance = [[FCConnect alloc] init];
+		pInstance = [[FCConnect_old alloc] init];
 		s_connect = pInstance;
 	}
 	return pInstance;

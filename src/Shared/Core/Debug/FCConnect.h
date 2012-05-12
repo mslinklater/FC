@@ -20,13 +20,9 @@
  THE SOFTWARE.
  */
 
-//#import "FCXMLData.h"
-//#import "FCAppContext.h"
-//#import "FCDevice.h"
-//#import "FCPersistentData.h"
-//#import "FCStats.h"
-//#import "FCUserDefaults.h"
-//#import "FCNotifications.h"
-//#import "FCTweakables.h"
-//#import "FCHighScores.h"
-//#import "FCCrypto.h"
+#ifndef CR1_FCConnect_h
+#define CR1_FCConnect_h
+
+
+
+#endif

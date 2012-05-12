@@ -28,7 +28,7 @@
 #import "FCAnalytics.h"
 //#import "FCDevice_old.h"
 #import "Shared/Core/FCError.h"
-#import "FCConnect.h"
+#import "FCConnect_old.h"
 #import "FCPhaseManager.h"
 #import "FCPerformanceCounter.h"
 #import "FCAnalytics.h"
@@ -247,8 +247,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 #endif
 	
 #if TARGET_OS_IPHONE
-	[[FCConnect instance] start:nil];
-	[[FCConnect instance] enableBonjourWithName:@"FCConnect"];
+	[[FCConnect_old instance] start:nil];
+	[[FCConnect_old instance] enableBonjourWithName:@"FCConnect"];
 	
 	[FCFacebook instance];
 	[FCAnalytics instance];
@@ -403,7 +403,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 -(void)willResignActive
 {
 #if TARGET_OS_IPHONE
-	[[FCConnect instance] stop];
+	[[FCConnect_old instance] stop];
 	
 	FC_ASSERT(s_sessionActiveAnalyticsHandle != kFCHandleInvalid);
 	
@@ -437,8 +437,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 -(void)didBecomeActive
 {
 #if TARGET_OS_IPHONE
-	[[FCConnect instance] start:nil];
-	[[FCConnect instance] enableBonjourWithName:@"FCConnect"];
+	[[FCConnect_old instance] start:nil];
+	[[FCConnect_old instance] enableBonjourWithName:@"FCConnect"];
 	
 	FC_ASSERT(s_sessionActiveAnalyticsHandle == kFCHandleInvalid);
 	

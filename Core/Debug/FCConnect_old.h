@@ -30,7 +30,7 @@ enum eFCConnectErrorCode {
 	kFCConnectNoSocketsAvailable
 };
 
-@interface FCConnect : NSObject <NSNetServiceDelegate, NSStreamDelegate> {
+@interface FCConnect_old : NSObject <NSNetServiceDelegate, NSStreamDelegate> {
 	uint16_t		m_port;
 	uint32_t		m_protocolFamily;
 	CFSocketRef		m_socketRef;
@@ -44,7 +44,7 @@ enum eFCConnectErrorCode {
 }
 @property() BOOL connected;
 
-+(FCConnect*)instance;
++(FCConnect_old*)instance;
 
 -(BOOL)start:(NSError**)error;
 -(BOOL)enableBonjourWithName:(NSString*)name;
