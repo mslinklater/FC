@@ -47,8 +47,8 @@
 	BOOL					_fixedUp;
 	GLenum					_primitiveType;
 
-	FC::Color4f				_diffuseColor;
-	FC::Color4f				_specularColor;
+	FCColor4f				_diffuseColor;
+	FCColor4f				_specularColor;
 }
 @property(nonatomic, weak) FCModel* parentModel;
 @property(nonatomic, readonly) unsigned int vertexBufferStride;
@@ -66,8 +66,8 @@
 @property(nonatomic, readonly) BOOL fixedUp;
 @property(nonatomic, readonly) GLenum primitiveType;
 
-@property(nonatomic) FC::Color4f diffuseColor;
-@property(nonatomic) FC::Color4f specularColor;
+@property(nonatomic) FCColor4f diffuseColor;
+@property(nonatomic) FCColor4f specularColor;
 
 -(id)initWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor shaderName:(NSString*)shaderName primitiveType:(GLenum)primitiveType;
 //+(id)fcMeshWithVertexDescriptor:(FCVertexDescriptor*)vertexDescriptor shaderName:(NSString*)shaderName;

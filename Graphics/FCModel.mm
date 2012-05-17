@@ -35,7 +35,7 @@
 #import "FCShaderProgram.h"
 #import "FCRenderer.h"
 
-static 	FC::Color4f	s_whiteColor( 1.0f, 1.0f, 1.0f, 1.0f );
+static 	FCColor4f	s_whiteColor( 1.0f, 1.0f, 1.0f, 1.0f );
 static int kNumCircleSegments = 36;
 
 #pragma mark - Private interface
@@ -183,7 +183,7 @@ static int kNumCircleSegments = 36;
 				(FCXML::StringValueForNodeAttribute(*mesh, "specular_g").size()) && 
 				(FCXML::StringValueForNodeAttribute(*mesh, "specular_b").size()))
 			{
-				FC::Color4f specular;
+				FCColor4f specular;
 				specular.r = FCXML::FloatValueForNodeAttribute(*mesh, "specular_r");		//[[mesh valueForKey:@"specular_r"] floatValue];
 				specular.g = FCXML::FloatValueForNodeAttribute(*mesh, "specular_g");	//[[mesh valueForKey:@"specular_g"] floatValue];
 				specular.b = FCXML::FloatValueForNodeAttribute(*mesh, "specular_b");	//[[mesh valueForKey:@"specular_b"] floatValue];
@@ -207,7 +207,7 @@ static int kNumCircleSegments = 36;
 			NSString* diffuseString = [NSString stringWithUTF8String:FCXML::StringValueForNodeAttribute(*mesh, kFCKeyDiffuseColor).c_str()];
 			if (diffuseString && [diffuseString length]) {
 				NSArray* components = [diffuseString componentsSeparatedByString:@","];
-				meshObject.diffuseColor = FC::Color4f([[components objectAtIndex:0] floatValue], 
+				meshObject.diffuseColor = FCColor4f([[components objectAtIndex:0] floatValue], 
 													  [[components objectAtIndex:1] floatValue], 
 													  [[components objectAtIndex:2] floatValue], 1.0f );
 			}
@@ -219,7 +219,7 @@ static int kNumCircleSegments = 36;
 	return self;
 }
 
--(void)setDebugMeshColor:(FC::Color4f)color
+-(void)setDebugMeshColor:(FCColor4f)color
 {
 	for( FCMesh* mesh in _meshes )
 	{
@@ -239,13 +239,13 @@ static int kNumCircleSegments = 36;
 	
 	float radius = [[def valueForKey:[NSString stringWithUTF8String:kFCKeyRadius.c_str()]] floatValue];
 	
-	FC::Vector3f* pVert;
-	FC::Vector3f center;
+	FCVector3f* pVert;
+	FCVector3f center;
 	center.x = [[def valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
 	center.y = [[def valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
 	center.z = 0.0f;
 
-	pVert = (FC::Vector3f*)((unsigned long)mesh.pVertexBuffer);
+	pVert = (FCVector3f*)((unsigned long)mesh.pVertexBuffer);
 	pVert->x = center.x;
 	pVert->y = center.y;
 	pVert->z = center.z;
@@ -254,7 +254,7 @@ static int kNumCircleSegments = 36;
 	{		
 		float angle1 = ( 3.142f * 2.0f / kNumCircleSegments ) * i;
 		
-		pVert = (FC::Vector3f*)((unsigned int)pVert + 12);
+		pVert = (FCVector3f*)((unsigned int)pVert + 12);
 		
 		pVert->x = center.x + sinf( angle1 ) * radius;
 		pVert->y = center.y + cosf( angle1 ) * radius;
@@ -264,7 +264,7 @@ static int kNumCircleSegments = 36;
 	if (debugColor) {
 		float red, green, blue, alpha;
 		[debugColor getRed:&red green:&green blue:&blue alpha:&alpha];
-		mesh.diffuseColor = FC::Color4f( red, green, blue, alpha );
+		mesh.diffuseColor = FCColor4f( red, green, blue, alpha );
 	}
 	else
 		mesh.diffuseColor = s_whiteColor;
@@ -295,32 +295,32 @@ static int kNumCircleSegments = 36;
 	mesh.numVertices = 4;
 	mesh.numTriangles = 2;
 	
-	FC::Vector2f size( [[def valueForKey:[NSString stringWithUTF8String:kFCKeyXSize.c_str()]] floatValue] * 0.5f, 
+	FCVector2f size( [[def valueForKey:[NSString stringWithUTF8String:kFCKeyXSize.c_str()]] floatValue] * 0.5f, 
 					  [[def valueForKey:[NSString stringWithUTF8String:kFCKeyYSize.c_str()]] floatValue] * 0.5f);
 
-	FC::Vector3f center;
+	FCVector3f center;
 	center.x = [[def valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
 	center.y = [[def valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
 	center.z = 0.0f;
 
-	FC::Vector3f* pVert;
+	FCVector3f* pVert;
 	
-	pVert = (FC::Vector3f*)((unsigned long)mesh.pVertexBuffer);
+	pVert = (FCVector3f*)((unsigned long)mesh.pVertexBuffer);
 	pVert->x = center.x + size.x * -1.0f;
 	pVert->y = center.y + size.y * -1.0f;
 	pVert->z = center.z;
 	
-	pVert = (FC::Vector3f*)((unsigned int)pVert + 12);
+	pVert = (FCVector3f*)((unsigned int)pVert + 12);
 	pVert->x = center.x + size.x * 1.0f;
 	pVert->y = center.y + size.y * -1.0f;
 	pVert->z = center.z;
 	
-	pVert = (FC::Vector3f*)((unsigned int)pVert + 12);
+	pVert = (FCVector3f*)((unsigned int)pVert + 12);
 	pVert->x = center.x + size.x * 1.0f;
 	pVert->y = center.y + size.y * 1.0f;
 	pVert->z = center.z;
 	
-	pVert = (FC::Vector3f*)((unsigned int)pVert + 12);
+	pVert = (FCVector3f*)((unsigned int)pVert + 12);
 	pVert->x = center.x + size.x * -1.0f;
 	pVert->y = center.y + size.y * 1.0f;
 	pVert->z = center.z;
@@ -328,7 +328,7 @@ static int kNumCircleSegments = 36;
 	if (debugColor) {
 		float red, green, blue, alpha;
 		[debugColor getRed:&red green:&green blue:&blue alpha:&alpha];
-		mesh.diffuseColor = FC::Color4f( red, green, blue, alpha );
+		mesh.diffuseColor = FCColor4f( red, green, blue, alpha );
 	}
 	else
 		mesh.diffuseColor = s_whiteColor;
@@ -355,11 +355,11 @@ static int kNumCircleSegments = 36;
 	mesh.numVertices = [[def valueForKey:[NSString stringWithUTF8String:kFCKeyNumVertices.c_str()]] intValue];
 	mesh.numTriangles = mesh.numVertices - 2;
 	
-	FC::Vector3f* pVert;
+	FCVector3f* pVert;
 
 	NSArray* vertsArray = [[def valueForKeyPath:@"verts"] componentsSeparatedByString:@" "];
 
-	pVert = (FC::Vector3f*)((unsigned long)mesh.pVertexBuffer);
+	pVert = (FCVector3f*)((unsigned long)mesh.pVertexBuffer);
 	
 	float xOffset = [[def valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
 	float yOffset = [[def valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
@@ -371,7 +371,7 @@ static int kNumCircleSegments = 36;
 
 	for (int i = 1 ; i < mesh.numVertices ; i++) 
 	{
-		pVert = (FC::Vector3f*)((unsigned int)pVert + 12);
+		pVert = (FCVector3f*)((unsigned int)pVert + 12);
 		pVert->x = [[vertsArray objectAtIndex:i*3] floatValue] + xOffset;
 		pVert->y = [[vertsArray objectAtIndex:(i*3)+1] floatValue] + yOffset;
 		pVert->z = [[vertsArray objectAtIndex:(i*3)+2] floatValue] + zOffset;
@@ -380,7 +380,7 @@ static int kNumCircleSegments = 36;
 	if (debugColor) {
 		float red, green, blue, alpha;
 		[debugColor getRed:&red green:&green blue:&blue alpha:&alpha];
-		mesh.diffuseColor = FC::Color4f( red, green, blue, alpha );
+		mesh.diffuseColor = FCColor4f( red, green, blue, alpha );
 	}
 	else
 	{

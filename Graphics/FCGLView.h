@@ -36,11 +36,11 @@
 	NSString* _managedName;
 	FCGLView* __weak _currentLuaTarget;
 	EAGLContext* _context;
-	FC::Vector3f _frustumTranslation;
+	FCVector3f _frustumTranslation;
 	float _fov;
 	float _nearClip;
 	float _farClip;
-	FC::Color4f _clearColor;
+	FCColor4f _clearColor;
 	BOOL _depthBuffer;
 	BOOL _superSampling;
 	float _superSamplingScale;
@@ -72,11 +72,11 @@
 @property(nonatomic, strong, readonly) NSString* managedName;
 @property(nonatomic, weak) FCGLView* currentLuaTarget;
 @property(nonatomic, strong) EAGLContext *context;
-@property(nonatomic) FC::Vector3f frustumTranslation;
+@property(nonatomic) FCVector3f frustumTranslation;
 @property(nonatomic) float fov;
 @property(nonatomic) float nearClip;
 @property(nonatomic) float farClip;
-@property(nonatomic) FC::Color4f clearColor;
+@property(nonatomic) FCColor4f clearColor;
 @property(nonatomic) BOOL depthBuffer;
 @property(nonatomic) BOOL superSampling;
 @property(nonatomic) float superSamplingScale;
@@ -102,7 +102,7 @@
 
 - (void)setFramebuffer;
 - (BOOL)presentFramebuffer;
--(FC::Vector3f)posOnPlane:(CGPoint)pointIn;
+-(FCVector3f)posOnPlane:(CGPoint)pointIn;
 
 // rendering control
 

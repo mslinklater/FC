@@ -20,16 +20,5 @@
  THE SOFTWARE.
  */
 
-#import "FCTypes.h"
-#import "FCKeys.h"
-#import "FCMacros.h"
-#import "FCColor.h"
-#import "FCProtocols.h"
-#import "FCNotifications.h"
+#include "FCPhysics2DJoint.h"
 
-#import "FCMaths.h"
-//#import "FCDebug.h"
-
-#include "Shared/Core/FCSharedPtr.h"
-#include "Shared/Core/FCStringUtils.h"
-#include "Shared/Core/FCError.h"

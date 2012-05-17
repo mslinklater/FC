@@ -311,7 +311,7 @@ static int lua_SourcePosition( lua_State* _state )
 	FCHandle hSource = lua_tointeger(_state, 1);	
 	FCAudioSource* source = [[FCAudioManager instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
 
-	FC::Vector3f pos;
+	FCVector3f pos;
 	pos.x = lua_tonumber(_state, 2);
 	pos.y = lua_tonumber(_state, 3);
 	pos.z = lua_tonumber(_state, 4);

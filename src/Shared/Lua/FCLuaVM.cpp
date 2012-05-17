@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#include "Core/FCCore.h"
+#include "Shared/Core/FCCore.h"
 
 #include "FCLuaVM.h"
 #include "FCLuaMemory.h"

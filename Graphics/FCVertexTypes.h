@@ -28,8 +28,8 @@ namespace FC {
 
 class VertexTypeDebug {
 public:
-	Vector3f vertex;
-	Color4f color;
+	FCVector3f vertex;
+	FCColor4f color;
 };
 
 }

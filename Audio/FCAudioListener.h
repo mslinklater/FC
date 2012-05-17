@@ -25,10 +25,10 @@
 #import "FCCore.h"
 
 @interface FCAudioListener : NSObject {
-	FC::Vector3f	_position;
+	FCVector3f	_position;
 	float			_rotation;
 }
-@property(nonatomic) FC::Vector3f position;
+@property(nonatomic) FCVector3f position;
 @property(nonatomic) float rotation;
 
 @end

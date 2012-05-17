@@ -74,8 +74,8 @@
 
 -(void)bindUniformsWithMesh:(FCMesh*)mesh vertexDescriptor:(FCVertexDescriptor*)vertexDescriptor
 {
-	FC::Color4f ambientColor( 0.25f, 0.25f, 0.25f, 1.0f );
-	FC::Color4f lightColor( 1.0f, 1.0f, 1.0f, 1.0f );
+	FCColor4f ambientColor( 0.25f, 0.25f, 0.25f, 1.0f );
+	FCColor4f lightColor( 1.0f, 1.0f, 1.0f, 1.0f );
 	
 	glUniform4fv(_ambientUniform.glLocation, 1, (GLfloat*)&ambientColor);
 	glUniform4fv(_lightColorUniform.glLocation, 1, (GLfloat*)&lightColor);

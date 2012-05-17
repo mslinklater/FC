@@ -36,10 +36,10 @@
 
 // Some helpers which shold probably be moved out
 
-void lua_pushvector3f( lua_State* _state, FC::Vector3f& vec );
-FC::Vector2f lua_tovector2f( lua_State* _state );
-FC::Vector3f lua_tovector3f( lua_State* _state );
-FC::Color4f lua_tocolor4f( lua_State* _state );
+void lua_pushvector3f( lua_State* _state, FCVector3f& vec );
+FCVector2f lua_tovector2f( lua_State* _state );
+FCVector3f lua_tovector3f( lua_State* _state );
+FCColor4f lua_tocolor4f( lua_State* _state );
 
 class FCLua {
 public:

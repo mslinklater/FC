@@ -46,7 +46,7 @@
 
 -(void)bindUniformsWithMesh:(FCMesh*)mesh vertexDescriptor:(FCVertexDescriptor*)vertexDescriptor
 {
-	FC::Color4f diffuseColor = mesh.diffuseColor;
+	FCColor4f diffuseColor = mesh.diffuseColor;
 	FCglUniform4fv(_diffuseColorUniform.glLocation, _diffuseColorUniform.num, (GLfloat*)&diffuseColor);
 }
 

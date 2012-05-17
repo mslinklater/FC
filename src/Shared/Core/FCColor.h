@@ -20,20 +20,23 @@
  THE SOFTWARE.
  */
 
-namespace FC {
-	
-	class Color4f {
-	public:
-		Color4f(){}
-		Color4f( float rIn, float gIn, float bIn, float aIn ) : r(rIn), g(gIn), b(bIn), a(aIn) {}
-		Color4f( const Color4f& col ) : r(col.r), g(col.g), b(col.b), a(col.a) {}
-		
-		void Zero( void ){ r = g = b = a = 0.0f; }
-		
-		float	r;
-		float	g;
-		float	b;
-		float	a;
-	};
-}
+#ifndef FCCOLOR_H
+#define FCCOLOR_H
 
+#include "FCBase.h"
+
+class FCColor4f {
+public:
+	FCColor4f(){}
+	FCColor4f( float rIn, float gIn, float bIn, float aIn ) : r(rIn), g(gIn), b(bIn), a(aIn) {}
+	FCColor4f( const FCColor4f& col ) : r(col.r), g(col.g), b(col.b), a(col.a) {}
+	
+	void Zero( void ){ r = g = b = a = 0.0f; }
+	
+	float	r;
+	float	g;
+	float	b;
+	float	a;
+};
+
+#endif // FCCOLOR_H

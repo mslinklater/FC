@@ -27,8 +27,6 @@
 #import "FCPersistentData.h"
 #import "FCAnalytics.h"
 //#import "FCDevice_old.h"
-#import "Shared/Core/FCError.h"
-#import "FCConnect_old.h"
 #import "FCPhaseManager.h"
 #import "FCPerformanceCounter.h"
 #import "FCAnalytics.h"
@@ -42,6 +40,8 @@
 #import "FCAudioManager.h"
 
 #include "Shared/Core/Device/FCDevice.h"
+#include "Shared/Core/FCError.h"
+#include "Shared/Core/Debug/FCConnect.h"
 
 #if defined (FC_LUA)
 static FCLuaVM*					s_lua;
@@ -197,8 +197,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	s_viewController = vc;
 #endif
 	s_delegate = delegate;
-//	s_perfCounter = [[FCPerformanceCounter alloc] init];
-	s_perfCounter = new FCPerformanceCounter;
+	s_perfCounter = FCPerformanceCounterPtr( new FCPerformanceCounter );
 	
 #if TARGET_OS_IPHONE
 	s_displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(update)];
@@ -212,7 +211,6 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	// register system lua hooks
 
 #if defined (FC_LUA)
-//	s_lua = [[FCLua instance] coreVM];
 	s_lua = FCLua::Instance()->CoreVM();
 	
 	[FCPersistentData registerLuaFunctions:s_lua];
@@ -221,34 +219,24 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	[FCViewManager registerLuaFunctions:s_lua];
 	[FCBuild registerLuaFunctions:s_lua];
 
-//	[FCAnalytics registerLuaFunctions:s_lua];
-
-//	FCError_RegisterLuaFunctions( s_lua.state );
-
-//	[s_lua createGlobalTable:@"FCApp"];
 	s_lua->CreateGlobalTable("FCApp");
-//	[s_lua registerCFunction:lua_ShowStatusBar as:@"FCApp.ShowStatusBar"];
 	s_lua->RegisterCFunction(lua_ShowStatusBar, "FCApp.ShowStatusBar");
-//	[s_lua registerCFunction:lua_SetBackgroundColor as:@"FCApp.SetBackgroundColor"];
 	s_lua->RegisterCFunction(lua_SetBackgroundColor, "FCApp.SetBackgroundColor");
-//	[s_lua registerCFunction:lua_ShowGameCenterLeaderboards as:@"FCApp.ShowGameCenterLeaderboards"];
 	s_lua->RegisterCFunction(lua_ShowGameCenterLeaderboards, "FCApp.ShowGameCenterLeaderboards");
-//	[s_lua registerCFunction:lua_LaunchExternalURL as:@"FCApp.LaunchExternalURL"];
 	s_lua->RegisterCFunction(lua_LaunchExternalURL, "FCApp.LaunchExternalURL");
-//	[s_lua registerCFunction:lua_MainViewSize as:@"FCApp.MainViewSize"];
 	s_lua->RegisterCFunction(lua_MainViewSize, "FCApp.MainViewSize");
-//	[s_lua registerCFunction:lua_PauseGame as:@"FCApp.Pause"];
 	s_lua->RegisterCFunction(lua_PauseGame, "FCApp.Pause");
-//	[s_lua registerCFunction:lua_SetUpdateFrequency as:@"FCApp.SetUpdateFrequency"];
 	s_lua->RegisterCFunction(lua_SetUpdateFrequency, "FCApp.SetUpdateFrequency");
 	
-//	[s_lua setGlobal:@"FCApp.paused" boolean:NO];
 	s_lua->SetGlobalBool("FCApp.paused", false);
 #endif
 	
 #if TARGET_OS_IPHONE
-	[[FCConnect_old instance] start:nil];
-	[[FCConnect_old instance] enableBonjourWithName:@"FCConnect"];
+//	[[FCConnect_old instance] start:nil];
+//	[[FCConnect_old instance] enableBonjourWithName:@"FCConnect"];
+	
+	FCConnect::Instance()->Start();
+	FCConnect::Instance()->EnableWithName("FCConnect");
 	
 	[FCFacebook instance];
 	[FCAnalytics instance];
@@ -317,15 +305,14 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	static int fps = 0;
 	static float seconds = 0.0f;
 
-	FCPerformanceCounterPtr localCounter = new FCPerformanceCounter;
-//	[localCounter zero];
+	FCPerformanceCounterPtr localCounter = FCPerformanceCounterPtr( new FCPerformanceCounter );
 	localCounter->Zero();
 	
 	static float pauseSmooth = 0.0f;
 	float dt = (float)s_perfCounter->MilliValue() / 1000.0f;
 	s_perfCounter->Zero();		
 	
-	FC::Clamp<float>(dt, 0, 0.1);
+	FCClamp<float>(dt, 0, 0.1);
 	
 	float gameTime;
 	
@@ -403,7 +390,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 -(void)willResignActive
 {
 #if TARGET_OS_IPHONE
-	[[FCConnect_old instance] stop];
+//	[[FCConnect_old instance] stop];
+	FCConnect::Instance()->Stop();
 	
 	FC_ASSERT(s_sessionActiveAnalyticsHandle != kFCHandleInvalid);
 	
@@ -437,8 +425,10 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 -(void)didBecomeActive
 {
 #if TARGET_OS_IPHONE
-	[[FCConnect_old instance] start:nil];
-	[[FCConnect_old instance] enableBonjourWithName:@"FCConnect"];
+//	[[FCConnect_old instance] start:nil];
+//	[[FCConnect_old instance] enableBonjourWithName:@"FCConnect"];
+	FCConnect::Instance()->Start();
+	FCConnect::Instance()->EnableWithName("FCConnect");
 	
 	FC_ASSERT(s_sessionActiveAnalyticsHandle == kFCHandleInvalid);
 	

@@ -20,39 +20,37 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#if defined (FC_PHYSICS)
 
-#import <Foundation/Foundation.h>
-
-enum eFCConnectErrorCode {
-	kFCConnectCouldNotBindToIPv4Address,
-	kFCConnectCouldNotBindToIPv6Address,
-	kFCConnectNoSocketsAvailable
+class FCPhysicsMaterial {
+public:
+	FCPhysicsMaterial()
+	: name( "unknown" )
+	, density( 1.0f )
+	, restitution( 0.5f )
+	, friction( 0.5f )
+	{}
+	std::string name;
+	float		density;
+	float		restitution;
+	float		friction;
 };
 
-@interface FCConnect_old : NSObject <NSNetServiceDelegate, NSStreamDelegate> {
-	uint16_t		m_port;
-	uint32_t		m_protocolFamily;
-	CFSocketRef		m_socketRef;
-	NSNetService*	m_netService;
-	NSString*		m_bonjourIdentifier;
-	NSInputStream*	m_inputStream;
-	NSOutputStream*	m_outputStream;
-	NSMutableArray*	m_sendQueue;
-	
-	BOOL			_connected;
-}
-@property() BOOL connected;
+typedef std::shared_ptr<FCPhysicsMaterial> FCPhysicsMaterialPtr;
+typedef std::map<std::string, FCPhysicsMaterialPtr> FCPhysicsMaterialMapByString;
 
-+(FCConnect_old*)instance;
+//#import <Foundation/Foundation.h>
+//
+//@interface FCPhysicsMaterial : NSObject {
+//	NSString* _name;
+//	float _density;
+//	float _restitution;
+//	float _friction;
+//}
+//@property(nonatomic, strong) NSString* name;
+//@property(nonatomic) float density;
+//@property(nonatomic) float restitution;
+//@property(nonatomic) float friction;
+//@end
 
--(BOOL)start:(NSError**)error;
--(BOOL)enableBonjourWithName:(NSString*)name;
--(void)stop;
--(void)setInputStream:(NSInputStream*)iStream andOutputStream:(NSOutputStream*)oStream;
-
--(void)sendNextString;
--(void)sendString:(NSString*)string;
-@end
-
-#endif
+#endif // defined(FC_PHYSICS)

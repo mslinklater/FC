@@ -67,25 +67,27 @@
 		if (bodyXML) 
 		{
 #if defined (FC_PHYSICS)
-			FCPhysics2DBodyDef* bodyDef = [FCPhysics2DBodyDef defaultDef];
+			FCPhysics2DBodyDefPtr bodyDef = FCPhysics2DBodyDefPtr( new FCPhysics2DBodyDef );
 			
-			FC::Vector2f pos;
+			FCVector2f pos;
 			pos.Zero();
 			
 			pos.x += FCXML::FloatValueForNodeAttribute(_createXML, kFCKeyOffsetX);
 			pos.y += FCXML::FloatValueForNodeAttribute(_createXML, kFCKeyOffsetY);
 			
-			[bodyDef setPosition:pos];	// TODO: change to property access
-			bodyDef.angle = FCXML::FloatValueForNodeAttribute(_createXML, kFCKeyRotation);
-			bodyDef.actor = self;
+//			[bodyDef setPosition:pos];	// TODO: change to property access
+			bodyDef->position = pos;
+			
+			bodyDef->angle = FCXML::FloatValueForNodeAttribute(_createXML, kFCKeyRotation);
+//			bodyDef.actor = self;
 			
 			if( FCXML::BoolValueForNodeAttribute(_createXML, kFCKeyDynamic) )
-				bodyDef.isStatic = NO;
+				bodyDef->isStatic = NO;
 			else
-				bodyDef.isStatic = YES;
+				bodyDef->isStatic = YES;
 			
-			bodyDef.canSleep = NO;
-			bodyDef.shapeXML = bodyXML;
+			bodyDef->canSleep = NO;
+			bodyDef->shapeXML = bodyXML;
 			
 			_physicsBody = [[[FCPhysics instance] twoD] createBodyWithDef:bodyDef name:name actorHandle:handle];
 #endif
@@ -128,12 +130,12 @@
 
 #if defined (FC_PHYSICS)
 #pragma mark - Physics methods
--(FC::Vector3f)getCenter
+-(FCVector3f)getCenter
 {
 	return [_physicsBody position];
 }
 
--(void)applyImpulse:(FC::Vector3f)impulse atWorldPos:(FC::Vector3f)pos
+-(void)applyImpulse:(FCVector3f)impulse atWorldPos:(FCVector3f)pos
 {
 	[_physicsBody applyImpulse:impulse atWorldPos:pos];
 }
@@ -142,41 +144,41 @@
 
 #pragma mark - Position
 
--(void)setPosition:(FC::Vector3f)newPosition
+-(void)setPosition:(FCVector3f)newPosition
 {
 #if defined (FC_PHYSICS)
 	[_physicsBody setPosition:newPosition];
 #endif
 }
 
--(FC::Vector3f)position
+-(FCVector3f)position
 {
 #if defined (FC_PHYSICS)
 	return _physicsBody.position;
 #else
-	return FC::Vector3f( 0.0f, 0.0f, 0.0f );
+	return FCVector3f( 0.0f, 0.0f, 0.0f );
 #endif
 }
 
 #pragma mark - Linear Velocity
 
--(void)setLinearVelocity:(FC::Vector3f)vel
+-(void)setLinearVelocity:(FCVector3f)vel
 {
 #if defined (FC_PHYSICS)
 	[_physicsBody setLinearVelocity:vel];
 #endif
 }
 
--(FC::Vector3f)linearVelocity
+-(FCVector3f)linearVelocity
 {
 #if defined (FC_PHYSICS)
 	return [_physicsBody linearVelocity];
 #else
-	return FC::Vector2f( 0.0f, 0.0f, 0.0f );
+	return FCVector2f( 0.0f, 0.0f, 0.0f );
 #endif
 }
 
--(void)setDebugModelColor:(FC::Color4f)color
+-(void)setDebugModelColor:(FCColor4f)color
 {
 	[_model setDebugMeshColor:color];
 	return;
@@ -203,7 +205,7 @@
 #if defined (FC_PHYSICS)
 	if( _physicsBody )
 	{
-		FC::Vector3f pos = [_physicsBody position ];
+		FCVector3f pos = [_physicsBody position ];
 		float rot = [_physicsBody rotation];
 		
 		if( _model )
@@ -227,7 +229,7 @@
 	return 0.0f;
 }
 
--(BOOL)posWithinBounds:(FC::Vector2f)pos
+-(BOOL)posWithinBounds:(FCVector2f)pos
 {
 	return NO;
 }

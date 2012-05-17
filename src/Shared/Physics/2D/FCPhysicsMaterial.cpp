@@ -22,34 +22,34 @@
 
 #if defined (FC_PHYSICS)
 
-#import "FCPhysicsMaterial.h"
-
-@implementation FCPhysicsMaterial
-
-@synthesize name = _name;
-@synthesize density = _density;
-@synthesize friction = _friction;
-@synthesize restitution = _restitution;
-
--(id)init
-{
-	self = [super init];
-	if (self) {
-		_name = @"unknown";
-		
-		// Some reasonable default values
-		_friction = 0.5f;
-		_restitution = 0.5f;
-		_density = 1.0f;
-	}
-	return self;
-}
-
--(NSString*)description
-{
-	return [NSString stringWithFormat:@"Material:%@ friction:%f restitution:%f density:%f",
-			_name, _friction, _restitution, _density];
-}
-@end
+//#import "FCPhysicsMaterial.h"
+//
+//@implementation FCPhysicsMaterial
+//
+//@synthesize name = _name;
+//@synthesize density = _density;
+//@synthesize friction = _friction;
+//@synthesize restitution = _restitution;
+//
+//-(id)init
+//{
+//	self = [super init];
+//	if (self) {
+//		_name = @"unknown";
+//		
+//		// Some reasonable default values
+//		_friction = 0.5f;
+//		_restitution = 0.5f;
+//		_density = 1.0f;
+//	}
+//	return self;
+//}
+//
+//-(NSString*)description
+//{
+//	return [NSString stringWithFormat:@"Material:%@ friction:%f restitution:%f density:%f",
+//			_name, _friction, _restitution, _density];
+//}
+//@end
 
 #endif // defined(FC_PHYSICS)

@@ -20,38 +20,32 @@
  THE SOFTWARE.
  */
 
-#ifndef FCRESOURCE_H
-#define FCRESOURCE_H
+#import <Foundation/Foundation.h>
 
-#include <memory>
-#include "Shared/Core/FCTypes.h"
-#include "Shared/Core/FCXML.h"
+@interface FCConnect_apple : NSObject <NSNetServiceDelegate, NSStreamDelegate> {
+	uint16_t		m_port;
+	uint32_t		m_protocolFamily;
+	CFSocketRef		m_socketRef;
+	NSNetService*	m_netService;
+	NSString*		m_bonjourIdentifier;
+	NSMutableArray*	m_sendQueue;
+	
+	BOOL			_connected;
+	NSInputStream*	_inputStream;
+	NSOutputStream*	_outputStream;
+}
+@property(nonatomic) BOOL connected;
+@property(nonatomic, strong) NSInputStream* inputStream;
+@property(nonatomic, strong) NSOutputStream* outputStream;
 
-class FCResource {
-public:
-	
-	FCResource()
-	: m_binaryPayload(0)
-	, m_userData(0)
-	{}
-	~FCResource(){}
-	
-	void InitWithContentsOfFile( std::string filename );
-	
-	void*		UserData(){ return m_userData; }
-	void		SetUserData( void* ud ){ m_userData = ud; }
-	FCXMLPtr	XML(){ return m_xml; }
-	char*		BinaryPayload(){ return m_binaryPayload; }
-	void		SetName( std::string name ){ m_name = name; }
-	
-private:
-	char*	m_binaryPayload;
-	uint32_t m_binaryPayloadSize;
-	FCXMLPtr m_xml;
-	std::string m_name;
-	void* m_userData;
-};
++(FCConnect_apple*)instance;
 
-typedef std::shared_ptr<FCResource> FCResourcePtr;
+-(BOOL)start;
+-(BOOL)enableWithName:(NSString*)name;
+-(void)stop;
 
-#endif // FCRESOURCE_H
+//-(void)setInputStream:(NSInputStream*)iStream andOutputStream:(NSOutputStream*)oStream;
+-(void)sendNextString;
+-(void)sendString:(NSString*)string;
+
+@end

@@ -33,10 +33,10 @@
 
 @interface FCPhysics : NSObject <FCGameObjectUpdate> {
 	FCPhysics2D* _twoD;
-	NSMutableDictionary* _materials;
+	FCPhysicsMaterialMapByString materials;
 }
 @property(strong, nonatomic, readonly) FCPhysics2D* twoD;
-@property(nonatomic, strong) NSMutableDictionary* materials;
+//@property(nonatomic) FCPhysicsMaterialMapByString materials;
 
 +(FCPhysics*)instance;
 
@@ -44,9 +44,9 @@
 //-(void)destroy2DSystem;
 
 -(void)reset;
--(void)setMaterial:(FCPhysicsMaterial*)material;
+-(void)setMaterial:(FCPhysicsMaterialPtr)material;
 
-//-(FCHandle)addDistanceJoint2D
+-(FCPhysicsMaterialMapByString&)getMaterials;
 
 @end
 

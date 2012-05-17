@@ -56,7 +56,7 @@
 -(BOOL)needsRender;
 -(BOOL)respondsToTapGesture;
 -(float)radius;
--(BOOL)posWithinBounds:(FC::Vector2f)pos;
+-(BOOL)posWithinBounds:(FCVector2f)pos;
 
 @end
 
@@ -94,17 +94,17 @@
 		  handle:(FCHandle)handle;
 
 // TODO: Get these two into a property
--(void)setPosition:(FC::Vector3f)pos;
--(FC::Vector3f)position;
+-(void)setPosition:(FCVector3f)pos;
+-(FCVector3f)position;
 
--(void)setLinearVelocity:(FC::Vector3f)vel;
--(FC::Vector3f)linearVelocity;
+-(void)setLinearVelocity:(FCVector3f)vel;
+-(FCVector3f)linearVelocity;
 
--(void)setDebugModelColor:(FC::Color4f)color;
+-(void)setDebugModelColor:(FCColor4f)color;
 
 #if defined (FC_PHYSICS)
--(void)applyImpulse:(FC::Vector3f)impulse atWorldPos:(FC::Vector3f)pos;
--(FC::Vector3f)getCenter;
+-(void)applyImpulse:(FCVector3f)impulse atWorldPos:(FCVector3f)pos;
+-(FCVector3f)getCenter;
 #endif
 @end
 

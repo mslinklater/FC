@@ -46,7 +46,7 @@ static int lua_GetActorPosition( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
 	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:lua_tointeger(_state, 1)]];
-	FC::Vector3f pos = actor.position;
+	FCVector3f pos = actor.position;
 	
 	lua_pushnumber(_state, pos.x);
 	lua_pushnumber(_state, pos.y);
@@ -65,7 +65,7 @@ static int lua_SetActorPosition( lua_State* _state )
 	
 	FCHandle handle = lua_tointeger(_state, 1);
 	
-	FC::Vector3f pos;
+	FCVector3f pos;
 	pos.x = lua_tonumber(_state, 2);
 	pos.y = lua_tonumber(_state, 3);
 	pos.z = lua_tonumber(_state, 4);
@@ -83,7 +83,7 @@ static int lua_GetActorLinearVelocity( lua_State* _state )
 	
 	FCHandle handle = lua_tointeger(_state, 1);
 	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:handle]];
-	FC::Vector3f vel = actor.linearVelocity;
+	FCVector3f vel = actor.linearVelocity;
 	
 	lua_pushnumber(_state, vel.x);
 	lua_pushnumber(_state, vel.y);
@@ -101,7 +101,7 @@ static int lua_SetActorLinearVelocity( lua_State* _state )
 	
 	FCHandle handle = lua_tointeger(_state, 1);
 	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:handle]];
-	actor.linearVelocity = FC::Vector3f( lua_tonumber(_state, 2), lua_tonumber(_state, 3), lua_tonumber(_state, 4) );
+	actor.linearVelocity = FCVector3f( lua_tonumber(_state, 2), lua_tonumber(_state, 3), lua_tonumber(_state, 4) );
 	return 0;
 }
 
@@ -115,7 +115,7 @@ static int lua_ApplyImpulse( lua_State* _state )
 	
 	FCHandle handle = lua_tointeger(_state, 1);
 	FCActor* actor = [[FCActorSystem instance].actorHandleDictionary objectForKey:[NSNumber numberWithInt:handle]];
-	[actor applyImpulse:FC::Vector3f(lua_tonumber(_state, 2), lua_tonumber(_state, 3), lua_tonumber(_state, 4)) atWorldPos:actor.position];
+	[actor applyImpulse:FCVector3f(lua_tonumber(_state, 2), lua_tonumber(_state, 3), lua_tonumber(_state, 4)) atWorldPos:actor.position];
 	return 0;
 }
 

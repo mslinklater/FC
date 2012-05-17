@@ -31,19 +31,19 @@
 
 @interface FCModel : NSObject {	
 	NSMutableArray* _meshes;
-	FC::Vector3f _position;
+	FCVector3f _position;
 	float _rotation;
 }
 
 @property(nonatomic, strong) NSMutableArray* meshes;
-@property(nonatomic) FC::Vector3f position;
+@property(nonatomic) FCVector3f position;
 @property(nonatomic) float rotation;
 
 //-(void)render;
 
 -(id)initWithModel:(FCXMLNode)modelXML resource:(FCResourcePtr)res;
 -(id)initWithPhysicsBody:(FCXMLNode)bodyXML color:(UIColor*)color;// actorXOffset:(float)actorX actorYOffset:(float)actorY;
--(void)setDebugMeshColor:(FC::Color4f)color;
+-(void)setDebugMeshColor:(FCColor4f)color;
 @end
 
 #endif // defined(FC_GRAPHICS)

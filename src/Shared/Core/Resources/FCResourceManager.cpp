@@ -43,7 +43,7 @@ FCResourcePtr FCResourceManager::ResourceWithPath(std::string path)
 {
 	std::string assetPath = std::string("Assets/") + ActualResourceName(path);
 	
-	FCResourcePtr resource = new FCResource;
+	FCResourcePtr resource = FCResourcePtr(new FCResource );
 	resource->InitWithContentsOfFile( assetPath );
 	resource->SetName( assetPath );
 	

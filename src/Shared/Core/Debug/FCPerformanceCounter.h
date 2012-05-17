@@ -25,7 +25,8 @@
 
 #include <stdint.h>
 
-#include "Shared/Core/FCSharedPtr.h"
+#include <memory>
+//#include "Shared/Core/FCSharedPtr.h"
 
 class FCPerformanceCounter
 {
@@ -41,6 +42,6 @@ public:
 private:
 };
 
-typedef FCSharedPtr<FCPerformanceCounter> FCPerformanceCounterPtr;
+typedef std::shared_ptr<FCPerformanceCounter> FCPerformanceCounterPtr;
 
 #endif

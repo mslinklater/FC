@@ -26,14 +26,13 @@
 
 #import "FCPhysics2DBody.h"
 #import "FCMacros.h"
-//#import "FCXMLData.h"
 #import "FCPhysics.h"
 #import "FCMaths.h"
 #import "FCPhysics2DBodyDef.h"
 
 @interface FCPhysics2DBody(hidden)
--(void)createFixturesFromDef:(FCPhysics2DBodyDef*)def;
--(void)createBodyFromDef:(FCPhysics2DBodyDef*)def;
+-(void)createFixturesFromDef:(FCPhysics2DBodyDefPtr)def;
+-(void)createBodyFromDef:(FCPhysics2DBodyDefPtr)def;
 @end
 
 @implementation FCPhysics2DBody
@@ -44,12 +43,13 @@
 @synthesize b2Body = _b2Body;
 @synthesize handle = _handle;
 
--(id)initWithDef:(FCPhysics2DBodyDef*)def
+-(id)initWithDef:(FCPhysics2DBodyDefPtr)def
 {
 	self = [super init];
 	if (self) 
 	{
-		_Id = def.Id;
+		_Id = [NSString stringWithUTF8String:def->ID().c_str()];
+
 		[self createBodyFromDef:def];
 		[self createFixturesFromDef:def];
 	}
@@ -61,23 +61,23 @@
 	_world->DestroyBody(_b2Body);
 }
 
--(void)createBodyFromDef:(FCPhysics2DBodyDef *)def
+-(void)createBodyFromDef:(FCPhysics2DBodyDefPtr)def
 {
 	b2BodyDef b2def;
-	b2def.position.x = def.position.x;
-	b2def.position.y = def.position.y;
-	b2def.angle = FCDegToRad( def.angle );
-	b2def.userData = (void*)def.hActor;
-	b2def.allowSleep = def.canSleep;
+	b2def.position.x = def->position.x;
+	b2def.position.y = def->position.y;
+	b2def.angle = FCDegToRad( def->angle );
+	b2def.userData = (void*)def->hActor;
+	b2def.allowSleep = def->canSleep;
 	
 	// Linear damping
-	if (def.linearDamping != kFCInvalidFloat) {
-		b2def.linearDamping = def.linearDamping;
+	if (def->linearDamping != kFCInvalidFloat) {
+		b2def.linearDamping = def->linearDamping;
 	} else {
 		b2def.linearDamping = 0;
 	}
 	
-	if (def.isStatic) 
+	if (def->isStatic) 
 	{
 		b2def.type = b2_staticBody;
 	}
@@ -86,53 +86,39 @@
 		b2def.type = b2_dynamicBody;
 	}
 	
-	_world = def.world;
+	_world = def->pWorld;
 	
 	_b2Body = _world->CreateBody( &b2def );
 }
 
--(void)createFixturesFromDef:(FCPhysics2DBodyDef*)def
+-(void)createFixturesFromDef:(FCPhysics2DBodyDefPtr)def
 {
-//	NSArray* fixtures;
-//	if ([[def.shapeDef valueForKey:@"fixture"] isKindOfClass:[NSDictionary class]]) {
-//		fixtures = [NSArray arrayWithObject:[def.shapeDef valueForKey:@"fixture"]];
-//	} else {
-//		fixtures = [def.shapeDef valueForKey:@"fixture"];
-//	}
-
-	FCXMLNode shapeXML = def.shapeXML;
+	FCXMLNode shapeXML = def->shapeXML;
 	FCXMLNodeVec fixtures = FCXML::VectorForChildNodesOfType( shapeXML, "fixture" );
 	
-//	for (NSDictionary* fixture in fixtures) 
 	for (FCXMLNodeVecIter fixture = fixtures.begin(); fixture != fixtures.end(); fixture++)
 	{
-//		NSString* type = [fixture valueForKey:[NSString stringWithUTF8String:kFCKeyType.c_str()]];
 		NSString* type = [NSString stringWithUTF8String:FCXML::StringValueForNodeAttribute(*fixture, kFCKeyType).c_str()];
 		FC_ASSERT(type);
 
 		b2FixtureDef fixtureDef;
 		
-//		NSString* materialString = [fixture valueForKey:[NSString stringWithUTF8String:kFCKeyMaterial.c_str()]];
-		NSString* materialString = [NSString stringWithUTF8String:FCXML::StringValueForNodeAttribute(*fixture, kFCKeyMaterial).c_str()];
-		FC_ASSERT(materialString);
+		std::string materialString = FCXML::StringValueForNodeAttribute(*fixture, kFCKeyMaterial);
 
-		FCPhysicsMaterial* material = [[FCPhysics instance].materials valueForKey:materialString];
+		FCPhysicsMaterialPtr material = [[FCPhysics instance] getMaterials][materialString];
 		FC_ASSERT(material);
 		
-		fixtureDef.density = material.density;
-		fixtureDef.friction = material.friction;
-		fixtureDef.restitution = material.restitution;
-		fixtureDef.userData = (__bridge void*)def.actor;
+		fixtureDef.density = material->density;
+		fixtureDef.friction = material->friction;
+		fixtureDef.restitution = material->restitution;
+		fixtureDef.userData = def->actor;
 				
 		if ([type isEqualToString:[NSString stringWithUTF8String:kFCKeyCircle.c_str()]]) 
 		{
 			b2CircleShape shape;
-//			shape.m_radius = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyRadius.c_str()]] floatValue];
 			shape.m_radius = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyRadius);
 			b2Vec2 circlePos;
-//			circlePos.x = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
 			circlePos.x = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyOffsetX);
-//			circlePos.y = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
 			circlePos.y = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyOffsetY);
 			shape.m_p = circlePos;
 			fixtureDef.shape = &shape;
@@ -143,16 +129,10 @@
 			b2PolygonShape shape;
 			
 			b2Vec2 rectanglePos;
-//			float rectangleAngle = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyAngle.c_str()]] floatValue];
 			float rectangleAngle = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyAngle);
-//			rectanglePos.x = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
 			rectanglePos.x = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyOffsetX);
-//			rectanglePos.y = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
 			rectanglePos.y = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyOffsetY);
 			
-//			shape.SetAsBox( [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyXSize.c_str()]] floatValue] * 0.5f,	// box2D uses half height etc
-//						   [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyYSize.c_str()]] floatValue] * 0.5f,
-//						   rectanglePos, rectangleAngle);
 			shape.SetAsBox( FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyXSize) * 0.5f,	// box2D uses half height etc
 							FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyYSize) * 0.5f,
 							rectanglePos, rectangleAngle);
@@ -164,7 +144,6 @@
 		{
 			b2PolygonShape shape;
 			
-//			NSString* strippedVerts = [[fixture valueForKey:@"verts"] stringByReplacingOccurrencesOfString:@"," withString:@" "];
 			NSString* vertsString = [NSString stringWithUTF8String:FCXML::StringValueForNodeAttribute(*fixture, "verts").c_str()];
 			NSString* strippedVerts = [vertsString stringByReplacingOccurrencesOfString:@"," withString:@" "];
 			strippedVerts = [strippedVerts stringByReplacingOccurrencesOfString:@"(" withString:@""];
@@ -176,9 +155,7 @@
 			
 			b2Vec2* verts = (b2Vec2*)malloc(sizeof(b2Vec2) * numVerts );
 			
-//			float xOffset = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetX.c_str()]] floatValue];
 			float xOffset = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyOffsetX);
-//			float yOffset = [[fixture valueForKey:[NSString stringWithUTF8String:kFCKeyOffsetY.c_str()]] floatValue];
 			float yOffset = FCXML::FloatValueForNodeAttribute(*fixture, kFCKeyOffsetY);
 
 			for(int i = 0 ; i < numVerts ; i++ )	// backwards due to different winding between collada and box2d
@@ -203,14 +180,14 @@
 
 #pragma mark - Position
 
--(FC::Vector3f)position
+-(FCVector3f)position
 {
 	const b2Vec2 pos = _b2Body->GetPosition();
 
-	return FC::Vector3f(pos.x, pos.y, 0.0f);
+	return FCVector3f(pos.x, pos.y, 0.0f);
 }
 
--(void)setPosition:(FC::Vector3f)newPos
+-(void)setPosition:(FCVector3f)newPos
 {
 	float currentAngle = _b2Body->GetAngle();
 	_b2Body->SetTransform( b2Vec2( newPos.x, newPos.y ), currentAngle );
@@ -218,13 +195,13 @@
 
 #pragma mark - Velocity
 
--(FC::Vector2f)linearVelocity
+-(FCVector2f)linearVelocity
 {
 	b2Vec2 vel = _b2Body->GetLinearVelocity();
-	return FC::Vector2f( vel.x, vel.y );
+	return FCVector2f( vel.x, vel.y );
 }
 
--(void)setLinearVelocity:(FC::Vector2f)newVel
+-(void)setLinearVelocity:(FCVector2f)newVel
 {
 	b2Vec2 vel;
 	vel.x = newVel.x;
@@ -234,7 +211,7 @@
 
 #pragma mark - Apply forces & impulses
 
--(void)applyImpulse:(FC::Vector2f)impulse atWorldPos:(FC::Vector2f)pos
+-(void)applyImpulse:(FCVector2f)impulse atWorldPos:(FCVector2f)pos
 {
 	b2Vec2 b2Imp;
 	b2Vec2 b2Pos;
@@ -275,7 +252,7 @@
 
 -(NSString*)description
 {
-	FC::Vector3f pos = [self position];
+	FCVector3f pos = [self position];
 	return [NSString stringWithFormat:@"pos (%f,%f)", pos.x, pos.y ];
 }
 

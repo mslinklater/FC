@@ -21,8 +21,8 @@
  */
 
 #import "FCPhysics2DContactListener.h"
-#import "FCLua.h"
-#import "FCActor.h"
+//#import "FCLua.h"
+//#import "FCActor.h"
 
 FCPhysics2DContactListener::FCPhysics2DContactListener()
 {
@@ -77,8 +77,6 @@ void FCPhysics2DContactListener::PreSolve( b2Contact* contact, const b2Manifold*
 				info.z = 0.0f;
 				info.hActor1 = hActor1;
 				info.hActor2 = hActor2;
-//				info.actor1 = (void*)actor1;
-//				info.actor2 = (void*)actor2;
 				m_collisions[key] = info;
 			} else {
 				if (i->second.velocity > approachVelocity) {

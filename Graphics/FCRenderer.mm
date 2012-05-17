@@ -127,12 +127,12 @@ static int lua_SetCurrentRenderer( lua_State* _state )
 	
 	for( FCMesh* mesh in _meshes )
 	{
-		FC::Matrix4f mat = FC::Matrix4f::Identity();
-		FC::Matrix4f trans = FC::Matrix4f::Translate(mesh.parentModel.position.x, mesh.parentModel.position.y, 0.0f);
-		FC::Matrix4f rot = FC::Matrix4f::Rotate(mesh.parentModel.rotation, FC::Vector3f(0.0f, 0.0f, -1.0f) );
+		FCMatrix4f mat = FCMatrix4f::Identity();
+		FCMatrix4f trans = FCMatrix4f::Translate(mesh.parentModel.position.x, mesh.parentModel.position.y, 0.0f);
+		FCMatrix4f rot = FCMatrix4f::Rotate(mesh.parentModel.rotation, FCVector3f(0.0f, 0.0f, -1.0f) );
 		
-		FC::Vector3f lightDirection( 0.707f, 0.707f, 0.707f );		
-		FC::Vector3f invLight = lightDirection * rot;
+		FCVector3f lightDirection( 0.707f, 0.707f, 0.707f );		
+		FCVector3f invLight = lightDirection * rot;
 		
 		mat = rot * trans;
 		

@@ -80,7 +80,7 @@ static int lua_SetClearColor( lua_State* _state )
 	float a = lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
-	s_currentLuaTarget.clearColor = FC::Color4f( r, g, b, a );
+	s_currentLuaTarget.clearColor = FCColor4f( r, g, b, a );
 	
 	return 0;
 }
@@ -114,7 +114,7 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 
-	s_currentLuaTarget.frustumTranslation = FC::Vector3f(
+	s_currentLuaTarget.frustumTranslation = FCVector3f(
 														 lua_tonumber(_state, 1),
 														 lua_tonumber(_state, 2),
 														 lua_tonumber(_state, 3) );
@@ -223,7 +223,7 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 
 		// setup some defaults
 		
-		self.clearColor = FC::Color4f(0.5f, 0.5f, 0.5f, 1.0f);
+		self.clearColor = FCColor4f(0.5f, 0.5f, 0.5f, 1.0f);
 		
 		self.depthBuffer = NO;
 		self.superSampling = NO;
@@ -546,7 +546,7 @@ static int lua_SetFrustumTranslation( lua_State* _state )
     [self deleteFramebuffer];
 }
 
--(FC::Vector3f)posOnPlane:(CGPoint)pointIn
+-(FCVector3f)posOnPlane:(CGPoint)pointIn
 {
 	// needs offset
 	
@@ -562,28 +562,28 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 	pointIn.x /= halfScreenWidth / (-self.frustumTranslation.z * self.fov);
 	pointIn.y /= halfScreenHeight / (-self.frustumTranslation.z * (self.fov * _aspectRatio));
 	
-	return FC::Vector3f(pointIn.x, pointIn.y, 0.0f);
+	return FCVector3f(pointIn.x, pointIn.y, 0.0f);
 }
 
 -(void)setProjectionMatrix
 {
 	// build matrix
 	
-	FC::Matrix4f mat = FC::Matrix4f::Frustum( -self.fov, self.fov, -self.fov * _aspectRatio, self.fov * _aspectRatio, self.nearClip, self.farClip );	
-	FC::Matrix4f trans = FC::Matrix4f::Translate(self.frustumTranslation.x, self.frustumTranslation.y, self.frustumTranslation.z);
+	FCMatrix4f mat = FCMatrix4f::Frustum( -self.fov, self.fov, -self.fov * _aspectRatio, self.fov * _aspectRatio, self.nearClip, self.farClip );	
+	FCMatrix4f trans = FCMatrix4f::Translate(self.frustumTranslation.x, self.frustumTranslation.y, self.frustumTranslation.z);
 	
 	mat = trans * mat;
 	
 	FCShaderManager* shaderManager = [FCShaderManager instance];
 
-	FC::Color4f ambientColor( 0.25f, 0.25f, 0.25f, 1.0f );
+	FCColor4f ambientColor( 0.25f, 0.25f, 0.25f, 1.0f );
 
 	NSArray* programs = [shaderManager allShaders];
 
 	for( FCShaderProgram* program in programs )
 	{
 		FCShaderUniform* projectionUniform = [program getUniform:@"projection"];
-		[program setUniformValue:projectionUniform to:&mat size:sizeof(FC::Matrix4f)];
+		[program setUniformValue:projectionUniform to:&mat size:sizeof(FCMatrix4f)];
 		
 	}
 	

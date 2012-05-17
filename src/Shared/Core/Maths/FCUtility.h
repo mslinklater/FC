@@ -25,54 +25,51 @@
 
 #include <math.h>
 
-namespace FC
-{
-	static const float kDegToRad = 0.01745329f;	
-		
-	template<class T>
-	void Swap(T& a, T& b)
-	{
-		T temp = a;
-		a = b;
-		b = temp;
-	}
-
-	template<class T>
-	T Max(T a, T b)
-	{
-		if (a > b)
-			return a;
-		else
-			return b;
-	}
-
-	template<class T>
-	T Min(T a, T b)
-	{
-		if (a < b)
-			return a;
-		else
-			return b;
-	}
-
-	template<class T>
-	void Clamp(T& val, T min, T max)
-	{
-		if (val < min) val = min;
-		if (val > max) val = max;
-	}
+static const float kFCDegToRad = 0.01745329f;	
 	
-	static float RoundWithTolerance( float in, float tolerance )
-	{
-		int div = (int)(in / tolerance);
-		float lower = (float)div * tolerance;
-		float upper = (float)(div + ((in >= 0) ? 1 : -1)) * tolerance;
-		
-		if (fabsf(in - lower) < fabsf(in - upper)) 
-			return lower;
-		else 
-			return upper;
-	}
+template<class T>
+void FCSwap(T& a, T& b)
+{
+	T temp = a;
+	a = b;
+	b = temp;
+}
+
+template<class T>
+T FCMax(T a, T b)
+{
+	if (a > b)
+		return a;
+	else
+		return b;
+}
+
+template<class T>
+T FCMin(T a, T b)
+{
+	if (a < b)
+		return a;
+	else
+		return b;
+}
+
+template<class T>
+void FCClamp(T& val, T min, T max)
+{
+	if (val < min) val = min;
+	if (val > max) val = max;
+}
+
+static float FCRoundWithTolerance( float in, float tolerance )
+{
+	int div = (int)(in / tolerance);
+	float lower = (float)div * tolerance;
+	float upper = (float)(div + ((in >= 0) ? 1 : -1)) * tolerance;
+	
+	if (fabsf(in - lower) < fabsf(in - upper)) 
+		return lower;
+	else 
+		return upper;
 }
 
 #endif // _FC_UTILITY_H

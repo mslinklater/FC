@@ -20,4 +20,38 @@
  THE SOFTWARE.
  */
 
-#include <iostream>
+#include "FCConnect.h"
+
+extern bool plt_FCConnect_Start();
+extern bool plt_FCConnect_EnableWithName( std::string name );
+extern void plt_FCConnect_Stop();
+extern void plt_FCConnect_SendString( std::string s );
+
+FCConnect* FCConnect::Instance()
+{
+	static FCConnect* s_pInstance = 0;
+	if (!s_pInstance) {
+		s_pInstance = new FCConnect;
+	}
+	return s_pInstance;
+}
+
+bool FCConnect::Start()
+{
+	return plt_FCConnect_Start();
+}
+
+bool FCConnect::EnableWithName( std::string name )
+{
+	return plt_FCConnect_EnableWithName( name );
+}
+
+void FCConnect::Stop()
+{
+	plt_FCConnect_Stop();
+}
+
+void FCConnect::SendString( std::string s )
+{
+	plt_FCConnect_SendString( s );
+}

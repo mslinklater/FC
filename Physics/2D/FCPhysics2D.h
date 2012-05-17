@@ -30,6 +30,7 @@
 #import "FCPhysics2DBodyDef.h"
 #import "FCPhysics2DJoint.h"
 #import "FCPhysics2DContactListener.h"
+#import "FCProtocols.h"
 
 @interface FCPhysics2D : NSObject <FCGameObjectUpdate> {
     b2World*				_world;
@@ -47,12 +48,12 @@
 
 -(void)prepareForDealloc;
 
--(FCPhysics2DBody*)createBodyWithDef:(FCPhysics2DBodyDef*)def name:(NSString*)name actorHandle:(FCHandle)actorHandle;
+-(FCPhysics2DBody*)createBodyWithDef:(FCPhysics2DBodyDefPtr)def name:(NSString*)name actorHandle:(FCHandle)actorHandle;
 -(void)destroyBody:(FCPhysics2DBody*)body;
 
 -(FCPhysics2DBody*)bodyWithName:(NSString*)name;
 
--(FCHandle)createJoint:(FCPhysics2DJointCreateDef*)def;
+-(FCHandle)createJoint:(FCPhysics2DJointCreateDefPtr)def;
 
 -(void)setRevoluteJoint:(FCHandle)handle motorEnabled:(BOOL)enabled torque:(float)torque speed:(float)speed;
 -(void)setRevoluteJoint:(FCHandle)handle limitsEnabled:(BOOL)enabled min:(float)min max:(float)max;

@@ -28,36 +28,34 @@ extern int doubles2halfp(void *target, void *source, int numel);
 extern int halfp2singles(void *target, void *source, int numel);
 extern int halfp2doubles(void *target, void *source, int numel);
 
-namespace FC {
-	typedef short float16;
-	
-	inline float16 toFloat16( float input )
-	{
-		float16 result;
-		singles2halfp( &result, &input, 1 );
-		return result;
-	}
+typedef uint16_t float16;
 
-	inline float16 toFloat16( double input )
-	{
-		float16 result;
-		doubles2halfp( &result, &input, 1 );
-		return result;
-	}
+inline float16 FCToFloat16( float input )
+{
+	float16 result;
+	singles2halfp( &result, &input, 1 );
+	return result;
+}
 
-	inline float toFloat( float16 input )
-	{
-		float result;
-		halfp2singles( &result, &input, 1 );
-		return result;
-	}
+inline float16 FCToFloat16( double input )
+{
+	float16 result;
+	doubles2halfp( &result, &input, 1 );
+	return result;
+}
 
-	inline double toFloat( float16 input )
-	{
-		double result;
-		halfp2doubles( &result, &input, 1 );
-		return result;
-	}
+inline float FCToFloat( float16 input )
+{
+	float result;
+	halfp2singles( &result, &input, 1 );
+	return result;
+}
+
+inline double FCToFloat( float16 input )
+{
+	double result;
+	halfp2doubles( &result, &input, 1 );
+	return result;
 }
 
 #endif FCHalfPrecision_h

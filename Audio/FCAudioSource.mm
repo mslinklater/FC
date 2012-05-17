@@ -75,7 +75,7 @@
 	return _stopped;
 }
 
--(void)setPosition:(FC::Vector3f)position
+-(void)setPosition:(FCVector3f)position
 {
 	float sourcePosAL[] = {position.x, position.y, position.z};
 	
@@ -86,7 +86,7 @@
 
 -(void)setVolume:(float)volume
 {
-	FC::Clamp(volume, 0.0f, 1.0f);
+	FCClamp(volume, 0.0f, 1.0f);
 	alSourcef(_ALHandle, AL_GAIN, volume * volume);
 	AL_CHECK;
 	_volume = volume;
@@ -94,7 +94,7 @@
 
 -(void)setPitch:(float)pitch
 {
-	FC::Clamp(pitch, 0.01f, 9999.0f);
+	FCClamp(pitch, 0.01f, 9999.0f);
 	alSourcef(_ALHandle, AL_PITCH, pitch);
 	AL_CHECK;
 	_pitch = pitch;

@@ -20,20 +20,23 @@
  THE SOFTWARE.
  */
 
-#if defined (FC_PHYSICS)
+// Base class for all FC C++ objects
 
-#import <Foundation/Foundation.h>
+#ifndef CR1_FCBase_h
+#define CR1_FCBase_h
 
-@interface FCPhysicsMaterial : NSObject {
-	NSString* _name;
-	float _density;
-	float _restitution;
-	float _friction;
-}
-@property(nonatomic, strong) NSString* name;
-@property(nonatomic) float density;
-@property(nonatomic) float restitution;
-@property(nonatomic) float friction;
-@end
+#include <string>
 
-#endif // defined(FC_PHYSICS)
+class FCBase {
+public:
+	virtual ~FCBase(){}
+	
+	virtual std::string Description()
+	{
+		return "";
+	}
+};
+
+typedef std::shared_ptr<FCBase> FCBasePtr;
+
+#endif

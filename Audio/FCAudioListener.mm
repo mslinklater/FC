@@ -33,13 +33,13 @@
 {
 	self = [super init];
 	if (self) {
-		self.position = FC::Vector3f( 0.0f, 0.0f, 0.0f );
+		self.position = FCVector3f( 0.0f, 0.0f, 0.0f );
 		self.rotation = 0.0f;
 	}
 	return self;
 }
 
--(void)setPosition:(FC::Vector3f)position
+-(void)setPosition:(FCVector3f)position
 {
 	float listenerPosAL[] = {position.x, position.y, position.z};
 	
@@ -48,7 +48,7 @@
 
 -(void)setRotation:(float)rotation
 {
-	float ori[] = {cos(rotation + M_PI_2), sin(rotation + M_PI_2), 0., 0., 0., 1.};
+	float ori[] = {static_cast<float>(cos(rotation + M_PI_2)), static_cast<float>(sin(rotation + M_PI_2)), 0., 0., 0., 1.};
 	
 	alListenerfv(AL_ORIENTATION, ori);
 }

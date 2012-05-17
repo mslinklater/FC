@@ -22,28 +22,23 @@
 
 #include "FCRandom.h"
 
-namespace FC
+FCRandomNumber::FCRandomNumber()
 {
+	// default initialisers
 	
-	RandomNumber::RandomNumber()
-	{
-		// default initialisers
-		
-		m_w = 1;
-		m_z = 2;
-	}
+	m_w = 1;
+	m_z = 2;
+}
 
-	void RandomNumber::Seed(int w, int z)
-	{
-		m_w = w;
-		m_z = z;
-	}
-	
-	unsigned int RandomNumber::Get( void )
-	{
-		m_z = 36969 * (m_z & 65535) + (m_z >> 16);
-		m_w = 18000 * (m_w & 65535) + (m_w >> 16);
-		return (m_z << 16) + m_w;
-	}
-	
+void FCRandomNumber::Seed(int w, int z)
+{
+	m_w = w;
+	m_z = z;
+}
+
+unsigned int FCRandomNumber::Get( void )
+{
+	m_z = 36969 * (m_z & 65535) + (m_z >> 16);
+	m_w = 18000 * (m_w & 65535) + (m_w >> 16);
+	return (m_z << 16) + m_w;
 }

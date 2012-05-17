@@ -20,55 +20,54 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#import "FCConnect_apple.h"
+
+#include <string>
+
+#pragma mark - Platform API
+
+bool plt_FCConnect_Start();
+bool plt_FCConnect_EnableWithName( std::string name );
+void plt_FCConnect_Stop();
+void plt_FCConnect_SendString( std::string s );
+
+bool plt_FCConnect_Start()
+{
+	return [[FCConnect_apple instance] start];
+}
+
+bool plt_FCConnect_EnableWithName( std::string name )
+{
+	return [[FCConnect_apple instance] enableWithName:[NSString stringWithUTF8String:name.c_str()]];
+}
+
+void plt_FCConnect_Stop()
+{
+	[[FCConnect_apple instance] stop];
+}
+
+void plt_FCConnect_SendString( std::string s )
+{
+	[[FCConnect_apple instance] sendString:[NSString stringWithUTF8String:s.c_str()]];
+}
+
+#pragma mark - Objective-C API
 
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <unistd.h>
 #include <CFNetwork/CFSocketStream.h>
-
-#import "FCError.h"
-#import "FCConnect_old.h"
-#import "FCLua.h"
+#include "Shared/Core/FCError.h"
+#include "Shared/Lua/FCLua.h"
 
 static NSString* s_ErrorDomain = @"FCConnectErrorDomain";
-static FCConnec_oldt* s_connect;
+static FCConnect_apple* s_connect;
 
 static NSString* kFCConnectLua = @"Lua_";
 static NSString* kFCConnectLog = @"Log_";
 
-@implementation FCConnect_old
-
-@synthesize connected = _connected;
-
-#pragma mark - Object Lifecycle
-
-+(FCConnect_old*)instance
-{
-	static FCConnect_old* pInstance;
-	if (!pInstance) {
-		pInstance = [[FCConnect_old alloc] init];
-		s_connect = pInstance;
-	}
-	return pInstance;
-}
-
--(id)init
-{
-	self = [super init];
-	if (self) {
-		_connected = NO;
-		m_sendQueue = [[NSMutableArray alloc] init];
-	}
-	return self;
-}
-
-#pragma mark - Methods
-
 static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, CFDataRef address, const void* data, void* info)
 {
-	FC_LOG("FCConnect connection established");
-	
 	if (type == kCFSocketAcceptCallBack) {
 		CFSocketNativeHandle nativeSocketHandle = *(CFSocketNativeHandle*)data;
 		uint8_t name[SOCK_MAXADDRLEN];
@@ -84,7 +83,11 @@ static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
 		if (readStream && writeStream) {
 			CFReadStreamSetProperty(readStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
 			CFWriteStreamSetProperty(writeStream, kCFStreamPropertyShouldCloseNativeSocket, kCFBooleanTrue);
-			[s_connect setInputStream:(__bridge_transfer NSInputStream*)readStream andOutputStream:(__bridge_transfer NSOutputStream*)writeStream];
+//			[s_connect setInputStream:(__bridge_transfer NSInputStream*)readStream andOutputStream:(__bridge_transfer NSOutputStream*)writeStream];
+//			[s_connect setInputStream:(__bridge NSInputStream*)readStream andOutputStream:(__bridge NSOutputStream*)writeStream];
+			s_connect.inputStream = (__bridge NSInputStream*)readStream;
+			s_connect.outputStream = (__bridge NSOutputStream*)writeStream;
+			s_connect.connected = YES;
 		}
 		else
 		{
@@ -99,22 +102,32 @@ static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
 	}
 }
 
--(void)setInputStream:(NSInputStream*)iStream andOutputStream:(NSOutputStream*)oStream
+@implementation FCConnect_apple
+@synthesize connected = _connected;
+@synthesize inputStream = _inputStream;
+@synthesize outputStream = _outputStream;
+
++(FCConnect_apple*)instance
 {
-	m_inputStream = iStream;
-	m_inputStream.delegate = self;
-	[m_inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	[m_inputStream open];
-	
-	m_outputStream = oStream;
-	m_outputStream.delegate = self;
-	[m_outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-	[m_outputStream open];
-	
-	_connected = YES;
+	static FCConnect_apple* s_pInstance = 0;
+	if (!s_pInstance) {
+		s_pInstance = [[FCConnect_apple alloc] init];
+	}
+	return s_pInstance;
 }
 
--(BOOL)start:(NSError**)error
+-(id)init
+{
+	self = [super init];
+	if (self) {
+		_connected = NO;
+		m_sendQueue = [[NSMutableArray alloc] init];
+	}
+	return self;
+}
+
+
+-(BOOL)start
 {
 	CFSocketContext socketContext = {0, (__bridge void*)self, NULL, NULL, NULL};
 	
@@ -145,14 +158,14 @@ static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
 	}
 	
 	if (m_socketRef == NULL) {
-		if (error) {
-			*error = [[NSError alloc] initWithDomain:s_ErrorDomain code:kFCConnectNoSocketsAvailable userInfo:nil];
-			if (m_socketRef) {
-				CFRelease( m_socketRef );
-			}
-			m_socketRef = NULL;
-			return NO;
-		}
+//		if (error) {
+//			*error = [[NSError alloc] initWithDomain:s_ErrorDomain code:kFCConnectNoSocketsAvailable userInfo:nil];
+//		}
+//		if (m_socketRef) {
+//			CFRelease( m_socketRef );
+//		}
+//		m_socketRef = NULL;
+		return NO;
 	}
 	
 	int yes = 1;
@@ -169,14 +182,14 @@ static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
 		NSData* address6 = [NSData dataWithBytes:&addr6 length:sizeof(addr6)];
 		
 		if (CFSocketSetAddress(m_socketRef, (__bridge CFDataRef)address6) != kCFSocketSuccess) {
-			if (error) {
-				*error = [[NSError alloc] initWithDomain:s_ErrorDomain code:kFCConnectCouldNotBindToIPv6Address userInfo:nil];
-				if (m_socketRef) {
-					CFRelease(m_socketRef);
-				}
-				m_socketRef = NULL;
-				return NO;
-			}
+//			if (error) {
+//				*error = [[NSError alloc] initWithDomain:s_ErrorDomain code:kFCConnectCouldNotBindToIPv6Address userInfo:nil];
+//			}
+//			if (m_socketRef) {
+//				CFRelease(m_socketRef);
+//			}
+//			m_socketRef = NULL;
+			return NO;
 		}
 		
 		NSData* addr = (__bridge_transfer NSData*)CFSocketCopyAddress(m_socketRef);
@@ -194,9 +207,9 @@ static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
 		NSData* address4 = [NSData dataWithBytes:&addr4 length:sizeof(addr4)];
 		
 		if (kCFSocketSuccess != CFSocketSetAddress(m_socketRef, (__bridge CFDataRef)address4)) {
-			if (error) {
-				*error = [[NSError alloc] initWithDomain:s_ErrorDomain code:kFCConnectCouldNotBindToIPv4Address userInfo:nil];
-			}
+//			if (error) {
+//				*error = [[NSError alloc] initWithDomain:s_ErrorDomain code:kFCConnectCouldNotBindToIPv4Address userInfo:nil];
+//			}
 			if (m_socketRef) {
 				CFRelease(m_socketRef);
 			}
@@ -217,7 +230,7 @@ static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
 	return YES;
 }
 
--(BOOL)enableBonjourWithName:(NSString *)name
+-(BOOL)enableWithName:(NSString*)name
 {
 	m_bonjourIdentifier = [NSString stringWithFormat:@"_%@._tcp.", name];
 	
@@ -236,11 +249,42 @@ static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
 	
 }
 
+-(void)setInputStream:(NSInputStream *)inputStream
+{
+	_inputStream = inputStream;
+	_inputStream.delegate = self;
+	[_inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+	[_inputStream open];
+}
+
+-(void)setOutputStream:(NSOutputStream *)outputStream
+{
+	_outputStream = outputStream;
+	_outputStream.delegate = self;
+	[_outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+	[_outputStream open];
+}
+
+//-(void)setInputStream:(NSInputStream*)iStream andOutputStream:(NSOutputStream*)oStream
+//{
+//	m_inputStream = iStream;
+//	m_inputStream.delegate = self;
+//	[m_inputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+//	[m_inputStream open];
+//	
+//	m_outputStream = oStream;
+//	m_outputStream.delegate = self;
+//	[m_outputStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+//	[m_outputStream open];
+//	
+//	_connected = YES;
+//}
+
 -(void)sendNextString
 {
 	NSString* sendPacket = [m_sendQueue objectAtIndex:0];
 	NSInteger bytesToSend = [sendPacket length];
-	NSInteger bytesSent = [m_outputStream write:(const uint8_t*)[sendPacket UTF8String] maxLength:[sendPacket length]];
+	NSInteger bytesSent = [_outputStream write:(const uint8_t*)[sendPacket UTF8String] maxLength:[sendPacket length]];
 	
 	if (bytesSent == bytesToSend) 
 	{
@@ -264,12 +308,12 @@ static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
 
 -(void)netServiceWillPublish:(NSNetService *)sender
 {
-//	NSLog(@"netServiceWillPublish");
+	NSLog(@"netServiceWillPublish");
 }
 
 -(void)netServiceDidPublish:(NSNetService*)sender
 {
-//	NSLog(@"netServiceDidPublish");
+	NSLog(@"netServiceDidPublish");
 }
 
 -(void)netService:(NSNetService*)sender didNotPublish:(NSDictionary *)errorDict
@@ -306,24 +350,20 @@ static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
 
 - (void)stream:(NSStream *)aStream handleEvent:(NSStreamEvent)eventCode
 {
-	if ( aStream == m_inputStream ) 
+	if ( aStream == _inputStream ) 
 	{
 		switch (eventCode) {
 			case NSStreamEventNone:
 				NSLog(@"Input - None");
 				break;
 			case NSStreamEventOpenCompleted:
-//				NSLog(@"Input - OpenCompleted");
 				break;
 			case NSStreamEventHasBytesAvailable:
 			{
-//				NSLog(@"Input - HasBytesAvailable");
 				uint8_t pBuffer[128];
 				NSUInteger bufferSize = 128;
-				NSUInteger bytesRead = [m_inputStream read:&pBuffer[0] maxLength:bufferSize];
+				NSUInteger bytesRead = [_inputStream read:&pBuffer[0] maxLength:bufferSize];
 				pBuffer[bytesRead] = 0;
-//				NSLog(@"Received: %s", pBuffer);
-//				[[FCLua instance] executeLine:[NSString stringWithFormat:@"%s", &pBuffer[0]]];
 				FCLua::Instance()->ExecuteLine( (char*)(&pBuffer[0]) );
 				break;
 			}
@@ -341,20 +381,18 @@ static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
 				break;
 		}
 	} 
-	else if ( aStream == m_outputStream ) 
+	else if ( aStream == _outputStream ) 
 	{
 		switch (eventCode) {
 			case NSStreamEventNone:
 				NSLog(@"Output - None");
 				break;
 			case NSStreamEventOpenCompleted:
-//				NSLog(@"Output - OpenCompleted");
 				break;
 			case NSStreamEventHasBytesAvailable:
 				NSLog(@"Output - HasBytesAvailable");
 				break;
 			case NSStreamEventHasSpaceAvailable:
-//				NSLog(@"Output - HasSpaceAvailable");
 				if ([m_sendQueue count]) {
 					[self sendNextString];
 				}
@@ -372,5 +410,3 @@ static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
 }
 
 @end
-
-#endif

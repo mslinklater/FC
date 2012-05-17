@@ -26,11 +26,10 @@
 
 #import "FCCore.h"
 #import "FCPhysicsTypes.h"
+#import "FCPhysics2DBodyDef.h"
 
 class b2World;
 class b2Body;
-
-@class FCPhysics2DBodyDef;
 
 @interface FCPhysics2DBody : NSObject <FCPhysicsBody> 
 {
@@ -48,13 +47,13 @@ class b2Body;
 @property(nonatomic) FCHandle handle;
 
 @property(nonatomic, readonly) float rotation;
-@property(nonatomic) FC::Vector3f position;
+@property(nonatomic) FCVector3f position;
 @property(nonatomic) float angularVelocity;
-@property(nonatomic) FC::Vector2f linearVelocity;
+@property(nonatomic) FCVector2f linearVelocity;
 
--(id)initWithDef:(FCPhysics2DBodyDef*)def;
+-(id)initWithDef:(FCPhysics2DBodyDefPtr)def;
 
--(void)applyImpulse:(FC::Vector2f)impulse atWorldPos:(FC::Vector2f)pos;
+-(void)applyImpulse:(FCVector2f)impulse atWorldPos:(FCVector2f)pos;
 @end
 
 #endif // defined(FC_PHYSICS)

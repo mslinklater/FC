@@ -21,6 +21,7 @@
  */
 
 #include "FCError.h"
+#include "Shared/Core/Debug/FCConnect.h"
 
 extern void plt_FCHalt();
 extern void plt_FCLog( std::string log );
@@ -34,16 +35,19 @@ void FCHalt()
 
 void FCLog( std::string log )
 {
+	FCConnect::Instance()->SendString(log);
 	plt_FCLog(log);
 }
 
 void FCWarning( std::string message )
 {
+	FCConnect::Instance()->SendString(message);
 	plt_FCWarning(message);
 }
 
 void FCFatal( std::string message )
 {
+	FCConnect::Instance()->SendString(message);
 	plt_FCFatal(message);
 }
 

@@ -43,7 +43,7 @@ static FCHandle common_newThread( lua_State* _state )
 	
 	FCLuaThread* thread = new FCLuaThread( _state, handle );
 	
-	fcLua->m_threadsMap[handle] = thread;
+	fcLua->m_threadsMap[handle] = FCLuaThreadPtr( thread );
 	
 	thread->Resume();
 	
@@ -188,7 +188,7 @@ FCLua::FCLua()
 	m_coreVM->RegisterCFunction(lua_Warning, "FCWarning");
 	m_coreVM->RegisterCFunction(lua_Fatal, "FCFatal");
 
-	m_perfCounter = new FCPerformanceCounter;
+	m_perfCounter = FCPerformanceCounterPtr( new FCPerformanceCounter );
 	m_maxCPUTime = 0.0f;
 	m_avgCPUTime = 0.0f;
 	m_avgCount = 0;
@@ -214,18 +214,20 @@ void FCLua::UpdateThreads( float realDelta, float gameDelta )
 	m_perfCounter->Zero();
 	
 	// update threads
-//	NSArray* keys = [self.threadsDict allKeys];
-//	for( id key in keys ) 
+	
+	std::vector<FCLuaThreadMapIter> delList;
+	
 	for (FCLuaThreadMapIter i = m_threadsMap.begin(); i != m_threadsMap.end(); ++i) 
 	{
-		FCLuaThreadPtr thread = i->second;
+		i->second->Update(realDelta, gameDelta);
 		
-		thread->Update(realDelta, gameDelta);
-		
-		if (thread->ThreadState() == kLuaThreadStateDead) {
-//			[self.threadsDict removeObjectForKey:key];
-			m_threadsMap.erase(i++);
+		if (i->second->ThreadState() == kLuaThreadStateDead) {
+			delList.push_back(i);
 		}
+	}
+
+	for (auto i = delList.begin(); i != delList.end(); i++) {
+		m_threadsMap.erase(*i);
 	}
 	
 	float millisecs = m_perfCounter->MilliValue();
@@ -236,12 +238,6 @@ void FCLua::UpdateThreads( float realDelta, float gameDelta )
 	m_avgCPUTime += millisecs;
 	m_avgCount++;
 }
-
-//FCLuaVM* FCLua::NewVM()
-//{
-//	FC_HALT;
-//	return 0;
-//}
 
 void FCLua::ExecuteLine( std::string line )
 {

@@ -20,42 +20,35 @@
  THE SOFTWARE.
  */
 
-#if defined(FC_PHYSICS)
-
-#import <Foundation/Foundation.h>
-
-#import "FCCore.h"
-
+#include "Shared/Core/FCCore.h"
 #include "Shared/Core/FCXML.h"
 
 class b2World;
 
-@interface FCPhysics2DBodyDef : NSObject 
-{
-	float			_angle;
-	BOOL			_isStatic;
-	BOOL			_canSleep;
-	float			_linearDamping;
-	FCXMLNode		_shapeXML;
-	b2World*		_world;
-	id __weak		_actor;	// deprecate
-	FCHandle		_hActor;
-	FC::Vector2f	_position;
-}
-@property(nonatomic, readonly, strong) NSString* Id;
-@property(nonatomic) float angle;
-@property(nonatomic) BOOL isStatic;
-@property(nonatomic) BOOL canSleep;
-@property(nonatomic) float linearDamping;
-@property(nonatomic) FCXMLNode shapeXML;
-@property(nonatomic) b2World* world;
-@property(nonatomic, weak) id actor;
-@property(nonatomic) FCHandle hActor;
-@property(nonatomic) FC::Vector2f position;
+class FCPhysics2DBodyDef : public FCBase {
+public:
+	FCPhysics2DBodyDef()
+	: position(0.0f, 0.0f)
+	, angle(0.0f)
+	, isStatic(false)
+	, linearDamping( kFCInvalidFloat )
+	, pWorld(0)
+	, hActor(kFCHandleInvalid)
+	, shapeXML(0)
+	, canSleep(true)
+	, actor(0)
+	{
+	}
+	std::string	ID(){ return FCXML::StringValueForNodeAttribute(shapeXML, kFCKeyId); }
+	float		angle;
+	bool		isStatic;
+	bool		canSleep;
+	float		linearDamping;
+	FCXMLNode	shapeXML;
+	b2World*	pWorld;
+	FCHandle	hActor;
+	FCVector2f	position;
+	void*		actor;	// deprecate
+};
 
-+(FCPhysics2DBodyDef*)defaultDef;
-
--(NSString*)description;
-@end
-
-#endif // defined(FC_PHYSICS)
+typedef std::shared_ptr<FCPhysics2DBodyDef> FCPhysics2DBodyDefPtr;

@@ -23,9 +23,9 @@
 #ifndef CR1_FCXML_h
 #define CR1_FCXML_h
 
+#include <memory>
 #include <rapidxml.hpp>
 #include "Shared/Core/FCTypes.h"
-#include "Shared/Core/FCSharedPtr.h"
 
 typedef rapidxml::xml_node<>*			FCXMLNode;
 typedef std::vector< FCXMLNode >		FCXMLNodeVec;
@@ -66,7 +66,6 @@ private:
 	rapidxml::xml_document<> m_doc;
 };
 
-typedef FCSharedPtr<FCXML> FCXMLPtr;
-
+typedef std::shared_ptr<FCXML> FCXMLPtr;
 
 #endif

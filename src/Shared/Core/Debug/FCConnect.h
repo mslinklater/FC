@@ -23,6 +23,25 @@
 #ifndef CR1_FCConnect_h
 #define CR1_FCConnect_h
 
+#include <string>
 
+enum eFCConnectErrorCode {
+	kFCConnectCouldNotBindToIPv4Address,
+	kFCConnectCouldNotBindToIPv6Address,
+	kFCConnectNoSocketsAvailable
+};
+
+class FCConnect
+{
+public:
+	static FCConnect* Instance();
+	FCConnect(){}
+	~FCConnect(){}
+	
+	bool Start();
+	bool EnableWithName( std::string name );
+	void Stop();
+	void SendString( std::string s );
+};
 
 #endif

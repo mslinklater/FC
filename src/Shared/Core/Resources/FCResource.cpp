@@ -29,7 +29,7 @@ void FCResource::InitWithContentsOfFile(std::string filename)
 	std::string fcrFilename = filename + ".fcr";
 	std::string binFilename = filename + ".bin";
 	
-	m_xml = new FCXML;
+	m_xml = FCXMLPtr( new FCXML );
 	m_xml->InitWithContentsOfFile(fcrFilename);
 	
 	FILE* hFile = fopen(plt_PathForFileInBundle(binFilename).c_str(), "rb");

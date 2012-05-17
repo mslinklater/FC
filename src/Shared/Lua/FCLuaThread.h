@@ -24,10 +24,10 @@
 #define CR1_FCLuaThread_h
 
 #include <map>
+#include <memory>
 
 #include "FCLuaVM.h"
 #include "Shared/Core/FCTypes.h"
-#include "Shared/Core/FCSharedPtr.h"
 
 enum eLuaThreadState {
 	kLuaThreadStateNew,
@@ -60,7 +60,8 @@ private:
 	int32_t			m_numResumedArgs;
 };
 
-typedef FCSharedPtr<FCLuaThread> FCLuaThreadPtr;
+//typedef FCSharedPtr<FCLuaThread> FCLuaThreadPtr;
+typedef std::shared_ptr<FCLuaThread> FCLuaThreadPtr;
 
 typedef std::map<FCHandle, FCLuaThreadPtr> FCLuaThreadMap;
 typedef FCLuaThreadMap::iterator FCLuaThreadMapIter;

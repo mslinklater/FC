@@ -52,23 +52,24 @@ static int lua_SetMaterial( lua_State* _state )
 	
 	// get string and components
 	
-	FCPhysicsMaterial* material = [[FCPhysicsMaterial alloc] init];
+//	FCPhysicsMaterial* material = [[FCPhysicsMaterial alloc] init];
+	FCPhysicsMaterialPtr material = FCPhysicsMaterialPtr( new FCPhysicsMaterial );
 	
-	material.name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	material->name = lua_tostring(_state, 1);
 	
 	lua_getfield(_state, 2, "density");
 	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
-	material.density = (float)lua_tonumber(_state, 3);
+	material->density = (float)lua_tonumber(_state, 3);
 	lua_pop(_state, 1);
 
 	lua_getfield(_state, 2, "restitution");
 	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
-	material.restitution = (float)lua_tonumber(_state, 3);
+	material->restitution = (float)lua_tonumber(_state, 3);
 	lua_pop(_state, 1);
 
 	lua_getfield(_state, 2, "friction");
 	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
-	material.friction = (float)lua_tonumber(_state, 3);
+	material->friction = (float)lua_tonumber(_state, 3);
 	lua_pop(_state, 1);
 
 	lua_settop(_state, 0);
@@ -85,7 +86,7 @@ static int lua_SetMaterial( lua_State* _state )
 @implementation FCPhysics
 
 @synthesize twoD = _twoD;
-@synthesize materials = _materials;
+//@synthesize materials = _materials;
 
 #pragma mark - FCSingleton protocol
 
@@ -104,24 +105,19 @@ static int lua_SetMaterial( lua_State* _state )
 	{
 		// Register Lua functions
 		
-//		[[FCLua instance].coreVM createGlobalTable:@"FCPhysics"];		
 		FCLua::Instance()->CoreVM()->CreateGlobalTable("FCPhysics");
 		
-//		[[FCLua instance].coreVM registerCFunction:lua_Create2DSystem	as:@"FCPhysics.Create2DSystem"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Create2DSystem, "FCPhysics.Create2DSystem");
-//		[[FCLua instance].coreVM registerCFunction:lua_Reset			as:@"FCPhysics.Reset"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Reset, "FCPhysics.Reset");
-//		[[FCLua instance].coreVM registerCFunction:lua_SetMaterial		as:@"FCPhysics.SetMaterial"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetMaterial, "FCPhysics.SetMaterial");
 
-		_materials = [[NSMutableDictionary alloc] init];
+//		_materials = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
 
 -(void)dealloc
 {
-//	[[FCLua instance].coreVM destroyGlobalTable:@"FCPhysics"];
 	FCLua::Instance()->CoreVM()->DestroyGlobalTable("FCPhysics");
 	s_pPhysics = 0;
 }
@@ -141,7 +137,8 @@ static int lua_SetMaterial( lua_State* _state )
 {
 	[_twoD prepareForDealloc];
 	_twoD = nil;
-	_materials = [[NSMutableDictionary alloc] init];
+//	_materials = [[NSMutableDictionary alloc] init];
+	materials.clear();
 }
 
 -(void)destroy
@@ -151,9 +148,10 @@ static int lua_SetMaterial( lua_State* _state )
 
 #pragma mark - Misc
 
--(void)setMaterial:(FCPhysicsMaterial *)material
+-(void)setMaterial:(FCPhysicsMaterialPtr)material
 {
-	[_materials setValue:material forKey:material.name];
+//	[_materials setValue:material forKey:material.name];
+	materials[ material->name ] = material;
 }
 
 -(void)create2DSystem
@@ -163,15 +161,15 @@ static int lua_SetMaterial( lua_State* _state )
 	}
 }
 
-//-(void)destroy2DSystem
-//{
-////	[_twoD prepareForDealloc];
-//	_twoD = nil;
-//}
+-(FCPhysicsMaterialMapByString&)getMaterials
+{
+	return materials;
+}
 
 -(NSString*)description
 {
-	return [NSString stringWithFormat:@"%@", _materials];
+//	return [NSString stringWithFormat:@"%@", _materials];
+	return @"";
 }
 
 @end

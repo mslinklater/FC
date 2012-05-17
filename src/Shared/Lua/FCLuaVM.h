@@ -24,7 +24,8 @@
 #define CR1_FCLuaVM_h
 
 #include <string>
-#include "Shared/Core/FCSharedPtr.h"
+#include <memory>
+//#include "Shared/Core/FCSharedPtr.h"
 
 extern "C" {
 #include <lua.h>
@@ -69,6 +70,6 @@ private:
 	lua_State* m_state;
 };
 
-typedef FCSharedPtr<FCLuaVM> FCLuaVMPtr;
+typedef std::shared_ptr<FCLuaVM> FCLuaVMPtr;
 
 #endif
