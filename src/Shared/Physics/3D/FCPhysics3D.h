@@ -20,40 +20,19 @@
  THE SOFTWARE.
  */
 
-#if defined(FC_PHYSICS)
+#ifndef FCPHYSICS3D_H
+#define FCPHYSICS3D_H
 
-#import <Foundation/Foundation.h>
+#include "Shared/Core/FCCore.h"
 
-#import "FCCore.h"
-#import "FCPhysicsTypes.h"
-#import "FCPhysics2DBodyDef.h"
+class FCPhysics3D : public FCBase {
+public:	
+	FCPhysics3D(){}
+	virtual ~FCPhysics3D(){}
+	
+	void Update( float realTime, float gameTime );
+};
 
-class b2World;
-class b2Body;
+typedef std::shared_ptr<FCPhysics3D> FCPhysics3DPtr;
 
-@interface FCPhysics2DBody : NSObject <FCPhysicsBody> 
-{
-	NSString*		_Id;
-	NSString*		_name;
-	b2World*		_world;
-	b2Body*			_b2Body;
-	FCHandle		_handle;
-}
-
-@property(nonatomic, strong) NSString* Id;
-@property(nonatomic, strong) NSString* name;
-@property(nonatomic) b2World* world;
-@property(nonatomic, readonly) b2Body* b2Body;
-@property(nonatomic) FCHandle handle;
-
-@property(nonatomic, readonly) float rotation;
-@property(nonatomic) FCVector3f position;
-@property(nonatomic) float angularVelocity;
-@property(nonatomic) FCVector2f linearVelocity;
-
--(id)initWithDef:(FCPhysics2DBodyDefPtr)def;
-
--(void)applyImpulse:(FCVector2f)impulse atWorldPos:(FCVector2f)pos;
-@end
-
-#endif // defined(FC_PHYSICS)
+#endif

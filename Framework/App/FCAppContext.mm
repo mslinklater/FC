@@ -31,7 +31,7 @@
 #import "FCDevice.h"
 #import "FCRenderer.h"
 #import "FCActorSystem.h"
-#import "FCPhysics.h"
+#import "FCPhysics_old.h"
 #import "FCPersistentData.h"
 #import "FCDevice.h"
 #import "FCUserDefaults.h"
@@ -99,7 +99,8 @@
 		//[[FCRenderer instance] addToGatherList:[FCActorSystem instance]];
 		
 #if defined (FC_PHYSICS)
-		[FCPhysics instance];
+//		[FCPhysics_old instance];
+		FCPhysics::Instance();
 #endif
 		
 //		NSArray* statsArray = [self.gameData arrayForKeyPath:@"gamedata.stats.stat"];

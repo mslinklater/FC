@@ -27,7 +27,7 @@
 #import "FCActorSystem.h"
 
 #import "FCLua.h"
-#import "FCPhysics.h"
+#include "Shared/Physics/FCPhysics.h"
 
 // Lua
 
@@ -562,7 +562,7 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 
 -(void)dealloc
 {
-	[[FCPhysics instance] twoD].contactListener->RemoveSubscriber(CollisionSubscriber);
+	FCPhysics::Instance()->TwoD()->ContactListener()->RemoveSubscriber(CollisionSubscriber);
 	alcDestroyContext(_context);
     alcCloseDevice(_device);
 }
@@ -822,12 +822,12 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 
 -(void)subscribeToPhysics2D
 {
-	[[FCPhysics instance] twoD].contactListener->AddSubscriber(CollisionSubscriber);
+	FCPhysics::Instance()->TwoD()->ContactListener()->AddSubscriber(CollisionSubscriber);
 }
 
 -(void)unsubscribeFromPhysics2D
 {
-	[[FCPhysics instance] twoD].contactListener->RemoveSubscriber(CollisionSubscriber);
+	FCPhysics::Instance()->TwoD()->ContactListener()->RemoveSubscriber(CollisionSubscriber);
 }
 
 #pragma mark - AVAudioPlayerDelegate

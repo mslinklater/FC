@@ -24,7 +24,7 @@
 
 #import "FCActor.h"
 #import "FCRenderer.h"
-#import "FCPhysics.h"
+#import "FCPhysics_old.h"
 #import "FCActorSystem.h"
 #import "FCResource.h"
 #import "FCCore.h"
@@ -89,7 +89,13 @@
 			bodyDef->canSleep = NO;
 			bodyDef->shapeXML = bodyXML;
 			
-			_physicsBody = [[[FCPhysics instance] twoD] createBodyWithDef:bodyDef name:name actorHandle:handle];
+//			_physicsBody = [[[FCPhysics instance] twoD] createBodyWithDef:bodyDef name:name actorHandle:handle];
+			if (name) {
+				_physicsBody = FCPhysics::Instance()->TwoD()->CreateBody(bodyDef, [name UTF8String], handle);
+			}
+			else {
+				_physicsBody = FCPhysics::Instance()->TwoD()->CreateBody(bodyDef, "", handle);
+			}
 #endif
 		}
 		
@@ -116,7 +122,8 @@
 
 -(void)dealloc
 {
-	[[[FCPhysics instance] twoD] destroyBody:_physicsBody];	
+//	[[[FCPhysics instance] twoD] destroyBody:_physicsBody];	
+	FCPhysics::Instance()->TwoD()->DestroyBody(_physicsBody);
 	_physicsBody = nil;
 	_model = nil;
 	_id = nil;
@@ -132,12 +139,13 @@
 #pragma mark - Physics methods
 -(FCVector3f)getCenter
 {
-	return [_physicsBody position];
+	return _physicsBody->Position();
 }
 
 -(void)applyImpulse:(FCVector3f)impulse atWorldPos:(FCVector3f)pos
 {
-	[_physicsBody applyImpulse:impulse atWorldPos:pos];
+//	[_physicsBody applyImpulse:impulse atWorldPos:pos];
+	_physicsBody->ApplyImpulseAtWorldPos(impulse, pos);
 }
 
 #endif
@@ -147,14 +155,16 @@
 -(void)setPosition:(FCVector3f)newPosition
 {
 #if defined (FC_PHYSICS)
-	[_physicsBody setPosition:newPosition];
+//	[_physicsBody setPosition:newPosition];
+	_physicsBody->SetPosition(newPosition);
 #endif
 }
 
 -(FCVector3f)position
 {
 #if defined (FC_PHYSICS)
-	return _physicsBody.position;
+//	return _physicsBody.position;
+	return _physicsBody->Position();
 #else
 	return FCVector3f( 0.0f, 0.0f, 0.0f );
 #endif
@@ -165,14 +175,16 @@
 -(void)setLinearVelocity:(FCVector3f)vel
 {
 #if defined (FC_PHYSICS)
-	[_physicsBody setLinearVelocity:vel];
+//	[_physicsBody setLinearVelocity:vel];
+	_physicsBody->SetLinearVelocity(vel);
 #endif
 }
 
 -(FCVector3f)linearVelocity
 {
 #if defined (FC_PHYSICS)
-	return [_physicsBody linearVelocity];
+//	return [_physicsBody linearVelocity];
+	return _physicsBody->LinearVelocity();
 #else
 	return FCVector2f( 0.0f, 0.0f, 0.0f );
 #endif
@@ -205,8 +217,10 @@
 #if defined (FC_PHYSICS)
 	if( _physicsBody )
 	{
-		FCVector3f pos = [_physicsBody position ];
-		float rot = [_physicsBody rotation];
+//		FCVector3f pos = [_physicsBody position ];
+		FCVector3f pos = _physicsBody->Position();
+//		float rot = [_physicsBody rotation];
+		float rot = _physicsBody->Rotation();
 		
 		if( _model )
 		{

@@ -20,24 +20,45 @@
  THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
-#import "FCCore.h"
+#ifndef CR1_FCPhysics2DBody_h
+#define CR1_FCPhysics2DBody_h
 
-// Common API that both 2D and 3D physics bodies must implement
+#include "Shared/Core/FCCore.h"
+#include "FCPhysics2DBodyDef.h"
 
-@protocol FCPhysicsBody <NSObject>
+class b2World;
+class b2Body;
 
--(FCVector3f)position;
--(void)setPosition:(FCVector3f)pos;
+class FCPhysics2DBody : public FCBase {
+public:
+	
+	FCPhysics2DBody(){}
+	virtual ~FCPhysics2DBody();
 
--(FCVector3f)linearVelocity;
--(void)setLinearVelocity:(FCVector3f)vel;
+	void	InitWithDef(FCPhysics2DBodyDefPtr def);
+	void	ApplyImpulseAtWorldPos( FCVector3f& impulse, FCVector3f& pos );
+	void	CreateFixturesFromDef( FCPhysics2DBodyDefPtr def );
+	void	CreateBodyFromDef( FCPhysics2DBodyDefPtr def );
+	
+	float		Rotation();
+	void		SetRotation( float rot );
+	FCVector3f	Position();
+	void		SetPosition( FCVector3f pos );
+	float		AngularVelocity();
+	void		SetAngularVelocity( float angVel );
+	FCVector3f	LinearVelocity();
+	void		SetLinearVelocity( FCVector3f& vel );
+	
+	std::string	ID;
+	std::string	name;
+	b2World*	pWorld;
+	b2Body*		pBody;
+	FCHandle	handle;
+};
 
--(float)rotation;
--(void)setRotation:(float)rot;
+typedef std::shared_ptr<FCPhysics2DBody> FCPhysics2DBodyPtr;
 
-// orientation
-// set Orientation
+typedef std::map<std::string, FCPhysics2DBodyPtr> FCPhysics2DBodyPtrMapByName;
+typedef std::map<FCHandle, FCPhysics2DBodyPtr> FCPhysics2DBodyPtrByHandle;
 
--(void)applyImpulse:(FCVector3f)impulse atWorldPos:(FCVector3f)pos;
-@end
+#endif

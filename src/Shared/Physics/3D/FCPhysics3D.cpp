@@ -20,17 +20,9 @@
  THE SOFTWARE.
  */
 
-#if defined (FC_PHYSICS)
+#include "FCPhysics3D.h"
 
-#import <Foundation/Foundation.h>
-
-#import "Core/FCProtocols.h"
-
-//@interface FCPhysics3D : NSObject <FCGameObjectLifetime, FCGameObjectUpdate> {
-@interface FCPhysics3D : NSObject <FCGameObjectUpdate> {
-    
+void FCPhysics3D::Update(float realTime, float gameTime)
+{
+	return;
 }
-
-@end
-
-#endif // defined(FC_PHYSICS)

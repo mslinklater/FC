@@ -22,38 +22,21 @@
 
 #if defined (FC_PHYSICS)
 
-#import "FCPhysics3D.h"
+class FCPhysicsMaterial {
+public:
+	FCPhysicsMaterial()
+	: name( "unknown" )
+	, density( 1.0f )
+	, restitution( 0.5f )
+	, friction( 0.5f )
+	{}
+	std::string name;
+	float		density;
+	float		restitution;
+	float		friction;
+};
 
-@implementation FCPhysics3D
-
-#pragma mark - FCGameObjectLifetime protocol
-
--(void)reset
-{
-	
-}
-
--(void)destroy
-{
-	
-}
-
-#pragma mark - FCGameObjectUpdate protocol
-
--(void)update:(float)realTime gameTime:(float)gameTime
-{
-    
-}
-
--(id)init
-{
-	self = [super init];
-	if (self) {
-		// blah
-	}
-	return self;
-}
-
-@end
+typedef std::shared_ptr<FCPhysicsMaterial> FCPhysicsMaterialPtr;
+typedef std::map<std::string, FCPhysicsMaterialPtr> FCPhysicsMaterialMapByString;
 
 #endif // defined(FC_PHYSICS)

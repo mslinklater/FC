@@ -20,37 +20,30 @@
  THE SOFTWARE.
  */
 
-#if defined (FC_PHYSICS)
+#ifndef CR1_FCPhysics_h
+#define CR1_FCPhysics_h
 
-class FCPhysicsMaterial {
+#include "Shared/Core/FCCore.h"
+
+#include "Shared/Physics/2D/FCPhysics2D.h"
+#include "Shared/Physics/FCPhysicsMaterial.h"
+
+class FCPhysics : public FCBase {
 public:
-	FCPhysicsMaterial()
-	: name( "unknown" )
-	, density( 1.0f )
-	, restitution( 0.5f )
-	, friction( 0.5f )
-	{}
-	std::string name;
-	float		density;
-	float		restitution;
-	float		friction;
+	FCPhysics();
+	virtual ~FCPhysics();
+	
+	static FCPhysics* Instance();
+	
+	void Create2DSystem();
+	void SetMaterial( FCPhysicsMaterialPtr material );
+	FCPhysicsMaterialMapByString& GetMaterials();
+	void Update( float realTime, float gameTime );
+	void Reset();
+	FCPhysics2DPtr TwoD(){ return m_2D; }
+private:
+	FCPhysics2DPtr	m_2D;
+	FCPhysicsMaterialMapByString m_materials;
 };
 
-typedef std::shared_ptr<FCPhysicsMaterial> FCPhysicsMaterialPtr;
-typedef std::map<std::string, FCPhysicsMaterialPtr> FCPhysicsMaterialMapByString;
-
-//#import <Foundation/Foundation.h>
-//
-//@interface FCPhysicsMaterial : NSObject {
-//	NSString* _name;
-//	float _density;
-//	float _restitution;
-//	float _friction;
-//}
-//@property(nonatomic, strong) NSString* name;
-//@property(nonatomic) float density;
-//@property(nonatomic) float restitution;
-//@property(nonatomic) float friction;
-//@end
-
-#endif // defined(FC_PHYSICS)
+#endif

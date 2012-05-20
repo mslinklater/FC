@@ -25,12 +25,12 @@
 
 //@class FCResource;
 
-@protocol FCGameObjectUpdate
--(void)update:(float)realTime gameTime:(float)gameTime;
-@end
+//@protocol FCGameObjectUpdate
+//-(void)update:(float)realTime gameTime:(float)gameTime;
+//@end
 
-@protocol FCGameObjectRender
--(NSArray*)renderGather;
-@end
+//@protocol FCGameObjectRender
+//-(NSArray*)renderGather;
+//@end
 
 #endif // __cplusplus

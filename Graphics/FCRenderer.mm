@@ -91,13 +91,13 @@ static int lua_SetCurrentRenderer( lua_State* _state )
 
 -(void)addToGatherList:(id)obj
 {
-	FC_ASSERT([obj conformsToProtocol:@protocol(FCGameObjectRender)]);
+//	FC_ASSERT([obj conformsToProtocol:@protocol(FCGameObjectRender)]);
 	[_gatherList addObject:obj];
 }
 
 -(void)removeFromGatherList:(id)obj
 {
-	FC_ASSERT([obj conformsToProtocol:@protocol(FCGameObjectRender)]);
+//	FC_ASSERT([obj conformsToProtocol:@protocol(FCGameObjectRender)]);
 	[_gatherList removeObject:obj];
 }
 
@@ -110,9 +110,11 @@ static int lua_SetCurrentRenderer( lua_State* _state )
 	
 	// gather from objects on the gather list
 	
-	for( id<FCGameObjectRender> obj in _gatherList )
+//	for( id<FCGameObjectRender> obj in _gatherList )
+	for( id obj in _gatherList )
 	{
-		[_models addObjectsFromArray:[obj renderGather]];
+//		[_models addObjectsFromArray:[obj renderGather]];
+		[_models addObjectsFromArray:[obj performSelector:@selector(renderGather)]];
 	}
 
 	for (FCModel* model in _models) {

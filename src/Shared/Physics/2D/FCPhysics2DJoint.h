@@ -23,18 +23,21 @@
 #ifndef CR1_FCPhysics2DJoint_h
 #define CR1_FCPhysics2DJoint_h
 
+#include <map>
+
 #include "Shared/Core/Maths/FCMaths.h"
-#include "FCPhysics2DBody.h"
+#include "Shared/Physics/2D/FCPhysics2DBody.h"
 
 class FCPhysics2DJointCreateDef {
 public:
 	virtual ~FCPhysics2DJointCreateDef(){}
 	
-	FCPhysics2DBody* body1;
-	FCPhysics2DBody* body2;
+	FCPhysics2DBodyPtr body1;
+	FCPhysics2DBodyPtr body2;
 };
 
 typedef std::shared_ptr<FCPhysics2DJointCreateDef> FCPhysics2DJointCreateDefPtr;
+typedef std::map<FCHandle,b2Joint*> FCPhysics2DJointMapByHandle;
 
 //
 

@@ -22,7 +22,7 @@
 
 #import "FCActorSystem.h"
 #import "FCActor.h"
-#import "FCPhysics.h"
+#import "FCPhysics_old.h"
 #import "FCResource.h"
 #import "FCCore.h"
 #import "FCLua.h"
@@ -288,12 +288,12 @@ static int lua_ApplyImpulse( lua_State* _state )
 	[_allActorsArray addObject:newActor];
 
 	if ([newActor needsUpdate]) {
-		FC_ASSERT([newActor conformsToProtocol:@protocol(FCGameObjectUpdate) ]);
+//		FC_ASSERT([newActor conformsToProtocol:@protocol(FCGameObjectUpdate) ]);
 		[_updateActorsArray addObject:newActor];
 	}
 	
 	if ([newActor needsRender]) {
-		FC_ASSERT([newActor conformsToProtocol:@protocol(FCGameObjectRender) ]);
+//		FC_ASSERT([newActor conformsToProtocol:@protocol(FCGameObjectRender) ]);
 		[_renderActorsArray addObject:newActor];
 	}
 

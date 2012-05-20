@@ -20,27 +20,22 @@
  THE SOFTWARE.
  */
 
-#if defined (FC_PHYSICS)
+#include "FCPhysics.h"
+#include "Shared/Lua/FCLua.h"
 
-#import "FCPhysics.h"
-#import "FCLua.h"
-#import "FCFramework.h"
-
-static FCPhysics* s_pPhysics = 0;
-
-#pragma mark - Lua Interface
+static FCPhysics* s_pInstance = 0;
 
 static int lua_Reset( lua_State* _state )
 {
 	FC_LUA_ASSERT_NUMPARAMS(0);
-	[s_pPhysics reset];
+	s_pInstance->Reset();
 	return 0;
 }
 
 static int lua_Create2DSystem( lua_State* _state )
 {
 	FC_LUA_ASSERT_NUMPARAMS(0);
-	[s_pPhysics create2DSystem];
+	s_pInstance->Create2DSystem();
 	return 0;
 }
 
@@ -52,7 +47,6 @@ static int lua_SetMaterial( lua_State* _state )
 	
 	// get string and components
 	
-//	FCPhysicsMaterial* material = [[FCPhysicsMaterial alloc] init];
 	FCPhysicsMaterialPtr material = FCPhysicsMaterialPtr( new FCPhysicsMaterial );
 	
 	material->name = lua_tostring(_state, 1);
@@ -61,118 +55,85 @@ static int lua_SetMaterial( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 	material->density = (float)lua_tonumber(_state, 3);
 	lua_pop(_state, 1);
-
+	
 	lua_getfield(_state, 2, "restitution");
 	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 	material->restitution = (float)lua_tonumber(_state, 3);
 	lua_pop(_state, 1);
-
+	
 	lua_getfield(_state, 2, "friction");
 	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 	material->friction = (float)lua_tonumber(_state, 3);
 	lua_pop(_state, 1);
-
+	
 	lua_settop(_state, 0);
-
+	
 	// set it
 	
-	[s_pPhysics setMaterial:material];
+//	[s_pPhysics setMaterial:material];
+	s_pInstance->SetMaterial( material );
 	
 	return 0;
 }
 
-#pragma mark - ObjC
-
-@implementation FCPhysics
-
-@synthesize twoD = _twoD;
-//@synthesize materials = _materials;
-
-#pragma mark - FCSingleton protocol
-
-+(FCPhysics*)instance
+FCPhysics::FCPhysics()
 {
-	if (!s_pPhysics) {
-		s_pPhysics = [[FCPhysics alloc] init];
-	}
-	return s_pPhysics;
+	FCLua::Instance()->CoreVM()->CreateGlobalTable("FCPhysics");
+	
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Create2DSystem, "FCPhysics.Create2DSystem");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Reset, "FCPhysics.Reset");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetMaterial, "FCPhysics.SetMaterial");
 }
 
--(id)init
-{
-	self = [super init];
-	if (self) 
-	{
-		// Register Lua functions
-		
-		FCLua::Instance()->CoreVM()->CreateGlobalTable("FCPhysics");
-		
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Create2DSystem, "FCPhysics.Create2DSystem");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Reset, "FCPhysics.Reset");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetMaterial, "FCPhysics.SetMaterial");
-
-//		_materials = [[NSMutableDictionary alloc] init];
-	}
-	return self;
-}
-
--(void)dealloc
+FCPhysics::~FCPhysics()
 {
 	FCLua::Instance()->CoreVM()->DestroyGlobalTable("FCPhysics");
-	s_pPhysics = 0;
+
 }
 
-#pragma mark - FCGameObjectUpdate protocol
-
--(void)update:(float)realTime gameTime:(float)gameTime
+FCPhysics* FCPhysics::Instance()
 {
-	if (_twoD) {
-		[_twoD update:realTime gameTime:gameTime];
+	if (!s_pInstance) {
+		s_pInstance = new FCPhysics;
+	}
+	return s_pInstance;
+}
+
+void FCPhysics::Reset()
+{
+	if (m_2D != 0) {
+		m_2D->PrepareForDealloc();
+	}
+	m_2D = 0;
+	m_materials.clear();
+
+}
+
+void FCPhysics::Create2DSystem()
+{
+	if (m_2D == 0) {
+		m_2D = FCPhysics2DPtr( new FCPhysics2D );
+		m_2D->Init();
+	}
+
+}
+
+void FCPhysics::SetMaterial( FCPhysicsMaterialPtr material )
+{
+	m_materials[ material->name ] = material;
+}
+
+FCPhysicsMaterialMapByString& FCPhysics::GetMaterials()
+{
+	return m_materials;
+}
+
+void FCPhysics::Update( float realTime, float gameTime )
+{
+	if (m_2D) {
+		m_2D->Update(realTime, gameTime);
 	}
 }
 
-#pragma mark - FCGameObjectLifetime protocol
 
--(void)reset
-{
-	[_twoD prepareForDealloc];
-	_twoD = nil;
-//	_materials = [[NSMutableDictionary alloc] init];
-	materials.clear();
-}
-
--(void)destroy
-{
-	
-}
-
-#pragma mark - Misc
-
--(void)setMaterial:(FCPhysicsMaterialPtr)material
-{
-//	[_materials setValue:material forKey:material.name];
-	materials[ material->name ] = material;
-}
-
--(void)create2DSystem
-{
-	if (_twoD == nil) {
-		_twoD = [[FCPhysics2D alloc] init];	
-	}
-}
-
--(FCPhysicsMaterialMapByString&)getMaterials
-{
-	return materials;
-}
-
--(NSString*)description
-{
-//	return [NSString stringWithFormat:@"%@", _materials];
-	return @"";
-}
-
-@end
-
-#endif // defined(FC_PHYSICS)
 

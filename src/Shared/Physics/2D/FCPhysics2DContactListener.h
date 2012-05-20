@@ -66,5 +66,4 @@ private:
 	tCollisionMap	m_collisions;
 	tSubscriberSet	m_subscribers;
 };
-
 #endif

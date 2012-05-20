@@ -33,7 +33,8 @@
 
 @class FCActor;
 
-@interface FCActorSystem : NSObject <FCGameObjectUpdate, FCGameObjectRender> {
+//@interface FCActorSystem : NSObject <FCGameObjectUpdate, FCGameObjectRender> {
+@interface FCActorSystem : NSObject {
 	NSMutableArray* _allActorsArray;
 	NSMutableArray* _updateActorsArray;
 	NSMutableArray* _renderActorsArray;
@@ -76,6 +77,8 @@
 		 ofClass:(NSString*)actorClass 
 	withResource:(FCResourcePtr)res
 			name:(NSString*)name;
+
+-(void)update:(float)realTime gameTime:(float)gameTime;
 
 @end
 

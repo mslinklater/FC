@@ -20,7 +20,12 @@
  THE SOFTWARE.
  */
 
+#ifndef FCMACROS_H
+#define FCMACROS_H
+
 static inline float FCDegToRad( float deg )
 {
 	return deg * 0.017453292519943f;
 }
+
+#endif

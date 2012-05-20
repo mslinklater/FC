@@ -32,7 +32,7 @@
 #import "FCAnalytics.h"
 #import "FCViewManager.h"
 #import "FCBuild.h"
-#import "FCPhysics.h"
+#import "FCPhysics_old.h"
 #import "FCActorSystem.h"
 #import "FCShaderManager.h"
 #import "FCFacebook.h"
@@ -251,7 +251,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	
 	[[FCPersistentData instance] loadData];
 #if defined (FC_PHYSICS)
-	[FCPhysics instance];
+//	[FCPhysics_old instance];
+	FCPhysics::Instance();
 #endif
 	[FCActorSystem instance];
 	
@@ -337,7 +338,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	// update the game systems here...
 	
 #if defined (FC_PHYSICS)
-	[[FCPhysics instance] update:dt gameTime:gameTime];
+	FCPhysics::Instance()->Update( dt, gameTime );
 #endif
 	
 	[[FCActorSystem instance] update:dt gameTime:gameTime];
