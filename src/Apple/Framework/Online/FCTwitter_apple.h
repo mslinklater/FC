@@ -20,9 +20,20 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCOnline_h
-#define CR1_FCOnline_h
+#import <Foundation/Foundation.h>
 
-#import "FCTwitter.h"
+@class TWTweetComposeViewController;
 
-#endif
+@interface FCTwitter_apple : NSObject
+{
+	TWTweetComposeViewController* _vc;
+}
+@property(nonatomic, readonly) TWTweetComposeViewController* vc;
+
++(FCTwitter_apple*)instance;
+
+-(BOOL)canTweet;
+-(BOOL)tweetWithText:(NSString*)text;
+-(BOOL)addHyperlink:(NSString*)hyperlink;
+-(void)send;
+@end

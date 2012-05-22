@@ -27,7 +27,7 @@
 #if defined(FC_GRAPHICS)
 
 #import <Foundation/Foundation.h>
-#import "FCProtocols.h"
+//#import "FCProtocols.h"
 
 @class FCTextureManager;
 

@@ -23,7 +23,7 @@
 // Move func to Lua
 
 #import <Foundation/Foundation.h>
-#import "FCProtocols.h"
+//#import "FCProtocols.h"
 
 @interface FCHighScores : NSObject {
     NSMutableDictionary* mScoresDictionary;				// key = highscoreid, value = points

@@ -30,7 +30,6 @@ typedef ALvoid	AL_APIENTRY	(*alBufferDataStaticProcPtr) (const ALint bid, ALenum
 
 @implementation FCAudioBuffer
 
-//@synthesize handle = _handle;
 @synthesize ALHandle = _ALHandle;
 @synthesize bufferData = _bufferData;
 @synthesize format = _format;

@@ -36,7 +36,7 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "FCProtocols.h"
+//#import "FCProtocols.h"
 
 class FCLuaVM;
 

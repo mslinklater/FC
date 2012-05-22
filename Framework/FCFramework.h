@@ -23,11 +23,9 @@
 #ifndef FC_FCFramework_h
 #define FC_FCFramework_h
 
-//#import "FCAchievements.h"
 #import "FCCrypto.h"
 #import "FCHighScores.h"
 #import "FCLeaderboard.h"
-//#import "FCUserDefaults.h"
 
 // folders
 
@@ -35,7 +33,6 @@
 #import "FCApplication.h"
 #import "FCBuild.h"
 #import "FCDevice.h"
-#import "FCOnline.h"
 #import "FCPersistentData.h"
 #import "FCPhase.h"
 #import "FCUI.h"

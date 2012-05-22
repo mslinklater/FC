@@ -103,24 +103,6 @@ static int lua_DeleteBuffer( lua_State* _state )
 	return 0;
 }
 
-//static int lua_CreateSource( lua_State* _state )
-//{
-//	FC_LUA_ASSERT_NUMPARAMS(0);
-//	FCHandle h = [[FCAudioManager instance] createSource];
-//	
-//	lua_pushinteger(_state, h);
-//	return 1;
-//}
-//
-//static int lua_DeleteSource( lua_State* _state )
-//{
-//	FC_LUA_ASSERT_NUMPARAMS(1);
-//	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-//	
-//	[[FCAudioManager instance] deleteSource:lua_tointeger(_state, 1)];
-//	return 0;
-//}
-
 static int lua_LoadSimpleSound( lua_State* _state )
 {
 	FC_LUA_ASSERT_NUMPARAMS(1);
@@ -370,7 +352,6 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 		
 		if( luaFunc )
 		{
-//			[[FCLua instance].coreVM call:luaFunc required:YES withSig:@"iiffff>",
 			FCLua::Instance()->CoreVM()->CallFuncWithSig([luaFunc UTF8String], true, "iiffff>",
 				pCollisionInfo->hActor1,
 				pCollisionInfo->hActor2,
@@ -454,58 +435,34 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 		
 		// Lua stuff
 		
-//		[[FCLua instance].coreVM createGlobalTable:@"FCAudio"];
 		FCLua::Instance()->CoreVM()->CreateGlobalTable("FCAudio");
-//		[[FCLua instance].coreVM registerCFunction:lua_PlayMusic as:@"FCAudio.PlayMusic"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_PlayMusic, "FCAudio.PlayMusic");
-//		[[FCLua instance].coreVM registerCFunction:lua_SetMusicVolume as:@"FCAudio.SetMusicVolume"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetMusicVolume, "FCAudio.SetMusicVolume");
-//		[[FCLua instance].coreVM registerCFunction:lua_SetSFXVolume as:@"FCAudio.SetSFXVolume"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetSFXVolume, "FCAudio.SetSFXVolume");
-//		[[FCLua instance].coreVM registerCFunction:lua_SetMusicFinishedCallback as:@"FCAudio.SetMusicFinishedCallback"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetMusicFinishedCallback, "FCAudio.SetMusicFinishedCallback");
-//		[[FCLua instance].coreVM registerCFunction:lua_PauseMusic as:@"FCAudio.PauseMusic"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_PauseMusic, "FCAudio.PauseMusic");
-//		[[FCLua instance].coreVM registerCFunction:lua_ResumeMusic as:@"FCAudio.ResumeMusic"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_ResumeMusic, "FCAudio.ResumeMusic");
-//		[[FCLua instance].coreVM registerCFunction:lua_StopMusic as:@"FCAudio.StopMusic"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_StopMusic, "FCAudio.StopMusic");
 
-//		[[FCLua instance].coreVM registerCFunction:lua_CreateBufferWithFile as:@"FCAudio.CreateBuffer"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_CreateBufferWithFile, "FCAudio.CreateBuffer");
-//		[[FCLua instance].coreVM registerCFunction:lua_DeleteBuffer as:@"FCAudio.DeleteBuffer"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_DeleteBuffer, "FCAudio.DeleteBuffer");
 
-//		[[FCLua instance].coreVM registerCFunction:lua_PrepareSourceWithBuffer as:@"FCAudio.PrepareSourceWithBuffer"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_PrepareSourceWithBuffer, "FCAudio.PrepareSourceWithBuffer");
-//		[[FCLua instance].coreVM registerCFunction:lua_SourceSetVolume as:@"FCAudio.SourceSetVolume"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourceSetVolume, "FCAudio.SourceSetVolume");
-//		[[FCLua instance].coreVM registerCFunction:lua_SourcePlay as:@"FCAudio.SourcePlay"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourcePlay, "FCAudio.SourcePlay");
-//		[[FCLua instance].coreVM registerCFunction:lua_SourceStop as:@"FCAudio.SourceStop"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourceStop, "FCAudio.SourceStop");
-//		[[FCLua instance].coreVM registerCFunction:lua_SourcePosition as:@"FCAudio.SourcePosition"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourcePosition, "FCAudio.SourcePosition");
-//		[[FCLua instance].coreVM registerCFunction:lua_SourcePitch as:@"FCAudio.SourcePitch"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourcePitch, "FCAudio.SourcePitch");
-//		[[FCLua instance].coreVM registerCFunction:lua_SourceLooping as:@"FCAudio.SourceLooping"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourceLooping, "FCAudio.SourceLooping");
 
-//		[[FCLua instance].coreVM registerCFunction:lua_AddCollisionTypeHandler as:@"FCAudio.AddCollisionTypeHandler"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_AddCollisionTypeHandler, "FCAudio.AddCollisionTypeHandler");
-//		[[FCLua instance].coreVM registerCFunction:lua_RemoveCollisionTypeHandler as:@"FCAudio.RemoveCollisionTypeHandler"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_RemoveCollisionTypeHandler, "FCAudio.RemoveCollisionTypeHandler");
 		
-//		[[FCLua instance].coreVM registerCFunction:lua_LoadSimpleSound as:@"FCAudio.LoadSimpleSound"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_LoadSimpleSound, "FCAudio.LoadSimpleSound");
-//		[[FCLua instance].coreVM registerCFunction:lua_UnloadSimpleSound as:@"FCAudio.UnloadSimpleSound"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_UnloadSimpleSound, "FCAudio.UnloadSimpleSound");
-//		[[FCLua instance].coreVM registerCFunction:lua_PlaySimpleSound as:@"FCAudio.PlaySimpleSound"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_PlaySimpleSound, "FCAudio.PlaySimpleSound");
 
-//		[[FCLua instance].coreVM registerCFunction:lua_SubscribeToPhysics2D as:@"FCAudio.SubscribeToPhysics2D"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SubscribeToPhysics2D, "FCAudio.SubscribeToPhysics2D");
-//		[[FCLua instance].coreVM registerCFunction:lua_UnsubscribeFromPhysics2D as:@"FCAudio.UnsubscribeFromPhysics2D"];
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_UnsubscribeFromPhysics2D, "FCAudio.UnsubscribeFromPhysics2D");
 
 		_listener = [[FCAudioListener alloc] init];
@@ -664,23 +621,6 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 	[_buffers removeObjectForKey:[NSNumber numberWithInt:handle]];
 }
 
-//-(FCHandle)createSource
-//{
-//	FCHandle h = NewFCHandle();
-//	
-//	FCAudioSource* buffer = [[FCAudioSource alloc] init];
-//	buffer.handle = h;
-//	[_sources setObject:buffer forKey:[NSNumber numberWithInt:h]];
-//	
-//	return h;
-//}
-//
-//-(void)deleteSource:(FCHandle)handle
-//{
-//	FC_ASSERT([_sources objectForKey:[NSNumber numberWithInt:handle]]);
-//	[_sources removeObjectForKey:[NSNumber numberWithInt:handle]];
-//}
-
 -(FCHandle)prepareSourceWithBuffer:(FCHandle)hBuffer vital:(BOOL)vital
 {
 	// try to reuse an existing one first
@@ -697,12 +637,6 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 		
 		if (source.stopped) 
 		{
-//			if (source.ALBufferHandle != buffer.ALHandle) 
-//			{
-//				source.ALBufferHandle = buffer.ALHandle;
-//			}
-			
-//			return source.handle;
 			[_activeSources removeObjectForKey:key];
 		}
 	}
@@ -727,47 +661,16 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 		
 		[_activeSources setObject:source forKey:[NSNumber numberWithInt:hSource]];
 		
-//		NSLog(@"NumSources = %d", [_activeSources count]);
-		
 		return hSource;
 	}
 	
 	return 0;
 }
 
-//-(void)addCollisionTypeHanderFor:(NSString*)type1 
-//						 andType:(NSString*)type2 
-//						theClass:(Class)theClass
-//						  target:(id)target 
-//						selector:(SEL)selector
-//{
-//	FCAudioCollisionTypeHandler* handler = [[FCAudioCollisionTypeHandler alloc] init];
-//	handler.theClass = theClass;
-//	handler.target = target;
-//	handler.selector = selector;
-//
-//	NSString* key = [NSString stringWithFormat:@"%@%@", type1, type2];
-//	
-//	FC_ASSERT([_collisionTypeHandlers objectForKey:key] == nil);
-//	
-//	[_collisionTypeHandlers setObject:handler forKey:key];
-//	
-//	if(![type1 isEqualToString:type2])
-//	{
-//		key = [NSString stringWithFormat:@"%@%@", type2, type1];	
-//		
-//		FC_ASSERT([_collisionTypeHandlers objectForKey:key] == nil);
-//		
-//		[_collisionTypeHandlers setObject:handler forKey:key];		
-//	}
-//}
-
 -(void)addCollisionTypeHanderFor:(NSString*)type1 
 						 andType:(NSString*)type2 
 						 luaFunc:(NSString*)luaFunc
 {
-//	FCAudioCollisionTypeHandler* handler = [[FCAudioCollisionTypeHandler alloc] init];
-	
 	NSString* key = [NSString stringWithFormat:@"%@%@", type1, type2];
 	
 	FC_ASSERT([_collisionTypeHandlers objectForKey:key] == nil);
@@ -802,24 +705,6 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 	}
 }
 
-//-(void)removeCollisionTypeHanderFor:(NSString*)type1 andType:(NSString*)type2
-//{
-//	NSString* key = [NSString stringWithFormat:@"%@%@", type1, type2];	
-//	
-//	FC_ASSERT([_collisionTypeHandlers objectForKey:key]);
-//	
-//	[_collisionTypeHandlers removeObjectForKey:key];
-//	
-//	if(![type1 isEqualToString:type2])
-//	{
-//		key = [NSString stringWithFormat:@"%@%@", type2, type1];	
-//		
-//		FC_ASSERT([_collisionTypeHandlers objectForKey:key]);
-//		
-//		[_collisionTypeHandlers removeObjectForKey:key];
-//	}
-//}
-
 -(void)subscribeToPhysics2D
 {
 	FCPhysics::Instance()->TwoD()->ContactListener()->AddSubscriber(CollisionSubscriber);
@@ -838,7 +723,6 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 	{
 		if (_musicFinishedLuaCallback) 
 		{
-//			[[FCLua instance].coreVM call:_musicFinishedLuaCallback required:NO withSig:@">"];
 			FCLua::Instance()->CoreVM()->CallFuncWithSig([_musicFinishedLuaCallback UTF8String], false, ">");
 		}
 		return;

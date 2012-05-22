@@ -30,7 +30,7 @@
 #import "FCBuild.h"
 #import "FCActorSystem.h"
 #import "FCShaderManager.h"
-#import "FCTwitter.h"
+//#import "FCTwitter_old.h"
 #import "FCAudioManager.h"
 
 #include "Shared/Core/FCCore.h"
@@ -38,6 +38,7 @@
 #include "Shared/Core/FCError.h"
 #include "Shared/Core/Debug/FCConnect.h"
 #include "Shared/Framework/Analytics/FCAnalytics.h"
+#include "Shared/Framework/Online/FCTwitter.h"
 
 #if defined (FC_LUA)
 static FCLuaVM*					s_lua;
@@ -232,9 +233,9 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	FCConnect::Instance()->Start();
 	FCConnect::Instance()->EnableWithName("FCConnect");
 	
-//	[FCFacebook instance];
 	FCAnalytics::Instance();
-	[FCTwitter instance];
+//	[FCTwitter_old instance];
+	FCTwitter::Instance();
 	[FCAudioManager instance];
 #endif
 	FCDevice::Instance()->ColdProbe();

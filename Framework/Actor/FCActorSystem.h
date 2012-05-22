@@ -29,7 +29,7 @@
 #include "Shared/Core/FCXML.h"
 #include "FCResource.h"
 
-#import "FCProtocols.h"
+//#import "FCProtocols.h"
 
 @class FCActor;
 

@@ -19,18 +19,24 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-#if defined (__OBJC__)
 
-#import "Shared/Core/Maths/FCMaths.h"
+#ifndef CR1_FCTwitter_h
+#define CR1_FCTwitter_h
 
-//@class FCResource;
+#include "Shared/Core/FCCore.h"
 
-//@protocol FCGameObjectUpdate
-//-(void)update:(float)realTime gameTime:(float)gameTime;
-//@end
+class FCTwitter : public FCBase {
+public:
+	FCTwitter();
+	virtual ~FCTwitter();
+	
+	static FCTwitter* Instance();
+	
+	bool CanTweet();
+	bool TweetWithText( std::string text );
+	bool AddHyperlink( std::string hyperlink );
+	void Send();
+private:
+};
 
-//@protocol FCGameObjectRender
-//-(NSArray*)renderGather;
-//@end
-
-#endif // __cplusplus
+#endif

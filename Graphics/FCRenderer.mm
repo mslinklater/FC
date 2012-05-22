@@ -29,7 +29,6 @@
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 #import "FCModel.h"
-#import "FCProtocols.h"
 #import "FCShaderManager.h"
 #import "FCTextureManager.h"
 #import "FCLua.h"

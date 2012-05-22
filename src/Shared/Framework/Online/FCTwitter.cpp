@@ -20,19 +20,21 @@
  THE SOFTWARE.
  */
 
-#import <Twitter/Twitter.h>
-#import "FCCore.h"
-#import "FCTwitter.h"
-#import "FCApplication.h"
-#import "FCLua.h"
+#include "FCTwitter.h"
+#include "Shared/Lua/FCLua.h"
 
-static FCTwitter* s_pInstance;
+extern bool plt_FCTwitter_CanTweet();
+extern bool plt_FCTwitter_TweetWithText( std::string text );
+extern bool plt_FCTwitter_AddHyperlink( std::string hyperlink );
+extern void plt_FCTwitter_Send();
+
+static FCTwitter* s_pInstance = 0;
 
 static int lua_CanTweet( lua_State* _state )
 {
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	
-	lua_pushboolean(_state, [s_pInstance canTweet]);
+	lua_pushboolean(_state, s_pInstance->CanTweet() );
 	
 	return 1;
 }
@@ -41,10 +43,10 @@ static int lua_TweetWithText( lua_State* _state )
 {
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
-
-	NSString* text = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
-
-	lua_pushboolean(_state, [s_pInstance tweetWithText:text]);
+	
+	std::string text = lua_tostring(_state, 1);
+	
+	lua_pushboolean(_state, s_pInstance->TweetWithText( text ));
 	
 	return 1;
 }
@@ -54,9 +56,9 @@ static int lua_AddHyperlink( lua_State* _state )
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
-	NSString* hyperlink = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
+	std::string hyperlink = lua_tostring(_state, 1);
 	
-	lua_pushboolean(_state, [s_pInstance addHyperlink:hyperlink]);
+	lua_pushboolean(_state, s_pInstance->AddHyperlink(hyperlink));
 	
 	return 1;
 }
@@ -64,53 +66,48 @@ static int lua_AddHyperlink( lua_State* _state )
 static int lua_Send( lua_State* _state )
 {
 	FC_LUA_ASSERT_NUMPARAMS(0);
-	[s_pInstance send];
+	s_pInstance->Send();
 	return 0;
 }
 
-@implementation FCTwitter
-@synthesize vc = _vc;
+FCTwitter::FCTwitter()
+{
+	FCLua::Instance()->CoreVM()->CreateGlobalTable("FCTwitter");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_CanTweet, "FCTwitter.CanSendTweet");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_TweetWithText, "FCTwitter.TweetWithText");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_AddHyperlink, "FCTwitter.AddHyperlink");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Send, "FCTwitter.Send");
+}
 
-+(FCTwitter*)instance
+FCTwitter::~FCTwitter()
+{
+	
+}
+
+FCTwitter* FCTwitter::Instance()
 {
 	if (!s_pInstance) {
-		s_pInstance = [[FCTwitter alloc] init];
+		s_pInstance = new FCTwitter;
 	}
 	return s_pInstance;
 }
 
--(id)init
+bool FCTwitter::CanTweet()
 {
-	self = [super init];
-	if (self) {
-		_vc = [[TWTweetComposeViewController alloc] init];
-		FCLua::Instance()->CoreVM()->CreateGlobalTable("FCTwitter");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_CanTweet, "FCTwitter.CanSendTweet");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_TweetWithText, "FCTwitter.TweetWithText");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_AddHyperlink, "FCTwitter.AddHyperlink");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Send, "FCTwitter.Send");
-	}
-	return self;
+	return plt_FCTwitter_CanTweet();
 }
 
--(BOOL)canTweet
+bool FCTwitter::TweetWithText( std::string text )
 {
-	return [TWTweetComposeViewController canSendTweet];
+	return plt_FCTwitter_TweetWithText( text );
 }
 
--(BOOL)tweetWithText:(NSString *)text
+bool FCTwitter::AddHyperlink( std::string hyperlink )
 {
-	return [_vc setInitialText:text];
+	return plt_FCTwitter_AddHyperlink( hyperlink );
 }
 
--(BOOL)addHyperlink:(NSString *)hyperlink
+void FCTwitter::Send()
 {
-	return [_vc addURL:[NSURL URLWithString:hyperlink]];
+	plt_FCTwitter_Send();
 }
-
--(void)send
-{
-	[[[FCApplication instance] rootViewController] presentModalViewController:_vc animated:YES];
-}
-
-@end
