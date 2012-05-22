@@ -22,14 +22,3 @@
 
 #import <Foundation/Foundation.h>
 
-//#if defined (FC_LUA)
-//#import "FCLuaClass.h"
-//#endif
-
-class FCLuaVM;
-
-@interface FCBuild : NSObject
-
-+(void)registerLuaFunctions:(FCLuaVM*)lua;
-@end
-

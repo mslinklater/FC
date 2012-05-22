@@ -28,7 +28,7 @@
 
 #import "FCCore.h"
 #import "FCGraphics.h"
-//#import "FCPhysics.h"
+
 #include "Shared/Physics/FCPhysics.h"
 #include "Shared/Core/FCXML.h"
 #include "FCResource.h"
@@ -71,7 +71,6 @@
 	FCModel*			_model;
 #endif
 #if defined (FC_PHYSICS)
-//	id<FCPhysicsBody>	_physicsBody;
 	FCPhysics2DBodyPtr	_physicsBody;
 #endif
 }
@@ -84,7 +83,6 @@
 @property(nonatomic, strong, readonly) FCModel* model;
 #endif
 #if defined (FC_PHYSICS)
-//@property(nonatomic, strong, readonly) id<FCPhysicsBody>	physicsBody;
 @property(nonatomic, readonly) FCPhysics2DBodyPtr	physicsBody;
 #endif
 

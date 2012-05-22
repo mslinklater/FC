@@ -24,6 +24,7 @@
 
 #include "Shared/Physics/2D/FCPhysics2DBody.h"
 #include "Shared/Physics/FCPhysics.h"
+#include "Shared/Core/FCStringUtils.h"
 
 FCPhysics2DBody::~FCPhysics2DBody()
 {
@@ -104,14 +105,14 @@ void FCPhysics2DBody::CreateFixturesFromDef( FCPhysics2DBodyDefPtr def )
 		{
 			b2PolygonShape shape;
 			
-			NSString* vertsString = [NSString stringWithUTF8String:FCXML::StringValueForNodeAttribute(*fixture, "verts").c_str()];
-			NSString* strippedVerts = [vertsString stringByReplacingOccurrencesOfString:@"," withString:@" "];
-			strippedVerts = [strippedVerts stringByReplacingOccurrencesOfString:@"(" withString:@""];
-			strippedVerts = [strippedVerts stringByReplacingOccurrencesOfString:@")" withString:@""];
+			std::string vertsString = FCXML::StringValueForNodeAttribute(*fixture, "verts");
+			FCStringUtils_ReplaceOccurencesOfStringWithString( vertsString, ",", " ");
+			FCStringUtils_ReplaceOccurencesOfStringWithString( vertsString, "(", "");			
+			FCStringUtils_ReplaceOccurencesOfStringWithString( vertsString, ")", "");
+
+			FCStringVector vertsArray = FCStringUtils_ComponentsSeparatedByString(vertsString, " ");
 			
-			NSArray* vertsArray = [strippedVerts componentsSeparatedByString:@" "];
-			
-			int numVerts = [vertsArray count] / 3;
+			int numVerts = vertsArray.size() / 3;
 			
 			b2Vec2* verts = (b2Vec2*)malloc(sizeof(b2Vec2) * numVerts );
 			
@@ -120,8 +121,8 @@ void FCPhysics2DBody::CreateFixturesFromDef( FCPhysics2DBodyDefPtr def )
 			
 			for(int i = 0 ; i < numVerts ; i++ )	// backwards due to different winding between collada and box2d
 			{
-				verts[numVerts - 1 - i].x = [[vertsArray objectAtIndex:i * 3] floatValue] + xOffset;
-				verts[numVerts - 1 - i].y = [[vertsArray objectAtIndex:(i * 3) + 1] floatValue] + yOffset;
+				verts[numVerts - 1 - i].x = atof(vertsArray[i * 3].c_str()) + xOffset;
+				verts[numVerts - 1 - i].y = atof(vertsArray[(i * 3) + 1].c_str()) + yOffset;
 			}
 			
 			shape.Set(verts, numVerts);

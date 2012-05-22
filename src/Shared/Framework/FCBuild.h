@@ -20,9 +20,20 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCGameplay_h
-#define CR1_FCGameplay_h
+#ifndef CR1_FCBuild_h
+#define CR1_FCBuild_h
 
-#import "FCObjectManager.h"
+#include "Shared/Core/FCCore.h"
+
+class FCBuild : public FCBase {
+public:
+	FCBuild();
+	virtual ~FCBuild();
+	
+	static FCBuild* Instance();
+	
+	bool Debug();
+private:
+};
 
 #endif

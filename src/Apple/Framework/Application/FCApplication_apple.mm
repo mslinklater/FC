@@ -20,32 +20,51 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#import "FCApplication_apple.h"
+#import "Shared/Core/FCError.h"
+#import "FlurryAnalytics.h"
+#import "TestFlight.h"
 
-#import <GameKit/GameKit.h>
-#import "FCGameCenter.h"
-#import "FCLua.h"
+static FCApplication_apple* s_pInstance = 0;
 
-#pragma mark - Lua functions
-
-#pragma mark - Objective-C
-
-@implementation FCGameCenter
-
-+(FCGameCenter*)instance
-{
-	static FCGameCenter* pInstance;
-	if (!pInstance) {
-		pInstance = [[FCGameCenter alloc] init];
-	}
-	return pInstance;
+static void uncaughtExceptionHandler(NSException *exception) {
+	FC_LOG( "Sending uncaught exception to Flurry" );
+	[FlurryAnalytics logError:@"Uncaught" message:@"Crash!" exception:exception];
 }
 
-+(void)registerLuaFunctions:(FCLuaVM *)lua
+@implementation FCApplication_apple
+
++(FCApplication_apple*)instance
 {
-	
+	if (!s_pInstance) {
+		s_pInstance = [[FCApplication_apple alloc] init];
+	}
+	return s_pInstance;
+}
+
+-(id)init
+{
+	self = [super init];
+	if (self) {
+		// plap
+	}
+	return self;
+}
+
+-(void)registerExceptionHandler
+{
+	NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
+}
+
+-(void)setAnalyticsID:(NSString*)ident
+{
+	[FlurryAnalytics startSession:ident];
+}
+
+-(void)setTestflightID:(NSString*)ident
+{
+	[TestFlight takeOff:ident];
+
 }
 
 @end
-
-#endif // TARGET_OS_IPHONE

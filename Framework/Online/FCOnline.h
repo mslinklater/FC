@@ -23,8 +23,6 @@
 #ifndef CR1_FCOnline_h
 #define CR1_FCOnline_h
 
-#import "FCFacebook.h"
-#import "FCGameCenter.h"
 #import "FCTwitter.h"
 
 #endif

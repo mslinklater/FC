@@ -20,18 +20,16 @@
  THE SOFTWARE.
  */
 
-//#if TARGET_OS_IPHONE
-#if 0
-
 #import <Foundation/Foundation.h>
-#import "FCProtocols.h"
 
-@interface FCAchievements : NSObject {
-	NSArray* mAchievementsDefs;
-    NSMutableDictionary* mAchievementsState;
-	NSTimer* mCheckTimer;
+@interface FCApplication_apple : NSObject {
+	
 }
-+(FCAchievements*)instance;
-@end
 
-#endif // TARGET_OS_IPHONE
++(FCApplication_apple*)instance;
+
+-(void)registerExceptionHandler;
+-(void)setAnalyticsID:(NSString*)ident;
+-(void)setTestflightID:(NSString*)ident;
+
+@end

@@ -20,18 +20,28 @@
  THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
-#import "FCResource.h"
+#import "FCAnalytics_apple.h"
+#import "FlurryAnalytics.h"
 
-@interface FCObjectManager : NSObject {
-	FCXMLNodeMapByString	_nulls;
+#include <string>
+#include "Shared/Core/FCCore.h"
+
+void	plt_FCAnalytics_RegisterEvent( std::string event );
+void	plt_FCAnalytics_BeginTimedEvent( std::string event );
+void	plt_FCAnalytics_EndTimedEvent( std::string event );
+
+void	plt_FCAnalytics_RegisterEvent( std::string event )
+{
+	[FlurryAnalytics logEvent:[NSString stringWithUTF8String:event.c_str()]];
 }
-@property(nonatomic) FCXMLNodeMapByString nulls;
 
-+(FCObjectManager*)instance;
+void	plt_FCAnalytics_BeginTimedEvent( std::string event )
+{
+	[FlurryAnalytics logEvent:[NSString stringWithUTF8String:event.c_str()] timed:YES];
+}
 
--(void)addObjectsFromResource:(FCResourcePtr)resource;
+void	plt_FCAnalytics_EndTimedEvent( std::string event )
+{
+	[FlurryAnalytics endTimedEvent:[NSString stringWithUTF8String:event.c_str()] withParameters:nil];
+}
 
--(void)reset;
-
-@end

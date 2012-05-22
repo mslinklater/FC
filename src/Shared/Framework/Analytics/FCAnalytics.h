@@ -20,50 +20,24 @@
  THE SOFTWARE.
  */
 
-#include "Shared/Core/FCError.h"
-#import "FCObjectManager.h"
-#import "FCTypes.h"
+#ifndef CR1_FCAnalytics_h
+#define CR1_FCAnalytics_h
 
-static FCObjectManager* s_pInstance;
+#include "Shared/Core/FCCore.h"
 
-#pragma mark - Lua Interface
-
-@implementation FCObjectManager
-
-@synthesize nulls = _nulls;
-
-+(FCObjectManager*)instance
-{
-	if (!s_pInstance) {
-		s_pInstance = [[FCObjectManager alloc] init];
-	}
-	return s_pInstance;
-}
-
--(id)init
-{
-	self = [super init];
-	if (self) {
-	}
-	return self;
-}
-
--(void)addObjectsFromResource:(FCResourcePtr)resource
-{
-	// add locators
-	FCXMLNodeVec locators = resource->XML()->VectorForKeyPath("fcr.gameplay.locator");
+class FCAnalytics : FCBase {
+public:
+	FCAnalytics();
+	virtual ~FCAnalytics();
 	
-	for (FCXMLNodeVecIter i = locators.begin(); i != locators.end(); i++) 
-	{
-		std::string name = FCXML::StringValueForNodeAttribute( *i, kFCKeyName );
-		
-		_nulls[name] = *i;
-	}
-}
+	static FCAnalytics* Instance();
 
--(void)reset
-{
-	_nulls.clear();
-}
+	void		RegisterEvent(std::string event);
+	FCHandle	BeginTimedEvent(std::string event);
+	void		EndTimedEvent(FCHandle hEvent);
+	
+private:
+	FCStringMapByHandle	m_timedEvents;
+};
 
-@end
+#endif

@@ -194,27 +194,16 @@ static int lua_GetNumber( lua_State* _state )
 #if defined (FC_LUA)
 +(void)registerLuaFunctions:(FCLuaVM*)lua
 {
-//	[lua createGlobalTable:@"FCPersistentData"];
 	lua->CreateGlobalTable("FCPersistentData");
-//	[lua registerCFunction:lua_Save as:@"FCPersistentData.Save"];
 	lua->RegisterCFunction(lua_Save, "FCPersistentData.Save");
-//	[lua registerCFunction:lua_Load as:@"FCPersistentData.Load"];
 	lua->RegisterCFunction(lua_Load, "FCPersistentData.Load");
-//	[lua registerCFunction:lua_Clear as:@"FCPersistentData.Clear"];
 	lua->RegisterCFunction(lua_Clear, "FCPersistentData.Clear");
-//	[lua registerCFunction:lua_Print as:@"FCPersistentData.Print"];
 	lua->RegisterCFunction(lua_Print, "FCPersistentData.Print");
-//	[lua registerCFunction:lua_SetBool as:@"FCPersistentData.SetBool"];
 	lua->RegisterCFunction(lua_SetBool, "FCPersistentData.SetBool");
-//	[lua registerCFunction:lua_GetBool as:@"FCPersistentData.GetBool"];
 	lua->RegisterCFunction(lua_GetBool, "FCPersistentData.GetBool");
-//	[lua registerCFunction:lua_SetString as:@"FCPersistentData.SetString"];
 	lua->RegisterCFunction(lua_SetString, "FCPersistentData.SetString");
-//	[lua registerCFunction:lua_GetString as:@"FCPersistentData.GetString"];
 	lua->RegisterCFunction(lua_GetString, "FCPersistentData.GetString");
-//	[lua registerCFunction:lua_SetNumber as:@"FCPersistentData.SetNumber"];
 	lua->RegisterCFunction(lua_SetNumber, "FCPersistentData.SetNumber");
-//	[lua registerCFunction:lua_GetNumber as:@"FCPersistentData.GetNumber"];
 	lua->RegisterCFunction(lua_GetNumber, "FCPersistentData.GetNumber");
 }
 #endif // defined(FC_LUA)

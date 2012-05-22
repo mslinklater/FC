@@ -48,6 +48,8 @@ typedef std::map<std::string, std::string>	FCStringStringMap;
 typedef FCStringStringMap::iterator			FCStringStringMapIter;
 typedef FCStringStringMap::const_iterator	FCStringStringMapConstIter;
 
+typedef std::map<FCHandle, std::string>		FCStringMapByHandle;
+
 typedef std::set<std::string>	FCStringSet;
 
 #endif // FCTypes_h

@@ -51,3 +51,15 @@ FCStringVector FCStringUtils_ComponentsSeparatedByString( const std::string& dat
 	
 	return ret;
 }
+
+void FCStringUtils_ReplaceOccurencesOfStringWithString( std::string& find, const std::string& search, const std::string& replace )
+{
+	size_t pos = find.find( search );
+	
+	while (pos != std::string::npos) {
+		find.replace( pos, search.size(), replace);
+		pos = find.find( search, pos+1 );
+	}
+	
+	return;
+}

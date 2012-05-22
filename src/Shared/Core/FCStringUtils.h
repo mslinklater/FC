@@ -26,5 +26,6 @@
 #include "FCTypes.h"
 
 extern FCStringVector FCStringUtils_ComponentsSeparatedByString( const std::string& data, const std::string& sep );
+extern void FCStringUtils_ReplaceOccurencesOfStringWithString( std::string& string, const std::string& search, const std::string& replace );
 
 #endif

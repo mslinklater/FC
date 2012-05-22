@@ -20,29 +20,24 @@
  THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
-#import "FBConnect.h"
+#ifndef CR1_FCObjectManager_h
+#define CR1_FCObjectManager_h
 
-enum eFacebookLoginStatus {
-	kOffline,
-	kLoggingIn,
-	kLoggedIn,
-	kLoggingOut
+#include "Shared/Core/FCCore.h"
+#include "Shared/Core/Resources/FCResource.h"
+
+class FCObjectManager : public FCBase {
+public:
+	FCObjectManager();
+	virtual ~FCObjectManager();
+	
+	static FCObjectManager* Instance();
+	
+	void AddObjectsFromResource(FCResourcePtr resource);
+	void Reset();
+	FCXMLNodeMapByString& Nulls(){ return m_nulls; }
+private:
+	FCXMLNodeMapByString m_nulls;
 };
 
-@interface FCFacebook : NSObject <FBSessionDelegate> {
-	Facebook* _facebook;
-	NSString* _appId;
-	eFacebookLoginStatus _loginStatus;
-}
-@property(nonatomic, strong) Facebook* facebook;
-@property(nonatomic, strong) NSString* appId;
-@property(nonatomic, readonly) eFacebookLoginStatus loginStatus;
-
-+(FCFacebook*)instance;
--(id)init;
--(void)connectWithAppId:(NSString*)appId;
--(void)login;
--(void)logout;
-
-@end
+#endif

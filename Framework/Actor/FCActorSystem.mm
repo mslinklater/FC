@@ -22,7 +22,6 @@
 
 #import "FCActorSystem.h"
 #import "FCActor.h"
-#import "FCPhysics_old.h"
 #import "FCResource.h"
 #import "FCCore.h"
 #import "FCLua.h"

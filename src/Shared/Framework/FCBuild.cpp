@@ -20,16 +20,49 @@
  THE SOFTWARE.
  */
 
-#if TARGET_OS_IPHONE
+#include "FCBuild.h"
+#include "Shared/Lua/FCLua.h"
 
-#import <Foundation/Foundation.h>
-//#import "FCLuaClass.h"
+static FCBuild* s_pInstance = 0;
 
-//@interface FCGameCenter : NSObject <FCLuaClass> {
-@interface FCGameCenter : NSObject {
+static int lua_Debug( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(0);
+#if DEBUG
+	lua_pushboolean(_state, 1);
+#else
+	lua_pushboolean(_state, 0);
+#endif
+	
+	return 1;
+}
+
+FCBuild::FCBuild()
+{
+	FCLua::Instance()->CoreVM()->CreateGlobalTable("FCBuild");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Debug, "FCBuild.Debug");
+}
+
+FCBuild::~FCBuild()
+{
 	
 }
-+(FCGameCenter*)instance;
-@end
 
-#endif // TARGET_OS_IPHONE
+FCBuild* FCBuild::Instance()
+{
+	if (!s_pInstance) {
+		s_pInstance = new FCBuild;
+	}
+	return s_pInstance;
+}
+
+bool FCBuild::Debug()
+{
+#if DEBUG
+	return true;
+#else
+	return false;
+#endif
+}
+
+

@@ -22,7 +22,9 @@
 
 #include "FCPhysics2D.h"
 #include "Shared/Lua/FCLua.h"
-#include "FCObjectManager.h"
+//#include "FCObjectManager_old.h"
+
+#include "Shared/Framework/Gameplay/FCObjectManager.h"
 
 static FCPhysics2D* s_pInstance = 0;
 
@@ -52,7 +54,7 @@ static int lua_CreateDistanceJoint( lua_State* _state )
 	else 
 	{
 		obj2NameStackPos = 3;
-		FCXMLNode null = [FCObjectManager instance].nulls[ std::string(lua_tostring(_state, 2)) ];
+		FCXMLNode null = FCObjectManager::Instance()->Nulls()[ lua_tostring(_state, 2) ];
 		def->pos1 = FCVector2f( FCXML::FloatValueForNodeAttribute(null, kFCKeyOffsetX), FCXML::FloatValueForNodeAttribute(null, kFCKeyOffsetY) ); 
 	}
 	
@@ -72,7 +74,7 @@ static int lua_CreateDistanceJoint( lua_State* _state )
 	} 
 	else 
 	{
-		FCXMLNode null = [FCObjectManager instance].nulls[ std::string(lua_tostring(_state, obj2NameStackPos+1)) ];
+		FCXMLNode null = FCObjectManager::Instance()->Nulls()[ lua_tostring(_state, obj2NameStackPos+1) ];
 		
 		FC_ASSERT(null);
 		
@@ -108,7 +110,7 @@ static int lua_CreateRevoluteJoint( lua_State* _state )
 		def->pos = pos;
 	} else
 	{
-		FCXMLNode null = [FCObjectManager instance].nulls[ std::string(lua_tostring(_state, 3)) ];
+		FCXMLNode null = FCObjectManager::Instance()->Nulls()[ std::string(lua_tostring(_state, 3)) ];
 		FC_ASSERT(null);
 		def->pos = FCVector2f( FCXML::FloatValueForNodeAttribute(null, kFCKeyOffsetX), FCXML::FloatValueForNodeAttribute(null, kFCKeyOffsetY) );
 	}
@@ -134,7 +136,7 @@ static int lua_CreatePrismaticJoint( lua_State* _state )
 	def->body2 = s_pInstance->BodyWithName(lua_tostring(_state, 2));
 	FC_ASSERT(def->body2);
 	
-	FCXMLNode null = [FCObjectManager instance].nulls[std::string(lua_tostring(_state, 3))];
+	FCXMLNode null = FCObjectManager::Instance()->Nulls()[std::string(lua_tostring(_state, 3))];
 	FC_ASSERT(null);
 	
 	float angle = FCXML::FloatValueForNodeAttribute(null, kFCKeyRotationZ);
@@ -167,19 +169,19 @@ static int lua_CreatePulleyJoint( lua_State* _state )
 	def->body2 = s_pInstance->BodyWithName(lua_tostring(_state, 2));
 	FC_ASSERT(def->body2);
 	
-	FCXMLNode groundAnchor1 = [FCObjectManager instance].nulls[std::string(lua_tostring(_state, 3))];
+	FCXMLNode groundAnchor1 = FCObjectManager::Instance()->Nulls()[std::string(lua_tostring(_state, 3))];
 	FC_ASSERT(groundAnchor1);
 	def->groundAnchor1 = FCVector2f( FCXML::FloatValueForNodeAttribute(groundAnchor1, kFCKeyOffsetX), FCXML::FloatValueForNodeAttribute(groundAnchor1, kFCKeyOffsetX) );
 	
-	FCXMLNode groundAnchor2 = [FCObjectManager instance].nulls[std::string(lua_tostring(_state, 4))];
+	FCXMLNode groundAnchor2 = FCObjectManager::Instance()->Nulls()[std::string(lua_tostring(_state, 4))];
 	FC_ASSERT(groundAnchor2);
 	def->groundAnchor2 = FCVector2f( FCXML::FloatValueForNodeAttribute(groundAnchor2, kFCKeyOffsetX), FCXML::FloatValueForNodeAttribute(groundAnchor2, kFCKeyOffsetY) );
 	
-	FCXMLNode bodyAnchor1 = [FCObjectManager instance].nulls[std::string(lua_tostring(_state, 5))];
+	FCXMLNode bodyAnchor1 = FCObjectManager::Instance()->Nulls()[std::string(lua_tostring(_state, 5))];
 	FC_ASSERT(bodyAnchor1);
 	def->bodyAnchor1 = FCVector2f( FCXML::FloatValueForNodeAttribute(bodyAnchor1, kFCKeyOffsetX), FCXML::FloatValueForNodeAttribute(bodyAnchor1, kFCKeyOffsetY) );
 	
-	FCXMLNode bodyAnchor2 = [FCObjectManager instance].nulls[std::string(lua_tostring(_state, 6))];
+	FCXMLNode bodyAnchor2 = FCObjectManager::Instance()->Nulls()[std::string(lua_tostring(_state, 6))];
 	FC_ASSERT(bodyAnchor2);
 	def->bodyAnchor2 = FCVector2f( FCXML::FloatValueForNodeAttribute(bodyAnchor2, kFCKeyOffsetX), FCXML::FloatValueForNodeAttribute(bodyAnchor2, kFCKeyOffsetY) );
 	

@@ -20,19 +20,43 @@
  THE SOFTWARE.
  */
 
+#include "FCObjectManager.h"
 
+static FCObjectManager* s_pInstance = 0;
 
-#import <Foundation/Foundation.h>
-
-#include "Shared/Core/FCXML.h"
-
-@interface FCUserDefaults : NSObject {
-    
+FCObjectManager::FCObjectManager()
+{
+	
 }
 
-+(FCUserDefaults*)instance;
+FCObjectManager::~FCObjectManager()
+{
+	
+}
 
--(void)registerDefaults:(FCXMLPtr)gameData;
-@end
+FCObjectManager* FCObjectManager::Instance()
+{
+	if (!s_pInstance) {
+		s_pInstance = new FCObjectManager;
+	}
+	return s_pInstance;
+}
 
+void FCObjectManager::AddObjectsFromResource(FCResourcePtr resource)
+{
+	FCXMLNodeVec locators = resource->XML()->VectorForKeyPath("fcr.gameplay.locator");
+	
+	for (FCXMLNodeVecIter i = locators.begin(); i != locators.end(); i++) 
+	{
+		std::string name = FCXML::StringValueForNodeAttribute( *i, kFCKeyName );
+		
+		m_nulls[name] = *i;
+	}
+
+}
+
+void FCObjectManager::Reset()
+{
+	m_nulls.clear();
+}
 
