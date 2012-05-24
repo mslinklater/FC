@@ -20,11 +20,11 @@
  THE SOFTWARE.
  */
 
-#import "FCAudioSource.h"
-#import "FCAudioBuffer.h"
-#import "FCAudioManager.h"
+#import "FCAudioSource_apple.h"
+#import "FCAudioBuffer_apple.h"
+#import "FCAudioManager_apple.h"
 
-@implementation FCAudioSource
+@implementation FCAudioSource_apple
 
 @synthesize handle = _handle;
 @synthesize ALHandle = _ALHandle;

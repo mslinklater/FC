@@ -31,22 +31,22 @@
 #import "FCCore.h"
 
 #if defined (DEBUG)
-#define AL_CHECK [FCAudioManager checkALError]
+#define AL_CHECK [FCAudioManager_apple checkALError]
 #else
 #define AL_CHECK
 #endif
 
-@class FCAudioListener;
-@class FCAudioSource;
+@class FCAudioListener_apple;
+@class FCAudioSource_apple;
 
-@interface FCAudioManager : NSObject <AVAudioPlayerDelegate> {
+@interface FCAudioManager_apple : NSObject <AVAudioPlayerDelegate> {
 	ALCdevice*	_device;
 	ALCcontext*	_context;
 
 	UInt32					_iPodIsPlaying;
 	AVAudioPlayer*			_bgPlayer;
 
-	FCAudioListener*		_listener;
+	FCAudioListener_apple*	_listener;
 	NSMutableDictionary*	_activeSources;
 	NSMutableDictionary*	_buffers;
 	NSMutableDictionary*	_simpleSounds;
@@ -64,7 +64,7 @@
 @property(nonatomic, readonly) UInt32	iPodIsPlaying;
 @property(nonatomic, strong) AVAudioPlayer* bgPlayer;
 
-@property(nonatomic, strong) FCAudioListener* listener;
+@property(nonatomic, strong) FCAudioListener_apple* listener;
 @property(nonatomic, strong) NSMutableDictionary* activeSources;
 @property(nonatomic, strong) NSMutableDictionary* buffers;
 @property(nonatomic, strong) NSMutableDictionary* simpleSounds;
@@ -76,7 +76,7 @@
 
 @property(nonatomic) float sfxVolume;
 
-+(FCAudioManager*)instance;
++(FCAudioManager_apple*)instance;
 +(void)checkALError;
 
 -(FCHandle)loadSimpleSound:(NSString*)name;
@@ -88,16 +88,10 @@
 
 -(FCHandle)prepareSourceWithBuffer:(FCHandle)hBuffer vital:(BOOL)vital;
 
-//-(FCHandle)createSource;
-//-(void)deleteSource:(FCHandle)handle;
-
 -(void)playMusic:(NSString*)name;
 -(void)pauseMusic;
 -(void)resumeMusic;
 -(void)stopMusic;
-
-//-(void)addCollisionTypeHanderFor:(NSString*)type1 andType:(NSString*)type2 theClass:(Class)theClass target:(id)target selector:(SEL)selector;
-//-(void)removeCollisionTypeHanderFor:(NSString*)type1 andType:(NSString*)type2;
 
 -(void)addCollisionTypeHanderFor:(NSString*)type1 andType:(NSString*)type2 luaFunc:(NSString*)luaFunc;
 -(void)removeCollisionTypeHanderFor:(NSString*)type1 andType:(NSString*)type2;

@@ -20,302 +20,184 @@
  THE SOFTWARE.
  */
 
-#import "FCAudioManager.h"
-#import "FCAudioListener.h"
-#import "FCAudioBuffer.h"
-#import "FCAudioSource.h"
+#import "FCAudioManager_apple.h"
+#import "FCAudioListener_apple.h"
+#import "FCAudioBuffer_apple.h"
+#import "FCAudioSource_apple.h"
 #import "FCActorSystem.h"
 
 #import "FCLua.h"
 #include "Shared/Physics/FCPhysics.h"
 
-// Lua
+void plt_FCAudio_PlayMusic( std::string name );
+void plt_FCAudio_SetMusicVolume( float vol );
+void plt_FCAudio_SetSFXVolume( float vol );
+void plt_FCAudio_SetMusicFinishedCallback( std::string name );
+void plt_FCAudio_PauseMusic();
+void plt_FCAudio_ResumeMusic();
+void plt_FCAudio_StopMusic();
+void plt_FCAudio_DeleteBuffer( FCHandle h );
+FCHandle plt_FCAudio_LoadSimpleSound( std::string name );
+void plt_FCAudio_UnloadSimpleSound( FCHandle h );
+void plt_FCAudio_PlaySimpleSound( FCHandle h );
+void plt_FCAudio_SubscribeToPhysics2D();
+void plt_FCAudio_UnsubscribeToPhysics2D();
+FCHandle plt_FCAudio_CreateBufferWithFile( std::string name );
+void plt_FCAudio_AddCollisionTypeHandler( std::string type1, std::string type2, std::string func );
+void plt_FCAudio_RemoveCollisionTypeHandler( std::string type1, std::string type2 );
+FCHandle plt_FCAudio_PrepareSourceWithBuffer( FCHandle h, bool vital );
+void plt_FCAudio_SourceSetVolume( FCHandle h, float vol );
+void plt_FCAudio_SourcePlay( FCHandle h );
+void plt_FCAudio_SourceStop( FCHandle h );
+void plt_FCAudio_SourceLooping( FCHandle h, bool looping );
+void plt_FCAudio_SourcePosition( FCHandle h, float x, float y, float z );
+void plt_FCAudio_SourcePitch( FCHandle h, float pitch );
 
-static int lua_PlayMusic( lua_State* _state )
+void plt_FCAudio_PlayMusic( std::string name )
 {
-	FC_LUA_ASSERT_NUMPARAMS( 1 );
-	FC_LUA_ASSERT_TYPE( 1, LUA_TSTRING );
-	
-	NSString* name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
-	[[FCAudioManager instance] playMusic:name];
-	return 0;
+	NSString* namestring = [NSString stringWithUTF8String:name.c_str()];
+	[[FCAudioManager_apple instance] playMusic:namestring];
 }
 
-static int lua_SetMusicVolume( lua_State* _state )
+void plt_FCAudio_SetMusicVolume( float vol )
 {
-	FC_LUA_ASSERT_NUMPARAMS(1);
-	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	
-	float vol = lua_tonumber(_state, 1);
-	[FCAudioManager instance].musicVolume = vol;
-
-	return 0;
+	[[FCAudioManager_apple instance] setMusicVolume:vol];
 }
 
-static int lua_SetSFXVolume( lua_State* _state )
+void plt_FCAudio_SetSFXVolume( float vol )
 {
-	FC_LUA_ASSERT_NUMPARAMS(1);
-	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	
-	float vol = lua_tonumber(_state, 1);
-	[FCAudioManager instance].sfxVolume = vol;
-	
-	return 0;
+	[[FCAudioManager_apple instance] setSfxVolume:vol];
 }
 
-static int lua_SetMusicFinishedCallback( lua_State* _state )
+void plt_FCAudio_SetMusicFinishedCallback( std::string name )
 {
-	FC_LUA_ASSERT_NUMPARAMS(1);
-	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
-	
-	NSString* name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
-	[FCAudioManager instance].musicFinishedLuaCallback = name;
-	return 0;
+	NSString* namestring = [NSString stringWithUTF8String:name.c_str()];
+	[[FCAudioManager_apple instance] setMusicFinishedLuaCallback:namestring];
 }
 
-static int lua_PauseMusic( lua_State* _state )
+void plt_FCAudio_PauseMusic()
 {
-	FC_LUA_ASSERT_NUMPARAMS(0);
-	[[FCAudioManager instance] pauseMusic];
-	return 0;
+	[[FCAudioManager_apple instance] pauseMusic];
 }
 
-static int lua_ResumeMusic( lua_State* _state )
+void plt_FCAudio_ResumeMusic()
 {
-	FC_LUA_ASSERT_NUMPARAMS(0);
-	[[FCAudioManager instance] resumeMusic];
-	return 0;
+	[[FCAudioManager_apple instance] resumeMusic];
 }
 
-static int lua_StopMusic( lua_State* _state )
+void plt_FCAudio_StopMusic()
 {
-	FC_LUA_ASSERT_NUMPARAMS(0);
-	[[FCAudioManager instance] stopMusic];
-	return 0;
+	[[FCAudioManager_apple instance] stopMusic];
 }
 
-static int lua_DeleteBuffer( lua_State* _state )
+void plt_FCAudio_DeleteBuffer( FCHandle h )
 {
-	FC_LUA_ASSERT_NUMPARAMS(1);
-	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	
-	[[FCAudioManager instance] deleteBuffer:lua_tointeger(_state, 1)];
-	return 0;
+	[[FCAudioManager_apple instance] deleteBuffer:h];
 }
 
-static int lua_LoadSimpleSound( lua_State* _state )
+FCHandle plt_FCAudio_LoadSimpleSound( std::string name )
 {
-	FC_LUA_ASSERT_NUMPARAMS(1);
-	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
-	
-	NSString* name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
-	
-	FCHandle h = [[FCAudioManager instance] loadSimpleSound:name];
-
-	lua_pushinteger(_state, h);
-	
-	return 1;
+	NSString* namestring = [NSString stringWithUTF8String:name.c_str()];
+	return [[FCAudioManager_apple instance] loadSimpleSound:namestring];
 }
 
-static int lua_UnloadSimpleSound( lua_State* _state )
+void plt_FCAudio_UnloadSimpleSound( FCHandle h )
 {
-	FC_LUA_ASSERT_NUMPARAMS(1);
-	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-
-	FCHandle h = lua_tointeger(_state, 1);
-
-	[[FCAudioManager instance] unloadSimpleSound:h];
-
-	return 0;
+	[[FCAudioManager_apple instance] unloadSimpleSound:h];
 }
 
-static int lua_PlaySimpleSound( lua_State* _state )
+void plt_FCAudio_PlaySimpleSound( FCHandle h )
 {
-	FC_LUA_ASSERT_NUMPARAMS(1);
-	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	
-	FCHandle h = lua_tointeger(_state, 1);
-
-	[[FCAudioManager instance] playSimpleSound:h];
-	
-	return 0;
+	[[FCAudioManager_apple instance] playSimpleSound:h];
 }
 
-static int lua_SubscribeToPhysics2D( lua_State* _state )
+void plt_FCAudio_SubscribeToPhysics2D()
 {
-	FC_LUA_ASSERT_NUMPARAMS(0);
-	
-	[[FCAudioManager instance] subscribeToPhysics2D];
-	
-	return 0;
+	[[FCAudioManager_apple instance] subscribeToPhysics2D];
 }
 
-static int lua_UnsubscribeFromPhysics2D( lua_State* _state )
+void plt_FCAudio_UnsubscribeToPhysics2D()
 {
-	FC_LUA_ASSERT_NUMPARAMS(0);
-	
-	[[FCAudioManager instance] unsubscribeFromPhysics2D];
-	
-	return 0;
+	[[FCAudioManager_apple instance] unsubscribeFromPhysics2D];
 }
 
-static int lua_CreateBufferWithFile( lua_State* _state )
+FCHandle plt_FCAudio_CreateBufferWithFile( std::string name )
 {
-	FC_LUA_ASSERT_NUMPARAMS(1);
-	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	NSString* namestring = [NSString stringWithUTF8String:name.c_str()];
 	
-	NSString* name = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
-
-	FCHandle h = [[FCAudioManager instance] createBufferWithFile:name];
-
-	lua_pushinteger(_state, h);	
-	return 1;
+	return [[FCAudioManager_apple instance] createBufferWithFile:namestring];
 }
 
-static int lua_AddCollisionTypeHandler( lua_State* _state )
+void plt_FCAudio_AddCollisionTypeHandler( std::string type1, std::string type2, std::string func )
 {
-	FC_LUA_ASSERT_NUMPARAMS(3);
-	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
-	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
-	FC_LUA_ASSERT_TYPE(3, LUA_TSTRING);
-	
-	NSString* type1 = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
-	NSString* type2 = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
-	NSString* luaFunc = [NSString stringWithUTF8String:lua_tostring(_state, 3)];
-	
-	[[FCAudioManager instance] addCollisionTypeHanderFor:type1 andType:type2 luaFunc:luaFunc];
-	
-	return 0;
+	NSString* type1string = [NSString stringWithUTF8String:type1.c_str()];
+	NSString* type2string = [NSString stringWithUTF8String:type2.c_str()];
+	NSString* funcstring = [NSString stringWithUTF8String:func.c_str()];
+	[[FCAudioManager_apple instance] addCollisionTypeHanderFor:type1string andType:type2string luaFunc:funcstring];
 }
 
-static int lua_RemoveCollisionTypeHandler( lua_State* _state )
+void plt_FCAudio_RemoveCollisionTypeHandler( std::string type1, std::string type2 )
 {
-	FC_LUA_ASSERT_NUMPARAMS(2);
-	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
-	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
-	
-	NSString* type1 = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
-	NSString* type2 = [NSString stringWithUTF8String:lua_tostring(_state, 2)];
-
-	[[FCAudioManager instance] removeCollisionTypeHanderFor:type1 andType:type2];
-	
-	return 0;
+	NSString* type1string = [NSString stringWithUTF8String:type1.c_str()];
+	NSString* type2string = [NSString stringWithUTF8String:type2.c_str()];
+	[[FCAudioManager_apple instance] removeCollisionTypeHanderFor:type1string andType:type2string];
 }
 
-static int lua_PrepareSourceWithBuffer( lua_State* _state )
+FCHandle plt_FCAudio_PrepareSourceWithBuffer( FCHandle h, bool vital )
 {
-	FC_LUA_ASSERT_NUMPARAMS(2);
-	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	FC_LUA_ASSERT_TYPE(2, LUA_TBOOLEAN);
-	
-	FCHandle hBuffer = lua_tointeger(_state, 1);
-
-	BOOL vital = lua_toboolean(_state, 2);
-	
-	FCHandle hSource = [[FCAudioManager instance] prepareSourceWithBuffer:hBuffer vital:vital];
-	
-	lua_pushinteger(_state, hSource);
-	return 1;
+	return [[FCAudioManager_apple instance] prepareSourceWithBuffer:h vital:vital];
 }
 
-static int lua_SourceSetVolume( lua_State* _state )
+void plt_FCAudio_SourceSetVolume( FCHandle h, float vol )
 {
-	FC_LUA_ASSERT_NUMPARAMS(2);
-	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
+	FCAudioSource_apple* source = [[FCAudioManager_apple instance].activeSources objectForKey:[NSNumber numberWithInt:h]];
 	
-	FCHandle hSource = lua_tointeger(_state, 1);
-	float vol = lua_tonumber(_state, 2);
-	
-	FCAudioSource* source = [[FCAudioManager instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
-
 	FC_ASSERT(source);
 	
 	source.volume = vol;
-	
-	return 0;
 }
 
-static int lua_SourcePlay( lua_State* _state )
+void plt_FCAudio_SourcePlay( FCHandle h )
 {
-	FC_LUA_ASSERT_NUMPARAMS(1);
-	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	
-	FCHandle hSource = lua_tointeger(_state, 1);	
-	FCAudioSource* source = [[FCAudioManager instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
+	FCAudioSource_apple* source = [[FCAudioManager_apple instance].activeSources objectForKey:[NSNumber numberWithInt:h]];
 	
 	FC_ASSERT(source);
 	
 	[source play];
-	
-	return 0;
 }
 
-static int lua_SourceStop( lua_State* _state )
+void plt_FCAudio_SourceStop( FCHandle h )
 {
-	FC_LUA_ASSERT_NUMPARAMS(1);
-	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	
-	FCHandle hSource = lua_tointeger(_state, 1);	
-	FCAudioSource* source = [[FCAudioManager instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
+	FCAudioSource_apple* source = [[FCAudioManager_apple instance].activeSources objectForKey:[NSNumber numberWithInt:h]];
 	
 	FC_ASSERT(source);
 	
 	[source stop];
-	
-	return 0;
 }
 
-static int lua_SourceLooping( lua_State* _state )
+void plt_FCAudio_SourceLooping( FCHandle h, bool looping )
 {
-	FC_LUA_ASSERT_NUMPARAMS(2);
-	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	FC_LUA_ASSERT_TYPE(2, LUA_TBOOLEAN);
-	
-	FCHandle hSource = lua_tointeger(_state, 1);	
-	FCAudioSource* source = [[FCAudioManager instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
+	FCAudioSource_apple* source = [[FCAudioManager_apple instance].activeSources objectForKey:[NSNumber numberWithInt:h]];
 	
 	FC_ASSERT(source);
 	
-	source.looping = lua_toboolean(_state, 2);
-	
-	return 0;
+	source.looping = looping;
 }
 
-static int lua_SourcePosition( lua_State* _state )
+void plt_FCAudio_SourcePosition( FCHandle h, float x, float y, float z )
 {
-	FC_LUA_ASSERT_NUMPARAMS(4);
-	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
-	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
-	FC_LUA_ASSERT_TYPE(4, LUA_TNUMBER);
+	FCAudioSource_apple* source = [[FCAudioManager_apple instance].activeSources objectForKey:[NSNumber numberWithInt:h]];
 	
-	FCHandle hSource = lua_tointeger(_state, 1);	
-	FCAudioSource* source = [[FCAudioManager instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
-
-	FCVector3f pos;
-	pos.x = lua_tonumber(_state, 2);
-	pos.y = lua_tonumber(_state, 3);
-	pos.z = lua_tonumber(_state, 4);
-
+	FCVector3f pos( x, y, z );
+	
 	source.position = pos;
-	
-	return 0;
 }
 
-static int lua_SourcePitch( lua_State* _state )
-{
-	FC_LUA_ASSERT_NUMPARAMS(2);
-	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
+void plt_FCAudio_SourcePitch( FCHandle h, float pitch )
+{	
+	FCAudioSource_apple* source = [[FCAudioManager_apple instance].activeSources objectForKey:[NSNumber numberWithInt:h]];
 	
-	FCHandle hSource = lua_tointeger(_state, 1);	
-	FCAudioSource* source = [[FCAudioManager instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
-
-	float pitch = lua_tonumber(_state, 2);
 	source.pitch = pitch;
-	
-	return 0;
 }
 
 // load sample
@@ -348,7 +230,7 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 		
 		NSString* key = [NSString stringWithFormat:@"%@%@", [obj1 class], [obj2 class]];
 
-		NSString* luaFunc = [[FCAudioManager instance].collisionTypeHandlers valueForKey:key];
+		NSString* luaFunc = [[FCAudioManager_apple instance].collisionTypeHandlers valueForKey:key];
 		
 		if( luaFunc )
 		{
@@ -370,7 +252,7 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 	}
 }
 
-@implementation FCAudioManager
+@implementation FCAudioManager_apple
 
 @synthesize device = _device;
 @synthesize context = _context;
@@ -387,11 +269,11 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 @synthesize sfxVolume = _sfxVolume;
 @synthesize collisionTypeHandlers = _collisionTypeHandlers;
 
-+(FCAudioManager*)instance
++(FCAudioManager_apple*)instance
 {
-	static FCAudioManager* pInstance;
+	static FCAudioManager_apple* pInstance;
 	if (!pInstance) {
-		pInstance = [[FCAudioManager alloc] init];
+		pInstance = [[FCAudioManager_apple alloc] init];
 	}
 	return pInstance;
 }
@@ -420,7 +302,7 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 				break;
 				
 			default:
-				NSLog(@"%@", [FCAudioManager instance].activeSources);
+				NSLog(@"%@", [FCAudioManager_apple instance].activeSources);
 				NSString* string = [NSString stringWithFormat:@"Unknown AL error %d", error];
 				FC_LOG( [string UTF8String] );
 				break;
@@ -433,39 +315,7 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 	self = [super init];
 	if (self) {
 		
-		// Lua stuff
-		
-		FCLua::Instance()->CoreVM()->CreateGlobalTable("FCAudio");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_PlayMusic, "FCAudio.PlayMusic");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetMusicVolume, "FCAudio.SetMusicVolume");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetSFXVolume, "FCAudio.SetSFXVolume");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetMusicFinishedCallback, "FCAudio.SetMusicFinishedCallback");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_PauseMusic, "FCAudio.PauseMusic");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_ResumeMusic, "FCAudio.ResumeMusic");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_StopMusic, "FCAudio.StopMusic");
-
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_CreateBufferWithFile, "FCAudio.CreateBuffer");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_DeleteBuffer, "FCAudio.DeleteBuffer");
-
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_PrepareSourceWithBuffer, "FCAudio.PrepareSourceWithBuffer");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourceSetVolume, "FCAudio.SourceSetVolume");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourcePlay, "FCAudio.SourcePlay");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourceStop, "FCAudio.SourceStop");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourcePosition, "FCAudio.SourcePosition");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourcePitch, "FCAudio.SourcePitch");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourceLooping, "FCAudio.SourceLooping");
-
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_AddCollisionTypeHandler, "FCAudio.AddCollisionTypeHandler");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_RemoveCollisionTypeHandler, "FCAudio.RemoveCollisionTypeHandler");
-		
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_LoadSimpleSound, "FCAudio.LoadSimpleSound");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_UnloadSimpleSound, "FCAudio.UnloadSimpleSound");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_PlaySimpleSound, "FCAudio.PlaySimpleSound");
-
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SubscribeToPhysics2D, "FCAudio.SubscribeToPhysics2D");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_UnsubscribeFromPhysics2D, "FCAudio.UnsubscribeFromPhysics2D");
-
-		_listener = [[FCAudioListener alloc] init];
+		_listener = [[FCAudioListener_apple alloc] init];
 		_activeSources = [NSMutableDictionary dictionary];
 		_buffers = [NSMutableDictionary dictionary];
 		_simpleSounds = [NSMutableDictionary dictionary];
@@ -609,7 +459,7 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 {
 	FCHandle h = NewFCHandle();
 	
-	FCAudioBuffer* buffer = [[FCAudioBuffer alloc] initWithFilename:filename];
+	FCAudioBuffer_apple* buffer = [[FCAudioBuffer_apple alloc] initWithFilename:filename];
 	[_buffers setObject:buffer forKey:[NSNumber numberWithInt:h]];
 	
 	return h;
@@ -625,13 +475,13 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 {
 	// try to reuse an existing one first
 	
-	FCAudioBuffer* buffer = [_buffers objectForKey:[NSNumber numberWithInt:hBuffer]];
+	FCAudioBuffer_apple* buffer = [_buffers objectForKey:[NSNumber numberWithInt:hBuffer]];
 
 	NSArray* sourceKeys = [_activeSources allKeys];
 	
 	for( NSNumber* key in sourceKeys )
 	{
-		FCAudioSource* source = [_activeSources objectForKey:key];
+		FCAudioSource_apple* source = [_activeSources objectForKey:key];
 		
 		FC_ASSERT(source);
 		
@@ -653,7 +503,7 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 	
 	if ([_activeSources count] < maxPlayingVoices) 
 	{
-		FCAudioSource* source = [[FCAudioSource alloc] init];
+		FCAudioSource_apple* source = [[FCAudioSource_apple alloc] init];
 		source.ALBufferHandle = buffer.ALHandle;
 		
 		FCHandle hSource = NewFCHandle();

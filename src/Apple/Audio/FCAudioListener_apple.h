@@ -21,31 +21,14 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <OpenAL/al.h>
-#import <OpenAL/alc.h>
 
 #import "FCCore.h"
 
-@interface FCAudioSource : NSObject {
-	FCHandle		_handle;
-	ALuint			_ALHandle;
-	ALuint			_ALBufferHandle;
+@interface FCAudioListener_apple : NSObject {
 	FCVector3f	_position;
-	BOOL			_stopped;
-	float			_volume;
-	float			_pitch;	
-	BOOL			_looping;
+	float			_rotation;
 }
-@property(nonatomic) FCHandle handle;
-@property(nonatomic) ALuint ALHandle;
-@property(nonatomic) ALuint ALBufferHandle;
 @property(nonatomic) FCVector3f position;
-@property(nonatomic, readonly) BOOL stopped;
-@property(nonatomic) float volume;
-@property(nonatomic) float pitch;
-@property(nonatomic) BOOL looping;
-
--(void)play;
--(void)stop;
+@property(nonatomic) float rotation;
 
 @end

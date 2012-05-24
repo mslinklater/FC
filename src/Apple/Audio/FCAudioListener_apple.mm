@@ -20,25 +20,37 @@
  THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
 #import <OpenAL/al.h>
 #import <OpenAL/alc.h>
 
-#import "FCCore.h"
+#import "FCAudioListener_apple.h"
 
-@interface FCAudioBuffer : NSObject {
-	ALuint		_ALHandle;
-	void*		_bufferData;
-	ALenum		_format;
-	ALsizei		_size;
-	ALsizei		_freq;
+@implementation FCAudioListener_apple
+@synthesize position = _position;
+@synthesize rotation = _rotation;
+
+-(id)init
+{
+	self = [super init];
+	if (self) {
+		self.position = FCVector3f( 0.0f, 0.0f, 0.0f );
+		self.rotation = 0.0f;
+	}
+	return self;
 }
-@property(nonatomic) ALuint ALHandle;
-@property(nonatomic) void* bufferData;
-@property(nonatomic) ALenum format;
-@property(nonatomic) ALsizei size;
-@property(nonatomic) ALsizei freq;
 
--(id)initWithFilename:(NSString*)filename;
+-(void)setPosition:(FCVector3f)position
+{
+	float listenerPosAL[] = {position.x, position.y, position.z};
+	
+	alListenerfv(AL_POSITION, listenerPosAL);
+}
+
+-(void)setRotation:(float)rotation
+{
+	float ori[] = {static_cast<float>(cos(rotation + M_PI_2)), static_cast<float>(sin(rotation + M_PI_2)), 0., 0., 0., 1.};
+	
+	alListenerfv(AL_ORIENTATION, ori);
+}
 
 @end

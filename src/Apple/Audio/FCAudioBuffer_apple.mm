@@ -20,15 +20,16 @@
  THE SOFTWARE.
  */
 
-#import "FCAudioBuffer.h"
-#import "FCAudioManager.h"
+//#include "FCAudioBuffer.h"
+#import "FCAudioBuffer_apple.h"
+#import "FCAudioManager_apple.h"
 
 #import <AudioToolbox/AudioToolbox.h>
 #import <AudioToolbox/ExtendedAudioFile.h>
 
-typedef ALvoid	AL_APIENTRY	(*alBufferDataStaticProcPtr) (const ALint bid, ALenum format, ALvoid* data, ALsizei size, ALsizei freq);
+#if 1
 
-@implementation FCAudioBuffer
+@implementation FCAudioBuffer_apple
 
 @synthesize ALHandle = _ALHandle;
 @synthesize bufferData = _bufferData;
@@ -120,3 +121,5 @@ typedef ALvoid	AL_APIENTRY	(*alBufferDataStaticProcPtr) (const ALint bid, ALenum
 }
 
 @end
+
+#endif

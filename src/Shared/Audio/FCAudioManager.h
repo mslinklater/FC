@@ -20,38 +20,21 @@
  THE SOFTWARE.
  */
 
-/*
-	You can add your own data to the persistent data area by following this pattern:
- 
-	yourData = [[FCPersistentData instance] objectForKey:YOURDATAKEY];
- 
-	if (!yourData) {
-		yourData = (ALLOCATE YOUR DATA);
-		[[FCPersistentData instance] addObject:yourData forKey:YOURDATAKEY];
-	}
- 
-	Now you can access your data as normal
- 
-	NOTE: Your data must by NSCoding compliant !
- */
+#ifndef CR1_FCAudioManager_h
+#define CR1_FCAudioManager_h
 
-#import <Foundation/Foundation.h>
+#include "Shared/Core/FCCore.h"
 
-class FCLuaVM;
-
-@interface FCPersistentData : NSObject
+class FCAudioManager : public FCBase
 {
-}
-@property(strong) NSMutableDictionary* dataRoot;
-+(FCPersistentData*)instance;
-+(void)registerLuaFunctions:(FCLuaVM*)lua;
--(void)loadData;
--(void)saveData;
--(void)clearData;
--(void)printData;
+public:
+	static FCAudioManager* Instance();
+	FCAudioManager();
+	virtual ~FCAudioManager();
+	
+private:
+};
 
--(void)addObject:(id)object forKey:(NSString*)key;
--(id)objectForKey:(NSString*)key;
+typedef std::shared_ptr<FCAudioManager> FCAudioManagerPtr;
 
-
-@end
+#endif
