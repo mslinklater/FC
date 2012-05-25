@@ -21,7 +21,7 @@
  */
 
 #include "FCActor.h"
-#include "FCModel.h"
+#include "FCModel_apple.h"
 
 FCActor::FCActor()
 {
@@ -78,7 +78,7 @@ void FCActor::Init(	FCXMLNode		xml,
 	// now create a model
 	if (modelXML) 
 	{
-		m_model = [[FCModel alloc] initWithModel:modelXML resource:res];
+		m_model = [[FCModel_apple alloc] initWithModel:modelXML resource:res];
 	}
 	else
 	{
@@ -87,7 +87,7 @@ void FCActor::Init(	FCXMLNode		xml,
 			// physics but no model so build a physics mode
 			
 			NSMutableDictionary* dict = (__bridge NSMutableDictionary*)res->UserData();
-			m_model = [[FCModel alloc] initWithPhysicsBody:bodyXML color:[dict valueForKey:[NSString stringWithUTF8String:kFCKeyColor.c_str()]]];
+			m_model = [[FCModel_apple alloc] initWithPhysicsBody:bodyXML color:[dict valueForKey:[NSString stringWithUTF8String:kFCKeyColor.c_str()]]];
 		}
 	}
 }
@@ -121,12 +121,6 @@ void FCActor::ApplyImpulseAtWorldPos(FCVector3f impulse, FCVector3f pos)
 {
 	m_physicsBody->ApplyImpulseAtWorldPos(impulse, pos);
 }
-
-//FCVector3f FCActor::GetCenter()
-//{
-//	FC_HALT;
-//	return FCVector3f(0.0f, 0.0f, 0.0f);
-//}
 
 void FCActor::Update(float realTime, float gameTime)
 {

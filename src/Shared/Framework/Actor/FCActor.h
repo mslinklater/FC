@@ -28,7 +28,7 @@
 #include "Shared/Core/FCXML.h"
 #include "FCResource.h"
 
-@class FCModel;
+@class FCModel_apple;
 
 class FCActor : public FCBase
 {
@@ -67,7 +67,7 @@ public:
 	std::string			m_id;
 	std::string			m_fullName;
 	FCXMLNode			m_createXML;
-	FCModel*			m_model;
+	FCModel_apple*			m_model;
 	FCPhysics2DBodyPtr	m_physicsBody;
 };
 

@@ -24,12 +24,6 @@
 #include "Shared/Lua/FCLua.h"
 #include "FCActorSystem.h"
 
-// REMOVE !!! replace with factory
-#include "WorldActor.h"
-#include "BallActor.h"
-#include "GemActor.h"
-#include "BombActor.h"
-
 static FCActorSystem* s_pInstance;
 
 static int lua_Reset( lua_State* _state )
@@ -151,19 +145,9 @@ void FCActorSystem::Init()
 
 FCActorPtr FCActorSystem::ActorOfClass(std::string actorClass)
 {
-	FCActorPtr actor;
+	FC_ASSERT(m_createFuncs.find(actorClass) != m_createFuncs.end());
 	
-	if (actorClass == "WorldActor") {
-		actor = WorldActorPtr( new WorldActor );
-	} else if ( actorClass == "BallActor") {
-		actor = BallActorPtr( new BallActor );
-	} else if (actorClass == "GemActor") {
-		actor = GemActorPtr( new GemActor );
-	} else if ( actorClass == "BombActor") {
-		actor = BombActorPtr( new BombActor );
-	} else {
-		FC_HALT;
-	}
+	FCActorPtr actor = (m_createFuncs[ actorClass ])();
 	
 	m_allActorsVec.push_back( actor );
 	

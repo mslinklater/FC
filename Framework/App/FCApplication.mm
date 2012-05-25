@@ -29,7 +29,7 @@
 #import "FCViewManager.h"
 #import "FCBuild.h"
 #import "FCActorSystem.h"
-#import "FCShaderManager.h"
+#import "FCShaderManager_apple.h"
 //#import "FCTwitter_old.h"
 //#import "FCAudioManager.h"
 

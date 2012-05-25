@@ -26,6 +26,8 @@
 #include "Shared/Core/FCCore.h"
 #include "FCActor.h"
 
+typedef FCActorPtr (*FCActorCreateFunc)(void);
+
 class FCActorSystem : public FCBase
 {
 public:
@@ -52,7 +54,17 @@ public:
 	const FCActorVec& TapGestureActorsVec(){ return m_tapGestureActorsVec; }
 	const FCActorMapByHandle& ActorByHandleMap(){ return m_actorHandleMap; }
 	
+	void AddActorCreateFunction( std::string type, FCActorCreateFunc func)
+	{
+		m_createFuncs[ type ] = func;
+	}
+	
 private:
+	
+	typedef std::map<std::string, FCActorCreateFunc> ActorCreateFunctionMap;
+
+	ActorCreateFunctionMap	m_createFuncs;
+	
 	FCActorPtr ActorOfClass(std::string actorClass);
 	
 	FCActorVec		m_allActorsVec;
