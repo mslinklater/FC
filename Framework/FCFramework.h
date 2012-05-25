@@ -24,8 +24,6 @@
 #define FC_FCFramework_h
 
 #import "FCCrypto.h"
-#import "FCHighScores.h"
-#import "FCLeaderboard.h"
 
 // folders
 
@@ -33,8 +31,7 @@
 #import "FCApplication.h"
 #import "FCBuild.h"
 #import "FCDevice.h"
-#import "FCPersistentData.h"
 #import "FCPhase.h"
-#import "FCUI.h"
+//#import "FCUI.h"
 
 #endif

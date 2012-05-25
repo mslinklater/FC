@@ -42,10 +42,6 @@
 #import <AppKit/AppKit.h>
 #endif
 
-//#if defined (FC_LUA)
-//#import "FCLuaClass.h"
-//#endif
-
 @protocol FCManagedView <NSObject>
 -(void)setManagedViewName:(NSString*)name;
 -(NSString*)managedViewName;
@@ -54,7 +50,6 @@
 class FCLuaVM;
 
 #if defined (FC_LUA)
-//@interface FCViewManager : NSObject <FCLuaClass> {
 @interface FCViewManager : NSObject {
 #else
 	@interface FCViewManager : NSObject {

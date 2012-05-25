@@ -20,28 +20,37 @@
  THE SOFTWARE.
  */
 
-// MOVE to Lua ?
+#ifndef CR1_FCPersistentData_h
+#define CR1_FCPersistentData_h
 
-#import <Foundation/Foundation.h>
+#include "Shared/Core/FCCore.h"
 
-enum FCLeaderboardType {
-	kFCLeaderboardTypeLocal
+class FCPersistentData : public FCBase
+{
+public:
+	static FCPersistentData* Instance();
+	
+	FCPersistentData();
+	~FCPersistentData();
+	
+	void Load();
+	void Save();
+	void Clear();
+	std::string Print();
+	
+	bool Exists( std::string key );
+	
+	void AddStringForKey( std::string value, std::string key );
+	std::string StringForKey( std::string key );
+							 
+	void AddFloatForKey( float value, std::string key );
+	float FloatForKey( std::string key );
+	
+	void AddIntForKey( int32_t value, std::string key );
+	int32_t IntForKey( std::string key );
+
+	void AddBoolForKey( bool value, std::string key );
+	bool BoolForKey( std::string key );
 };
 
-extern NSString* kFCLeaderboardEntryKeyName;
-extern NSString* kFCLeaderboardEntryKeyScore;
-
-@interface FCLeaderboard : NSObject {
-    NSMutableArray* mEntriesArray;
-	NSString* mPersistentKey;
-}
-@property(nonatomic) FCLeaderboardType type;
-@property(nonatomic) int numEntries;
-
--(id)initWithType:(FCLeaderboardType)type size:(int)size andPersistentKey:(NSString*)key;	// Designated initialiser
-
--(void)addScore:(int)score forName:(NSString*)name;
-
--(NSArray*)getEntriesStartingAt:(int)start size:(int)size;
-
-@end
+#endif

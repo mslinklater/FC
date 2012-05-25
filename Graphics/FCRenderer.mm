@@ -24,7 +24,7 @@
 
 #import "FCCore.h"
 #import "FCRenderer.h"
-#import "FCAppContext.h"
+//#import "FCAppContext.h"
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
@@ -33,6 +33,7 @@
 #import "FCTextureManager.h"
 #import "FCLua.h"
 #import "FCActorSystem.h"
+#import "FCMesh.h"
 
 static NSMutableDictionary* s_renderers;
 static FCRenderer* s_currentLuaTarget;
@@ -67,7 +68,7 @@ static int lua_SetCurrentRenderer( lua_State* _state )
 		_name = name;
 		_models = [[NSMutableArray alloc] init];
 		_meshes = [[NSMutableArray alloc] init];
-		_gatherList = [[NSMutableArray alloc] init];
+//		_gatherList = [[NSMutableArray alloc] init];
 		
 		if (!s_renderers) // one off init
 		{
@@ -88,16 +89,23 @@ static int lua_SetCurrentRenderer( lua_State* _state )
 	[s_renderers removeObjectForKey:_name];
 }
 
--(void)addToGatherList:(id)obj
+-(void)addToGatherList:(FCActorPtr)obj
 {
 //	FC_ASSERT([obj conformsToProtocol:@protocol(FCGameObjectRender)]);
-	[_gatherList addObject:obj];
+//	[_gatherList addObject:obj];
+	_gatherList.push_back(obj);
 }
 
--(void)removeFromGatherList:(id)obj
+-(void)removeFromGatherList:(FCActorPtr)obj
 {
 //	FC_ASSERT([obj conformsToProtocol:@protocol(FCGameObjectRender)]);
-	[_gatherList removeObject:obj];
+//	[_gatherList removeObject:obj];
+	for (FCActorVecIter i = _gatherList.begin(); i != _gatherList.end(); i++) {
+		if (*i == obj) {
+			_gatherList.erase(i);
+			break;
+		}
+	}
 }
 
 -(void)render
@@ -109,11 +117,9 @@ static int lua_SetCurrentRenderer( lua_State* _state )
 	
 	// gather from objects on the gather list
 	
-//	for( id<FCGameObjectRender> obj in _gatherList )
-	for( id obj in _gatherList )
+	for (FCActorVecIter i = _gatherList.begin(); i != _gatherList.end(); i++)
 	{
-//		[_models addObjectsFromArray:[obj renderGather]];
-		[_models addObjectsFromArray:[obj performSelector:@selector(renderGather)]];
+		[_models addObjectsFromArray:(*i)->RenderGather()];
 	}
 
 	for (FCModel* model in _models) {

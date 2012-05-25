@@ -223,12 +223,12 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 	{
 		CollisionInfo* pCollisionInfo = &(i->second);
 		
-		NSDictionary* actorHandleDictionary = [FCActorSystem instance].actorHandleDictionary;
+		const FCActorMapByHandle actorMap = FCActorSystem::Instance()->ActorByHandleMap();
 		
-		id obj1 = [actorHandleDictionary objectForKey:[NSNumber numberWithInt:pCollisionInfo->hActor1]];
-		id obj2 = [actorHandleDictionary objectForKey:[NSNumber numberWithInt:pCollisionInfo->hActor2]];
-		
-		NSString* key = [NSString stringWithFormat:@"%@%@", [obj1 class], [obj2 class]];
+		const FCActorPtr obj1 = actorMap.find( pCollisionInfo->hActor1 )->second;
+		const FCActorPtr obj2 = actorMap.find( pCollisionInfo->hActor2 )->second;
+
+		NSString* key = [NSString stringWithFormat:@"%s%s", obj1->Class().c_str(), obj2->Class().c_str()];
 
 		NSString* luaFunc = [[FCAudioManager_apple instance].collisionTypeHandlers valueForKey:key];
 		

@@ -27,7 +27,7 @@
 #if defined(FC_GRAPHICS)
 
 #import <Foundation/Foundation.h>
-//#import "FCProtocols.h"
+#include "FCActor.h"
 
 @class FCTextureManager;
 
@@ -35,20 +35,20 @@
 	NSString*		_name;
 	NSMutableArray* _models;
 	NSMutableArray* _meshes;
-	NSMutableArray* _gatherList;
+	FCActorVec		_gatherList;
 	FCTextureManager* _textureManager;
 }
 @property(nonatomic, strong, readonly) NSString* name;
 @property(nonatomic, strong, readonly) NSMutableArray* models;
 @property(nonatomic, strong, readonly) NSMutableArray* meshes;
-@property(nonatomic, strong, readonly) NSMutableArray* gatherList;
+@property(nonatomic, readonly) FCActorVec gatherList;
 @property(nonatomic, strong) FCTextureManager* textureManager;
 
 -(id)initWithName:(NSString*)name;
 -(void)render;
 
--(void)addToGatherList:(id)obj;
--(void)removeFromGatherList:(id)obj;
+-(void)addToGatherList:(FCActorPtr)obj;
+-(void)removeFromGatherList:(FCActorPtr)obj;
 
 @end
 

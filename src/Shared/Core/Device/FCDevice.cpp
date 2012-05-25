@@ -79,7 +79,15 @@ static int lua_GetDeviceNumber( lua_State* _state )
 static int lua_GetGameCenterID( lua_State* _state )
 {
 	FC_LUA_ASSERT_NUMPARAMS(0);
-	lua_pushstring(_state, FCDevice::Instance()->GetCap(kFCDeviceGameCenterID).c_str());
+	
+	std::string ret = FCDevice::Instance()->GetCap(kFCDeviceGameCenterID);
+	
+	if (ret.size()) {
+		lua_pushstring(_state, ret.c_str());
+	} else {
+		lua_pushnil(_state);
+	}
+	
 	return 1;
 }
 

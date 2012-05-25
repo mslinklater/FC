@@ -23,7 +23,7 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "FCApplication.h"
-#import "FCPersistentData.h"
+//#import "FCPersistentData_old.h"
 #import "FCPhaseManager.h"
 #import "FCPerformanceCounter.h"
 #import "FCViewManager.h"
@@ -40,6 +40,7 @@
 #include "Shared/Framework/Analytics/FCAnalytics.h"
 #include "Shared/Framework/Online/FCTwitter.h"
 #include "Shared/Audio/FCAudioManager.h"
+#include "Shared/Framework/FCPersistentData.h"
 
 #if defined (FC_LUA)
 static FCLuaVM*					s_lua;
@@ -211,7 +212,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 #if defined (FC_LUA)
 	s_lua = FCLua::Instance()->CoreVM();
 	
-	[FCPersistentData registerLuaFunctions:s_lua];
+//	[FCPersistentData_old registerLuaFunctions:s_lua];
+	
 	[FCPhaseManager registerLuaFunctions:s_lua];
 
 	[FCViewManager registerLuaFunctions:s_lua];
@@ -242,11 +244,11 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	FCDevice::Instance()->ColdProbe();
 	FCDevice::Instance()->WarmProbe();
 	
-	[[FCPersistentData instance] loadData];
+	FCPersistentData::Instance()->Load();
 #if defined (FC_PHYSICS)
 	FCPhysics::Instance();
 #endif
-	[FCActorSystem instance];
+	FCActorSystem::Instance();
 	
 #if defined(FC_LUA)
 	s_lua->LoadScript("main");
@@ -328,7 +330,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	FCPhysics::Instance()->Update( dt, gameTime );
 #endif
 	
-	[[FCActorSystem instance] update:dt gameTime:gameTime];
+	FCActorSystem::Instance()->Update(dt, gameTime);
 	
 	// Keep this as the last update - since render views are updated here.
 	[[FCPhaseManager instance] update:dt];
@@ -372,7 +374,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	FCAnalytics::Instance()->EndTimedEvent(s_sessionActiveAnalyticsHandle);
 	s_sessionActiveAnalyticsHandle = kFCHandleInvalid;
 #endif
-	[[FCPersistentData instance] saveData];
+	FCPersistentData::Instance()->Save();
 	
 #if defined (FC_LUA)
 	s_lua->CallFuncWithSig("FCApp.WillResignActive", false, "");

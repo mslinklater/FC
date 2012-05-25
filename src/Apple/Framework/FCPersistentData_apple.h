@@ -21,22 +21,19 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "FCDevice.h"
 
-#include "Shared/Core/FCXML.h"
+@interface FCPersistentData_apple : NSObject {
+	NSMutableDictionary* _dataRoot;
+}
+@property(nonatomic, strong) NSMutableDictionary* dataRoot;
 
-@class FCGLView;
++(FCPersistentData_apple*)instance;
 
-@interface FCAppContext : NSObject
+-(NSString*)filename;
 
-@property(nonatomic, readonly) FCXMLPtr xml;
-@property(nonatomic, strong) id gameRoot;
-@property(nonatomic, strong) NSString* localPlayerGameCenterId;
-@property(nonatomic, strong) FCGLView* mainGameView;
-
-+(FCAppContext*)instance;
--(void)setValue:(id)value forKey:(NSString *)key;
--(id)valueForKey:(NSString *)key;
+-(void)load;
+-(void)save;
+-(void)clear;
+-(void)print;
 
 @end
-

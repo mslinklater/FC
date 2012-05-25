@@ -40,6 +40,12 @@ extern void FCFatal( std::string message );
 
 extern void FCWarning( std::string message );
 
+class FCError
+{
+public:
+	std::string message;
+};
+
 // Always present ----------------------------
 
 #define FC_HALT FCHalt()
