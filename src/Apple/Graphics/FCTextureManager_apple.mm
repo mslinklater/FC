@@ -22,10 +22,21 @@
 
 #if defined (FC_GRAPHICS)
 
+
+
 #import "FCTextureManager_apple.h"
 //#import "FCTextureFile.h"
 //#import "FCTexture.h"
 #import "FCCore.h"
+
+IFCTextureManager* plt_FCTextureManager_Instance()
+{
+	static FCTextureManagerProxy* pInstance = 0;
+	if (!pInstance) {
+		pInstance = new FCTextureManagerProxy;
+	}
+	return pInstance;
+}
 
 @implementation FCTextureManager_apple
 //@synthesize textures = _textures;

@@ -29,6 +29,13 @@
 #include "Shared/Core/FCXML.h"
 #include "Shared/Core/Resources/FCResource.h"
 
+#include "Shared/Graphics/FCModel.h"
+
+@class FCModel_apple;
+
+//----------------------------------------------
+
+
 @interface FCModel_apple : NSObject {	
 	NSMutableArray* _meshes;
 	FCVector3f _position;
@@ -39,11 +46,51 @@
 @property(nonatomic) FCVector3f position;
 @property(nonatomic) float rotation;
 
-//-(void)render;
-
 -(id)initWithModel:(FCXMLNode)modelXML resource:(FCResourcePtr)res;
--(id)initWithPhysicsBody:(FCXMLNode)bodyXML color:(UIColor*)color;// actorXOffset:(float)actorX actorYOffset:(float)actorY;
+-(id)initWithPhysicsBody:(FCXMLNode)bodyXML color:(FCColor4f*)color;// actorXOffset:(float)actorX actorYOffset:(float)actorY;
 -(void)setDebugMeshColor:(FCColor4f)color;
 @end
+
+//---------------------------------------------- Proxy
+
+class FCModelProxy : public IFCModel {
+public:
+	FCModelProxy()
+	{
+	}
+	virtual ~FCModelProxy()
+	{
+		model = nil;
+	}
+	
+	FCModel_apple*	model;
+	
+	void InitWithModel( FCXMLNode modelXML, FCResourcePtr resource )
+	{
+		model = [[FCModel_apple alloc] initWithModel:modelXML resource:resource];
+	}
+	
+	void InitWithPhysics( FCXMLNode physicsXML, FCColor4f* pColor )
+	{
+		model = [[FCModel_apple alloc] initWithPhysicsBody:physicsXML color:pColor];
+	}
+	
+	void SetDebugMeshColor( FCColor4f* pColor)
+	{
+		[model setDebugMeshColor:*pColor];
+	}
+	
+	void SetRotation( float rot )
+	{
+		[model setRotation:rot];
+	}
+	
+	void SetPosition( FCVector3f* pPos )
+	{
+		[model setPosition:*pPos];
+	}
+};
+
+//----------------------------------------------
 
 #endif // defined(FC_GRAPHICS)

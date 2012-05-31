@@ -28,7 +28,9 @@
 #include "Shared/Core/FCXML.h"
 #include "FCResource.h"
 
-@class FCModel_apple;
+//@class FCModel_apple;
+
+#include "Shared/Graphics/FCModel.h"
 
 class FCActor : public FCBase
 {
@@ -60,14 +62,16 @@ public:
 	virtual bool NeedsRender();
 	virtual bool RespondsToTapGesture();
 	
-	virtual NSArray*	RenderGather();
+//	virtual NSArray*	RenderGather();
+	virtual FCModelVec	RenderGather();
 
 	FCHandle			m_handle;
 	std::string			m_name;
 	std::string			m_id;
 	std::string			m_fullName;
 	FCXMLNode			m_createXML;
-	FCModel_apple*			m_model;
+//	FCModel_apple*			m_model;
+	FCModelPtr			m_model;
 	FCPhysics2DBodyPtr	m_physicsBody;
 };
 

@@ -20,50 +20,36 @@
  THE SOFTWARE.
  */
 
-#if defined(FC_GRAPHICS)
+#include"FCRenderer.h"
+#include "Shared/Lua/FCLua.h"
 
-#import <Foundation/Foundation.h>
-//#import <OpenGLES/ES2/gl.h>
-#import "FCGL_apple.h"
+static std::map<std::string, IFCRenderer*>	s_renderers;
+static IFCRenderer* s_luaRenderer = 0;
 
-#include "Shared/Graphics/FCTextureManager.h"
-
-//@class FCTextureFile;
-//@class FCTexture;
-
-@interface FCTextureManager_apple : NSObject <NSXMLParserDelegate> {
-//	NSMutableDictionary*	_textures;
-//	NSMutableDictionary*	_textureFiles;
-//	FCTextureFile*			_currentTextureFile;
-	GLuint					_debugTexture;
-}
-//@property(nonatomic, strong) NSMutableDictionary* textures;
-//@property(nonatomic, strong) NSMutableDictionary* textureFiles;
-//@property(nonatomic, strong) FCTextureFile* currentTextureFile;
-@property(nonatomic, readonly) GLuint debugTexture;
-
-+(FCTextureManager_apple*)instance;
-
--(void)bindDebugTextureTo:(GLuint)attributeHandle;
-
-@end
-
-//------------------------------------------------------
-
-class FCTextureManagerProxy : public IFCTextureManager
+static int lua_SetCurrentRenderer( lua_State* _state )
 {
-public:
-	FCTextureManagerProxy()
-	{
-		textureManager = [FCTextureManager_apple instance];
-	}
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
-	virtual ~FCTextureManagerProxy()
-	{
-		
-	}
-//private:
-	FCTextureManager_apple*	textureManager;
-};
+	std::string name = lua_tostring(_state, 1);
+	
+	FC_ASSERT( s_renderers.find(name) != s_renderers.end() );
+	s_luaRenderer = s_renderers[ name ];
+	return 0;
+}
 
-#endif // defined(FC_GRAPHICS)
+IFCRenderer::IFCRenderer( std::string name )
+{
+	if( s_renderers.size() == 0 )
+	{
+		FCLua::Instance()->CoreVM()->CreateGlobalTable("FCRenderer");
+		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetCurrentRenderer, "FCRenderer.SetCurrentRenderer");
+	}
+	s_renderers[ name ] = this;
+}
+
+IFCRenderer::~IFCRenderer()
+{
+	FC_HALT; // what to do here ?
+}
+

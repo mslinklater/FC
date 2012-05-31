@@ -24,7 +24,6 @@
 
 #import "FCCore.h"
 #import "FCRenderer_apple.h"
-//#import "FCAppContext.h"
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
@@ -35,21 +34,17 @@
 #import "FCActorSystem.h"
 #import "FCMesh_apple.h"
 
-static NSMutableDictionary* s_renderers;
-static FCRenderer_apple* s_currentLuaTarget;
+IFCRenderer* plt_FCRenderer_Create( std::string name )
+{
+	return new FCRendererProxy( name );
+}
+
+
+//static NSMutableDictionary* s_renderers;
+//static FCRenderer_apple* s_currentLuaTarget;
 
 // set current renderer
 
-static int lua_SetCurrentRenderer( lua_State* _state )
-{
-	FC_LUA_ASSERT_NUMPARAMS(1);
-	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
-
-	FCRenderer_apple* rend = [s_renderers valueForKey:[NSString stringWithUTF8String:lua_tostring(_state, 1)]];
-	FC_ASSERT(rend);
-	s_currentLuaTarget = rend;
-	return 0;
-}
 
 @implementation FCRenderer_apple
 
@@ -68,38 +63,31 @@ static int lua_SetCurrentRenderer( lua_State* _state )
 		_name = name;
 		_models = [[NSMutableArray alloc] init];
 		_meshes = [[NSMutableArray alloc] init];
-//		_gatherList = [[NSMutableArray alloc] init];
 		
-		if (!s_renderers) // one off init
-		{
-			s_renderers = [[NSMutableDictionary alloc] init];
-//			[[FCLua instance].coreVM createGlobalTable:@"FCRenderer"];
-			FCLua::Instance()->CoreVM()->CreateGlobalTable("FCRenderer");
-//			[[FCLua instance].coreVM registerCFunction:lua_SetCurrentRenderer as:@"FCRenderer.SetCurrentRenderer"];
-			FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetCurrentRenderer, "FCRenderer.SetCurrentRenderer");
-		}
-		
-		[s_renderers setValue:self forKey:name];
+//		if (!s_renderers) // one off init
+//		{
+//			s_renderers = [[NSMutableDictionary alloc] init];
+//			FCLua::Instance()->CoreVM()->CreateGlobalTable("FCRenderer");
+//			FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetCurrentRenderer, "FCRenderer.SetCurrentRenderer");
+//		}
+//		
+//		[s_renderers setValue:self forKey:name];
 	}
 	return self;
 }
 
 -(void)dealloc
 {
-	[s_renderers removeObjectForKey:_name];
+//	[s_renderers removeObjectForKey:_name];
 }
 
 -(void)addToGatherList:(FCActorPtr)obj
 {
-//	FC_ASSERT([obj conformsToProtocol:@protocol(FCGameObjectRender)]);
-//	[_gatherList addObject:obj];
 	_gatherList.push_back(obj);
 }
 
 -(void)removeFromGatherList:(FCActorPtr)obj
 {
-//	FC_ASSERT([obj conformsToProtocol:@protocol(FCGameObjectRender)]);
-//	[_gatherList removeObject:obj];
 	for (FCActorVecIter i = _gatherList.begin(); i != _gatherList.end(); i++) {
 		if (*i == obj) {
 			_gatherList.erase(i);
@@ -119,7 +107,14 @@ static int lua_SetCurrentRenderer( lua_State* _state )
 	
 	for (FCActorVecIter i = _gatherList.begin(); i != _gatherList.end(); i++)
 	{
-		[_models addObjectsFromArray:(*i)->RenderGather()];
+		FCModelVec vec = (*i)->RenderGather();
+		for (FCModelVecIter i = vec.begin(); i != vec.end(); i++) 
+		{
+			FCModelProxy* proxy = (FCModelProxy*)(*i).get();
+			
+			[_models addObject:proxy->model];
+		}
+		
 	}
 
 	for (FCModel_apple* model in _models) {
@@ -143,29 +138,17 @@ static int lua_SetCurrentRenderer( lua_State* _state )
 		
 		mat = rot * trans;
 		
-//			if (lastShaderProgram != mesh.shaderProgram.glHandle) 
-//			{
-				FCShaderUniform_apple* uniform = [mesh.shaderProgram getUniform:@"modelview"];		
-				[mesh.shaderProgram setUniformValue:uniform to:&mat size:sizeof(mat)];
-				
-				uniform = [mesh.shaderProgram getUniform:@"light_direction"];
-				if (uniform) {
-					[mesh.shaderProgram setUniformValue:uniform to:&invLight size:sizeof(invLight)];
-				}
-				lastShaderProgram = mesh.shaderProgram.glHandle;
-//			}
+		FCShaderUniform_apple* uniform = [mesh.shaderProgram getUniform:@"modelview"];		
+		[mesh.shaderProgram setUniformValue:uniform to:&mat size:sizeof(mat)];
 		
-//		[_textureManager bindDebugTexture];
+		uniform = [mesh.shaderProgram getUniform:@"light_direction"];
+		if (uniform) {
+			[mesh.shaderProgram setUniformValue:uniform to:&invLight size:sizeof(invLight)];
+		}
+		lastShaderProgram = mesh.shaderProgram.glHandle;
 
 		[mesh render];
 	}
-	
-//	for( FCModel* model in _models )
-//	{
-//		[model render];
-//	}
-
-//	[_models removeAllObjects];
 }
 
 @end

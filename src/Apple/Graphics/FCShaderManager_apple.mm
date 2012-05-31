@@ -35,6 +35,15 @@
 #import "FCShaderProgram1TexPLit_apple.h"
 #import "FCShaderProgramTest_apple.h"
 
+IFCShaderManager* plt_FCShaderManager_Instance()
+{
+	static FCShaderManagerProxy* pInstance = 0;
+	if (!pInstance) {
+		pInstance = new FCShaderManagerProxy;
+	}
+	return pInstance;
+}
+
 @implementation FCShaderManager_apple
 @synthesize shaders = _shaders;
 @synthesize programs = _programs;

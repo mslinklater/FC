@@ -20,50 +20,27 @@
  THE SOFTWARE.
  */
 
-#if defined(FC_GRAPHICS)
+#ifndef FCRenderer_h
+#define FCRenderer_h
 
-#import <Foundation/Foundation.h>
-//#import <OpenGLES/ES2/gl.h>
-#import "FCGL_apple.h"
+#include "Shared/Core/FCCore.h"
+#include "Shared/Framework/Actor/FCActor.h"
 
-#include "Shared/Graphics/FCTextureManager.h"
+class IFCTextureManager;
 
-//@class FCTextureFile;
-//@class FCTexture;
-
-@interface FCTextureManager_apple : NSObject <NSXMLParserDelegate> {
-//	NSMutableDictionary*	_textures;
-//	NSMutableDictionary*	_textureFiles;
-//	FCTextureFile*			_currentTextureFile;
-	GLuint					_debugTexture;
-}
-//@property(nonatomic, strong) NSMutableDictionary* textures;
-//@property(nonatomic, strong) NSMutableDictionary* textureFiles;
-//@property(nonatomic, strong) FCTextureFile* currentTextureFile;
-@property(nonatomic, readonly) GLuint debugTexture;
-
-+(FCTextureManager_apple*)instance;
-
--(void)bindDebugTextureTo:(GLuint)attributeHandle;
-
-@end
-
-//------------------------------------------------------
-
-class FCTextureManagerProxy : public IFCTextureManager
-{
+class IFCRenderer {
 public:
-	FCTextureManagerProxy()
-	{
-		textureManager = [FCTextureManager_apple instance];
-	}
+	IFCRenderer( std::string name );
+	virtual ~IFCRenderer();
 	
-	virtual ~FCTextureManagerProxy()
-	{
-		
-	}
-//private:
-	FCTextureManager_apple*	textureManager;
+	virtual void Init( std::string name ) = 0;
+	virtual void SetTextureManager( IFCTextureManager* pTextureManager ) = 0;
+	virtual void Render( void ) = 0;
+	
+	virtual void AddToGatherList( FCActorPtr actor ) = 0;
+	virtual void RemoveFromGatherList( FCActorPtr actor ) = 0;
 };
 
-#endif // defined(FC_GRAPHICS)
+extern IFCRenderer* plt_FCRenderer_Create( std::string name );
+
+#endif

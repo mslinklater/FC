@@ -21,7 +21,6 @@
  */
 
 #include "FCActor.h"
-#include "FCModel_apple.h"
 
 FCActor::FCActor()
 {
@@ -60,11 +59,11 @@ void FCActor::Init(	FCXMLNode		xml,
 		bodyDef->angle = FCXML::FloatValueForNodeAttribute(m_createXML, kFCKeyRotation);
 		
 		if( FCXML::BoolValueForNodeAttribute(m_createXML, kFCKeyDynamic) )
-			bodyDef->isStatic = NO;
+			bodyDef->isStatic = false;
 		else
-			bodyDef->isStatic = YES;
+			bodyDef->isStatic = true;
 		
-		bodyDef->canSleep = NO;
+		bodyDef->canSleep = false;
 		bodyDef->shapeXML = bodyXML;
 		
 		if (name.size()) {
@@ -78,7 +77,8 @@ void FCActor::Init(	FCXMLNode		xml,
 	// now create a model
 	if (modelXML) 
 	{
-		m_model = [[FCModel_apple alloc] initWithModel:modelXML resource:res];
+		m_model = plt_FCModel_Create();
+		m_model->InitWithModel(modelXML, res);
 	}
 	else
 	{
@@ -86,8 +86,8 @@ void FCActor::Init(	FCXMLNode		xml,
 		{
 			// physics but no model so build a physics mode
 			
-			NSMutableDictionary* dict = (__bridge NSMutableDictionary*)res->UserData();
-			m_model = [[FCModel_apple alloc] initWithPhysicsBody:bodyXML color:[dict valueForKey:[NSString stringWithUTF8String:kFCKeyColor.c_str()]]];
+			m_model = plt_FCModel_Create();
+			m_model->InitWithPhysics(bodyXML, (FCColor4f*)res->UserData());
 		}
 	}
 }
@@ -114,7 +114,7 @@ FCVector3f FCActor::LinearVelocity()
 
 void FCActor::SetDebugModelColor(FCColor4f color)
 {
-	[m_model setDebugMeshColor:color];
+	m_model->SetDebugMeshColor(&color);
 }
 
 void FCActor::ApplyImpulseAtWorldPos(FCVector3f impulse, FCVector3f pos)
@@ -131,8 +131,8 @@ void FCActor::Update(float realTime, float gameTime)
 		
 		if( m_model )
 		{
-			[m_model setRotation:rot];
-			[m_model setPosition:pos];					
+			m_model->SetRotation(rot);
+			m_model->SetPosition(&pos);
 		}
 	}
 }
@@ -152,12 +152,8 @@ bool FCActor::RespondsToTapGesture()
 	return false;
 }
 
-NSArray*	FCActor::RenderGather()
+FCModelVec FCActor::RenderGather()
 {
-	return nil;
+	FCModelVec ret;
+	return ret;
 }
-
-//void FCActor::Render()
-//{
-//	FC_HALT;
-//}

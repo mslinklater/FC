@@ -38,12 +38,17 @@
 static 	FCColor4f	s_whiteColor( 1.0f, 1.0f, 1.0f, 1.0f );
 static int kNumCircleSegments = 36;
 
+FCModelPtr plt_FCModel_Create()
+{
+	return FCModelPtr( new FCModelProxy );
+}
+
 #pragma mark - Private interface
 
 @interface FCModel_apple(hidden)
--(void)addDebugCircle:(NSDictionary*)def color:(UIColor*)debugColor;
--(void)addDebugRectangle:(NSDictionary*)def color:(UIColor*)debugColor;
--(void)addDebugPolygon:(NSDictionary*)def color:(UIColor*)debugColor;
+-(void)addDebugCircle:(NSDictionary*)def color:(FCColor4f*)debugColor;
+-(void)addDebugRectangle:(NSDictionary*)def color:(FCColor4f*)debugColor;
+-(void)addDebugPolygon:(NSDictionary*)def color:(FCColor4f*)debugColor;
 @end
 
 #pragma mark - Public interface
@@ -57,15 +62,14 @@ static int kNumCircleSegments = 36;
 #pragma mark -
 #pragma mark Initialisers
 
--(id)initWithPhysicsBody:(FCXMLNode)bodyXML color:(UIColor*)color	//actorXOffset:(float)actorX actorYOffset:(float)actorY
+-(id)initWithPhysicsBody:(FCXMLNode)bodyXML color:(FCColor4f*)color	//actorXOffset:(float)actorX actorYOffset:(float)actorY
 {
 	self = [super init];
 	if (self) {
 		// go through meshes and build for fixtures
 		
 		self.meshes = [NSMutableArray array];
-		
-		
+				
 		FCXMLNodeVec fixtures = FCXML::VectorForChildNodesOfType(bodyXML, "fixture");
 		
 		for (FCXMLNodeVecIter fixture = fixtures.begin(); fixture != fixtures.end(); fixture++)
@@ -224,7 +228,7 @@ static int kNumCircleSegments = 36;
 	}
 }
 
--(void)addDebugCircle:(NSDictionary*)def color:(UIColor*)debugColor
+-(void)addDebugCircle:(NSDictionary*)def color:(FCColor4f*)debugColor
 {
 	FCMesh_apple* mesh = [[FCMesh_apple alloc] initWithShaderName:[NSString stringWithUTF8String:kFCKeyShaderDebug.c_str()] primitiveType:GL_TRIANGLES];
 	[self.meshes addObject:mesh];
@@ -258,9 +262,7 @@ static int kNumCircleSegments = 36;
 	}
 
 	if (debugColor) {
-		float red, green, blue, alpha;
-		[debugColor getRed:&red green:&green blue:&blue alpha:&alpha];
-		mesh.diffuseColor = FCColor4f( red, green, blue, alpha );
+		mesh.diffuseColor = *debugColor;
 	}
 	else
 		mesh.diffuseColor = s_whiteColor;
@@ -281,7 +283,7 @@ static int kNumCircleSegments = 36;
 	*(pIndex+2) = 1;
 }
 
--(void)addDebugRectangle:(NSDictionary*)def color:(UIColor *)debugColor
+-(void)addDebugRectangle:(NSDictionary*)def color:(FCColor4f*)debugColor
 {
 	FCMesh_apple* mesh = [[FCMesh_apple alloc] initWithShaderName:[NSString stringWithUTF8String:kFCKeyShaderDebug.c_str()] primitiveType:GL_TRIANGLES];
 	[self.meshes addObject:mesh];
@@ -321,9 +323,7 @@ static int kNumCircleSegments = 36;
 	pVert->z = center.z;
 	
 	if (debugColor) {
-		float red, green, blue, alpha;
-		[debugColor getRed:&red green:&green blue:&blue alpha:&alpha];
-		mesh.diffuseColor = FCColor4f( red, green, blue, alpha );
+		mesh.diffuseColor = *debugColor;
 	}
 	else
 		mesh.diffuseColor = s_whiteColor;
@@ -340,7 +340,7 @@ static int kNumCircleSegments = 36;
 	*(pIndex+2) = 3;
 }
 
--(void)addDebugPolygon:(NSDictionary*)def color:(UIColor *)debugColor
+-(void)addDebugPolygon:(NSDictionary*)def color:(FCColor4f*)debugColor
 {
 	FCMesh_apple* mesh = [[FCMesh_apple alloc] initWithShaderName:[NSString stringWithUTF8String:kFCKeyShaderDebug.c_str()] primitiveType:GL_TRIANGLES];
 	[self.meshes addObject:mesh];
@@ -372,9 +372,7 @@ static int kNumCircleSegments = 36;
 	}	
 
 	if (debugColor) {
-		float red, green, blue, alpha;
-		[debugColor getRed:&red green:&green blue:&blue alpha:&alpha];
-		mesh.diffuseColor = FCColor4f( red, green, blue, alpha );
+		mesh.diffuseColor = *debugColor;
 	}
 	else
 	{

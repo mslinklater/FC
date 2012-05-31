@@ -81,7 +81,6 @@
 	FCPhaseUpdate ret = [_delegate update:dt];
 	
 #if defined (FC_LUA)
-//	[[FCLua instance].coreVM call:_luaUpdateFunc required:NO withSig:@""];
 	FCLua::Instance()->CoreVM()->CallFuncWithSig([_luaUpdateFunc UTF8String], false, "");
 #endif	
 	return ret;
@@ -93,7 +92,6 @@
 	if (_luaLoaded == NO) 
 	{
 		NSString* path = [_name stringByAppendingString:@"phase"];
-//		[[FCLua instance].coreVM loadScriptOptional:path];
 		FCLua::Instance()->CoreVM()->LoadScriptOptional([path UTF8String]);
 		_luaLoaded = YES;
 	}
@@ -103,7 +101,6 @@
 	{
 		[_delegate wasAddedToQueue];
 #if defined(FC_LUA)
-//		[[FCLua instance].coreVM call:_luaWasAddedToQueueFunc required:NO withSig:@""];
 		FCLua::Instance()->CoreVM()->CallFuncWithSig([_luaWasAddedToQueueFunc UTF8String], false, "");
 #endif
 	}
@@ -115,7 +112,6 @@
 	{
 		[_delegate wasRemovedFromQueue];		
 #if defined(FC_LUA)
-//		[[FCLua instance].coreVM call:_luaWasRemovedFromQueueFunc required:NO withSig:@""];
 		FCLua::Instance()->CoreVM()->CallFuncWithSig([_luaWasRemovedFromQueueFunc UTF8String], false, "");
 #endif
 	}
@@ -128,7 +124,6 @@
 		_activateTimer = [_delegate willActivate];
 	}
 #if defined(FC_LUA)
-//	[[FCLua instance].coreVM call:_luaWillActivateFunc required:NO withSig:@""];
 	FCLua::Instance()->CoreVM()->CallFuncWithSig([_luaWillActivateFunc UTF8String], false, "");
 #endif
 	if ([_delegate respondsToSelector:@selector(willActivatePostLua)]) 
@@ -144,7 +139,6 @@
 		[_delegate isNowActive];		
 	}
 #if defined(FC_LUA)
-//	[[FCLua instance].coreVM call:_luaIsNowActiveFunc required:NO withSig:@""];
 	FCLua::Instance()->CoreVM()->CallFuncWithSig([_luaIsNowActiveFunc UTF8String], false, "");
 #endif
 	if ([_delegate respondsToSelector:@selector(isNowActivePostLua)]) 
@@ -160,7 +154,6 @@
 		_deactivateTimer = [_delegate willDeactivate];		
 	}
 #if defined(FC_LUA)
-//	[[FCLua instance].coreVM call:_luaWillDeactivateFunc required:NO withSig:@""];
 	FCLua::Instance()->CoreVM()->CallFuncWithSig([_luaWillDeactivateFunc UTF8String], false, "");
 #endif
 	if ([_delegate respondsToSelector:@selector(willDeactivatePostLua)]) 
@@ -176,7 +169,6 @@
 		[_delegate isNowDeactive];
 	}
 #if defined(FC_LUA)
-//	[[FCLua instance].coreVM call:_luaIsNowDeactiveFunc required:NO withSig:@""];
 	FCLua::Instance()->CoreVM()->CallFuncWithSig([_luaIsNowDeactiveFunc UTF8String], false, "");
 #endif
 	if ([_delegate respondsToSelector:@selector(isNowDeactivePostLua)])

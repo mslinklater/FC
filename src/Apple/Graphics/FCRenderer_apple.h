@@ -24,10 +24,14 @@
 		Add perf metrics
  */
 
-#if defined(FC_GRAPHICS)
+#ifndef FCRENDERER_APPLE_H
+#define FCRENDERER_APPLE_H
 
 #import <Foundation/Foundation.h>
+#import "FCTextureManager_apple.h"
+
 #include "FCActor.h"
+#include "Shared/Graphics/FCRenderer.h"
 
 @class FCTextureManager_apple;
 
@@ -52,4 +56,50 @@
 
 @end
 
-#endif // defined(FC_GRAPHICS)
+//-----------------------------------------------------------------
+
+class FCRendererProxy : public IFCRenderer
+{
+public:
+	FCRendererProxy( std::string name )
+	: IFCRenderer(name)
+	{
+		renderer = [[FCRenderer_apple alloc] initWithName:[NSString stringWithUTF8String:name.c_str()]];
+	}
+	
+	virtual ~FCRendererProxy()
+	{
+		renderer = nil;
+	}
+	
+	void Init( std::string name )
+	{
+		FC_HALT;
+	}
+	
+	void SetTextureManager( IFCTextureManager* pTextureManager )
+	{
+		FCTextureManagerProxy* realTM = reinterpret_cast<FCTextureManagerProxy*>(pTextureManager);
+		[renderer setTextureManager:realTM->textureManager];
+	}
+	
+	void Render( void )
+	{
+		[renderer render];
+	}
+	
+	void AddToGatherList( FCActorPtr actor )
+	{
+		[renderer addToGatherList:actor];
+	}
+	
+	void RemoveFromGatherList( FCActorPtr actor )
+	{
+		[renderer removeFromGatherList:actor];
+	}
+	
+private:
+	FCRenderer_apple*	renderer;
+};
+
+#endif // define FCRENDERER_APPLE_H

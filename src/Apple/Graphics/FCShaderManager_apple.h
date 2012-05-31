@@ -26,6 +26,8 @@
 #import "FCShaderProgram_apple.h"
 #import "FCShaderUniform_apple.h"
 
+#include "Shared/Graphics/FCShaderManager.h"
+
 @interface FCShaderManager_apple : NSObject {
 	NSMutableDictionary* _shaders;
 	NSMutableDictionary* _programs;
@@ -35,16 +37,38 @@
 
 +(FCShaderManager_apple*)instance;
 
-//-(FCShader*)addShader:(NSString*)name;
-//-(FCShader*)shader:(NSString*)name;
+-(FCShader_apple*)addShader:(NSString*)name;
+-(FCShader_apple*)shader:(NSString*)name;
 
-//-(FCShaderProgram*)addProgram:(NSString*)name as:(NSString*)shaderName;
+-(FCShaderProgram_apple*)addProgram:(NSString*)name as:(NSString*)shaderName;
 
 -(FCShaderProgram_apple*)program:(NSString*)name;
 -(NSArray*)allShaders;
 
 -(void)activateShader:(NSString*)shader;
 @end
+
+//----------------------------------------------------
+
+class FCShaderManagerProxy : public IFCShaderManager
+{
+public:
+	FCShaderManagerProxy()
+	{
+		shaderManager = [FCShaderManager_apple instance];
+	}
+	virtual ~FCShaderManagerProxy()
+	{
+	}
+
+	void ActivateShader( std::string name )
+	{
+		[shaderManager activateShader:[NSString stringWithUTF8String:name.c_str()]];
+	}
+	
+//private:
+	FCShaderManager_apple* shaderManager;
+};
 
 #endif // defined(FC_GRAPHICS)
 

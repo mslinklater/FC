@@ -24,20 +24,6 @@
 
 #import <Foundation/Foundation.h>
 
-#include "Shared/Graphics/FCMesh.h"
-
-@class FCMesh_apple;
-
-//
-
-class FCMeshProxy : public FCMesh
-{
-public:
-	FCMesh_apple*	mesh;
-};
-
-//
-
 @class FCShaderProgram_apple;
 @class FCModel_apple;
 

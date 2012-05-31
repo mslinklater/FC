@@ -20,50 +20,16 @@
  THE SOFTWARE.
  */
 
-#if defined(FC_GRAPHICS)
+#ifndef FCShaderManager_h
+#define FCShaderManager_h
 
-#import <Foundation/Foundation.h>
-//#import <OpenGLES/ES2/gl.h>
-#import "FCGL_apple.h"
+#include "Shared/Core/FCCore.h"
 
-#include "Shared/Graphics/FCTextureManager.h"
-
-//@class FCTextureFile;
-//@class FCTexture;
-
-@interface FCTextureManager_apple : NSObject <NSXMLParserDelegate> {
-//	NSMutableDictionary*	_textures;
-//	NSMutableDictionary*	_textureFiles;
-//	FCTextureFile*			_currentTextureFile;
-	GLuint					_debugTexture;
-}
-//@property(nonatomic, strong) NSMutableDictionary* textures;
-//@property(nonatomic, strong) NSMutableDictionary* textureFiles;
-//@property(nonatomic, strong) FCTextureFile* currentTextureFile;
-@property(nonatomic, readonly) GLuint debugTexture;
-
-+(FCTextureManager_apple*)instance;
-
--(void)bindDebugTextureTo:(GLuint)attributeHandle;
-
-@end
-
-//------------------------------------------------------
-
-class FCTextureManagerProxy : public IFCTextureManager
-{
+class IFCShaderManager {
 public:
-	FCTextureManagerProxy()
-	{
-		textureManager = [FCTextureManager_apple instance];
-	}
-	
-	virtual ~FCTextureManagerProxy()
-	{
-		
-	}
-//private:
-	FCTextureManager_apple*	textureManager;
+	virtual void ActivateShader( std::string name ) = 0;
 };
 
-#endif // defined(FC_GRAPHICS)
+extern IFCShaderManager* plt_FCShaderManager_Instance();
+
+#endif

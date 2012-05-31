@@ -20,15 +20,24 @@
  THE SOFTWARE.
  */
 
-#ifndef FCMesh_h
-#define FCMesh_h
+#ifndef FCModel_h
+#define FCModel_h
 
 #include "Shared/Core/FCCore.h"
 
-class FCMesh : public FCBase
-{
+class IFCModel {
 public:
+	virtual void InitWithModel( FCXMLNode modelXML, FCResourcePtr resource ) = 0;
+	virtual void InitWithPhysics( FCXMLNode physicsXML, FCColor4f* pColor ) = 0;
+	virtual void SetDebugMeshColor( FCColor4f* pColor ) = 0;
+	virtual void SetRotation( float rot ) = 0;
+	virtual void SetPosition( FCVector3f* pPos ) = 0;
 };
 
+typedef std::shared_ptr<IFCModel>	FCModelPtr;
+typedef std::vector<FCModelPtr>		FCModelVec;
+typedef FCModelVec::iterator		FCModelVecIter;
+
+extern FCModelPtr plt_FCModel_Create();
 
 #endif
