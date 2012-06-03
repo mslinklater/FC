@@ -82,7 +82,7 @@ IFCShaderManager* plt_FCShaderManager_Instance()
 		
 		NSString* path = [[NSBundle mainBundle] pathForResource:resourceName ofType:resourceType];
 
-		FC_ASSERT_MSG( path, std::string("Shader not found: ") + [path UTF8String]);
+		FC_ASSERT_MSG( path, std::string("Shader not found: ") + [resourceName UTF8String]);
 		
 		// load it
 		

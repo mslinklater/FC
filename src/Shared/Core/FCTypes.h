@@ -38,6 +38,20 @@ static const FCHandle kFCHandleFirstValid = 1;
 
 extern FCHandle NewFCHandle( void );
 
+class FCRect
+{
+public:
+	FCRect():x(0),y(0),w(0),h(0){}
+	FCRect( float _x, float _y, float _w, float _h ):x(_x),y(_y),w(_w),h(_h){}
+	FCRect( const FCRect& in ):x(in.x),y(in.y),w(in.w),h(in.h){}
+//	FCRect( FCRect in ):x(in.x),y(in.y),w(in.w),h(in.h){}
+	
+	float x;
+	float y;
+	float w;
+	float h;
+};
+
 // Some common container types.
 
 typedef std::vector<std::string>		FCStringVector;

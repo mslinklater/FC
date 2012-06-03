@@ -23,15 +23,13 @@
 #import <QuartzCore/QuartzCore.h>
 
 #import "FCApplication.h"
-//#import "FCPersistentData_old.h"
 #import "FCPhaseManager.h"
 #import "FCPerformanceCounter.h"
 #import "FCViewManager.h"
 #import "FCBuild.h"
 #import "FCActorSystem.h"
 #import "FCShaderManager_apple.h"
-//#import "FCTwitter_old.h"
-//#import "FCAudioManager.h"
+#import "FCViewManager_apple.h"
 
 #include "Shared/Core/FCCore.h"
 #include "Shared/Core/Device/FCDevice.h"
@@ -204,7 +202,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	[s_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 
 	vc.view.backgroundColor = [UIColor blackColor];
-	[FCViewManager instance].rootView = vc.view;
+	[FCViewManager_apple instance].rootView = vc.view;
 #endif
 	
 	// register system lua hooks
@@ -216,8 +214,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	
 	[FCPhaseManager registerLuaFunctions:s_lua];
 
-	[FCViewManager registerLuaFunctions:s_lua];
-//	[FCBuild registerLuaFunctions:s_lua];
+//	[FCViewManager instance];
+	FCViewManager::Instance();
 	FCBuild::Instance();
 
 	s_lua->CreateGlobalTable("FCApp");
@@ -259,8 +257,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 
 -(void)warmBoot
 {
-	[s_delegate registerPhasesWithManager:[FCPhaseManager instance]];
 	[s_delegate initialiseSystems];
+	[s_delegate registerPhasesWithManager:[FCPhaseManager instance]];
 	
 #if defined (FC_LUA)
 	s_lua->CallFuncWithSig("FCApp.WarmBoot", true, "");

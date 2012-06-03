@@ -250,17 +250,35 @@ FCActorVec FCActorSystem::CreateActors(std::string actorClass, FCResourcePtr res
 {
 	FCActorVec createdActors;
 	
-	FCXMLNodeVec actors = res->XML()->VectorForKeyPath("fcr.scene.actor");
+	FCXMLNodeVec actors;
 	
-	// create actors
-	
-	for (FCXMLNodeVecIter i = actors.begin(); i != actors.end(); i++) 
-	{
-		FCActorPtr createdActor = CreateActor(*i, actorClass, res, name);
+	if (res) {
+		actors = res->XML()->VectorForKeyPath("fcr.scene.actor");
+		
+		for (FCXMLNodeVecIter i = actors.begin(); i != actors.end(); i++) 
+		{
+			FCActorPtr createdActor = CreateActor(*i, actorClass, res, name);
+			createdActors.push_back(createdActor);
+		}
+	} else {
+		FCActorPtr createdActor = CreateActor(actorClass, name);
 		createdActors.push_back(createdActor);
 	}
-	
+		
 	return createdActors;
+}
+
+FCActorPtr FCActorSystem::CreateActor(std::string actorClass, std::string name)
+{
+	FCActorPtr actor = ActorOfClass( actorClass );
+	
+	FCHandle handle = NewFCHandle();
+	
+	actor->m_handle = handle;
+
+	m_actorHandleMap[ handle ] = actor;
+
+	return actor;	
 }
 
 FCActorPtr FCActorSystem::CreateActor(FCXMLNode actorXML, std::string actorClass, FCResourcePtr res, std::string name)

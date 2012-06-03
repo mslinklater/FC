@@ -22,6 +22,7 @@
 
 #import "FCPersistentData_apple.h"
 #include <string>
+#include "Shared/Core/FCCore.h"
 
 void plt_FCPersistentData_Load();
 void plt_FCPersistentData_Save();
@@ -58,8 +59,9 @@ void plt_FCPersistentData_SetValueForKey( std::string value, std::string key )
 std::string plt_FCPersistentData_ValueForKey( std::string key )
 {
 	NSString* ret = [[FCPersistentData_apple instance].dataRoot valueForKey:[NSString stringWithUTF8String:key.c_str()]];
-	
+		
 	if (ret) {
+		FC_ASSERT( [ret isKindOfClass:[NSString class]] );
 		return [ret UTF8String];
 	} else {
 		return "";

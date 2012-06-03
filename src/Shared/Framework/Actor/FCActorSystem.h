@@ -47,7 +47,8 @@ public:
 	
 	FCActorVec CreateActors(std::string actorClass, FCResourcePtr res, std::string name);
 	
-	FCActorPtr CreateActor(FCXMLNode actorXML, std::string actorClass, FCResourcePtr res, std::string name);
+	FCActorPtr CreateActor( FCXMLNode actorXML, std::string actorClass, FCResourcePtr res, std::string name);
+	FCActorPtr CreateActor( std::string actorClass, std::string name );
 	
 	void Update(float realTime, float gameTime);
 

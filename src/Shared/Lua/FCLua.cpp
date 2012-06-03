@@ -81,13 +81,15 @@ static int lua_WaitThread( lua_State* _state )
 
 	for (FCLuaThreadMapConstIter i = instance->m_threadsMap.begin(); i != instance->m_threadsMap.end(); ++i) {
 		FCLuaThreadPtr pThread = i->second;
+		
+		FC_ASSERT(pThread);
+
 		if (_state == pThread->LuaState()) {
 			double time = lua_tonumber(_state, 1);
 			pThread->PauseRealTime(time);
 			int yieldVal = lua_yield(_state, 0);
 			return yieldVal;
 		}
-		
 	}
 	
 	FC_FATAL("Cannot find thread");

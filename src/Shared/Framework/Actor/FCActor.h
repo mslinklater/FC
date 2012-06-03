@@ -62,7 +62,6 @@ public:
 	virtual bool NeedsRender();
 	virtual bool RespondsToTapGesture();
 	
-//	virtual NSArray*	RenderGather();
 	virtual FCModelVec	RenderGather();
 
 	FCHandle			m_handle;
@@ -70,7 +69,6 @@ public:
 	std::string			m_id;
 	std::string			m_fullName;
 	FCXMLNode			m_createXML;
-//	FCModel_apple*			m_model;
 	FCModelPtr			m_model;
 	FCPhysics2DBodyPtr	m_physicsBody;
 };

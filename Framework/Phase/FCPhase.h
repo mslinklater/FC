@@ -34,33 +34,16 @@ enum FCPhaseState {
 	kFCPhaseStateDeactivating
 };
 
-@protocol FCPhaseDelegate <NSObject>
--(FCPhaseUpdate)update:(float)dt;
-@optional
--(void)wasAddedToQueue;
--(void)wasRemovedFromQueue;
--(float)willActivate;
--(void)willActivatePostLua;
--(void)isNowActive;
--(void)isNowActivePostLua;
--(float)willDeactivate;
--(void)willDeactivatePostLua;
--(void)isNowDeactive;
--(void)isNowDeactivePostLua;
-@end
-
 @interface FCPhase : NSObject {
 	NSString* _name;
 	NSString* _namePath;
 	__weak FCPhase* _parent;
 	NSMutableDictionary* _children;
 	FCPhase* _activeChild;
-	__weak id<FCPhaseDelegate> _delegate;
 	float _activateTimer;
 	float _deactivateTimer;
 	FCPhaseState _state;
 	
-#if defined (FC_LUA)
 	NSString* _luaTable;
 	BOOL _luaLoaded;
 	
@@ -71,14 +54,12 @@ enum FCPhaseState {
 	NSString* _luaIsNowActiveFunc;
 	NSString* _luaWillDeactivateFunc;
 	NSString* _luaIsNowDeactiveFunc;
-#endif
 }
 @property(nonatomic, strong) NSString* name;
 @property(nonatomic, strong) NSString* namePath;
 @property(nonatomic, weak) FCPhase* parent;
 @property(nonatomic, strong) NSMutableDictionary* children;
 @property(nonatomic, strong) FCPhase* activeChild;
-@property(nonatomic, weak) id<FCPhaseDelegate> delegate;
 @property(nonatomic) float activateTimer;
 @property(nonatomic) float deactivateTimer;
 @property(nonatomic) FCPhaseState state;
@@ -107,4 +88,8 @@ enum FCPhaseState {
 -(void)willDeactivate;
 -(void)isNowDeactive;
 
+-(void)willActivatePostLua;
+-(void)isNowActivePostLua;
+-(void)willDeactivatePostLua;
+-(void)isNowDeactivePostLua;
 @end

@@ -23,17 +23,9 @@
 #import <Foundation/Foundation.h>
 #import "FCPhase.h"
 
-//#if defined (FC_LUA)
-//#import "FCLuaClass.h"
-//#endif
-
 class FCLuaVM;
 
-//#if defined (FC_LUA)
-//@interface FCPhaseManager : NSObject <FCLuaClass>
-//#else
 @interface FCPhaseManager : NSObject
-//#endif
 {
 	FCPhase* _rootPhase;
 	NSMutableArray* _phaseQueue;

@@ -76,11 +76,8 @@ static int lua_DeactivatePhase( lua_State* _state )
 #if defined (FC_LUA)
 +(void)registerLuaFunctions:(FCLuaVM *)lua
 {	
-//	[lua createGlobalTable:@"FCPhaseManager"];
 	lua->CreateGlobalTable("FCPhaseManager");
-//	[lua registerCFunction:lua_AddPhaseToQueue as:@"FCPhaseManager.AddPhaseToQueue"];
 	lua->RegisterCFunction(lua_AddPhaseToQueue, "FCPhaseManager.AddPhaseToQueue");
-//	[lua registerCFunction:lua_DeactivatePhase as:@"FCPhaseManager.DeactivatePhase"];
 	lua->RegisterCFunction(lua_DeactivatePhase, "FCPhaseManager.DeactivatePhase");
 }
 #endif
@@ -111,10 +108,14 @@ static int lua_DeactivatePhase( lua_State* _state )
 			[_phaseQueue removeObject:freshPhase];
 			
 			[freshPhase willActivate];
+			FCLua::Instance()->CoreVM()->CallFuncWithSig([freshPhase.luaWillActivateFunc UTF8String], false, "");
+			[freshPhase willActivatePostLua];
 			
 			freshPhase.state = kFCPhaseStateActivating;
 			
 			[phase willDeactivate];
+			FCLua::Instance()->CoreVM()->CallFuncWithSig([phase.luaWillDeactivateFunc UTF8String], false, "");
+			[phase willDeactivatePostLua];
 			
 			phase.state = kFCPhaseStateDeactivating;
 			return;
@@ -135,6 +136,8 @@ static int lua_DeactivatePhase( lua_State* _state )
 			FCPhase* firstPhase = [_phaseQueue objectAtIndex:0];
 			
 			[firstPhase willActivate];
+			FCLua::Instance()->CoreVM()->CallFuncWithSig([firstPhase.luaWillActivateFunc UTF8String], false, "");
+			[firstPhase willActivatePostLua];
 			
 			firstPhase.state = kFCPhaseStateActivating;
 			[_activePhases addObject:firstPhase];
@@ -167,6 +170,9 @@ static int lua_DeactivatePhase( lua_State* _state )
 				if (phase.activateTimer <= 0.0) {
 					phase.state = kFCPhaseStateUpdating;
 					[phase isNowActive];
+					FCLua::Instance()->CoreVM()->CallFuncWithSig([phase.luaIsNowActiveFunc UTF8String], false, "");
+					[phase isNowActivePostLua];
+
 				} else {
 					phase.activateTimer -= dt;
 				}
@@ -176,6 +182,8 @@ static int lua_DeactivatePhase( lua_State* _state )
 				if (phase.deactivateTimer <= 0.0) {
 					phase.state = kFCPhaseStateInactive;
 					[phase isNowDeactive];
+					FCLua::Instance()->CoreVM()->CallFuncWithSig([phase.luaIsNowDeactiveFunc UTF8String], false, "");
+					[phase isNowDeactivePostLua];
 					[_activePhases removeObject:phase];
 				} else {
 					phase.deactivateTimer -= dt;

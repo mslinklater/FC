@@ -45,10 +45,6 @@ FCStringVector FCStringUtils_ComponentsSeparatedByString( const std::string& dat
 	
 	ret.push_back(data.substr(prevSearchPos, data.length() - prevSearchPos));
 	
-//	for (FCStringVectorConstIter i = ret.begin(); i != ret.end(); i++) {
-//		FC_LOG(*i);
-//	}
-	
 	return ret;
 }
 
