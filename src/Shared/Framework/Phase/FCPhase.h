@@ -20,7 +20,11 @@
  THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
+#ifndef FCPHASE_H
+#define FCPHASE_H
+
+
+#include "Shared/Core/FCCore.h"
 
 enum FCPhaseUpdate {
 	kFCPhaseUpdateOK,
@@ -33,6 +37,60 @@ enum FCPhaseState {
 	kFCPhaseStateUpdating,
 	kFCPhaseStateDeactivating
 };
+
+class FCPhase;
+
+typedef std::shared_ptr<FCPhase> FCPhasePtr;
+typedef std::vector<FCPhasePtr>	FCPhaseVector;
+typedef FCPhaseVector::iterator	FCPhaseVectorIter;
+typedef FCPhaseVector::const_iterator	FCPhaseVectorConstIter;
+typedef std::map<std::string, FCPhasePtr>	FCPhaseMapByString;
+
+class FCPhase : public FCBase
+{
+public:
+	
+	FCPhase( std::string name );
+	virtual ~FCPhase(){}
+	
+	virtual FCPhaseUpdate Update( float dt );
+	virtual void WasAddedToQueue();
+	virtual void WasRemovedFromQueue();
+	virtual void WillActivate();
+	virtual void IsNowActive();
+	virtual void WillDeactivate();
+	virtual void IsNowDeactive();
+	virtual void WillActivatePostLua();
+	virtual void IsNowActivePostLua();
+	virtual void WillDeactivatePostLua();
+	virtual void IsNowDeactivePostLua();
+	
+	
+	std::string m_name;
+	std::string	m_namePath;
+	FCPhasePtr	m_parent;
+	FCPhaseMapByString	m_children;
+	FCPhasePtr	m_activeChild;
+	float		m_activateTimer;
+	float		m_deactivateTimer;
+	FCPhaseState	m_state;
+	std::string	m_luaTable;
+	bool		m_luaLoaded;
+	std::string	m_luaUpdateFunc;
+	std::string m_luaWasAddedToQueueFunc;
+	std::string	m_luaWasRemovedFromQueueFunc;
+	std::string	m_luaWillActivateFunc;
+	std::string	m_luaIsNowActiveFunc;
+	std::string	m_luaWillDeactivateFunc;
+	std::string	m_luaIsNowDeactiveFunc;
+protected:
+};
+
+
+#endif // FCPHASE_H
+
+#if 0
+#import <Foundation/Foundation.h>
 
 @interface FCPhase : NSObject {
 	NSString* _name;
@@ -93,3 +151,4 @@ enum FCPhaseState {
 -(void)willDeactivatePostLua;
 -(void)isNowDeactivePostLua;
 @end
+#endif

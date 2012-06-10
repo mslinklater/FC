@@ -34,93 +34,14 @@
 #import "FCLua.h"
 #import "FCGL_apple.h"
 
-static NSMutableDictionary* s_glViews;
-static FCGLView_apple* s_currentLuaTarget;
+FCGLViewPtr plt_FCGLView_Create( std::string name, std::string parent, const FCVector2i& size )
+{
+	FCGLViewProxyPtr proxy = FCGLViewProxyPtr( new FCGLViewProxy( name, parent, size ) );
+	return proxy;
+}
 
 #pragma mark - Lua Functions
 
-static int lua_SetCurrentView( lua_State* _state )
-{
-	FC_LUA_ASSERT_NUMPARAMS(1);
-	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
-	
-	NSString* viewName = [NSString stringWithUTF8String:lua_tostring(_state, 1)];
-	
-	FC_ASSERT([s_glViews valueForKey:viewName]);
-	
-	s_currentLuaTarget = [s_glViews valueForKey:viewName];
-
-	return 0;
-}
-
-static int lua_SetClearColor( lua_State* _state )
-{
-	FC_LUA_ASSERT_NUMPARAMS(1);
-	FC_LUA_ASSERT_TYPE(1, LUA_TTABLE);
-	
-	lua_pushnil(_state);
-	
-	lua_next(_state, -2);
-	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	float r = lua_tonumber(_state, -1);
-	lua_pop(_state, 1);
-	
-	lua_next(_state, -2);
-	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	float g = lua_tonumber(_state, -1);
-	lua_pop(_state, 1);
-	
-	lua_next(_state, -2);
-	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	float b = lua_tonumber(_state, -1);
-	lua_pop(_state, 1);
-	
-	lua_next(_state, -2);
-	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	float a = lua_tonumber(_state, -1);
-	lua_pop(_state, 1);
-	
-	s_currentLuaTarget.clearColor = FCColor4f( r, g, b, a );
-	
-	return 0;
-}
-
-static int lua_SetFOV( lua_State* _state )
-{
-	FC_LUA_ASSERT_NUMPARAMS(1);
-	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	
-	s_currentLuaTarget.fov = lua_tonumber(_state, 1);
-	
-	return 0;
-}
-
-static int lua_SetNearFarClip( lua_State* _state )
-{
-	FC_LUA_ASSERT_NUMPARAMS(2);
-	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
-	
-	s_currentLuaTarget.nearClip = lua_tonumber(_state, 1);
-	s_currentLuaTarget.farClip = lua_tonumber(_state, 2);
-	
-	return 0;
-}
-
-static int lua_SetFrustumTranslation( lua_State* _state )
-{
-	FC_LUA_ASSERT_NUMPARAMS(3);
-	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
-	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
-	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
-
-	s_currentLuaTarget.frustumTranslation = FCVector3f(
-														 lua_tonumber(_state, 1),
-														 lua_tonumber(_state, 2),
-														 lua_tonumber(_state, 3) );
-	
-	return 0;
-}
 
 #pragma mark - ObjC
 
@@ -173,31 +94,6 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 {
 	self = [super initWithFrame:aRect];
 	if (self) {
-		
-		if (!s_glViews) 
-		{
-			s_glViews = [NSMutableDictionary dictionary];
-			
-			// register C Functions
-			
-//			[[FCLua instance].coreVM createGlobalTable:@"GLView"];
-			FCLua::Instance()->CoreVM()->CreateGlobalTable("GLView");
-//			[[FCLua instance].coreVM registerCFunction:lua_SetCurrentView as:@"GLView.SetCurrent"];
-			FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetCurrentView, "GLView.SetCurrent");
-//			[[FCLua instance].coreVM registerCFunction:lua_SetClearColor as:@"GLView.SetClearColor"];
-			FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetClearColor, "GLView.SetClearColor");
-//			[[FCLua instance].coreVM registerCFunction:lua_SetFOV as:@"GLView.SetFOV"];
-			FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetFOV, "GLView.SetFOV");
-//			[[FCLua instance].coreVM registerCFunction:lua_SetNearFarClip as:@"GLView.SetNearFarClip"];
-			FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetNearFarClip, "GLView.SetNearFarClip");
-//			[[FCLua instance].coreVM registerCFunction:lua_SetFrustumTranslation as:@"GLView.SetFrustumTranslation"];
-			FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetFrustumTranslation, "GLView.SetFrustumTranslation");
-		}
-
-		FC_ASSERT([s_glViews valueForKey:managedName] == nil);
-		
-		[s_glViews setValue:self forKey:managedName];
-
 		_managedName = managedName;
 		
         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
@@ -242,13 +138,6 @@ static int lua_SetFrustumTranslation( lua_State* _state )
         [EAGLContext setCurrentContext:nil];
 
     [self deleteFramebuffer];    
-	
-	[s_glViews removeObjectForKey:_managedName];
-}
-
--(void)setCurrentLuaTarget:(FCGLView_apple *)currentLuaTarget
-{
-	s_currentLuaTarget = currentLuaTarget;
 }
 
 - (void)setContext:(EAGLContext *)newContext
@@ -462,27 +351,6 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 
 - (BOOL)presentFramebuffer
 {
-//	const GLfloat squareVertices[] = {
-//        -1.0f, -1.0f,
-//        1.0f, -1.0f,
-//        -1.0f,  1.0f,
-//        1.0f,  1.0f,
-//    };
-
-//	const GLfloat squareTextures[] = {
-//        0.0f, 0.0f,
-//        1.0f, 0.0f,
-//        0.0f, 1.0f,
-//        1.0f, 1.0f,
-//    };
-
-//    const GLubyte squareColors[] = {
-//        255, 255,   255, 255,
-//        255,   255, 255, 255,
-//        255,     255,   255,   255,
-//        255,   255, 255, 255,
-//    };
-
     BOOL success = FALSE;
     
     if (self.context)
@@ -586,8 +454,6 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 		[program setUniformValue:projectionUniform to:&mat size:sizeof(FCMatrix4f)];
 		
 	}
-	
-//	FCShaderProgram* program = [shaderManager program:kFCKeyShaderDebug];	// needs to be current shader or all active shaders
 }
 
 -(void)clear
@@ -606,10 +472,19 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 
 -(void)update:(float)dt
 {
-	if (_renderAction && _renderTarget) 
-	{
-		[_renderTarget performSelector:_renderAction];
+	if (_renderTarget) {
+		_renderTarget();
 	}
+}
+
+-(void)setManagedViewName:(NSString *)name
+{
+	_managedName = name;
+}
+
+-(NSString*)managedViewName
+{
+	return _managedName;
 }
 
 @end

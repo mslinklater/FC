@@ -21,27 +21,20 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "FCPhase.h"
 
-class FCLuaVM;
+#include "Shared/Framework/Input/FCInput.h"
 
-@interface FCPhaseManager : NSObject
+@interface FCInput_apple : NSObject
 {
-	FCPhase* _rootPhase;
-	NSMutableArray* _phaseQueue;
-	NSMutableArray* _activePhases;
+	FCInputPlatformTapSubscriber	_tapSubscriber;
+	
+	NSMutableDictionary*	_tapDictionary;
 }
-@property(nonatomic, strong) FCPhase* rootPhase;
-@property(nonatomic, strong) NSMutableArray* phaseQueue;
-@property(nonatomic, strong) NSMutableArray* activePhases;
+@property(nonatomic) FCInputPlatformTapSubscriber	tapSubscriber;
+@property(nonatomic, strong) NSMutableDictionary*	tapDictionary;
 
-+(FCPhaseManager*)instance;
-+(void)registerLuaFunctions:(FCLuaVM*)lua;
--(void)update:(float)dt;
--(FCPhase*)createPhaseWithName:(NSString*)name;
--(void)attachPhase:(FCPhase*)phase toParent:(FCPhase*)parentPhase;
++(FCInput_apple*)instance;
+-(id)init;
 
--(void)addPhaseToQueue:(NSString*)name;
--(void)deactivatePhase:(NSString*)name;
-
+-(void)tapGestureTarget:(UITapGestureRecognizer*)gr;
 @end

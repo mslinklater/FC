@@ -38,13 +38,18 @@ static const FCHandle kFCHandleFirstValid = 1;
 
 extern FCHandle NewFCHandle( void );
 
+enum FCReturn
+{
+	kFCReturnOK = 0,
+	kFCReturnError
+};
+
 class FCRect
 {
 public:
 	FCRect():x(0),y(0),w(0),h(0){}
 	FCRect( float _x, float _y, float _w, float _h ):x(_x),y(_y),w(_w),h(_h){}
 	FCRect( const FCRect& in ):x(in.x),y(in.y),w(in.w),h(in.h){}
-//	FCRect( FCRect in ):x(in.x),y(in.y),w(in.w),h(in.h){}
 	
 	float x;
 	float y;
@@ -65,5 +70,9 @@ typedef FCStringStringMap::const_iterator	FCStringStringMapConstIter;
 typedef std::map<FCHandle, std::string>		FCStringMapByHandle;
 
 typedef std::set<std::string>	FCStringSet;
+
+// Function pointer types
+
+typedef void (*FCVoidVoidFuncPtr)(void);
 
 #endif // FCTypes_h

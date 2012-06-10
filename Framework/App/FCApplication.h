@@ -31,7 +31,7 @@
 #import "Shared/Lua/FCLua.h"
 #endif
 
-@class FCPhaseManager;
+class FCPhaseManager;
 
 @protocol FCAppDelegate <NSObject>
 -(void)registerPhasesWithManager:(FCPhaseManager*)manager;

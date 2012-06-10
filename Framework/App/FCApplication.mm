@@ -212,7 +212,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	
 //	[FCPersistentData_old registerLuaFunctions:s_lua];
 	
-	[FCPhaseManager registerLuaFunctions:s_lua];
+//	[FCPhaseManager registerLuaFunctions:s_lua];
+	FCPhaseManager::Instance();
 
 //	[FCViewManager instance];
 	FCViewManager::Instance();
@@ -258,7 +259,7 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 -(void)warmBoot
 {
 	[s_delegate initialiseSystems];
-	[s_delegate registerPhasesWithManager:[FCPhaseManager instance]];
+	[s_delegate registerPhasesWithManager:FCPhaseManager::Instance()];
 	
 #if defined (FC_LUA)
 	s_lua->CallFuncWithSig("FCApp.WarmBoot", true, "");
@@ -331,7 +332,8 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	FCActorSystem::Instance()->Update(dt, gameTime);
 	
 	// Keep this as the last update - since render views are updated here.
-	[[FCPhaseManager instance] update:dt];
+//	[[FCPhaseManager instance] update:dt];
+	FCPhaseManager::Instance()->Update( dt );
 
 	seconds += dt;
 	if (seconds >= 1.0f) {

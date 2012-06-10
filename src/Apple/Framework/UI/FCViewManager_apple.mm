@@ -69,18 +69,12 @@ FCRect plt_FCViewManager_FullFrame()
 
 void plt_FCViewManager_SetViewFrame( const std::string& viewName, const FCRect& rect, float seconds )
 {
-	if (viewName == "gameView") {
-		FC_LOG("X");
-	}
 	[[FCViewManager_apple instance] setView:[NSString stringWithUTF8String:viewName.c_str()] 
 									  frame:CGRectMake(rect.x, rect.y, rect.w, rect.h) over:seconds];
 }
 
 void plt_FCViewManager_SetViewAlpha( const std::string& viewName, float alpha, float seconds )
 {
-	if (viewName == "gameView") {
-		FC_LOG("X");
-	}
 	[[FCViewManager_apple instance] setView:[NSString stringWithUTF8String:viewName.c_str()] alpha:alpha over:seconds];
 }
 
@@ -148,17 +142,11 @@ void plt_FCViewManager_SetViewPropertyString( const std::string& viewName, const
 
 void plt_FCViewManager_SendViewToFront( const std::string& viewName )
 {
-	if (viewName == "gameView") {
-		FC_LOG("X");
-	}
 	[[FCViewManager_apple instance] sendViewToFront:[NSString stringWithUTF8String:viewName.c_str()]];
 }
 
 void plt_FCViewManager_SendViewToBack( const std::string& viewName )
 {
-	if (viewName == "gameView") {
-		FC_HALT;
-	}
 	[[FCViewManager_apple instance] sendViewToBack:[NSString stringWithUTF8String:viewName.c_str()]];
 }
 

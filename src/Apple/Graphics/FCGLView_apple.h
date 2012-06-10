@@ -29,8 +29,11 @@
 
 #import "Shared/Core/Maths/FCMaths.h"
 #import "Shared/Core/FCTypes.h"
+#import "FCViewManager_apple.h"
 
-@interface FCGLView_apple : UIView
+#include "Shared/Graphics/FCGLView.h"
+
+@interface FCGLView_apple : UIView <FCManagedView_apple>
 {
 @private
 	NSString* _managedName;
@@ -45,9 +48,8 @@
 	BOOL _superSampling;
 	float _superSamplingScale;
 	
-	id	_renderTarget;
-	SEL	_renderAction;
-
+	FCVoidVoidFuncPtr _renderTarget;
+	
 	float _aspectRatio;
 	
 	// OpenGL stuff
@@ -80,7 +82,7 @@
 @property(nonatomic) BOOL depthBuffer;
 @property(nonatomic) BOOL superSampling;
 @property(nonatomic) float superSamplingScale;
-@property(nonatomic, strong) id renderTarget;
+@property(nonatomic) FCVoidVoidFuncPtr renderTarget;
 @property(nonatomic) SEL renderAction;
 @property(nonatomic) float aspectRatio;
 
@@ -111,5 +113,105 @@
 
 -(void)update:(float)dt;
 @end
+
+class FCGLViewProxy : public FCGLView
+{
+public:
+	FCGLViewProxy( std::string name, std::string parent, const FCVector2i size )
+	: FCGLView( name, parent, size )
+	{
+		m_nsName = [NSString stringWithUTF8String:name.c_str()];
+		
+		m_appleView = [[FCGLView_apple alloc] initWithFrame:CGRectMake(0, 0, size.x, size.y) name:m_nsName];
+//		[[FCViewManager_apple instance].viewDictionary setValue:m_appleView forKey:m_nsName];
+		[[FCViewManager_apple instance] add:m_appleView as:m_nsName];
+		[[FCViewManager_apple instance].rootView addSubview:m_appleView];
+	}	
+	virtual ~FCGLViewProxy()
+	{
+//		[[FCViewManager_apple instance].viewDictionary removeObjectForKey:m_nsName];		
+		[[FCViewManager_apple instance] remove: m_nsName];
+		[m_appleView removeFromSuperview];
+		m_appleView = nil;
+	}
+	
+	void Update( float dt )
+	{
+		FCGLView::Update( dt );
+		[m_appleView update:dt];
+	}
+	
+	void SetDepthBuffer( bool enabled )
+	{
+		FCGLView::SetDepthBuffer( enabled );
+		m_appleView.depthBuffer = enabled;
+	}
+	void SetRenderTarget( FCVoidVoidFuncPtr func)
+	{
+		FCGLView::SetRenderTarget( func );
+		m_appleView.renderTarget = func;
+	}
+	void SetFrameBuffer()
+	{
+		FCGLView::SetFrameBuffer();
+		[m_appleView setFramebuffer];
+	}
+	void Clear()
+	{
+		FCGLView::Clear();
+		[m_appleView clear];
+	}
+	void SetProjectionMatrix()
+	{
+		FCGLView::SetProjectionMatrix();
+		[m_appleView setProjectionMatrix];
+	}
+	void PresentFramebuffer()
+	{
+		FCGLView::PresentFramebuffer();
+		[m_appleView presentFramebuffer];
+	}
+	FCVector2f ViewSize()
+	{
+		FCVector2f ret;
+		ret.x = m_appleView.frame.size.width;
+		ret.y = m_appleView.frame.size.height;
+		return ret;
+	}
+	FCVector3f PosOnPlane( const FCVector2f& point )
+	{
+		return [m_appleView posOnPlane:CGPointMake( point.x, point.y )];
+	}
+	void SetClearColor( const FCColor4f& color )
+	{
+		FCGLView::SetClearColor( color );
+		m_appleView.clearColor = color;
+	}
+	void SetFOV( float fov )
+	{
+		FCGLView::SetFOV( fov );
+		m_appleView.fov = fov;
+	}
+	void SetNearClip( float clip )
+	{
+		FCGLView::SetNearClip( clip );
+		m_appleView.nearClip = clip;
+	}
+	void SetFarClip( float clip )
+	{
+		FCGLView::SetFarClip( clip );
+		m_appleView.farClip = clip;
+	}
+	void SetFrustumTranslation( const FCVector3f& trans )
+	{
+		FCGLView::SetFrustumTranslation(trans);
+		m_appleView.frustumTranslation = trans;
+	}
+	
+	FCGLView_apple*	m_appleView;
+	NSString*		m_nsName;
+};
+
+typedef std::shared_ptr<FCGLViewProxy> FCGLViewProxyPtr;
 
 #endif // defined(FC_GRAPHICS)
