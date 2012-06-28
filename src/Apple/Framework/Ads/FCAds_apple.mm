@@ -20,13 +20,37 @@
  THE SOFTWARE.
  */
 
-#include "FCTypes.h"
-#include "FCKeys.h"
-#include "FCMacros.h"
-#include "FCColor.h"
-#include "FCNotifications.h"
-#include "FCFileIO.h"
+#import "FCAds_apple.h"
+#import "FCAdBannerView_apple.h"
+#import "FCViewManager_apple.h"
+#import "FCApplication_apple.h"
 
-#include "Shared/Core/Maths/FCMaths.h"
-#include "FCStringUtils.h"
-#include "FCError.h"
+void plt_FCAds_ShowBanner( std::string key );
+void plt_FCAds_HideBanner();
+
+static FCAdBannerView_apple* s_bannerView = nil;
+
+void plt_FCAds_ShowBanner(std::string adWhirlKey)
+{
+	if ( s_bannerView == nil) 
+	{
+		FCViewManager_apple* vm = [FCViewManager_apple instance];
+		s_bannerView = [[FCAdBannerView_apple alloc] initWithFrame:CGRectMake(0, 0, 0, 0) 
+															   key:[NSString stringWithUTF8String:adWhirlKey.c_str()]];
+		[vm.rootView addSubview:s_bannerView];
+		[vm add:s_bannerView as:@"adbanner"];
+		s_bannerView.viewController = FCRootViewController();
+	}
+}
+
+void plt_FCAds_HideBanner()
+{
+	if (s_bannerView) 
+	{
+		FCViewManager_apple* vm = [FCViewManager_apple instance];
+		[s_bannerView removeFromSuperview];
+		[vm remove:@"adbanner"];
+		s_bannerView = nil;
+	}
+}
+

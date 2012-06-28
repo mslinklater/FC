@@ -20,51 +20,15 @@
  THE SOFTWARE.
  */
 
-#import "FCApplication_apple.h"
-#import "Shared/Core/FCError.h"
-#import "FlurryAnalytics.h"
-#import "TestFlight.h"
+#ifndef CR1_FCAds_h
+#define CR1_FCAds_h
 
-static FCApplication_apple* s_pInstance = 0;
+#include<string>
 
-static void uncaughtExceptionHandler(NSException *exception) {
-	FC_LOG( "Sending uncaught exception to Flurry" );
-	[FlurryAnalytics logError:@"Uncaught" message:@"Crash!" exception:exception];
-}
-
-@implementation FCApplication_apple
-
-+(FCApplication_apple*)instance
+namespace FCAds
 {
-	if (!s_pInstance) {
-		s_pInstance = [[FCApplication_apple alloc] init];
-	}
-	return s_pInstance;
+	void ShowBanner( std::string key );
+	void HideBanner();
 }
 
--(id)init
-{
-	self = [super init];
-	if (self) {
-		// plap
-	}
-	return self;
-}
-
--(void)registerExceptionHandler
-{
-	NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
-}
-
--(void)setAnalyticsID:(NSString*)ident
-{
-	[FlurryAnalytics startSession:ident];
-}
-
--(void)setTestflightID:(NSString*)ident
-{
-	[TestFlight takeOff:ident];
-
-}
-
-@end
+#endif

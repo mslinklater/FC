@@ -20,16 +20,39 @@
  THE SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
+#include "FCFile.h"
 
-@interface FCApplication_apple : NSObject {
+FCFile::FCFile()
+: m_handle(0)
+, m_data(0)
+{
 	
 }
 
-+(FCApplication_apple*)instance;
+FCFile::~FCFile()
+{
+	if (m_handle) {
+		fclose(m_handle);
+	}
+	if (m_data) {
+		delete [] m_data;
+	}
+}
 
--(void)registerExceptionHandler;
--(void)setAnalyticsID:(NSString*)ident;
--(void)setTestflightID:(NSString*)ident;
+FCFileReturn FCFile::Open(std::string filename, FCFileLocation loc)
+{
+	std::string filepath;
+	switch (loc) {
+		case FCFileLocationApplicationBundle:
+			filepath = plt_FilIO_ApplicationBundlePathForPath( filename )
+			break;
+		case FCFileLocationNormalFile:
+			break;
+		case FCFileLocationDocumentsFolder:
+			break;			
+		default:
+			break;
+	}
+	return FCFileReturnOK;
+}
 
-@end

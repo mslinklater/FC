@@ -20,13 +20,20 @@
  THE SOFTWARE.
  */
 
-#include "FCTypes.h"
-#include "FCKeys.h"
-#include "FCMacros.h"
-#include "FCColor.h"
-#include "FCNotifications.h"
-#include "FCFileIO.h"
+#include "FCAds.h"
+#include <string>
 
-#include "Shared/Core/Maths/FCMaths.h"
-#include "FCStringUtils.h"
-#include "FCError.h"
+extern void plt_FCAds_ShowBanner( std::string key );
+extern void plt_FCAds_HideBanner();
+
+namespace FCAds {
+	void ShowBanner( std::string key )
+	{
+		plt_FCAds_ShowBanner( key );
+	}
+	
+	void HideBanner()
+	{
+		plt_FCAds_HideBanner();		
+	}
+}

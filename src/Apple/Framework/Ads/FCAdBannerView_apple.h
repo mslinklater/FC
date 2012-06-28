@@ -20,13 +20,22 @@
  THE SOFTWARE.
  */
 
-#include "FCTypes.h"
-#include "FCKeys.h"
-#include "FCMacros.h"
-#include "FCColor.h"
-#include "FCNotifications.h"
-#include "FCFileIO.h"
+#import <UIKit/UIKit.h>
+#import "AdWhirlView.h"
+#import "FCViewManager_apple.h"
 
-#include "Shared/Core/Maths/FCMaths.h"
-#include "FCStringUtils.h"
-#include "FCError.h"
+@interface FCAdBannerView_apple : UIView < FCManagedView_apple, AdWhirlDelegate >
+{
+	NSString* _managedViewName;
+	AdWhirlView* _adWhirlView;
+	UIViewController* _viewController;
+	NSString* _adWhirlKey;
+}
+@property(nonatomic, strong) NSString* managedViewName;
+@property(nonatomic, strong) AdWhirlView* adWhirlView;
+@property(nonatomic, strong) UIViewController* viewController;
+@property(nonatomic, strong) NSString* adWhirlKey;
+
+-(id)initWithFrame:(CGRect)frame key:(NSString*)key;
+
+@end

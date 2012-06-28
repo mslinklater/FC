@@ -22,9 +22,8 @@
 
 #import "FCViewManager_apple.h"
 
-#import "Framework/App/FCApplication.h"
-
 #include "Shared/Core/FCCore.h"
+#include "shared/Framework/FCApplication.h"
 
 void plt_FCViewManager_SetViewText( const std::string& viewName, std::string text );
 void plt_FCViewManager_SetViewTextColor( const std::string& viewName, FCColor4f color );
@@ -90,7 +89,8 @@ void plt_FCViewManager_SetViewImage( const std::string& viewName, const std::str
 
 void plt_FCViewManager_SetViewURL( const std::string& viewName, const std::string& url )
 {
-	FC_HALT;
+	[[FCViewManager_apple instance] setView:[NSString stringWithUTF8String:viewName.c_str()] 
+										url:[NSString stringWithUTF8String:url.c_str()]];
 }
 
 void plt_FCViewManager_CreateView( const std::string& viewName, const std::string& className, const std::string& parent )
@@ -301,7 +301,10 @@ bool plt_FCViewManager_ViewExists( const std::string& viewName )
 	scaledFrame.origin.x = view.frame.size.width * rect.origin.x;			
 	scaledFrame.origin.y = view.frame.size.height * rect.origin.y;				
 	
-	CGSize mainViewSize = [[FCApplication instance] mainViewSize];
+	CGSize mainViewSize;	//= [[FCApplication_old instance] mainViewSize];
+	FCVector2f size = FCApplication::Instance()->MainViewSize();
+	mainViewSize.width = size.x;
+	mainViewSize.height = size.y;
 	
 	scaledFrame.size.width = mainViewSize.width * rect.size.width;
 	scaledFrame.size.height = mainViewSize.height * rect.size.height;			
@@ -371,7 +374,10 @@ bool plt_FCViewManager_ViewExists( const std::string& viewName )
 		scaledFrame.origin.x = containerFrame.size.width * frame.origin.x;			
 		scaledFrame.origin.y = containerFrame.size.height * frame.origin.y;			
 		
-		CGSize mainViewSize = [[FCApplication instance] mainViewSize];
+		CGSize mainViewSize;	//= [[FCApplication_old instance] mainViewSize];
+		FCVector2f size = FCApplication::Instance()->MainViewSize();
+		mainViewSize.width = size.x;
+		mainViewSize.height = size.y;
 		
 		if (frame.size.width < 0) {
 			scaledFrame.size.width = thisView.frame.size.width;

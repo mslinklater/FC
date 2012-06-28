@@ -20,13 +20,43 @@
  THE SOFTWARE.
  */
 
-#include "FCTypes.h"
-#include "FCKeys.h"
-#include "FCMacros.h"
-#include "FCColor.h"
-#include "FCNotifications.h"
-#include "FCFileIO.h"
+#ifndef CR1_FCFile_h
+#define CR1_FCFile_h
 
-#include "Shared/Core/Maths/FCMaths.h"
-#include "FCStringUtils.h"
-#include "FCError.h"
+#include <iostream>
+
+enum FCFileLocation
+{
+	FCFileLocationApplicationBundle,
+	FCFileLocationNormalFile,
+	FCFileLocationDocumentsFolder
+};
+
+enum FCFileReturn
+{
+	FCFileReturnOK,
+	FCFileReturnError
+};
+
+class FCFile
+{
+public:
+	
+	FCFile();
+	virtual ~FCFile();
+	
+	FCFileReturn	Open( std::string filename, FCFileLocation loc );
+	FCFileReturn	ReadIntoMemory();
+	FCFileReturn	Close();
+	FCFileReturn	DeleteData();
+	uint8_t*		Data();
+private:
+	// internal state
+	
+	FILE*		m_handle;
+	uint8_t*	m_data;
+};
+
+typedef std::shared_ptr<FCFile> FCFilePtr;
+
+#endif

@@ -82,8 +82,10 @@ static int lua_WaitThread( lua_State* _state )
 	for (FCLuaThreadMapConstIter i = instance->m_threadsMap.begin(); i != instance->m_threadsMap.end(); ++i) {
 		FCLuaThreadPtr pThread = i->second;
 		
-		FC_ASSERT(pThread);
-
+		if (!pThread) {
+			FC_FATAL(std::string("Trying to kill nonexistent thread " + i->first));
+		}
+		
 		if (_state == pThread->LuaState()) {
 			double time = lua_tonumber(_state, 1);
 			pThread->PauseRealTime(time);

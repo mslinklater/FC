@@ -44,6 +44,12 @@ enum FCReturn
 	kFCReturnError
 };
 
+enum FCInterfaceOrientation
+{
+	kFCInterfaceOrientation_Portrait,
+	kFCInterfaceOrientation_Landscape
+};
+
 class FCRect
 {
 public:
@@ -70,6 +76,13 @@ typedef FCStringStringMap::const_iterator	FCStringStringMapConstIter;
 typedef std::map<FCHandle, std::string>		FCStringMapByHandle;
 
 typedef std::set<std::string>	FCStringSet;
+
+typedef std::shared_ptr<void*>			FCVoidPtr;
+typedef std::vector<FCVoidPtr>			FCVoidPtrVector;
+typedef FCVoidPtrVector::iterator		FCVoidPtrVectorIter;
+typedef FCVoidPtrVector::const_iterator	FCVoidPtrVectorConstIter;
+
+typedef std::map<std::string, FCVoidPtr> FCVoidPtrMapByString;
 
 // Function pointer types
 

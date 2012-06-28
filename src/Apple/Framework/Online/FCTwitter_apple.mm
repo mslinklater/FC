@@ -23,7 +23,6 @@
 #import <Twitter/Twitter.h>
 
 #import "FCTwitter_apple.h"
-#import "FCApplication.h"
 
 #include "Shared/Core/FCCore.h"
 
@@ -91,7 +90,8 @@ static FCTwitter_apple* s_pInstance;
 
 -(void)send
 {
-	[[[FCApplication instance] rootViewController] presentModalViewController:_vc animated:YES];
+	FC_HALT;
+//	[[[FCApplication_old instance] rootViewController] presentModalViewController:_vc animated:YES];
 }
 
 @end
