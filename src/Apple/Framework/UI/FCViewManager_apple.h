@@ -56,6 +56,8 @@ class FCLuaVM;
 -(void)makeView:(NSString*)name inFrontOf:(NSString*)relativeName;
 -(void)makeView:(NSString*)name behind:(NSString*)relativeName;
 
+-(void)setScreenAspectRatioWidth:(float)w height:(float)h;
+
 -(CGRect)rectForRect:(CGRect)rect containedInView:(UIView*)view;
 
 -(void)setView:(NSString*)viewName text:(NSString*)text;

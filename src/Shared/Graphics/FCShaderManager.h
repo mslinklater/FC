@@ -27,6 +27,9 @@
 
 class IFCShaderManager {
 public:
+	IFCShaderManager(){}
+	virtual ~IFCShaderManager(){}
+	
 	virtual void ActivateShader( std::string name ) = 0;
 };
 

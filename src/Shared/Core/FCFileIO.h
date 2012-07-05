@@ -20,11 +20,13 @@
  THE SOFTWARE.
  */
 
+#if 0
 #ifndef CR1_FileIO_h
 #define CR1_FileIO_h
 
 #include <string>
 
-extern std::string plt_PathForFileInBundle( std::string filename );
+//extern std::string plt_PathForFileInBundle( std::string filename );
 
+#endif
 #endif

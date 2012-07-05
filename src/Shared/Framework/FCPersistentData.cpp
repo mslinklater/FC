@@ -134,7 +134,7 @@ static int lua_SetNumber( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	
 	std::string key = lua_tostring( _state, -2);
-	double value = lua_tonumber(_state, -1);
+	float value = (float)lua_tonumber(_state, -1);
 
 	s_pInstance->AddFloatForKey( value, key );
 	return 0;
@@ -236,7 +236,7 @@ void FCPersistentData::AddFloatForKey( float value, std::string key )
 
 float FCPersistentData::FloatForKey( std::string key )
 {
-	return atof(plt_FCPersistentData_ValueForKey(key).c_str());
+	return (float)atof( plt_FCPersistentData_ValueForKey(key).c_str() );
 }
 
 void FCPersistentData::AddIntForKey( int32_t value, std::string key )

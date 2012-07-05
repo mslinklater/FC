@@ -83,7 +83,7 @@
 		
 		FCglBindTexture(GL_TEXTURE_2D, self.glHandle);
 		
-		FCglTexImage2D(GL_TEXTURE_2D, 0, [self.delegate format], [self.delegate width], [self.delegate height], 0, [self.delegate format], [self.delegate type], [self.delegate pixels]);
+		FCglTexImage2D(GL_TEXTURE_2D, 0, (GLint)[self.delegate format], [self.delegate width], [self.delegate height], 0, [self.delegate format], [self.delegate type], [self.delegate pixels]);
 	}
 	_hookCount++;
 }

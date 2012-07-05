@@ -27,23 +27,23 @@ static NSMutableDictionary* s_performanceCounters;
 void plt_FCPerformanceCounter_New( void* instance )
 {
 	FCPerformanceCounter* pc = [[FCPerformanceCounter alloc] init];
-	[s_performanceCounters setObject:pc forKey:[NSNumber numberWithInt:(uint64_t)instance]];
+	[s_performanceCounters setObject:pc forKey:[NSNumber numberWithInt:(int)instance]];
 }
 
 void plt_FCPerformanceCounter_Delete( void* instance )
 {
-	[s_performanceCounters removeObjectForKey:[NSNumber numberWithInt:(uint64_t)instance]];
+	[s_performanceCounters removeObjectForKey:[NSNumber numberWithInt:(int)instance]];
 }
 
 void plt_FCPerformanceCounter_Zero( void* instance )
 {
-	FCPerformanceCounter* pc = [s_performanceCounters objectForKey:[NSNumber numberWithInt:(uint64_t)instance]];
+	FCPerformanceCounter* pc = [s_performanceCounters objectForKey:[NSNumber numberWithInt:(int)instance]];
 	[pc zero];
 }
 
 double plt_FCPerformanceCounter_NanoValue( void* instance )
 {
-	FCPerformanceCounter* pc = [s_performanceCounters objectForKey:[NSNumber numberWithInt:(uint64_t)instance]];
+	FCPerformanceCounter* pc = [s_performanceCounters objectForKey:[NSNumber numberWithInt:(int)instance]];
 	return [pc nanoValue];
 }
 

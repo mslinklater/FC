@@ -44,24 +44,24 @@ void FCPerformanceCounter::Zero()
 
 double FCPerformanceCounter::NanoValue()
 {
-	uint64_t nanoValue = plt_FCPerformanceCounter_NanoValue( this );
+	double nanoValue = plt_FCPerformanceCounter_NanoValue( this );
 	return nanoValue;
 }
 
 double FCPerformanceCounter::MicroValue()
 {
-	uint64_t nanoValue = plt_FCPerformanceCounter_NanoValue( this );
+	double nanoValue = plt_FCPerformanceCounter_NanoValue( this );
 	return nanoValue / 1000.0;
 }
 
 double FCPerformanceCounter::MilliValue()
 {
-	uint64_t nanoValue = plt_FCPerformanceCounter_NanoValue( this );
+	double nanoValue = plt_FCPerformanceCounter_NanoValue( this );
 	return nanoValue / 1000000.0;
 }
 
 double FCPerformanceCounter::SecondsValue()
 {
-	uint64_t nanoValue = plt_FCPerformanceCounter_NanoValue( this );
+	double nanoValue = plt_FCPerformanceCounter_NanoValue( this );
 	return nanoValue / 1000000000.0;
 }

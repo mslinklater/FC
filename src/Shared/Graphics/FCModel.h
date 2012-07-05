@@ -27,6 +27,9 @@
 
 class IFCModel {
 public:
+	IFCModel(){}
+	virtual ~IFCModel(){}
+	
 	virtual void InitWithModel( FCXMLNode modelXML, FCResourcePtr resource ) = 0;
 	virtual void InitWithPhysics( FCXMLNode physicsXML, FCColor4f* pColor ) = 0;
 	virtual void SetDebugMeshColor( FCColor4f* pColor ) = 0;

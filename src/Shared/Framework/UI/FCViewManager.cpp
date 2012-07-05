@@ -23,6 +23,7 @@
 #include "FCViewManager.h"
 #include "Shared/Lua/FCLua.h"
 
+extern void plt_FCViewManager_SetScreenAspectRatio( float w, float h );
 extern void plt_FCViewManager_SetViewText( const std::string& viewName, std::string text );
 extern void plt_FCViewManager_SetViewTextColor( const std::string& viewName, FCColor4f color );
 extern FCRect plt_FCViewManager_ViewFrame( const std::string& viewName );
@@ -69,22 +70,22 @@ static int lua_SetTextColor( lua_State* _state )
 	
 	lua_next(_state, -2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	float r = lua_tonumber(_state, -1);
+	float r = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	float g = lua_tonumber(_state, -1);
+	float g = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	float b = lua_tonumber(_state, -1);
+	float b = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	float a = lua_tonumber(_state, -1);
+	float a = (float)lua_tonumber(_state, -1);
 	
 	s_pInstance->SetViewTextColor(viewName, FCColor4f(r, g, b, a));
 
@@ -129,7 +130,7 @@ static int lua_SetFrame( lua_State* _state )
 	
 	if (lua_gettop(_state) > 2) {
 		FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
-		seconds = lua_tonumber(_state, 3);
+		seconds = (float)lua_tonumber(_state, 3);
 		lua_pop(_state, 1);
 	}
 	
@@ -137,22 +138,22 @@ static int lua_SetFrame( lua_State* _state )
 	
 	lua_next(_state, -2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	float x = lua_tonumber(_state, -1);
+	float x = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	float y = lua_tonumber(_state, -1);
+	float y = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	float w = lua_tonumber(_state, -1);
+	float w = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	float h = lua_tonumber(_state, -1);
+	float h = (float)lua_tonumber(_state, -1);
 	
 	FCRect rect = FCRect(x, y, w, h);
 	s_pInstance->SetViewFrame( viewName, rect, seconds );
@@ -167,13 +168,13 @@ static int lua_SetAlpha( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
 	
 	std::string viewName = lua_tostring(_state, 1);
-	float alpha = lua_tonumber(_state, 2);
+	float alpha = (float)lua_tonumber(_state, 2);
 	
 	float seconds = 0.0f;
 	
 	if (lua_gettop(_state) > 2) {
 		FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
-		seconds = lua_tonumber(_state, 3);
+		seconds = (float)lua_tonumber(_state, 3);
 	}
 	
 	s_pInstance->SetViewAlpha( viewName, alpha, seconds );
@@ -302,12 +303,27 @@ static int lua_PrintViews( lua_State* _state )
 	return 0;
 }
 
+static int lua_SetScreenAspectRatio( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
+	
+	float w = (float)lua_tonumber(_state, 1);
+	float h = (float)lua_tonumber(_state, 2);
+	
+	plt_FCViewManager_SetScreenAspectRatio( w, h );
+	
+	return 0;
+}
+
 FCViewManager::FCViewManager()
 {
 	// register Lua
 	
 	FCLuaVM* lua = FCLua::Instance()->CoreVM();
 	lua->CreateGlobalTable("FCViewManager");
+	lua->RegisterCFunction(lua_SetScreenAspectRatio, "FCViewManager.SetScreenAspectRatio");
 	lua->RegisterCFunction(lua_SetText, "FCViewManager.SetText");
 	lua->RegisterCFunction(lua_SetTextColor, "FCViewManager.SetTextColor");
 	lua->RegisterCFunction(lua_GetFrame, "FCViewManager.GetFrame");

@@ -87,7 +87,7 @@ static int lua_WaitThread( lua_State* _state )
 		}
 		
 		if (_state == pThread->LuaState()) {
-			double time = lua_tonumber(_state, 1);
+			float time = (float)lua_tonumber(_state, 1);
 			pThread->PauseRealTime(time);
 			int yieldVal = lua_yield(_state, 0);
 			return yieldVal;
@@ -109,7 +109,7 @@ static int lua_WaitGameThread( lua_State* _state )
 	for (FCLuaThreadMapConstIter i = instance->m_threadsMap.begin(); i != instance->m_threadsMap.end(); ++i) {
 		FCLuaThreadPtr pThread = i->second;
 		if (_state == pThread->LuaState()) {
-			double time = lua_tonumber(_state, 1);
+			float time = (float)lua_tonumber(_state, 1);
 			pThread->PauseGameTime(time);
 			int yieldVal = lua_yield(_state, 0);
 			return yieldVal;
@@ -234,7 +234,7 @@ void FCLua::UpdateThreads( float realDelta, float gameDelta )
 		m_threadsMap.erase(*i);
 	}
 	
-	float millisecs = m_perfCounter->MilliValue();
+	float millisecs = (float)m_perfCounter->MilliValue();
 	
 	if (millisecs > m_maxCPUTime) {
 		m_maxCPUTime = millisecs;

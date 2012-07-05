@@ -27,7 +27,7 @@
 #include "FCLuaCommon.h"
 #include "FCLuaAsserts.h"
 #include "Shared/Core/FCError.h"
-#include "Shared/Core/FCFileIO.h"
+#include "Shared/Core/FCFile.h"
 
 extern "C" {
 #include <lua.h>
@@ -44,7 +44,7 @@ static void common_LoadScriptForState( std::string path, lua_State* _state, bool
 	// if this is FC source, load from main bundle as plaintext
 	
 	if (path.find("fc_") == 0) {
-		filePath = plt_PathForFileInBundle(path + ".lua");
+		filePath = plt_FCFile_ApplicationBundlePathForPath(path + ".lua");
 	}
 	else
 	{
@@ -53,7 +53,7 @@ static void common_LoadScriptForState( std::string path, lua_State* _state, bool
 #else
 		path = "Assets/Lua/" + path;
 #endif
-		filePath = plt_PathForFileInBundle(path + ".lua");
+		filePath = plt_FCFile_ApplicationBundlePathForPath(path + ".lua");
 	}
 	
 	if(filePath == "")
@@ -263,7 +263,7 @@ void FCLuaVM::RegisterCFunction( tLuaCallableCFunction func, std::string name )
 	
 	uint32_t numComponents = components.size();
 	
-	for (int i = 0; i < numComponents - 1; i++) {
+	for (uint32_t i = 0; i < numComponents - 1; i++) {
 		if (i == 0) {
 			lua_getglobal(m_state, components[i].c_str());
 		} else {
@@ -404,7 +404,8 @@ void FCLuaVM::CallFuncWithSig( std::string func, bool required, std::string sig,
 				lua_pushstring(m_state, va_arg(vl, char*));
 				break;
 			case 'b': /* bool argument */
-				lua_pushboolean(m_state, va_arg(vl, bool));
+//				lua_pushboolean(m_state, va_arg(vl, bool));
+				lua_pushboolean(m_state, va_arg(vl, int));
 				break;
 			case 't': /* table argument */
 			{
@@ -444,7 +445,7 @@ endargs:
 		switch (*csig++) {
 			case 'f': /* float result */
 				FC_ASSERT(lua_type(m_state, nres) == LUA_TNUMBER);
-				*va_arg(vl, float*) = lua_tonumber(m_state, nres);
+				*va_arg(vl, float*) = (float)lua_tonumber(m_state, nres);
 				break;
 				
 			case 'i': /* int result */

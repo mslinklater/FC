@@ -493,7 +493,7 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 	
 	// all active sources are still playing, so create a new one
 	
-	int maxPlayingVoices;
+	unsigned int maxPlayingVoices;
 	
 	if (vital) {
 		maxPlayingVoices = 30;

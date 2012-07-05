@@ -77,12 +77,29 @@ typedef std::map<FCHandle, std::string>		FCStringMapByHandle;
 
 typedef std::set<std::string>	FCStringSet;
 
-typedef std::shared_ptr<void*>			FCVoidPtr;
-typedef std::vector<FCVoidPtr>			FCVoidPtrVector;
-typedef FCVoidPtrVector::iterator		FCVoidPtrVectorIter;
-typedef FCVoidPtrVector::const_iterator	FCVoidPtrVectorConstIter;
+typedef std::shared_ptr<char>				FCDataPtr;
+typedef std::vector<FCDataPtr>				FCDataPtrVector;
+typedef FCDataPtrVector::iterator			FCDataPtrVectorIter;
+typedef FCDataPtrVector::const_iterator		FCDataPtrVectorConstIter;
+typedef std::map<std::string, FCDataPtr>	FCDataPtrMapByString;
 
-typedef std::map<std::string, FCVoidPtr> FCVoidPtrMapByString;
+class FCData
+{
+public:
+	FCDataPtr	ptr;
+	uint32_t	size;
+};
+
+typedef std::vector<FCData>					FCDataVector;
+typedef FCDataVector::iterator				FCDataVectorIter;
+typedef FCDataVector::const_iterator		FCDataVectorConstIter;
+typedef std::map<std::string, FCData>		FCDataMapByString;
+
+//typedef std::shared_ptr<void*>			FCVoidPtr;
+//typedef std::vector<FCVoidPtr>			FCVoidPtrVector;
+//typedef FCVoidPtrVector::iterator		FCVoidPtrVectorIter;
+//typedef FCVoidPtrVector::const_iterator	FCVoidPtrVectorConstIter;
+//typedef std::map<std::string, FCVoidPtr> FCVoidPtrMapByString;
 
 // Function pointer types
 

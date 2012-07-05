@@ -23,8 +23,10 @@
 #include "FCFile.h"
 
 FCFile::FCFile()
-: m_handle(0)
-, m_data(0)
+: m_handle( 0 )
+, m_data( 0 )
+, m_fileSize( 0 )
+, m_isDataInMemory( false )
 {
 	
 }
@@ -39,20 +41,88 @@ FCFile::~FCFile()
 	}
 }
 
-FCFileReturn FCFile::Open(std::string filename, FCFileLocation loc)
+FCFileReturn FCFile::Open(std::string filename, FCFileOpenMode mode, FCFileLocation loc)
 {
+	if (m_handle) {
+		Close();
+	}
+	
 	std::string filepath;
+	
 	switch (loc) {
 		case FCFileLocationApplicationBundle:
-			filepath = plt_FilIO_ApplicationBundlePathForPath( filename )
+			filepath = plt_FCFile_ApplicationBundlePathForPath( filename );
 			break;
 		case FCFileLocationNormalFile:
+			filepath = plt_FCFile_NormalPathForPath( filename );
 			break;
 		case FCFileLocationDocumentsFolder:
+			filepath = plt_FCFile_DocumentsFolderPathForPath( filename );
 			break;			
 		default:
 			break;
 	}
+
+	const char* modeString;
+	
+	switch( mode ) 
+	{
+		case FCFileOpenModeReadOnly:
+			modeString = "r";
+			break;
+		case FCFileOpenModeReadWrite:
+			modeString = "w";
+			break;
+	}
+	
+	m_handle = fopen( filepath.c_str(), modeString );
+
+	if (!m_handle) {
+		FC_WARNING(std::string("Cannot open file: " + filename));
+		return FCFileReturnError;
+	}
+	
+	fseek( m_handle, 0, SEEK_END );
+	m_fileSize = ftell( m_handle );
+	fseek( m_handle, 0, SEEK_SET );
+
 	return FCFileReturnOK;
 }
+
+FCFileReturn FCFile::Close()
+{
+	fclose( m_handle );
+	m_handle = 0;
+	delete [] m_data;
+	m_data = 0;
+
+	return FCFileReturnOK;
+}
+
+FCDataPtr FCFile::Data()
+{
+	if (!m_isDataInMemory) {
+		ReadIntoMemory();
+	}
+	
+	return FCDataPtr( m_data );
+}
+
+FCFileReturn FCFile::ReadIntoMemory()
+{
+	FC_ASSERT(m_handle);
+	FC_ASSERT(!m_isDataInMemory);
+	FC_ASSERT(!m_data);
+	
+	m_data = new char[ m_fileSize ];
+	
+	fseek( m_handle, 0, SEEK_SET );
+	fread( m_data, m_fileSize, 1, m_handle );
+	
+	return FCFileReturnOK;
+}
+
+
+
+
 

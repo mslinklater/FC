@@ -121,8 +121,8 @@ void FCPhysics2DBody::CreateFixturesFromDef( FCPhysics2DBodyDefPtr def )
 			
 			for(int i = 0 ; i < numVerts ; i++ )	// backwards due to different winding between collada and box2d
 			{
-				verts[numVerts - 1 - i].x = atof(vertsArray[i * 3].c_str()) + xOffset;
-				verts[numVerts - 1 - i].y = atof(vertsArray[(i * 3) + 1].c_str()) + yOffset;
+				verts[numVerts - 1 - i].x = (float)atof(vertsArray[i * 3].c_str()) + xOffset;
+				verts[numVerts - 1 - i].y = (float)atof(vertsArray[(i * 3) + 1].c_str()) + yOffset;
 			}
 			
 			shape.Set(verts, numVerts);

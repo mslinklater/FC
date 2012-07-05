@@ -23,8 +23,10 @@
 #import "FCViewManager_apple.h"
 
 #include "Shared/Core/FCCore.h"
-#include "shared/Framework/FCApplication.h"
+#include "Shared/Framework/FCApplication.h"
+#include "Shared/Core/Device/FCDevice.h"
 
+void plt_FCViewManager_SetScreenAspectRatio( float w, float h );
 void plt_FCViewManager_SetViewText( const std::string& viewName, std::string text );
 void plt_FCViewManager_SetViewTextColor( const std::string& viewName, FCColor4f color );
 FCRect plt_FCViewManager_ViewFrame( const std::string& viewName );
@@ -42,54 +44,61 @@ void plt_FCViewManager_SendViewToFront( const std::string& viewName );
 void plt_FCViewManager_SendViewToBack( const std::string& viewName );
 bool plt_FCViewManager_ViewExists( const std::string& viewName );
 
+static FCViewManager_apple* s_pInstance;
+
+void plt_FCViewManager_SetScreenAspectRatio( float w, float h )
+{
+	[s_pInstance setScreenAspectRatioWidth:w height:h];
+}
+
 void plt_FCViewManager_SetViewText( const std::string& viewName, std::string text )
 {
-	[[FCViewManager_apple instance] setView:[NSString stringWithUTF8String:viewName.c_str()] text:[NSString stringWithUTF8String:text.c_str()]];
+	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] text:[NSString stringWithUTF8String:text.c_str()]];
 }
 
 void plt_FCViewManager_SetViewTextColor( const std::string& viewName, FCColor4f color )
 {
-	[[FCViewManager_apple instance] setView:[NSString stringWithUTF8String:viewName.c_str()] textColor:[UIColor colorWithRed:color.r green:color.g blue:color.b alpha:color.a]];
+	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] textColor:[UIColor colorWithRed:color.r green:color.g blue:color.b alpha:color.a]];
 }
 
 FCRect plt_FCViewManager_ViewFrame( const std::string& viewName )
 {
-	CGRect rect = [[FCViewManager_apple instance] getViewFrame:[NSString stringWithUTF8String:viewName.c_str()]];
+	CGRect rect = [s_pInstance getViewFrame:[NSString stringWithUTF8String:viewName.c_str()]];
 	FCRect ret = FCRect( rect.origin.x, rect.origin.y, rect.size.width, rect.size.height );
 	return ret;
 }
 
 FCRect plt_FCViewManager_FullFrame()
 {
-	CGRect frame = [FCViewManager_apple instance].rootView.frame;
+	CGRect frame = s_pInstance.rootView.frame;
 	FCRect ret = FCRect( frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
 	return ret;	
 }
 
 void plt_FCViewManager_SetViewFrame( const std::string& viewName, const FCRect& rect, float seconds )
 {
-	[[FCViewManager_apple instance] setView:[NSString stringWithUTF8String:viewName.c_str()] 
+	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] 
 									  frame:CGRectMake(rect.x, rect.y, rect.w, rect.h) over:seconds];
 }
 
 void plt_FCViewManager_SetViewAlpha( const std::string& viewName, float alpha, float seconds )
 {
-	[[FCViewManager_apple instance] setView:[NSString stringWithUTF8String:viewName.c_str()] alpha:alpha over:seconds];
+	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] alpha:alpha over:seconds];
 }
 
 void plt_FCViewManager_SetViewOnSelectLuaFunction( const std::string& viewName, const std::string& func )
 {
-	[[FCViewManager_apple instance] setView:[NSString stringWithUTF8String:viewName.c_str()] onSelectLuaFunc:[NSString stringWithUTF8String:func.c_str()]];
+	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] onSelectLuaFunc:[NSString stringWithUTF8String:func.c_str()]];
 }
 
 void plt_FCViewManager_SetViewImage( const std::string& viewName, const std::string& image )
 {
-	[[FCViewManager_apple instance] setView:[NSString stringWithUTF8String:viewName.c_str()] image:[NSString stringWithUTF8String:image.c_str()]];
+	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] image:[NSString stringWithUTF8String:image.c_str()]];
 }
 
 void plt_FCViewManager_SetViewURL( const std::string& viewName, const std::string& url )
 {
-	[[FCViewManager_apple instance] setView:[NSString stringWithUTF8String:viewName.c_str()] 
+	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] 
 										url:[NSString stringWithUTF8String:url.c_str()]];
 }
 
@@ -103,11 +112,11 @@ void plt_FCViewManager_CreateView( const std::string& viewName, const std::strin
 	}
 	
 	if (parent.size()) {
-		[[FCViewManager_apple instance] createView:[NSString stringWithUTF8String:viewName.c_str()] 
+		[s_pInstance createView:[NSString stringWithUTF8String:viewName.c_str()] 
 										   asClass:appleClassName 
 										withParent:[NSString stringWithUTF8String:parent.c_str()]];
 	} else {
-		[[FCViewManager_apple instance] createView:[NSString stringWithUTF8String:viewName.c_str()] 
+		[s_pInstance createView:[NSString stringWithUTF8String:viewName.c_str()] 
 										   asClass:appleClassName 
 										withParent:nil];		
 	}
@@ -118,7 +127,7 @@ void plt_FCViewManager_DestroyView( const std::string& viewName )
 	if (viewName == "gameView") {
 		FC_HALT;
 	}
-	[[FCViewManager_apple instance] destroyView:[NSString stringWithUTF8String:viewName.c_str()]];
+	[s_pInstance destroyView:[NSString stringWithUTF8String:viewName.c_str()]];
 }
 
 void plt_FCViewManager_SetViewPropertyInt( const std::string& viewName, const std::string& property, int32_t value )
@@ -126,7 +135,7 @@ void plt_FCViewManager_SetViewPropertyInt( const std::string& viewName, const st
 	if (viewName == "gameView") {
 		FC_HALT;
 	}
-	[[FCViewManager_apple instance] setView:[NSString stringWithUTF8String:viewName.c_str()] 
+	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] 
 								   property:[NSString stringWithUTF8String:property.c_str()] to:[NSNumber numberWithInt:value]];
 }
 
@@ -135,30 +144,29 @@ void plt_FCViewManager_SetViewPropertyString( const std::string& viewName, const
 	if (viewName == "gameView") {
 		FC_HALT;
 	}
-	[[FCViewManager_apple instance] setView:[NSString stringWithUTF8String:viewName.c_str()] 
+	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] 
 								   property:[NSString stringWithUTF8String:property.c_str()] to:[NSString stringWithUTF8String:value.c_str()]];
 //	FC_HALT;
 }
 
 void plt_FCViewManager_SendViewToFront( const std::string& viewName )
 {
-	[[FCViewManager_apple instance] sendViewToFront:[NSString stringWithUTF8String:viewName.c_str()]];
+	[s_pInstance sendViewToFront:[NSString stringWithUTF8String:viewName.c_str()]];
 }
 
 void plt_FCViewManager_SendViewToBack( const std::string& viewName )
 {
-	[[FCViewManager_apple instance] sendViewToBack:[NSString stringWithUTF8String:viewName.c_str()]];
+	[s_pInstance sendViewToBack:[NSString stringWithUTF8String:viewName.c_str()]];
 }
 
 bool plt_FCViewManager_ViewExists( const std::string& viewName )
 {
-	if ([[FCViewManager_apple instance] viewNamed:[NSString stringWithUTF8String:viewName.c_str()]]) {
+	if ([s_pInstance viewNamed:[NSString stringWithUTF8String:viewName.c_str()]]) {
 		return true;
 	} else {
 		return false;
 	}
 }
-
 
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -171,11 +179,10 @@ bool plt_FCViewManager_ViewExists( const std::string& viewName )
 
 +(id)instance
 {
-	static FCViewManager_apple* pInstance;
-	if (!pInstance) {
-		pInstance = [[FCViewManager_apple alloc] init];
+	if (!s_pInstance) {
+		s_pInstance = [[FCViewManager_apple alloc] init];
 	}
-	return pInstance;
+	return s_pInstance;
 }
 
 #pragma mark - Lifetime
@@ -210,6 +217,34 @@ bool plt_FCViewManager_ViewExists( const std::string& viewName )
 {
 	[self printViewsUnder:_rootView withTab:0];
 	
+}
+
+-(void)setScreenAspectRatioWidth:(float)w height:(float)h
+{
+	float displayWidth = (float)atof(FCDevice::Instance()->GetCap(kFCDeviceDisplayLogicalXRes).c_str());
+	float displayHeight = (float)atof(FCDevice::Instance()->GetCap(kFCDeviceDisplayLogicalYRes).c_str());
+	float displayAspect = displayWidth / displayHeight;
+	
+	float requestedAspect = w / h;
+	
+	if ( requestedAspect > displayAspect ) {
+		// physical display is taller
+		float actualWidth = displayWidth;
+		float actualHeight = displayWidth / requestedAspect;
+		
+		_rootView.frame = CGRectMake( 0.0f, (displayHeight - actualHeight) * 0.5f, actualWidth, actualHeight );
+		
+	} else {
+		// physical display is fatter
+		float actualHeight = displayHeight;
+		float actualWidth = displayHeight * requestedAspect;
+		
+		_rootView.frame = CGRectMake( (displayWidth - actualWidth) * 0.5f, 0.0f, actualWidth, actualHeight );
+	}
+	
+	_rootView.clipsToBounds = YES;
+	
+	FC_ASSERT( _rootView );
 }
 
 -(void)createView:(NSString *)name asClass:(NSString *)className withParent:(NSString *)parentView

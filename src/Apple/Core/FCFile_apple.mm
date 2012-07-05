@@ -20,14 +20,16 @@
  THE SOFTWARE.
  */
 
-#import "FCFileIO_apple.h"
+#import "FCFile_apple.h"
 #include "Shared/Core/FCError.h"
 
 #include <string>
 
-std::string plt_PathForFileInBundle( std::string filename );
+std::string plt_FCFile_ApplicationBundlePathForPath( std::string filename );
+std::string plt_FCFile_NormalPathForPath( std::string filename );
+std::string plt_FCFile_DocumentsFolderPathForPath( std::string filename );
 
-std::string plt_PathForFileInBundle( std::string filename )
+std::string plt_FCFile_ApplicationBundlePathForPath( std::string filename )
 {
 	NSArray* components = [[NSString stringWithUTF8String:filename.c_str()] componentsSeparatedByString:@"."];
 	NSString* fullPath = [[NSBundle mainBundle] pathForResource:[components objectAtIndex:0] ofType:[components objectAtIndex:1]];
@@ -38,3 +40,31 @@ std::string plt_PathForFileInBundle( std::string filename )
 		return "";
 	}
 }
+
+std::string plt_FCFile_NormalPathForPath( std::string filename )
+{
+	FC_HALT;
+	return "";
+}
+
+std::string plt_FCFile_DocumentsFolderPathForPath( std::string filename )
+{
+	FC_HALT;
+	return "";
+}
+
+// old
+
+//std::string plt_PathForFileInBundle( std::string filename );
+//
+//std::string plt_PathForFileInBundle( std::string filename )
+//{
+//	NSArray* components = [[NSString stringWithUTF8String:filename.c_str()] componentsSeparatedByString:@"."];
+//	NSString* fullPath = [[NSBundle mainBundle] pathForResource:[components objectAtIndex:0] ofType:[components objectAtIndex:1]];
+//	
+//	if (fullPath) {
+//		return [fullPath UTF8String];
+//	} else {
+//		return "";
+//	}
+//}

@@ -109,8 +109,8 @@ public:
 	
 	static FCMatrix4f Rotate( float angle, FCVector3f axis )
 	{
-		float s = sin(angle);
-		float c = cos(angle);
+		float s = (float)sin(angle);
+		float c = (float)cos(angle);
 		
 		FCMatrix4f mat = FCMatrix4f::Identity();
 		

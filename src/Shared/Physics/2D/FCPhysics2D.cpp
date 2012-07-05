@@ -46,7 +46,7 @@ static int lua_CreateDistanceJoint( lua_State* _state )
 	{
 		obj2NameStackPos = 4;
 		
-		FCVector2f pos = FCVector2f( lua_tonumber(_state, 2), lua_tonumber(_state, 3) );
+		FCVector2f pos = FCVector2f( (float)lua_tonumber(_state, 2), (float)lua_tonumber(_state, 3) );
 		FCVector3f body1Pos = def->body1->Position();
 		pos += FCVector2f( body1Pos.x, body1Pos.y );
 		def->pos1 = pos;
@@ -67,7 +67,7 @@ static int lua_CreateDistanceJoint( lua_State* _state )
 	
 	if (lua_isnumber(_state, obj2NameStackPos+1)) 
 	{
-		FCVector2f pos = FCVector2f( lua_tonumber(_state, obj2NameStackPos+1), lua_tonumber(_state, obj2NameStackPos+2) );
+		FCVector2f pos = FCVector2f( (float)lua_tonumber(_state, obj2NameStackPos+1), (float)lua_tonumber(_state, obj2NameStackPos+2) );
 		FCVector3f body2Pos = def->body2->Position();
 		pos += FCVector2f( body2Pos.x, body2Pos.y );
 		def->pos2 = pos;
@@ -104,7 +104,7 @@ static int lua_CreateRevoluteJoint( lua_State* _state )
 	FC_ASSERT(def->body2);
 	
 	if (lua_isnumber(_state, 3)) {
-		FCVector2f pos = FCVector2f( lua_tonumber(_state, 3), lua_tonumber(_state, 4) );
+		FCVector2f pos = FCVector2f( (float)lua_tonumber(_state, 3), (float)lua_tonumber(_state, 4) );
 		FCVector3f body2Pos = def->body2->Position();
 		pos += FCVector2f( body2Pos.x, body2Pos.y );
 		def->pos = pos;
@@ -141,7 +141,7 @@ static int lua_CreatePrismaticJoint( lua_State* _state )
 	
 	float angle = FCXML::FloatValueForNodeAttribute(null, kFCKeyRotationZ);
 	angle = FCDegToRad(angle);
-	FCVector2f axis( sin(angle), cos(angle) );
+	FCVector2f axis( (float)sin(angle), (float)cos(angle) );
 	def->axis = axis;
 	
 	FCHandle hJoint = s_pInstance->CreateJoint( def );
@@ -185,7 +185,7 @@ static int lua_CreatePulleyJoint( lua_State* _state )
 	FC_ASSERT(bodyAnchor2);
 	def->bodyAnchor2 = FCVector2f( FCXML::FloatValueForNodeAttribute(bodyAnchor2, kFCKeyOffsetX), FCXML::FloatValueForNodeAttribute(bodyAnchor2, kFCKeyOffsetY) );
 	
-	def->ratio = lua_tonumber(_state, 7);
+	def->ratio = (float)lua_tonumber(_state, 7);
 	
 	FCHandle hJoint = s_pInstance->CreateJoint( def );
 	
@@ -211,8 +211,8 @@ static int lua_CreateRopeJoint( lua_State* _state )
 	def->body2 = s_pInstance->BodyWithName(lua_tostring(_state, 2));
 	FC_ASSERT(def->body2);
 	
-	def->bodyAnchor1 = FCVector2f( lua_tonumber(_state, 3), lua_tonumber(_state, 4) );
-	def->bodyAnchor2 = FCVector2f( lua_tonumber(_state, 5), lua_tonumber(_state, 6) );
+	def->bodyAnchor1 = FCVector2f( (float)lua_tonumber(_state, 3), (float)lua_tonumber(_state, 4) );
+	def->bodyAnchor2 = FCVector2f( (float)lua_tonumber(_state, 5), (float)lua_tonumber(_state, 6) );
 	
 	FCHandle hJoint = s_pInstance->CreateJoint( def );
 	
@@ -229,8 +229,8 @@ static int lua_SetRevoluteJointLimits( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 	
 	FCHandle hJoint = (FCHandle)lua_tointeger(_state, 1);
-	float min = lua_tonumber(_state, 2);
-	float max = lua_tonumber(_state, 3);
+	float min = (float)lua_tonumber(_state, 2);
+	float max = (float)lua_tonumber(_state, 3);
 	
 	if ( min != max ) {
 		s_pInstance->SetRevoluteJointLimits(hJoint, true, min, max);
@@ -249,8 +249,8 @@ static int lua_SetRevoluteJointMotor( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 	
 	FCHandle hJoint = (FCHandle)lua_tointeger(_state, 1);
-	float speed = lua_tonumber(_state, 2);
-	float torque = lua_tonumber(_state, 3);
+	float speed = (float)lua_tonumber(_state, 2);
+	float torque = (float)lua_tonumber(_state, 3);
 	
 	if ( (speed != 0.0f) && (torque != 0.0f) ) {
 		s_pInstance->SetRevoluteJointMotor(hJoint, true, torque, speed);
@@ -269,8 +269,8 @@ static int lua_SetPrismaticJointLimits( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 	
 	FCHandle hJoint = (FCHandle)lua_tointeger(_state, 1);
-	float min = lua_tonumber(_state, 2);
-	float max = lua_tonumber(_state, 3);
+	float min = (float)lua_tonumber(_state, 2);
+	float max = (float)lua_tonumber(_state, 3);
 	
 	if ( min != max ) {
 		s_pInstance->SetPrismaticJointLimits(hJoint, true, min, max);
@@ -289,8 +289,8 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 	
 	FCHandle hJoint = (FCHandle)lua_tointeger(_state, 1);
-	float speed = lua_tonumber(_state, 2);
-	float force = lua_tonumber(_state, 3);
+	float speed = (float)lua_tonumber(_state, 2);
+	float force = (float)lua_tonumber(_state, 3);
 	
 	if ( (speed != 0.0f) && (force != 0.0f) ) {
 		s_pInstance->SetPrismaticJointMotor(hJoint, true, force, speed);
@@ -425,7 +425,6 @@ FCHandle FCPhysics2D::CreateJoint( FCPhysics2DJointCreateDefPtr def )
 		jointDef.collideConnected = true;
 		b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
 		
-//		[_joints setObject:[NSNumber numberWithInt:(int)joint] forKey:[NSNumber numberWithInt:handle]];
 		m_joints[handle] = joint;
 		return handle;
 	}
@@ -442,7 +441,6 @@ FCHandle FCPhysics2D::CreateJoint( FCPhysics2DJointCreateDefPtr def )
 		jointDef.enableLimit = false;
 		b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
 		
-//		[_joints setObject:[NSNumber numberWithInt:(int)joint] forKey:[NSNumber numberWithInt:handle]];
 		m_joints[handle] = joint;
 		return handle;
 	}
@@ -462,7 +460,6 @@ FCHandle FCPhysics2D::CreateJoint( FCPhysics2DJointCreateDefPtr def )
 		
 		b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
 		
-//		[_joints setObject:[NSNumber numberWithInt:(int)joint] forKey:[NSNumber numberWithInt:handle]];
 		m_joints[handle] = joint;
 		return handle;
 	}
@@ -491,7 +488,6 @@ FCHandle FCPhysics2D::CreateJoint( FCPhysics2DJointCreateDefPtr def )
 		
 		b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
 		
-//		[_joints setObject:[NSNumber numberWithInt:(int)joint] forKey:[NSNumber numberWithInt:handle]];
 		m_joints[handle] = joint;
 		return handle;
 	}
@@ -519,7 +515,6 @@ FCHandle FCPhysics2D::CreateJoint( FCPhysics2DJointCreateDefPtr def )
 		
 		b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
 		
-//		[_joints setObject:[NSNumber numberWithInt:(int)joint] forKey:[NSNumber numberWithInt:handle]];
 		m_joints[handle] = joint;
 		return handle;
 	}
@@ -531,9 +526,6 @@ FCHandle FCPhysics2D::CreateJoint( FCPhysics2DJointCreateDefPtr def )
 
 void FCPhysics2D::SetRevoluteJointMotor( FCHandle handle, bool enabled, float torque, float speed )
 {
-//	NSNumber* number = [_joints objectForKey:[NSNumber numberWithInt:handle]];
-//	b2RevoluteJoint* joint = (b2RevoluteJoint*)[number intValue];
-
 	b2RevoluteJoint* joint = (b2RevoluteJoint*)m_joints[ handle ];
 	
 	if (enabled) {

@@ -24,12 +24,25 @@
 #define CR1_FCFile_h
 
 #include <iostream>
+#include <string>
+
+#include "Shared/Core/FCCore.h"
+
+extern std::string plt_FCFile_ApplicationBundlePathForPath( std::string filename );
+extern std::string plt_FCFile_NormalPathForPath( std::string filename );
+extern std::string plt_FCFile_DocumentsFolderPathForPath( std::string filename );
 
 enum FCFileLocation
 {
 	FCFileLocationApplicationBundle,
 	FCFileLocationNormalFile,
 	FCFileLocationDocumentsFolder
+};
+
+enum FCFileOpenMode
+{
+	FCFileOpenModeReadOnly,
+	FCFileOpenModeReadWrite
 };
 
 enum FCFileReturn
@@ -45,16 +58,20 @@ public:
 	FCFile();
 	virtual ~FCFile();
 	
-	FCFileReturn	Open( std::string filename, FCFileLocation loc );
-	FCFileReturn	ReadIntoMemory();
+	FCFileReturn	Open( std::string filename, FCFileOpenMode mode, FCFileLocation loc );
+	FCFileReturn	ReadIntoMemory();	// this happens automatically, but nice to choose when
 	FCFileReturn	Close();
 	FCFileReturn	DeleteData();
-	uint8_t*		Data();
+	FCDataPtr		Data();
+	uint32_t		Size(){ return m_fileSize; }
 private:
+	
 	// internal state
 	
 	FILE*		m_handle;
-	uint8_t*	m_data;
+	char*		m_data;
+	uint32_t	m_fileSize;
+	bool		m_isDataInMemory;
 };
 
 typedef std::shared_ptr<FCFile> FCFilePtr;

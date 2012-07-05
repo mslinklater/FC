@@ -22,7 +22,7 @@
 
 #include "FCXML.h"
 #include "Shared/Core/FCError.h"
-#include "Shared/Core/FCFileIO.h"
+#include "Shared/Core/FCFile.h"
 #include "Shared/Core/FCStringUtils.h"
 
 FCXML::FCXML()
@@ -44,7 +44,7 @@ void FCXML::InitWithContentsOfFile(std::string filename)
 	
 	m_filename = filename;
 	
-	std::string filepath = plt_PathForFileInBundle( filename );
+	std::string filepath = plt_FCFile_ApplicationBundlePathForPath( filename );
 	
 	FILE* hFile = fopen(filepath.c_str(), "r");
 
@@ -78,7 +78,7 @@ FCXMLNodeVec FCXML::VectorForKeyPath(std::string path, uint32_t flags)
 	
 	FCXMLNode node = m_doc.first_node( szNode );
 	
-	for (int i = 1; i < components.size(); i++) 
+	for (unsigned long i = 1; i < components.size(); i++) 
 	{
 		szNode = components[i].c_str();
 		node = node->first_node(szNode);

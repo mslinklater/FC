@@ -84,7 +84,7 @@
 		err = ExtAudioFileGetProperty(extRef, kExtAudioFileProperty_FileLengthFrames, &thePropertySize, &theFileLengthInFrames);
 		FC_ASSERT(!err);
 		
-		UInt32		dataSize = theFileLengthInFrames * theOutputFormat.mBytesPerFrame;;
+		UInt32		dataSize = (unsigned int)theFileLengthInFrames * theOutputFormat.mBytesPerFrame;;
 		_bufferData = malloc(dataSize);
 		
 		if (_bufferData)

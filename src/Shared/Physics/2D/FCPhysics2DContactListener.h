@@ -57,7 +57,7 @@ public:
 	void DispatchToSubscribers();
 	void AddSubscriber( tCollisionSubscriber subscriber );
 	void RemoveSubscriber( tCollisionSubscriber subscriber );
-	int	NumCollisions(){ return m_collisions.size(); }
+	int	NumCollisions(){ return (int)m_collisions.size(); }
 private:
 
 	typedef std::set<tCollisionSubscriber> tSubscriberSet;
