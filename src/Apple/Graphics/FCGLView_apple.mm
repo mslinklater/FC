@@ -31,7 +31,6 @@
 #import "FCShaderManager_apple.h"
 #import "FCRenderer_apple.h"
 #import "FCLua.h"
-//#import "FCGL_apple.h"
 
 #include "GLES/FCGL.h"
 
