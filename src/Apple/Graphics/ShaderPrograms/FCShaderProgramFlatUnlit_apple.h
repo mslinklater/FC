@@ -23,7 +23,6 @@
 #import "FCShaderProgram_apple.h"
 
 @class FCShader_apple;
-@class FCShaderUniform_apple;
 @class FCShaderAttribute_apple;
 
 @interface FCShaderProgramFlatUnlit_apple : FCShaderProgram_apple {

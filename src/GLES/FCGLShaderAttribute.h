@@ -20,29 +20,9 @@
  THE SOFTWARE.
  */
 
-#if defined(FC_GRAPHICS)
+#ifndef CR1_FCGLShaderAttribute_h
+#define CR1_FCGLShaderAttribute_h
 
-#import "FCShaderUniform_apple.h"
-//#import "FCGLHelpers_apple.h"
 
-#include "GLES/FCGLHelpers.h"
 
-@implementation FCShaderUniform_apple
-@synthesize glLocation;
-@synthesize num;
-@synthesize type;
-
-+(id)fcShaderUniform_apple
-{
-	return [[FCShaderUniform_apple alloc] init];
-}
-
--(NSString*)description
-{
-	return [NSString stringWithFormat:@"%d %s x %d", glLocation, FCGLStringForEnum(type).c_str(), num];
-}
-
-@end
-
-#endif // defined(FC_GRAPHICS)
-
+#endif

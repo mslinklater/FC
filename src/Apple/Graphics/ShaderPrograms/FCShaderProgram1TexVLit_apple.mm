@@ -24,7 +24,6 @@
 #import "FCCore.h"
 #import "FCMesh_apple.h"
 #import "FCShaderAttribute_apple.h"
-#import "FCShaderUniform_apple.h"
 #import "FCTextureManager_apple.h"
 
 #include "GLES/FCGL.h"
@@ -46,9 +45,9 @@
 	self = [super initWithVertex:vertexShader andFragment:fragmentShader];
 	if (self) {		
 		_stride = 36;
-		self.ambientUniform = [self.uniforms valueForKey:@"ambient_color"];
-		self.lightColorUniform = [self.uniforms valueForKey:@"light_color"];
-		self.textureUniform = [self.uniforms valueForKey:@"texture"];
+		self.ambientUniform = &(_uniforms[ "ambient_color" ]);
+		self.lightColorUniform = &(_uniforms[ "light_color" ]);
+		self.textureUniform = &(_uniforms[ "texture" ]);
 		
 		self.positionAttribute = [self.attributes valueForKey:@"position"];
 		self.normalAttribute = [self.attributes valueForKey:@"normal"];
@@ -64,10 +63,10 @@
 	FCColor4f ambientColor( 0.25f, 0.25f, 0.25f, 1.0f );
 	FCColor4f lightColor( 1.0f, 1.0f, 1.0f, 1.0f );
 	
-	FCglUniform4fv(_ambientUniform.glLocation, 1, (GLfloat*)&ambientColor);
-	FCglUniform4fv(_lightColorUniform.glLocation, 1, (GLfloat*)&lightColor);
+	FCglUniform4fv(_ambientUniform->Location(), 1, (GLfloat*)&ambientColor);
+	FCglUniform4fv(_lightColorUniform->Location(), 1, (GLfloat*)&lightColor);
 
-	[[FCTextureManager_apple instance] bindDebugTextureTo:_textureUniform.glLocation];
+	[[FCTextureManager_apple instance] bindDebugTextureTo:_textureUniform->Location()];
 	
 //	FCglUniform1i(_textureUniform.glLocation, 0);
 }

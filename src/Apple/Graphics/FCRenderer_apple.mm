@@ -34,6 +34,8 @@
 #import "FCActorSystem.h"
 #import "FCMesh_apple.h"
 
+#include "GLES/FCGLShaderUniform.h"
+
 IFCRenderer* plt_FCRenderer_Create( std::string name )
 {
 	return new FCRendererProxy( name );
@@ -138,7 +140,7 @@ IFCRenderer* plt_FCRenderer_Create( std::string name )
 		
 		mat = rot * trans;
 		
-		FCShaderUniform_apple* uniform = [mesh.shaderProgram getUniform:@"modelview"];		
+		FCGLShaderUniform* uniform = [mesh.shaderProgram getUniform:@"modelview"];		
 		[mesh.shaderProgram setUniformValue:uniform to:&mat size:sizeof(mat)];
 		
 		uniform = [mesh.shaderProgram getUniform:@"light_direction"];

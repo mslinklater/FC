@@ -23,21 +23,20 @@
 #import "FCShaderProgram_apple.h"
 
 @class FCShader_apple;
-@class FCShaderUniform_apple;
 @class FCShaderAttribute_apple;
 
 @interface FCShaderProgramTest_apple : FCShaderProgram_apple {
 	
-	FCShaderUniform_apple*	_ambientUniform;
-	FCShaderUniform_apple*	_lightColorUniform;
+	FCGLShaderUniform*	_ambientUniform;
+	FCGLShaderUniform*	_lightColorUniform;
 	
 	FCShaderAttribute_apple*	_positionAttribute;
 	FCShaderAttribute_apple*	_normalAttribute;
 	FCShaderAttribute_apple*	_diffuseColorAttribute;
 	FCShaderAttribute_apple*	_specularColorAttribute;
 }
-@property(nonatomic, strong) FCShaderUniform_apple* ambientUniform;
-@property(nonatomic, strong) FCShaderUniform_apple* lightColorUniform;
+@property(nonatomic) FCGLShaderUniform* ambientUniform;
+@property(nonatomic) FCGLShaderUniform* lightColorUniform;
 
 @property(nonatomic, strong) FCShaderAttribute_apple* positionAttribute;
 @property(nonatomic, strong) FCShaderAttribute_apple* normalAttribute;

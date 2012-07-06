@@ -25,11 +25,8 @@
 #import "FCShaderProgram_apple.h"
 #import "FCShader_apple.h"
 #import "FCCore.h"
-//#import "FCGLHelpers_apple.h"
-#import "FCShaderUniform_apple.h"
 #import "FCShaderAttribute_apple.h"
 #import "FCMesh_apple.h"
-//#import "FCGL_apple.h"
 
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/glext.h>
@@ -46,7 +43,7 @@
 @synthesize vertexShader = _vertexShader;
 @synthesize fragmentShader = _fragmentShader;
 @synthesize uniforms = _uniforms;
-@synthesize perMeshUniforms = _perMeshUniforms;
+//@synthesize perMeshUniforms = _perMeshUniforms;
 @synthesize attributes = _attributes;
 @synthesize stride = _stride;
 
@@ -103,8 +100,8 @@
 
 -(void)processUniforms
 {
-	NSMutableDictionary* uniforms = [NSMutableDictionary dictionary];
-	NSMutableDictionary* perMeshUniforms = [NSMutableDictionary dictionary];
+//	NSMutableDictionary* uniforms = [NSMutableDictionary dictionary];
+//	NSMutableDictionary* perMeshUniforms = [NSMutableDictionary dictionary];
 	
 	GLint numUniforms;
 	FCglGetProgramiv(self.glHandle, GL_ACTIVE_UNIFORMS, &numUniforms);
@@ -125,25 +122,36 @@
 		
 		location = FCglGetUniformLocation(self.glHandle, uniformNameBuffer);
 		
-		FCShaderUniform_apple* thisUniform = [FCShaderUniform_apple fcShaderUniform_apple];
 		
-		thisUniform.glLocation = location;
-		thisUniform.num = num;
-		thisUniform.type = type;			
 		
-		NSString* uniformNameString = [NSString stringWithFormat:@"%s", uniformNameBuffer];
+//		FCShaderUniform_apple* thisUniform = [FCShaderUniform_apple fcShaderUniform_apple];
+//		
+//		thisUniform.glLocation = location;
+//		thisUniform.num = num;
+//		thisUniform.type = type;			
+//		
+//		
+//		[uniforms setValue:thisUniform forKey:uniformNameString];
 		
-		[uniforms setValue:thisUniform forKey:uniformNameString];
+		FCGLShaderUniform uniform;
 		
-		if (![uniformNameString isEqualToString:@"projection"] && ![uniformNameString isEqualToString:@"modelview"]) {
-			[perMeshUniforms setValue:thisUniform forKey:uniformNameString];
-		}
+		uniform.SetLocation( location );
+		uniform.SetNum( num );
+		uniform.SetType( type );
+		
+		_uniforms[ uniformNameBuffer ] = uniform;
+		
+//		NSString* uniformNameString = [NSString stringWithFormat:@"%s", uniformNameBuffer];
+		
+//		if (![uniformNameString isEqualToString:@"projection"] && ![uniformNameString isEqualToString:@"modelview"]) {
+//			[perMeshUniforms setValue:thisUniform forKey:uniformNameString];
+//		}
 	}
 	
 	free(uniformNameBuffer);
 	
-	_uniforms = [NSDictionary dictionaryWithDictionary:uniforms];	
-	_perMeshUniforms = [NSDictionary dictionaryWithDictionary:perMeshUniforms];
+//	_uniforms = [NSDictionary dictionaryWithDictionary:uniforms];	
+//	_perMeshUniforms = [NSDictionary dictionaryWithDictionary:perMeshUniforms];
 }
 
 -(void)processAttributes
@@ -180,10 +188,15 @@
 
 }
 
--(FCShaderUniform_apple*)getUniform:(NSString *)name
+-(FCGLShaderUniform*)getUniform:(NSString *)name
 {
-	FCShaderUniform_apple* uniform = [self.uniforms valueForKey:name];
-	return uniform;
+	FCGLShaderUniformMapByStringIter i = _uniforms.find([name UTF8String]);
+
+	if (i == _uniforms.end()) {
+		return 0;
+	} else {
+		return &(i->second);
+	}
 }
 
 -(GLuint)getAttribLocation:(NSString *)name
@@ -192,61 +205,61 @@
 	return location;
 }
 
--(void)setUniformValue:(FCShaderUniform_apple *)uniform to:(void *)pValues size:(unsigned int)size
+-(void)setUniformValue:(FCGLShaderUniform*)uniform to:(void *)pValues size:(unsigned int)size
 {
 	FCglUseProgram(self.glHandle);
 	
-	switch (uniform.type) 
+	switch (uniform->Type()) 
 	{
 		case GL_FLOAT:
-			FC_ASSERT(size == sizeof(GLfloat) * uniform.num);
-			FCglUniform1fv(uniform.glLocation, uniform.num, (GLfloat*)pValues);
+			FC_ASSERT(size == sizeof(GLfloat) * uniform->Num());
+			FCglUniform1fv(uniform->Location(), uniform->Num(), (GLfloat*)pValues);
 			break;
 		case GL_FLOAT_VEC2:
-			FC_ASSERT(size == sizeof(GLfloat) * 2 * uniform.num);
-			FCglUniform2fv(uniform.glLocation, uniform.num, (GLfloat*)pValues);
+			FC_ASSERT(size == sizeof(GLfloat) * 2 * uniform->Num());
+			FCglUniform2fv(uniform->Location(), uniform->Num(), (GLfloat*)pValues);
 			break;
 		case GL_FLOAT_VEC3:
-			FC_ASSERT(size == sizeof(GLfloat) * 3 * uniform.num);
-			FCglUniform3fv(uniform.glLocation, uniform.num, (GLfloat*)pValues);
+			FC_ASSERT(size == sizeof(GLfloat) * 3 * uniform->Num());
+			FCglUniform3fv(uniform->Location(), uniform->Num(), (GLfloat*)pValues);
 			break;
 		case GL_FLOAT_VEC4:
-			FC_ASSERT(size == sizeof(GLfloat) * 4 * uniform.num);
-			FCglUniform4fv(uniform.glLocation, uniform.num, (GLfloat*)pValues);
+			FC_ASSERT(size == sizeof(GLfloat) * 4 * uniform->Num());
+			FCglUniform4fv(uniform->Location(), uniform->Num(), (GLfloat*)pValues);
 			break;
 			
 		case GL_INT:
-			FC_ASSERT(size == sizeof(GLint) * uniform.num);
-			FCglUniform1iv(uniform.glLocation, uniform.num, (GLint*)pValues);
+			FC_ASSERT(size == sizeof(GLint) * uniform->Num());
+			FCglUniform1iv(uniform->Location(), uniform->Num(), (GLint*)pValues);
 			break;
 		case GL_INT_VEC2:
-			FC_ASSERT(size == sizeof(GLint) * 2 * uniform.num);
-			FCglUniform2iv(uniform.glLocation, uniform.num, (GLint*)pValues);
+			FC_ASSERT(size == sizeof(GLint) * 2 * uniform->Num());
+			FCglUniform2iv(uniform->Location(), uniform->Num(), (GLint*)pValues);
 			break;
 		case GL_INT_VEC3:
-			FC_ASSERT(size == sizeof(GLint) * 3 * uniform.num);
-			FCglUniform3iv(uniform.glLocation, uniform.num, (GLint*)pValues);
+			FC_ASSERT(size == sizeof(GLint) * 3 * uniform->Num());
+			FCglUniform3iv(uniform->Location(), uniform->Num(), (GLint*)pValues);
 			break;
 		case GL_INT_VEC4:
-			FC_ASSERT(size == sizeof(GLint) * 4 * uniform.num);
-			FCglUniform4iv(uniform.glLocation, uniform.num, (GLint*)pValues);
+			FC_ASSERT(size == sizeof(GLint) * 4 * uniform->Num());
+			FCglUniform4iv(uniform->Location(), uniform->Num(), (GLint*)pValues);
 			break;
 			
 		case GL_FLOAT_MAT2:
-			FC_ASSERT(size == sizeof(GLfloat) * 4 * uniform.num);
-			FCglUniformMatrix2fv(uniform.glLocation, uniform.num, GL_FALSE, (GLfloat*)pValues);
+			FC_ASSERT(size == sizeof(GLfloat) * 4 * uniform->Num());
+			FCglUniformMatrix2fv(uniform->Location(), uniform->Num(), GL_FALSE, (GLfloat*)pValues);
 			break;			
 		case GL_FLOAT_MAT3:
-			FC_ASSERT(size == sizeof(GLfloat) * 9 * uniform.num);
-			FCglUniformMatrix3fv(uniform.glLocation, uniform.num, GL_FALSE, (GLfloat*)pValues);
+			FC_ASSERT(size == sizeof(GLfloat) * 9 * uniform->Num());
+			FCglUniformMatrix3fv(uniform->Location(), uniform->Num(), GL_FALSE, (GLfloat*)pValues);
 			break;
 		case GL_FLOAT_MAT4:
-			FC_ASSERT(size == sizeof(GLfloat) * 16 * uniform.num);
-			FCglUniformMatrix4fv(uniform.glLocation, uniform.num, GL_FALSE, (GLfloat*)pValues);
+			FC_ASSERT(size == sizeof(GLfloat) * 16 * uniform->Num());
+			FCglUniformMatrix4fv(uniform->Location(), uniform->Num(), GL_FALSE, (GLfloat*)pValues);
 			break;
 
 		default:
-			NSString* uniformType = [NSString stringWithUTF8String:FCGLStringForEnum(uniform.type).c_str()];
+			NSString* uniformType = [NSString stringWithUTF8String:FCGLStringForEnum(uniform->Type()).c_str()];
 			FC_FATAL( std::string("unknown uniform type:") +  [uniformType UTF8String]);
 			break;
 	}

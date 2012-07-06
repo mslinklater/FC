@@ -24,7 +24,6 @@
 #import "FCCore.h"
 #import "FCMesh_apple.h"
 #import "FCShaderAttribute_apple.h"
-#import "FCShaderUniform_apple.h"
 
 #include "GLES/FCGL.h"
 
@@ -61,8 +60,8 @@
 	self = [super initWithVertex:vertexShader andFragment:fragmentShader];
 	if (self) {		
 		_stride = 28;
-		self.ambientUniform = [self.uniforms valueForKey:@"ambient_color"];
-		self.lightColorUniform = [self.uniforms valueForKey:@"light_color"];
+		self.ambientUniform = &(_uniforms[ "ambient_color" ]);
+		self.lightColorUniform = &(_uniforms[ "light_color" ]);
 		
 		self.positionAttribute = [self.attributes valueForKey:@"position"];
 		self.normalAttribute = [self.attributes valueForKey:@"normal"];
@@ -76,9 +75,9 @@
 {
 	FCColor4f ambientColor( 0.25f, 0.25f, 0.25f, 1.0f );
 	FCColor4f lightColor( 1.0f, 1.0f, 1.0f, 1.0f );
-	
-	FCglUniform4fv(_ambientUniform.glLocation, 1, (GLfloat*)&ambientColor);
-	FCglUniform4fv(_lightColorUniform.glLocation, 1, (GLfloat*)&lightColor);
+
+	FCglUniform4fv( _ambientUniform->Location(), 1, (GLfloat*)&ambientColor );
+	FCglUniform4fv( _lightColorUniform->Location(), 1, (GLfloat*)&lightColor );
 }
 
 -(void)bindAttributes // Get rid of the vertex descriptor

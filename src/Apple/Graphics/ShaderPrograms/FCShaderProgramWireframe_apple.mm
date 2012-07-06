@@ -24,7 +24,6 @@
 #import "FCCore.h"
 #import "FCMesh_apple.h"
 #import "FCShaderAttribute_apple.h"
-#import "FCShaderUniform_apple.h"
 
 #include "GLES/FCGL.h"
 
@@ -38,7 +37,7 @@
 	self = [super initWithVertex:vertexShader andFragment:fragmentShader];
 	if (self) {
 		_stride = 12;
-		self.diffuseColorUniform = [self.uniforms valueForKey:@"diffuse_color"];		
+		self.diffuseColorUniform = &(_uniforms[ "diffuse_color" ]);		
 		self.positionAttribute = [self.attributes valueForKey:@"position"];
 	}
 	return self;
@@ -47,7 +46,7 @@
 -(void)bindUniformsWithMesh:(FCMesh_apple*)mesh
 {
 	FCColor4f diffuseColor = mesh.diffuseColor;
-	FCglUniform4fv(_diffuseColorUniform.glLocation, _diffuseColorUniform.num, (GLfloat*)&diffuseColor);
+	FCglUniform4fv(_diffuseColorUniform->Location(), _diffuseColorUniform->Num(), (GLfloat*)&diffuseColor);
 }
 
 -(void)bindAttributes // Get rid of the vertex descriptor

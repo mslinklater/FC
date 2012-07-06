@@ -23,14 +23,13 @@
 #import "FCShaderProgram_apple.h"
 
 @class FCShader_apple;
-@class FCShaderUniform_apple;
 @class FCShaderAttribute_apple;
 
 @interface FCShaderProgramWireframe_apple : FCShaderProgram_apple {
-	FCShaderUniform_apple*	_diffuseColorUniform;
+	FCGLShaderUniform*	_diffuseColorUniform;
 	FCShaderAttribute_apple*	_positionAttribute;
 }
-@property(nonatomic, strong) FCShaderUniform_apple* diffuseColorUniform;
+@property(nonatomic) FCGLShaderUniform* diffuseColorUniform;
 @property(nonatomic, strong) FCShaderAttribute_apple* positionAttribute;
 
 -(id)initWithVertex:(FCShader_apple *)vertexShader andFragment:(FCShader_apple *)fragmentShader;

@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if 1
+
 #if defined(FC_GRAPHICS)
 
 #import "FCShaderAttribute_apple.h"
@@ -45,3 +47,5 @@
 @end
 
 #endif // defined(FC_GRAPHICS)
+
+#endif

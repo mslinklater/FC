@@ -418,8 +418,8 @@ FCGLViewPtr plt_FCGLView_Create( std::string name, std::string parent, const FCV
 {
 	// needs offset
 	
-	int halfScreenWidth = ( (_frameBufferWidth / [UIScreen mainScreen].scale) / 2 );
-	int halfScreenHeight = ( (_frameBufferHeight / [UIScreen mainScreen].scale) / 2 );
+	int32_t halfScreenWidth = ( (int32_t)(_frameBufferWidth / [UIScreen mainScreen].scale) / 2 );
+	int32_t halfScreenHeight = ( (int32_t)(_frameBufferHeight / [UIScreen mainScreen].scale) / 2 );
 	
 	pointIn.x -= halfScreenWidth;
 	pointIn.y -= halfScreenHeight;
@@ -450,9 +450,8 @@ FCGLViewPtr plt_FCGLView_Create( std::string name, std::string parent, const FCV
 
 	for( FCShaderProgram_apple* program in programs )
 	{
-		FCShaderUniform_apple* projectionUniform = [program getUniform:@"projection"];
-		[program setUniformValue:projectionUniform to:&mat size:sizeof(FCMatrix4f)];
-		
+		FCGLShaderUniform* projectionUniform = [program getUniform:@"projection"];
+		[program setUniformValue:projectionUniform to:&mat size:sizeof(FCMatrix4f)];		
 	}
 }
 

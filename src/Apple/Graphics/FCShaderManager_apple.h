@@ -24,9 +24,9 @@
 
 #import <Foundation/Foundation.h>
 #import "FCShaderProgram_apple.h"
-#import "FCShaderUniform_apple.h"
 
 #include "Shared/Graphics/FCShaderManager.h"
+#include "GLES/FCGLShaderUniform.h"
 
 @interface FCShaderManager_apple : NSObject {
 	NSMutableDictionary* _shaders;

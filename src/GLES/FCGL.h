@@ -20,6 +20,9 @@
  THE SOFTWARE.
  */
 
+#ifndef FCGL_H
+#define FCGL_H
+
 #include "GLES/FCGLHelpers.h"
 #include "Shared/Core/FCCore.h"
 
@@ -417,7 +420,7 @@ inline static void FCglViewport(GLint x, GLint y, GLsizei width, GLsizei height)
 	GLCHECK;
 }
 
-
+#endif // FCGL_H
 
 
 

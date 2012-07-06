@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if 1
+
 #if defined(FC_GRAPHICS)
 
 #import <Foundation/Foundation.h>
@@ -40,3 +42,5 @@
 @end
 
 #endif // defined(FC_GRAPHICS)
+
+#endif

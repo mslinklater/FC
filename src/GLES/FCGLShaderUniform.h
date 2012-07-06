@@ -20,23 +20,36 @@
  THE SOFTWARE.
  */
 
-#if defined(FC_GRAPHICS)
+#ifndef CR1_FCGLShaderUniform_h
+#define CR1_FCGLShaderUniform_h
 
-#import <Foundation/Foundation.h>
-#import <OpenGLES/ES2/gl.h>
+#include <string>
+#include <map>
 
-@interface FCShaderUniform_apple : NSObject
+#include "FCGL.h"
+
+class FCGLShaderUniform
 {
-	GLint glLocation;
-	GLint num;
-	GLenum type;
-}
-@property(nonatomic) GLint glLocation;
-@property(nonatomic) GLint num;
-@property(nonatomic) GLenum type;
+public:
+	FCGLShaderUniform(){}
+	virtual ~FCGLShaderUniform(){}
+	
+	void	SetLocation( GLint loc ){ m_glLocation = loc; }
+	GLint	Location(){ return m_glLocation; }
+	
+	void	SetNum( GLint num ){ m_num = num; }
+	GLint	Num(){ return m_num; }
+	
+	void	SetType( GLenum type ){ m_type = type; }
+	GLenum	Type(){ return m_type; }
+	
+private:
+	GLint	m_glLocation;
+	GLint	m_num;
+	GLenum	m_type;
+};
 
-+(id)fcShaderUniform_apple;
-@end
+typedef std::map<std::string, FCGLShaderUniform>	FCGLShaderUniformMapByString;
+typedef FCGLShaderUniformMapByString::iterator		FCGLShaderUniformMapByStringIter;
 
-#endif // defined(FC_GRAPHICS)
-
+#endif

@@ -24,7 +24,6 @@
 #import "FCCore.h"
 #import "FCMesh_apple.h"
 #import "FCShaderAttribute_apple.h"
-#import "FCShaderUniform_apple.h"
 
 #include "GLES/FCGL.h"
 

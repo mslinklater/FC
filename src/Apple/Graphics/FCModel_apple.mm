@@ -36,7 +36,7 @@
 #import "FCRenderer_apple.h"
 
 static 	FCColor4f	s_whiteColor( 1.0f, 1.0f, 1.0f, 1.0f );
-static int kNumCircleSegments = 36;
+static uint16_t kNumCircleSegments = 36;
 
 FCModelPtr plt_FCModel_Create()
 {
@@ -269,7 +269,7 @@ FCModelPtr plt_FCModel_Create()
 	
 	unsigned short* pIndex;
 	
-	for (int i = 0 ; i < kNumCircleSegments - 1; i++) 
+	for (uint16_t i = 0 ; i < kNumCircleSegments - 1; i++) 
 	{
 		pIndex = [mesh pIndexBufferAtIndex:i*3];
 		*pIndex = 0;
@@ -363,7 +363,7 @@ FCModelPtr plt_FCModel_Create()
 	pVert->y = [[vertsArray objectAtIndex:1] floatValue] + yOffset;
 	pVert->z = [[vertsArray objectAtIndex:2] floatValue] + zOffset;
 
-	for (int i = 1 ; i < mesh.numVertices ; i++) 
+	for (uint16_t i = 1 ; i < mesh.numVertices ; i++) 
 	{
 		pVert = (FCVector3f*)((unsigned int)pVert + 12);
 		pVert->x = [[vertsArray objectAtIndex:i*3] floatValue] + xOffset;
