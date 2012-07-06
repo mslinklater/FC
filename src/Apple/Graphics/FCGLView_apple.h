@@ -31,7 +31,7 @@
 #import "Shared/Core/FCTypes.h"
 #import "FCViewManager_apple.h"
 
-#include "Shared/Graphics/FCGLView.h"
+#include "GLES/FCGLView.h"
 
 @interface FCGLView_apple : UIView <FCManagedView_apple>
 {

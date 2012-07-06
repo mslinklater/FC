@@ -23,8 +23,6 @@
 #if defined(FC_GRAPHICS)
 
 #import <Foundation/Foundation.h>
-//#import <OpenGLES/ES2/gl.h>
-#import "FCGL_apple.h"
 
 #include "Shared/Graphics/FCTextureManager.h"
 

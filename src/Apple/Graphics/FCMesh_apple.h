@@ -24,6 +24,8 @@
 
 #import <Foundation/Foundation.h>
 
+#include "Shared/Core/FCCore.h"
+
 @class FCShaderProgram_apple;
 @class FCModel_apple;
 

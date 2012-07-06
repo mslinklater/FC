@@ -20,8 +20,30 @@
  THE SOFTWARE.
  */
 
-#import "FCGL_apple.h"
+#ifndef CR1_FCGLTextureFilePVR_h
+#define CR1_FCGLTextureFilePVR_h
 
-GLuint FCGL_currentProgram = 0;
+#include "Shared/Core/FCFile.h"
+#include "FCGLTextureFile.h"
+#include "PVRTTexture.h"
 
+class FCGLTextureFilePVR : public IFCGLTextureFileDelegate
+{
+public:
+	FCGLTextureFilePVR(){}
+	virtual ~FCGLTextureFilePVR();
+	
+	void Load( std::string filenam );
+	GLenum	Format();
+	GLsizei	Width();
+	GLsizei	Height();
+	GLenum	Type();
+	void*	Data();
+	
+private:
+	FCDataPtr			m_imageData;
+	PVR_Texture_Header*	m_pHeader;
+	FCFile				m_file;
+};
 
+#endif

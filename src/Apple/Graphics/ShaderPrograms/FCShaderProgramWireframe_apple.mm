@@ -26,7 +26,7 @@
 #import "FCShaderAttribute_apple.h"
 #import "FCShaderUniform_apple.h"
 
-#import "FCGL_apple.h"
+#include "GLES/FCGL.h"
 
 @implementation FCShaderProgramWireframe_apple
 

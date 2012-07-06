@@ -20,39 +20,48 @@
  THE SOFTWARE.
  */
 
-#ifndef FCGLHELPERS_H
-#define FCGLHELPERS_H
+// Not really sure if this is used - hence tha halts
 
-#include <OpenGLES/EAGL.h>
-#include <OpenGLES/ES2/gl.h>
-#include <OpenGLES/ES2/glext.h>
+#include "FCGLTextureFilePVR.h"
+#include "Shared/Core/FCFile.h"
 
-#include <string>
+FCGLTextureFilePVR::~FCGLTextureFilePVR()
+{
+	m_file.Close();
+}
 
-extern void FCGLCheckErrors( void );
+void FCGLTextureFilePVR::Load( std::string filename )
+{
+	m_file.Open(filename, FCFileOpenModeReadOnly, FCFileLocationApplicationBundle);
+}
 
-extern void FCGLLogVersions( void );
-extern void FCGLLogCaps( void );
-extern void FCGLLogState( void );
+GLenum	FCGLTextureFilePVR::Format()
+{
+	FC_HALT;
+	return GL_RGB;
+}
 
-extern std::string FCGLStringForEnum( GLenum thisEnum);
+GLsizei	FCGLTextureFilePVR::Width()
+{
+	FC_HALT;
+	return 0;
+}
 
-// Vendor stuff
+GLsizei	FCGLTextureFilePVR::Height()
+{
+	FC_HALT;
+	return 0;
+}
 
-extern std::string FCGLQueryVendor( void );
-extern std::string FCGLQueryVersion( void );
-extern std::string FCGLQueryRenderer( void );
-extern std::string FCGLQueryShadingLanguageVersion( void );
-extern std::string FCGLQueryExtensions( void );
+GLenum	FCGLTextureFilePVR::Type()
+{
+	FC_HALT;
+	return GL_RGB;
+}
 
-// Caps
-
-extern GLint FCGLCapsMaxTextureSize( void );
-
-#if defined (DEBUG)
-#define GLCHECK FCGLCheckErrors()
-#else
-#define GLCHECK
-#endif
-
-#endif // FCGLHELPERS_H
+void*	FCGLTextureFilePVR::Data()
+{
+	FCDataPtr dataPtr = m_file.Data();
+	
+	return (void*)dataPtr.get();
+}

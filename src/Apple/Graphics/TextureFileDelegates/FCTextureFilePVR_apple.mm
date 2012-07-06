@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if 0
+
 #if defined(FC_GRAPHICS)
 
 #import "FCTextureFilePVR_apple.h"
@@ -70,3 +72,5 @@
 @end
 
 #endif // defined(FC_GRAPHICS)
+
+#endif

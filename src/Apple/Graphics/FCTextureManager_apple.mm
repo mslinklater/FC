@@ -29,6 +29,8 @@
 //#import "FCTexture.h"
 #import "FCCore.h"
 
+#include "GLES/FCGL.h"
+
 IFCTextureManager* plt_FCTextureManager_Instance()
 {
 	static FCTextureManagerProxy* pInstance = 0;

@@ -19,31 +19,47 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-#if 0
 
-#if defined(FC_GRAPHICS)
+#ifndef CR1_FCGLTextureFile_h
+#define CR1_FCGLTextureFile_h
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import <OpenGLES/ES2/gl.h>
-
+#include "Shared/Core/FCCore.h"
+#include "GLES/FCGL.h"
 #include "Shared/Graphics/FCGraphicsTypes.h"
 
-@interface FCTextureFile_apple : NSObject
-@property(nonatomic, strong) NSString* name;
-@property(nonatomic) void* rawdata;
-@property(nonatomic) CGSize size;
-@property(nonatomic, readonly) GLuint glHandle;
-@property(nonatomic, readonly) int hookCount;
-@property(nonatomic, readonly) eFCTextureFileSourceFormat sourceFormat;
+class IFCGLTextureFileDelegate
+{
+public:	
+	IFCGLTextureFileDelegate(){}
+	virtual ~IFCGLTextureFileDelegate(){}
+	
+	virtual void Load( std::string filename ) = 0;
+	virtual GLenum	Format() = 0;
+	virtual GLsizei	Width() = 0;
+	virtual GLsizei	Height() = 0;
+	virtual GLenum	Type() = 0;
+	virtual void*	Data() = 0;
+};
 
--(id)initWithURL:(NSURL*)url;
+class FCGLTextureFile
+{
+public:
+	FCGLTextureFile( std::string filename );
+	virtual ~FCGLTextureFile();
+	
+	void	Hook();
+	void	Unhook();
+	GLuint	GLHandle();
 
--(void)hook;
--(void)unhook;
-
-@end
-
-#endif // defined(FC_GRAPHICS)
+private:
+	std::string					m_name;
+	void*						m_pData;
+	FCVector2i					m_size;
+	GLuint						m_glHandle;
+	int32_t						m_hookCount;
+	eFCTextureFileSourceFormat	m_sourceFormat;
+	std::string					m_filename;
+	IFCGLTextureFileDelegate*	m_delegate;
+};
 
 #endif

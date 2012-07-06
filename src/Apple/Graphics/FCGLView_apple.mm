@@ -28,11 +28,12 @@
 
 #import "FCGLView_apple.h"
 #import "FCDevice.h"
-#import "FCGLHelpers_apple.h"
 #import "FCShaderManager_apple.h"
 #import "FCRenderer_apple.h"
 #import "FCLua.h"
-#import "FCGL_apple.h"
+//#import "FCGL_apple.h"
+
+#include "GLES/FCGL.h"
 
 FCGLViewPtr plt_FCGLView_Create( std::string name, std::string parent, const FCVector2i& size )
 {

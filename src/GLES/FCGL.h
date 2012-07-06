@@ -20,10 +20,8 @@
  THE SOFTWARE.
  */
 
-#import <OpenGLES/EAGL.h>
-#import <OpenGLES/ES2/glext.h>
-#import "FCGLHelpers_apple.h"
-#import "FCCore.h"
+#include "GLES/FCGLHelpers.h"
+#include "Shared/Core/FCCore.h"
 
 extern GLuint FCGL_currentProgram;
 

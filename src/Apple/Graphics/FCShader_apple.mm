@@ -24,7 +24,8 @@
 
 #import "FCShader_apple.h"
 #import "FCCore.h"
-#import "FCGL_apple.h"
+
+#include "GLES/FCGL.h"
 
 @implementation FCShader_apple
 @synthesize glHandle = _glHandle;

@@ -25,14 +25,16 @@
 #import "FCShaderProgram_apple.h"
 #import "FCShader_apple.h"
 #import "FCCore.h"
-#import "FCGLHelpers_apple.h"
+//#import "FCGLHelpers_apple.h"
 #import "FCShaderUniform_apple.h"
 #import "FCShaderAttribute_apple.h"
 #import "FCMesh_apple.h"
-#import "FCGL_apple.h"
+//#import "FCGL_apple.h"
 
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/glext.h>
+
+#include "GLES/FCGL.h"
 
 @interface FCShaderProgram_apple()
 -(void)processUniforms;

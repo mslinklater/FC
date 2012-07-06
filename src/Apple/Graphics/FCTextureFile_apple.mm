@@ -20,13 +20,16 @@
  THE SOFTWARE.
  */
 
+#if 0
+
 #if defined(FC_GRAPHICS)
 
 #import "FCTextureFile_apple.h"
 #import "FCCore.h"
 #import "FCGraphicsProtocols_apple.h"
 #import "FCTextureFilePVR_apple.h"
-#import "FCGL_apple.h"
+
+#include "Shared/Graphics/FCGL.h"
 
 @interface FCTextureFile_apple()
 @property(nonatomic, weak) NSURL* url;
@@ -104,3 +107,5 @@
 @end
 
 #endif // defined(FC_GRAPHICS)
+
+#endif

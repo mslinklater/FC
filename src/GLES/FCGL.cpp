@@ -19,31 +19,8 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-#if 0
 
-#if defined(FC_GRAPHICS)
+#include "FCGL.h"
 
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#import <OpenGLES/ES2/gl.h>
+GLuint FCGL_currentProgram = 0;
 
-#include "Shared/Graphics/FCGraphicsTypes.h"
-
-@interface FCTextureFile_apple : NSObject
-@property(nonatomic, strong) NSString* name;
-@property(nonatomic) void* rawdata;
-@property(nonatomic) CGSize size;
-@property(nonatomic, readonly) GLuint glHandle;
-@property(nonatomic, readonly) int hookCount;
-@property(nonatomic, readonly) eFCTextureFileSourceFormat sourceFormat;
-
--(id)initWithURL:(NSURL*)url;
-
--(void)hook;
--(void)unhook;
-
-@end
-
-#endif // defined(FC_GRAPHICS)
-
-#endif

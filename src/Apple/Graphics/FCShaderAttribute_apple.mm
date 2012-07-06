@@ -23,7 +23,9 @@
 #if defined(FC_GRAPHICS)
 
 #import "FCShaderAttribute_apple.h"
-#import "FCGLHelpers_apple.h"
+//#import "FCGLHelpers_apple.h"
+
+#include "GLES/FCGLHelpers.h"
 
 @implementation FCShaderAttribute_apple
 @synthesize glLocation;

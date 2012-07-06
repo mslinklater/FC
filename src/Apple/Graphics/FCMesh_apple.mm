@@ -22,12 +22,12 @@
 
 #if defined (FC_GRAPHICS)
 
-#import "FCGL_apple.h"
 #import "FCMesh_apple.h"
-#import "FCGLHelpers_apple.h"
 #import "FCShaderManager_apple.h"
 #import "FCRenderer_apple.h"
 #import "FCShaderAttribute_apple.h"
+
+#include "GLES/FCGL.h"
 
 @interface FCMesh_apple() 
 {
