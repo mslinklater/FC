@@ -26,6 +26,7 @@
 #import <OpenGLES/ES2/gl.h>
 
 #include "GLES/FCGLShaderUniform.h"
+#include "GLES/FCGLShaderAttribute.h"
 
 @class FCShader_apple;
 @class FCMesh_apple;
@@ -35,17 +36,15 @@
 	GLuint _glHandle;
 	FCShader_apple* _vertexShader;
 	FCShader_apple* _fragmentShader;
-	NSDictionary* _attributes;
+	FCGLShaderAttributeMapByString	_attributes;
 	FCGLShaderUniformMapByString	_uniforms;
-//	NSDictionary* _perMeshUniforms;
 	unsigned int	_stride;
 }
 @property(nonatomic, readonly) GLuint glHandle;
 @property(nonatomic, strong, readonly) FCShader_apple* vertexShader;
 @property(nonatomic, strong, readonly) FCShader_apple* fragmentShader;
 @property(nonatomic) FCGLShaderUniformMapByString uniforms;
-//@property(nonatomic, strong, readonly) NSDictionary* perMeshUniforms;
-@property(nonatomic, strong, readonly) NSDictionary* attributes;
+@property(nonatomic) FCGLShaderAttributeMapByString attributes;
 @property(nonatomic) unsigned int stride;
 
 -(id)initWithVertex:(FCShader_apple*)vertexShader andFragment:(FCShader_apple*)fragmentShader;
@@ -54,6 +53,7 @@
 -(void)setUniformValue:(FCGLShaderUniform*)uniform to:(void*)pValues size:(unsigned int)size;
 
 -(GLuint)getAttribLocation:(NSString*)name;
+
 -(void)use;
 -(void)validate;
 -(void)bindUniformsWithMesh:(FCMesh_apple*)mesh;

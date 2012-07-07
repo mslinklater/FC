@@ -23,7 +23,6 @@
 #import "FCShaderProgramDebug_apple.h"
 #import "FCCore.h"
 #import "FCMesh_apple.h"
-#import "FCShaderAttribute_apple.h"
 
 #include "GLES/FCGL.h"
 
@@ -39,7 +38,7 @@
 	if (self) {
 		_stride = 12;
 		self.diffuseColorUniform = &(_uniforms[ "diffuse_color" ]);		
-		self.positionAttribute = [self.attributes valueForKey:@"position"];
+		self.positionAttribute = &(_attributes[ "position" ]);
 	}
 	return self;
 }
@@ -52,8 +51,8 @@
 
 -(void)bindAttributes // Get rid of the vertex descriptor
 {
-	FCglVertexAttribPointer( _positionAttribute.glLocation, 3, GL_FLOAT, GL_FALSE, _stride, (void*)0);
-	FCglEnableVertexAttribArray( _positionAttribute.glLocation );
+	FCglVertexAttribPointer( _positionAttribute->Location(), 3, GL_FLOAT, GL_FALSE, _stride, (void*)0);
+	FCglEnableVertexAttribArray( _positionAttribute->Location() );
 }
 
 @end

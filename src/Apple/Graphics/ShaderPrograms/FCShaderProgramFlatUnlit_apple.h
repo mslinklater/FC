@@ -23,14 +23,13 @@
 #import "FCShaderProgram_apple.h"
 
 @class FCShader_apple;
-@class FCShaderAttribute_apple;
 
 @interface FCShaderProgramFlatUnlit_apple : FCShaderProgram_apple {
-	FCShaderAttribute_apple*	_diffuseColorAttribute;
-	FCShaderAttribute_apple*	_positionAttribute;
+	FCGLShaderAttribute*	_diffuseColorAttribute;
+	FCGLShaderAttribute*	_positionAttribute;
 }
-@property(nonatomic, strong) FCShaderAttribute_apple* diffuseColorAttribute;
-@property(nonatomic, strong) FCShaderAttribute_apple* positionAttribute;
+@property(nonatomic) FCGLShaderAttribute* diffuseColorAttribute;
+@property(nonatomic) FCGLShaderAttribute* positionAttribute;
 
 -(id)initWithVertex:(FCShader_apple *)vertexShader andFragment:(FCShader_apple *)fragmentShader;
 -(void)bindUniformsWithMesh:(FCMesh_apple*)mesh;

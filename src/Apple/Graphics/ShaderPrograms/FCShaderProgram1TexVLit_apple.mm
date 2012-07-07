@@ -23,7 +23,6 @@
 #import "FCShaderProgram1TexVLit_apple.h"
 #import "FCCore.h"
 #import "FCMesh_apple.h"
-#import "FCShaderAttribute_apple.h"
 #import "FCTextureManager_apple.h"
 
 #include "GLES/FCGL.h"
@@ -49,11 +48,11 @@
 		self.lightColorUniform = &(_uniforms[ "light_color" ]);
 		self.textureUniform = &(_uniforms[ "texture" ]);
 		
-		self.positionAttribute = [self.attributes valueForKey:@"position"];
-		self.normalAttribute = [self.attributes valueForKey:@"normal"];
-		self.diffuseColorAttribute = [self.attributes valueForKey:@"diffuse_color"];
-		self.specularColorAttribute = [self.attributes valueForKey:@"specular_color"];
-		self.uv1Attribute = [self.attributes valueForKey:@"uv1"];
+		self.positionAttribute = &(_attributes[ "position" ]);
+		self.normalAttribute = &(_attributes[ "normal" ]);
+		self.diffuseColorAttribute = &(_attributes[ "diffuse_color" ]);
+		self.specularColorAttribute = &(_attributes[ "specular_color" ]);
+		self.uv1Attribute = &(_attributes[ "uv1" ]);
 	}
 	return self;
 }
@@ -73,20 +72,20 @@
 
 -(void)bindAttributes // Get rid of the vertex descriptor
 {
-	FCglVertexAttribPointer( _positionAttribute.glLocation, 3, GL_FLOAT, GL_FALSE, _stride, (void*)0);
-	FCglEnableVertexAttribArray( _positionAttribute.glLocation );
+	FCglVertexAttribPointer( _positionAttribute->Location(), 3, GL_FLOAT, GL_FALSE, _stride, (void*)0);
+	FCglEnableVertexAttribArray( _positionAttribute->Location() );
 	
-	FCglVertexAttribPointer( _normalAttribute.glLocation, 3, GL_SHORT, GL_TRUE, _stride, (void*)12);
-	FCglEnableVertexAttribArray( _normalAttribute.glLocation );
+	FCglVertexAttribPointer( _normalAttribute->Location(), 3, GL_SHORT, GL_TRUE, _stride, (void*)12);
+	FCglEnableVertexAttribArray( _normalAttribute->Location() );
 	
-	FCglVertexAttribPointer( _diffuseColorAttribute.glLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, _stride, (void*)20);
-	FCglEnableVertexAttribArray( _diffuseColorAttribute.glLocation );
+	FCglVertexAttribPointer( _diffuseColorAttribute->Location(), 4, GL_UNSIGNED_BYTE, GL_TRUE, _stride, (void*)20);
+	FCglEnableVertexAttribArray( _diffuseColorAttribute->Location() );
 	
-	FCglVertexAttribPointer( _specularColorAttribute.glLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, _stride, (void*)24);
-	FCglEnableVertexAttribArray( _specularColorAttribute.glLocation );
+	FCglVertexAttribPointer( _specularColorAttribute->Location(), 4, GL_UNSIGNED_BYTE, GL_TRUE, _stride, (void*)24);
+	FCglEnableVertexAttribArray( _specularColorAttribute->Location() );
 
-	FCglVertexAttribPointer( _uv1Attribute.glLocation, 2, GL_FLOAT, GL_FALSE, _stride, (void*)28);
-	FCglEnableVertexAttribArray( _uv1Attribute.glLocation );
+	FCglVertexAttribPointer( _uv1Attribute->Location(), 2, GL_FLOAT, GL_FALSE, _stride, (void*)28);
+	FCglEnableVertexAttribArray( _uv1Attribute->Location() );
 	
 //	if (_uv1Attribute) {
 //		[[FCTextureManager instance] bindDebugTextureTo:_uv1Attribute.glLocation];

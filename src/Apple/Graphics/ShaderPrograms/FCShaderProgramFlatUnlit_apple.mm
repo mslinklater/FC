@@ -23,7 +23,6 @@
 #import "FCShaderProgramFlatUnlit_apple.h"
 #import "FCCore.h"
 #import "FCMesh_apple.h"
-#import "FCShaderAttribute_apple.h"
 
 #include "GLES/FCGL.h"
 
@@ -51,8 +50,8 @@
 	self = [super initWithVertex:vertexShader andFragment:fragmentShader];
 	if (self) {	
 		_stride = 16;
-		self.positionAttribute = [self.attributes valueForKey:@"position"];
-		self.diffuseColorAttribute = [self.attributes valueForKey:@"diffuse_color"];
+		self.positionAttribute = &(_attributes[ "position" ]);
+		self.diffuseColorAttribute = &(_attributes[ "diffuse_color" ]);
 	}
 	return self;
 }
@@ -63,11 +62,11 @@
 
 -(void)bindAttributes; // Get rid of the vertex descriptor
 {
-	FCglVertexAttribPointer( _positionAttribute.glLocation, 3, GL_FLOAT, GL_FALSE, 16, (void*)0);
-	FCglEnableVertexAttribArray( _positionAttribute.glLocation );
+	FCglVertexAttribPointer( _positionAttribute->Location(), 3, GL_FLOAT, GL_FALSE, 16, (void*)0);
+	FCglEnableVertexAttribArray( _positionAttribute->Location() );
 
-	FCglVertexAttribPointer( _diffuseColorAttribute.glLocation, 4, GL_UNSIGNED_BYTE, GL_TRUE, 16, (void*)12);
-	FCglEnableVertexAttribArray( _diffuseColorAttribute.glLocation );
+	FCglVertexAttribPointer( _diffuseColorAttribute->Location(), 4, GL_UNSIGNED_BYTE, GL_TRUE, 16, (void*)12);
+	FCglEnableVertexAttribArray( _diffuseColorAttribute->Location() );
 }
 
 @end

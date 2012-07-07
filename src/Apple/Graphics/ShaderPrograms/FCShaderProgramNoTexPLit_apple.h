@@ -23,25 +23,24 @@
 #import "FCShaderProgram_apple.h"
 
 @class FCShader_apple;
-@class FCShaderAttribute_apple;
 
 @interface FCShaderProgramNoTexPLit_apple : FCShaderProgram_apple {
 	
 	FCGLShaderUniform*	_ambientUniform;
 	FCGLShaderUniform*	_lightColorUniform;
 	
-	FCShaderAttribute_apple*	_positionAttribute;
-	FCShaderAttribute_apple*	_normalAttribute;
-	FCShaderAttribute_apple*	_diffuseColorAttribute;
-	FCShaderAttribute_apple*	_specularColorAttribute;
+	FCGLShaderAttribute*	_positionAttribute;
+	FCGLShaderAttribute*	_normalAttribute;
+	FCGLShaderAttribute*	_diffuseColorAttribute;
+	FCGLShaderAttribute*	_specularColorAttribute;
 }
 @property(nonatomic) FCGLShaderUniform* ambientUniform;
 @property(nonatomic) FCGLShaderUniform* lightColorUniform;
 
-@property(nonatomic, strong) FCShaderAttribute_apple* positionAttribute;
-@property(nonatomic, strong) FCShaderAttribute_apple* normalAttribute;
-@property(nonatomic, strong) FCShaderAttribute_apple* diffuseColorAttribute;
-@property(nonatomic, strong) FCShaderAttribute_apple* specularColorAttribute;
+@property(nonatomic) FCGLShaderAttribute* positionAttribute;
+@property(nonatomic) FCGLShaderAttribute* normalAttribute;
+@property(nonatomic) FCGLShaderAttribute* diffuseColorAttribute;
+@property(nonatomic) FCGLShaderAttribute* specularColorAttribute;
 
 -(id)initWithVertex:(FCShader_apple *)vertexShader andFragment:(FCShader_apple *)fragmentShader;
 -(void)bindUniformsWithMesh:(FCMesh_apple*)mesh;

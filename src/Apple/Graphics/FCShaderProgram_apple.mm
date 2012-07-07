@@ -25,7 +25,6 @@
 #import "FCShaderProgram_apple.h"
 #import "FCShader_apple.h"
 #import "FCCore.h"
-#import "FCShaderAttribute_apple.h"
 #import "FCMesh_apple.h"
 
 #import <OpenGLES/EAGL.h>
@@ -100,9 +99,6 @@
 
 -(void)processUniforms
 {
-//	NSMutableDictionary* uniforms = [NSMutableDictionary dictionary];
-//	NSMutableDictionary* perMeshUniforms = [NSMutableDictionary dictionary];
-	
 	GLint numUniforms;
 	FCglGetProgramiv(self.glHandle, GL_ACTIVE_UNIFORMS, &numUniforms);
 	
@@ -111,7 +107,7 @@
 	
 	GLchar* uniformNameBuffer = (GLchar*)malloc(sizeof(GLchar) * uniformMax);
 	
-	for (GLuint iUniform = 0; iUniform < numUniforms; iUniform++) 
+	for (GLint iUniform = 0; iUniform < numUniforms; iUniform++) 
 	{
 		GLsizei length;
 		GLint num;
@@ -122,17 +118,6 @@
 		
 		location = FCglGetUniformLocation(self.glHandle, uniformNameBuffer);
 		
-		
-		
-//		FCShaderUniform_apple* thisUniform = [FCShaderUniform_apple fcShaderUniform_apple];
-//		
-//		thisUniform.glLocation = location;
-//		thisUniform.num = num;
-//		thisUniform.type = type;			
-//		
-//		
-//		[uniforms setValue:thisUniform forKey:uniformNameString];
-		
 		FCGLShaderUniform uniform;
 		
 		uniform.SetLocation( location );
@@ -140,24 +125,13 @@
 		uniform.SetType( type );
 		
 		_uniforms[ uniformNameBuffer ] = uniform;
-		
-//		NSString* uniformNameString = [NSString stringWithFormat:@"%s", uniformNameBuffer];
-		
-//		if (![uniformNameString isEqualToString:@"projection"] && ![uniformNameString isEqualToString:@"modelview"]) {
-//			[perMeshUniforms setValue:thisUniform forKey:uniformNameString];
-//		}
 	}
 	
 	free(uniformNameBuffer);
-	
-//	_uniforms = [NSDictionary dictionaryWithDictionary:uniforms];	
-//	_perMeshUniforms = [NSDictionary dictionaryWithDictionary:perMeshUniforms];
 }
 
 -(void)processAttributes
 {
-	NSMutableDictionary* attributes = [NSMutableDictionary dictionary];
-	
 	GLint numActive;
 	GLint maxLength;
 	
@@ -172,20 +146,18 @@
 		GLint size;
 		GLenum type;
 
-		FCShaderAttribute_apple* thisAttribute = [FCShaderAttribute_apple fcShaderAttribute];
-
 		FCglGetActiveAttrib(self.glHandle, i, maxLength, &sizeWritten, &size, &type, attributeNameBuffer);
-		thisAttribute.glLocation = FCglGetAttribLocation(self.glHandle, attributeNameBuffer);
-		thisAttribute.type = type;
-		thisAttribute.num = size;
 		
-		[attributes setValue:thisAttribute forKey:[NSString stringWithFormat:@"%s", attributeNameBuffer]];
+		FCGLShaderAttribute attribute;
+		
+		attribute.SetLocation( FCglGetAttribLocation(self.glHandle, attributeNameBuffer) );
+		attribute.SetType( type );
+		attribute.SetNum( size );
+		
+		_attributes[ attributeNameBuffer ] = attribute;		
 	}
 	
 	free( attributeNameBuffer );
-	
-	_attributes = [NSDictionary dictionaryWithDictionary:attributes];	
-
 }
 
 -(FCGLShaderUniform*)getUniform:(NSString *)name
