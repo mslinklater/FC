@@ -23,7 +23,6 @@
 #import "FCShaderProgram1TexVLit_apple.h"
 #import "FCCore.h"
 #import "FCMesh_apple.h"
-#import "FCTextureManager_apple.h"
 
 #include "GLES/FCGL.h"
 

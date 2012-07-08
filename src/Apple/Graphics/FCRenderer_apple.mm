@@ -29,7 +29,6 @@
 #import <OpenGLES/ES2/glext.h>
 #import "FCModel_apple.h"
 #import "FCShaderManager_apple.h"
-#import "FCTextureManager_apple.h"
 #import "FCLua.h"
 #import "FCActorSystem.h"
 #import "FCMesh_apple.h"

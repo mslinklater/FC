@@ -28,7 +28,6 @@
 #define FCRENDERER_APPLE_H
 
 #import <Foundation/Foundation.h>
-#import "FCTextureManager_apple.h"
 
 #include "FCActor.h"
 #include "Shared/Graphics/FCRenderer.h"
