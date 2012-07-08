@@ -22,7 +22,8 @@
 
 #import "FCShaderProgram_apple.h"
 
-@class FCShader_apple;
+#include "GLES/FCGLShader.h"
+
 
 @interface FCShaderProgramNoTexPLit_apple : FCShaderProgram_apple {
 	
@@ -42,7 +43,7 @@
 @property(nonatomic) FCGLShaderAttribute* diffuseColorAttribute;
 @property(nonatomic) FCGLShaderAttribute* specularColorAttribute;
 
--(id)initWithVertex:(FCShader_apple *)vertexShader andFragment:(FCShader_apple *)fragmentShader;
+-(id)initWithVertex:(FCGLShaderPtr)vertexShader andFragment:(FCGLShaderPtr)fragmentShader;
 -(void)bindUniformsWithMesh:(FCMesh_apple*)mesh;
 -(void)bindAttributes;
 @end

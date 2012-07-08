@@ -26,6 +26,9 @@
 
 #include "GLES/FCGL.h"
 
+#include "GLES/FCGLShader.h"
+
+
 /*
  
  stride = 16
@@ -54,7 +57,7 @@
 @synthesize diffuseColorAttribute = _diffuseColorAttribute;
 @synthesize specularColorAttribute = _specularColorAttribute;
 
--(id)initWithVertex:(FCShader_apple *)vertexShader andFragment:(FCShader_apple *)fragmentShader
+-(id)initWithVertex:(FCGLShaderPtr)vertexShader andFragment:(FCGLShaderPtr)fragmentShader
 {
 	self = [super initWithVertex:vertexShader andFragment:fragmentShader];
 	if (self) {		

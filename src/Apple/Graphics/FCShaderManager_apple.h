@@ -27,18 +27,20 @@
 
 #include "Shared/Graphics/FCShaderManager.h"
 #include "GLES/FCGLShaderUniform.h"
+#include "GLES/FCGLShader.h"
 
 @interface FCShaderManager_apple : NSObject {
-	NSMutableDictionary* _shaders;
+//	NSMutableDictionary* _shaders;
+	FCGLShaderPtrMapByString	_shaders;
 	NSMutableDictionary* _programs;
 }
-@property(nonatomic, strong) NSMutableDictionary* shaders;
+@property(nonatomic) FCGLShaderPtrMapByString shaders;
 @property(nonatomic, strong) NSMutableDictionary* programs;
 
 +(FCShaderManager_apple*)instance;
 
--(FCShader_apple*)addShader:(NSString*)name;
--(FCShader_apple*)shader:(NSString*)name;
+-(FCGLShaderPtr)addShader:(NSString*)name;
+-(FCGLShaderPtr)shader:(NSString*)name;
 
 -(FCShaderProgram_apple*)addProgram:(NSString*)name as:(NSString*)shaderName;
 

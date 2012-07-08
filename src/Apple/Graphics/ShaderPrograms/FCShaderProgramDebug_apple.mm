@@ -26,13 +26,15 @@
 
 #include "GLES/FCGL.h"
 
+#include "GLES/FCGLShader.h"
+
 
 @implementation FCShaderProgramDebug_apple
 
 @synthesize diffuseColorUniform = _diffuseColorUniform;
 @synthesize positionAttribute = _positionAttribute;
 
--(id)initWithVertex:(FCShader_apple *)vertexShader andFragment:(FCShader_apple *)fragmentShader
+-(id)initWithVertex:(FCGLShaderPtr)vertexShader andFragment:(FCGLShaderPtr)fragmentShader
 {
 	self = [super initWithVertex:vertexShader andFragment:fragmentShader];
 	if (self) {

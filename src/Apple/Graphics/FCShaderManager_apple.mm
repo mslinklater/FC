@@ -24,7 +24,7 @@
 
 #import "FCCore.h"
 #import "FCShaderManager_apple.h"
-#import "FCShader_apple.h"
+//#import "FCShader_apple.h"
 #import "FCShaderProgram_apple.h"
 #import "FCShaderProgramDebug_apple.h"
 #import "FCShaderProgramFlatUnlit_apple.h"
@@ -34,6 +34,8 @@
 #import "FCShaderProgram1TexVLit_apple.h"
 #import "FCShaderProgram1TexPLit_apple.h"
 #import "FCShaderProgramTest_apple.h"
+
+#include "GLES/FCGLShader.h"
 
 IFCShaderManager* plt_FCShaderManager_Instance()
 {
@@ -62,18 +64,17 @@ IFCShaderManager* plt_FCShaderManager_Instance()
 {
 	self = [super init];
 	if (self) {
-		_shaders = [[NSMutableDictionary alloc] init];
 		_programs = [[NSMutableDictionary alloc] init];
 	}
 	return self;
 }
 
 
--(FCShader_apple*)addShader:(NSString *)name
+-(FCGLShaderPtr)addShader:(NSString *)name
 {
-	FCShader_apple* ret = [self.shaders valueForKey:name];
+	FCGLShaderPtrMapByStringIter ret = _shaders.find([name UTF8String]);
 	
-	if (!ret) 
+	if( ret == _shaders.end() )
 	{
 		NSString* resourceName = [name stringByDeletingPathExtension];
 		NSString* resourceType = [name pathExtension];
@@ -99,18 +100,22 @@ IFCShaderManager* plt_FCShaderManager_Instance()
 			type = kShaderTypeFragment;
 		}
 		
-		ret = [[FCShader_apple alloc] initType:type withSource:source];
+		FCGLShaderPtr shader = FCGLShaderPtr( new FCGLShader( type, std::string([source UTF8String]) ) );
 		
 		FC_LOG( std::string("Compiled GL shader: ") + [name UTF8String]);
 
-		[self.shaders setValue:ret forKey:name];
+		_shaders[ [name UTF8String] ] = shader;
+		
+		// free pShader ?
+		
+		return _shaders[[name UTF8String]];
 	}
-	return ret;
+	return ret->second;
 }
 
--(FCShader_apple*)shader:(NSString *)name
+-(FCGLShaderPtr)shader:(NSString *)name
 {
-	return [self.shaders valueForKey:name];
+	return _shaders[[name UTF8String]];
 }
 
 -(FCShaderProgram_apple*)addProgram:(NSString *)name //as:(NSString *)shaderName
@@ -122,8 +127,8 @@ IFCShaderManager* plt_FCShaderManager_Instance()
 		NSString* vertexShaderName = [NSString stringWithFormat:@"%@.vsh", name];
 		NSString* fragmentShaderName = [NSString stringWithFormat:@"%@.fsh", name];
 		
-		FCShader_apple* vertexShader = [self addShader:vertexShaderName];
-		FCShader_apple* fragmentShader = [self addShader:fragmentShaderName];
+		FCGLShaderPtr vertexShader = [self addShader:vertexShaderName];
+		FCGLShaderPtr fragmentShader = [self addShader:fragmentShaderName];
 		
 		// build program
 		

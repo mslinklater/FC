@@ -25,6 +25,7 @@
 #import "FCMesh_apple.h"
 
 #include "GLES/FCGL.h"
+#include "GLES/FCGLShader.h"
 
 /*
 
@@ -45,7 +46,7 @@
 @synthesize diffuseColorAttribute = _diffuseColorAttribute;
 @synthesize positionAttribute = _positionAttribute;
 
--(id)initWithVertex:(FCShader_apple *)vertexShader andFragment:(FCShader_apple *)fragmentShader
+-(id)initWithVertex:(FCGLShaderPtr)vertexShader andFragment:(FCGLShaderPtr)fragmentShader
 {
 	self = [super initWithVertex:vertexShader andFragment:fragmentShader];
 	if (self) {	

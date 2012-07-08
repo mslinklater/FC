@@ -28,26 +28,28 @@
 #include "GLES/FCGLShaderUniform.h"
 #include "GLES/FCGLShaderAttribute.h"
 
-@class FCShader_apple;
 @class FCMesh_apple;
+
+#include "GLES/FCGLShader.h"
+
 
 @interface FCShaderProgram_apple : NSObject
 {
 	GLuint _glHandle;
-	FCShader_apple* _vertexShader;
-	FCShader_apple* _fragmentShader;
+	FCGLShaderPtr _vertexShader;
+	FCGLShaderPtr _fragmentShader;
 	FCGLShaderAttributeMapByString	_attributes;
 	FCGLShaderUniformMapByString	_uniforms;
 	unsigned int	_stride;
 }
 @property(nonatomic, readonly) GLuint glHandle;
-@property(nonatomic, strong, readonly) FCShader_apple* vertexShader;
-@property(nonatomic, strong, readonly) FCShader_apple* fragmentShader;
+@property(nonatomic, readonly) FCGLShaderPtr vertexShader;
+@property(nonatomic, readonly) FCGLShaderPtr fragmentShader;
 @property(nonatomic) FCGLShaderUniformMapByString uniforms;
 @property(nonatomic) FCGLShaderAttributeMapByString attributes;
 @property(nonatomic) unsigned int stride;
 
--(id)initWithVertex:(FCShader_apple*)vertexShader andFragment:(FCShader_apple*)fragmentShader;
+-(id)initWithVertex:(FCGLShaderPtr)vertexShader andFragment:(FCGLShaderPtr)fragmentShader;
 
 -(FCGLShaderUniform*)getUniform:(NSString*)name;
 -(void)setUniformValue:(FCGLShaderUniform*)uniform to:(void*)pValues size:(unsigned int)size;

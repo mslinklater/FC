@@ -23,7 +23,7 @@
 #if defined(FC_GRAPHICS)
 
 #import "FCShaderProgram_apple.h"
-#import "FCShader_apple.h"
+//#import "FCShader_apple.h"
 #import "FCCore.h"
 #import "FCMesh_apple.h"
 
@@ -31,6 +31,8 @@
 #import <OpenGLES/ES2/glext.h>
 
 #include "GLES/FCGL.h"
+
+#include "GLES/FCGLShader.h"
 
 @interface FCShaderProgram_apple()
 -(void)processUniforms;
@@ -42,11 +44,10 @@
 @synthesize vertexShader = _vertexShader;
 @synthesize fragmentShader = _fragmentShader;
 @synthesize uniforms = _uniforms;
-//@synthesize perMeshUniforms = _perMeshUniforms;
 @synthesize attributes = _attributes;
 @synthesize stride = _stride;
 
--(id)initWithVertex:(FCShader_apple*)vertexShader andFragment:(FCShader_apple*)fragmentShader
+-(id)initWithVertex:(FCGLShaderPtr)vertexShader andFragment:(FCGLShaderPtr)fragmentShader
 {
 	self = [super init];
 	if (self) {
@@ -57,8 +58,8 @@
 		_vertexShader = vertexShader;
 		_fragmentShader = fragmentShader;
 		
-		FCglAttachShader(self.glHandle, vertexShader.glHandle);
-		FCglAttachShader(self.glHandle, fragmentShader.glHandle);
+		FCglAttachShader(self.glHandle, vertexShader->Handle() );
+		FCglAttachShader(self.glHandle, fragmentShader->Handle() );
 		
 		FCglLinkProgram(self.glHandle);
 		

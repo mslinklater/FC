@@ -27,6 +27,9 @@
 
 #include "GLES/FCGL.h"
 
+#include "GLES/FCGLShader.h"
+
+
 @implementation FCShaderProgram1TexVLit_apple
 
 @synthesize ambientUniform = _ambientUniform;
@@ -39,7 +42,7 @@
 @synthesize specularColorAttribute = _specularColorAttribute;
 @synthesize uv1Attribute = _uv1Attribute;
 
--(id)initWithVertex:(FCShader_apple *)vertexShader andFragment:(FCShader_apple *)fragmentShader
+-(id)initWithVertex:(FCGLShaderPtr)vertexShader andFragment:(FCGLShaderPtr)fragmentShader
 {
 	self = [super initWithVertex:vertexShader andFragment:fragmentShader];
 	if (self) {		
