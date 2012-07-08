@@ -19,6 +19,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
+#if 0
 
 #if defined(FC_GRAPHICS)
 
@@ -26,18 +27,9 @@
 
 #include "Shared/Graphics/FCTextureManager.h"
 
-//@class FCTextureFile;
-//@class FCTexture;
-
 @interface FCTextureManager_apple : NSObject <NSXMLParserDelegate> {
-//	NSMutableDictionary*	_textures;
-//	NSMutableDictionary*	_textureFiles;
-//	FCTextureFile*			_currentTextureFile;
 	GLuint					_debugTexture;
 }
-//@property(nonatomic, strong) NSMutableDictionary* textures;
-//@property(nonatomic, strong) NSMutableDictionary* textureFiles;
-//@property(nonatomic, strong) FCTextureFile* currentTextureFile;
 @property(nonatomic, readonly) GLuint debugTexture;
 
 +(FCTextureManager_apple*)instance;
@@ -60,8 +52,10 @@ public:
 	{
 		
 	}
-//private:
+	
 	FCTextureManager_apple*	textureManager;
 };
 
 #endif // defined(FC_GRAPHICS)
+
+#endif

@@ -54,7 +54,7 @@ IFCRenderer* plt_FCRenderer_Create( std::string name )
 @synthesize models = _models;
 @synthesize meshes = _meshes;
 @synthesize gatherList = _gatherList;
-@synthesize textureManager = _textureManager;
+//@synthesize textureManager = _textureManager;
 
 #pragma mark - FCSingleton protocol
 

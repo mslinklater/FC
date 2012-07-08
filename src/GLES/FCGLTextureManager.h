@@ -20,45 +20,24 @@
  THE SOFTWARE.
  */
 
-#if defined(FC_GRAPHICS)
 
-#import "FCTexture_apple.h"
+#ifndef CR1_FCGLTextureManager_h
+#define CR1_FCGLTextureManager_h
 
-@implementation FCTexture_apple
-@synthesize name = _name;
-@synthesize textureFile = _textureFile;
-@synthesize absUV = _absUV;
+#include "Shared/Graphics/FCTextureManager.h"
+#include "FCGL.h"
 
--(id)init
+class FCGLTextureManager : public IFCTextureManager
 {
-	self = [super init];
-	if (self) {
-		// blah
-	}
-	return self;
-}
+public:
+	FCGLTextureManager();
+	virtual ~FCGLTextureManager();
+	
+	static FCGLTextureManager* Instance();
+	
+	void BindDebugTextureToAttributeHandle( GLuint handle );
+private:
+	GLuint	m_hDebugTexture;
+};
 
-+(id)fcTexture_apple
-{
-	return [[FCTexture_apple alloc] init];
-}
-
-
--(CGRect)absUVFromRelUV:(CGRect)relUV
-{
-	return CGRectMake(relUV.origin.x + (relUV.size.width * self.absUV.size.width), 
-					  relUV.origin.y + (relUV.size.height * self.absUV.size.height), 
-					  self.absUV.size.width * relUV.size.width, 
-					  self.absUV.size.height * relUV.size.height );
-}
-
-#if defined (DEBUG)
--(NSString*)description
-{
-	return [NSString stringWithFormat:@"frame(%f,%f,%f,%f)", self.absUV.origin.x, self.absUV.origin.y, self.absUV.size.width, self.absUV.size.height];
-}
 #endif
-
-@end
-
-#endif // defined(FC_GRAPHICS)

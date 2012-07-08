@@ -28,6 +28,7 @@
 #include "GLES/FCGL.h"
 
 #include "GLES/FCGLShader.h"
+#include "GLES/FCGLTextureManager.h"
 
 
 @implementation FCShaderProgram1TexVLit_apple
@@ -68,7 +69,9 @@
 	FCglUniform4fv(_ambientUniform->Location(), 1, (GLfloat*)&ambientColor);
 	FCglUniform4fv(_lightColorUniform->Location(), 1, (GLfloat*)&lightColor);
 
-	[[FCTextureManager_apple instance] bindDebugTextureTo:_textureUniform->Location()];
+//	[[FCTextureManager_apple instance] bindDebugTextureTo:_textureUniform->Location()];
+
+	FCGLTextureManager::Instance()->BindDebugTextureToAttributeHandle( _textureUniform->Location() );
 	
 //	FCglUniform1i(_textureUniform.glLocation, 0);
 }

@@ -34,7 +34,7 @@ public:
 	virtual ~IFCRenderer();
 	
 	virtual void Init( std::string name ) = 0;
-	virtual void SetTextureManager( IFCTextureManager* pTextureManager ) = 0;
+//	virtual void SetTextureManager( IFCTextureManager* pTextureManager ) = 0;
 	virtual void Render( void ) = 0;
 	
 	virtual void AddToGatherList( FCActorPtr actor ) = 0;

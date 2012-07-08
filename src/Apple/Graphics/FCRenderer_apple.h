@@ -32,21 +32,22 @@
 
 #include "FCActor.h"
 #include "Shared/Graphics/FCRenderer.h"
+#include "GLES/FCGLTextureManager.h"
 
-@class FCTextureManager_apple;
+//@class FCTextureManager_apple;
 
 @interface FCRenderer_apple : NSObject {
 	NSString*		_name;
 	NSMutableArray* _models;
 	NSMutableArray* _meshes;
 	FCActorVec		_gatherList;
-	FCTextureManager_apple* _textureManager;
+//	FCGLTextureManager_apple* _textureManager;
 }
 @property(nonatomic, strong, readonly) NSString* name;
 @property(nonatomic, strong, readonly) NSMutableArray* models;
 @property(nonatomic, strong, readonly) NSMutableArray* meshes;
 @property(nonatomic, readonly) FCActorVec gatherList;
-@property(nonatomic, strong) FCTextureManager_apple* textureManager;
+//@property(nonatomic, strong) FCTextureManager_apple* textureManager;
 
 -(id)initWithName:(NSString*)name;
 -(void)render;
@@ -77,11 +78,11 @@ public:
 		FC_HALT;
 	}
 	
-	void SetTextureManager( IFCTextureManager* pTextureManager )
-	{
-		FCTextureManagerProxy* realTM = reinterpret_cast<FCTextureManagerProxy*>(pTextureManager);
-		[renderer setTextureManager:realTM->textureManager];
-	}
+//	void SetTextureManager( IFCTextureManager* pTextureManager )
+//	{
+//		FCTextureManagerProxy* realTM = reinterpret_cast<FCTextureManagerProxy*>(pTextureManager);
+//		[renderer setTextureManager:realTM->textureManager];
+//	}
 	
 	void Render( void )
 	{
