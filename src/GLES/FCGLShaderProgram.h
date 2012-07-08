@@ -20,30 +20,40 @@
  THE SOFTWARE.
  */
 
-#import "FCShaderProgram_apple.h"
+#if 0
+
+#ifndef CR1_FCGLShaderProgram_h
+#define CR1_FCGLShaderProgram_h
+
+#include "GLES/FCGL.h"
 #include "GLES/FCGLShader.h"
+#include "GLES/FCGLShaderAttribute.h"
+#include "GLES/FCGLShaderUniform.h"
 
-class FCGLShaderAttribute;
-
-@interface FCShaderProgram1TexPLit_apple : FCShaderProgram_apple {
+class FCGLShaderProgram
+{
+public:
+	FCGLShaderProgram( FCGLShaderPtr vertexShader, FCGLShaderPtr fragmentShader );
+	virtual ~FCGLShaderProgram();
 	
-	FCGLShaderUniformPtr			_ambientUniform;
-	FCGLShaderUniformPtr			_lightColorUniform;
+	FCGLShaderUniformPtr GetUniform( std::string name );
+	void SetUniformValue( FCGLShaderUniformPtr uniform, void* pValues, uint32_t size );
+	GLuint	GetAttribLocation( std::string name );
 	
-	FCGLShaderAttributePtr	_positionAttribute;
-	FCGLShaderAttributePtr	_normalAttribute;
-	FCGLShaderAttributePtr	_diffuseColorAttribute;
-	FCGLShaderAttributePtr	_specularColorAttribute;
-}
-@property(nonatomic) FCGLShaderUniformPtr ambientUniform;
-@property(nonatomic) FCGLShaderUniformPtr lightColorUniform;
+	void Use();
+	void Validate();
+	void BindUniformsWithMesh( FCGLMeshPtr mesh );
+	void BindAttributes();
+	FCGLShaderAttributePtrVec	GetActiveAttributes();
+	
+private:
+	GLuint							m_glHandle;
+	FCGLShaderPtr					m_vertexShader;
+	FCGLShaderPtr					m_fragmentShader;
+	FCGLShaderAttributeMapByString	m_attributes;
+	FCGLShaderUniformMapByString	m_uniforms;
+	uint32_t						m_stride;
+};
 
-@property(nonatomic) FCGLShaderAttributePtr positionAttribute;
-@property(nonatomic) FCGLShaderAttributePtr normalAttribute;
-@property(nonatomic) FCGLShaderAttributePtr diffuseColorAttribute;
-@property(nonatomic) FCGLShaderAttributePtr specularColorAttribute;
-
--(id)initWithVertex:(FCGLShaderPtr)vertexShader andFragment:(FCGLShaderPtr)fragmentShader;
--(void)bindUniformsWithMesh:(FCMesh_apple*)mesh;
--(void)bindAttributes;
-@end
+#endif
+#endif

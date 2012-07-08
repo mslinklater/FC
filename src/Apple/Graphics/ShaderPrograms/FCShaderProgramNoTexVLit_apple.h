@@ -26,21 +26,21 @@ class FCGLShader;
 
 @interface FCShaderProgramNoTexVLit_apple : FCShaderProgram_apple {
 	
-	FCGLShaderUniform*	_ambientUniform;
-	FCGLShaderUniform*	_lightColorUniform;
+	FCGLShaderUniformPtr	_ambientUniform;
+	FCGLShaderUniformPtr	_lightColorUniform;
 	
-	FCGLShaderAttribute*	_positionAttribute;
-	FCGLShaderAttribute*	_normalAttribute;
-	FCGLShaderAttribute*	_diffuseColorAttribute;
-	FCGLShaderAttribute*	_specularColorAttribute;
+	FCGLShaderAttributePtr	_positionAttribute;
+	FCGLShaderAttributePtr	_normalAttribute;
+	FCGLShaderAttributePtr	_diffuseColorAttribute;
+	FCGLShaderAttributePtr	_specularColorAttribute;
 }
-@property(nonatomic) FCGLShaderUniform* ambientUniform;
-@property(nonatomic) FCGLShaderUniform* lightColorUniform;
+@property(nonatomic) FCGLShaderUniformPtr ambientUniform;
+@property(nonatomic) FCGLShaderUniformPtr lightColorUniform;
 
-@property(nonatomic) FCGLShaderAttribute* positionAttribute;
-@property(nonatomic) FCGLShaderAttribute* normalAttribute;
-@property(nonatomic) FCGLShaderAttribute* diffuseColorAttribute;
-@property(nonatomic) FCGLShaderAttribute* specularColorAttribute;
+@property(nonatomic) FCGLShaderAttributePtr positionAttribute;
+@property(nonatomic) FCGLShaderAttributePtr normalAttribute;
+@property(nonatomic) FCGLShaderAttributePtr diffuseColorAttribute;
+@property(nonatomic) FCGLShaderAttributePtr specularColorAttribute;
 
 -(id)initWithVertex:(FCGLShaderPtr)vertexShader andFragment:(FCGLShaderPtr)fragmentShader;
 -(void)bindUniformsWithMesh:(FCMesh_apple*)mesh;

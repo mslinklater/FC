@@ -51,8 +51,8 @@
 	self = [super initWithVertex:vertexShader andFragment:fragmentShader];
 	if (self) {	
 		_stride = 16;
-		self.positionAttribute = &(_attributes[ "position" ]);
-		self.diffuseColorAttribute = &(_attributes[ "diffuse_color" ]);
+		self.positionAttribute = _attributes[ "position" ];
+		self.diffuseColorAttribute = _attributes[ "diffuse_color" ];
 	}
 	return self;
 }

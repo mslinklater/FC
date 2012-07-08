@@ -25,11 +25,11 @@
 class FCGLShader;
 
 @interface FCShaderProgramWireframe_apple : FCShaderProgram_apple {
-	FCGLShaderUniform*	_diffuseColorUniform;
-	FCGLShaderAttribute*	_positionAttribute;
+	FCGLShaderUniformPtr	_diffuseColorUniform;
+	FCGLShaderAttributePtr	_positionAttribute;
 }
-@property(nonatomic) FCGLShaderUniform* diffuseColorUniform;
-@property(nonatomic) FCGLShaderAttribute* positionAttribute;
+@property(nonatomic) FCGLShaderUniformPtr diffuseColorUniform;
+@property(nonatomic) FCGLShaderAttributePtr positionAttribute;
 
 -(id)initWithVertex:(FCGLShaderPtr)vertexShader andFragment:(FCGLShaderPtr)fragmentShader;
 -(void)bindUniformsWithMesh:(FCMesh_apple*)mesh;

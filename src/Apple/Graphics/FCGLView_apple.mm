@@ -450,7 +450,7 @@ FCGLViewPtr plt_FCGLView_Create( std::string name, std::string parent, const FCV
 
 	for( FCShaderProgram_apple* program in programs )
 	{
-		FCGLShaderUniform* projectionUniform = [program getUniform:@"projection"];
+		FCGLShaderUniformPtr projectionUniform = [program getUniform:@"projection"];
 		[program setUniformValue:projectionUniform to:&mat size:sizeof(FCMatrix4f)];		
 	}
 }

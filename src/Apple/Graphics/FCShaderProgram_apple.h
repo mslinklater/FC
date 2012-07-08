@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if 1
+
 #if defined(FC_GRAPHICS)
 
 #import <Foundation/Foundation.h>
@@ -32,27 +34,26 @@
 
 #include "GLES/FCGLShader.h"
 
-
 @interface FCShaderProgram_apple : NSObject
 {
-	GLuint _glHandle;
-	FCGLShaderPtr _vertexShader;
-	FCGLShaderPtr _fragmentShader;
-	FCGLShaderAttributeMapByString	_attributes;
-	FCGLShaderUniformMapByString	_uniforms;
-	unsigned int	_stride;
+	GLuint								_glHandle;
+	FCGLShaderPtr						_vertexShader;
+	FCGLShaderPtr						_fragmentShader;
+	FCGLShaderAttributePtrMapByString	_attributes;
+	FCGLShaderUniformPtrMapByString		_uniforms;
+	unsigned int						_stride;
 }
-@property(nonatomic, readonly) GLuint glHandle;
-@property(nonatomic, readonly) FCGLShaderPtr vertexShader;
-@property(nonatomic, readonly) FCGLShaderPtr fragmentShader;
-@property(nonatomic) FCGLShaderUniformMapByString uniforms;
-@property(nonatomic) FCGLShaderAttributeMapByString attributes;
-@property(nonatomic) unsigned int stride;
+@property(nonatomic, readonly) GLuint					glHandle;
+@property(nonatomic, readonly) FCGLShaderPtr			vertexShader;
+@property(nonatomic, readonly) FCGLShaderPtr			fragmentShader;
+@property(nonatomic) FCGLShaderUniformPtrMapByString	uniforms;
+@property(nonatomic) FCGLShaderAttributePtrMapByString	attributes;
+@property(nonatomic) unsigned int						stride;
 
 -(id)initWithVertex:(FCGLShaderPtr)vertexShader andFragment:(FCGLShaderPtr)fragmentShader;
 
--(FCGLShaderUniform*)getUniform:(NSString*)name;
--(void)setUniformValue:(FCGLShaderUniform*)uniform to:(void*)pValues size:(unsigned int)size;
+-(FCGLShaderUniformPtr)getUniform:(NSString*)name;
+-(void)setUniformValue:(FCGLShaderUniformPtr)uniform to:(void*)pValues size:(unsigned int)size;
 
 -(GLuint)getAttribLocation:(NSString*)name;
 
@@ -66,3 +67,4 @@
 
 #endif // defined(FC_GRAPHICS)
 
+#endif

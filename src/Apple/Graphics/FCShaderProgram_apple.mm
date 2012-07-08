@@ -20,10 +20,11 @@
  THE SOFTWARE.
  */
 
+#if 1
+
 #if defined(FC_GRAPHICS)
 
 #import "FCShaderProgram_apple.h"
-//#import "FCShader_apple.h"
 #import "FCCore.h"
 #import "FCMesh_apple.h"
 
@@ -119,11 +120,11 @@
 		
 		location = FCglGetUniformLocation(self.glHandle, uniformNameBuffer);
 		
-		FCGLShaderUniform uniform;
+		FCGLShaderUniformPtr uniform = FCGLShaderUniformPtr( new FCGLShaderUniform );
 		
-		uniform.SetLocation( location );
-		uniform.SetNum( num );
-		uniform.SetType( type );
+		uniform->SetLocation( location );
+		uniform->SetNum( num );
+		uniform->SetType( type );
 		
 		_uniforms[ uniformNameBuffer ] = uniform;
 	}
@@ -149,11 +150,11 @@
 
 		FCglGetActiveAttrib(self.glHandle, i, maxLength, &sizeWritten, &size, &type, attributeNameBuffer);
 		
-		FCGLShaderAttribute attribute;
+		FCGLShaderAttributePtr attribute = FCGLShaderAttributePtr( new FCGLShaderAttribute );
 		
-		attribute.SetLocation( FCglGetAttribLocation(self.glHandle, attributeNameBuffer) );
-		attribute.SetType( type );
-		attribute.SetNum( size );
+		attribute->SetLocation( FCglGetAttribLocation(self.glHandle, attributeNameBuffer) );
+		attribute->SetType( type );
+		attribute->SetNum( size );
 		
 		_attributes[ attributeNameBuffer ] = attribute;		
 	}
@@ -161,14 +162,14 @@
 	free( attributeNameBuffer );
 }
 
--(FCGLShaderUniform*)getUniform:(NSString *)name
+-(FCGLShaderUniformPtr)getUniform:(NSString *)name
 {
-	FCGLShaderUniformMapByStringIter i = _uniforms.find([name UTF8String]);
+	FCGLShaderUniformPtrMapByStringIter i = _uniforms.find([name UTF8String]);
 
 	if (i == _uniforms.end()) {
 		return 0;
 	} else {
-		return &(i->second);
+		return i->second;
 	}
 }
 
@@ -178,7 +179,7 @@
 	return location;
 }
 
--(void)setUniformValue:(FCGLShaderUniform*)uniform to:(void *)pValues size:(unsigned int)size
+-(void)setUniformValue:(FCGLShaderUniformPtr)uniform to:(void *)pValues size:(unsigned int)size
 {
 	FCglUseProgram(self.glHandle);
 	
@@ -309,4 +310,6 @@
 @end
 
 #endif // defined(FC_GRAPHICS)
+
+#endif
 

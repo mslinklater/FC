@@ -24,28 +24,27 @@
 
 #include "GLES/FCGLShader.h"
 
-
 @interface FCShaderProgram1TexVLit_apple : FCShaderProgram_apple {
 	
-	FCGLShaderUniform*	_ambientUniform;
-	FCGLShaderUniform*	_lightColorUniform;
-	FCGLShaderUniform*	_textureUniform;
+	FCGLShaderUniformPtr	_ambientUniform;
+	FCGLShaderUniformPtr	_lightColorUniform;
+	FCGLShaderUniformPtr	_textureUniform;
 	
-	FCGLShaderAttribute*	_positionAttribute;
-	FCGLShaderAttribute*	_normalAttribute;
-	FCGLShaderAttribute*	_diffuseColorAttribute;
-	FCGLShaderAttribute*	_specularColorAttribute;
-	FCGLShaderAttribute*	_uv1Attribute;
+	FCGLShaderAttributePtr	_positionAttribute;
+	FCGLShaderAttributePtr	_normalAttribute;
+	FCGLShaderAttributePtr	_diffuseColorAttribute;
+	FCGLShaderAttributePtr	_specularColorAttribute;
+	FCGLShaderAttributePtr	_uv1Attribute;
 }
-@property(nonatomic) FCGLShaderUniform* ambientUniform;
-@property(nonatomic) FCGLShaderUniform* lightColorUniform;
-@property(nonatomic) FCGLShaderUniform* textureUniform;
+@property(nonatomic) FCGLShaderUniformPtr ambientUniform;
+@property(nonatomic) FCGLShaderUniformPtr lightColorUniform;
+@property(nonatomic) FCGLShaderUniformPtr textureUniform;
 
-@property(nonatomic) FCGLShaderAttribute* positionAttribute;
-@property(nonatomic) FCGLShaderAttribute* normalAttribute;
-@property(nonatomic) FCGLShaderAttribute* diffuseColorAttribute;
-@property(nonatomic) FCGLShaderAttribute* specularColorAttribute;
-@property(nonatomic) FCGLShaderAttribute* uv1Attribute;
+@property(nonatomic) FCGLShaderAttributePtr positionAttribute;
+@property(nonatomic) FCGLShaderAttributePtr normalAttribute;
+@property(nonatomic) FCGLShaderAttributePtr diffuseColorAttribute;
+@property(nonatomic) FCGLShaderAttributePtr specularColorAttribute;
+@property(nonatomic) FCGLShaderAttributePtr uv1Attribute;
 
 -(id)initWithVertex:(FCGLShaderPtr)vertexShader andFragment:(FCGLShaderPtr)fragmentShader;
 -(void)bindUniformsWithMesh:(FCMesh_apple*)mesh;

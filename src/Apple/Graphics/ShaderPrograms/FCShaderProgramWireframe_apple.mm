@@ -38,8 +38,8 @@ class FCGLShader;
 	self = [super initWithVertex:vertexShader andFragment:fragmentShader];
 	if (self) {
 		_stride = 12;
-		self.diffuseColorUniform = &(_uniforms[ "diffuse_color" ]);		
-		self.positionAttribute = &(_attributes[ "position" ]);
+		self.diffuseColorUniform = _uniforms[ "diffuse_color" ];
+		self.positionAttribute = _attributes[ "position" ];
 	}
 	return self;
 }

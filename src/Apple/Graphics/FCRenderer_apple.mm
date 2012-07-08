@@ -110,9 +110,10 @@ IFCRenderer* plt_FCRenderer_Create( std::string name )
 	for (FCActorVecIter i = _gatherList.begin(); i != _gatherList.end(); i++)
 	{
 		FCModelVec vec = (*i)->RenderGather();
-		for (FCModelVecIter i = vec.begin(); i != vec.end(); i++) 
+		
+		for (FCModelVecIter j = vec.begin(); j != vec.end(); j++) 
 		{
-			FCModelProxy* proxy = (FCModelProxy*)(*i).get();
+			FCModelProxy* proxy = (FCModelProxy*)(*j).get();
 			
 			[_models addObject:proxy->model];
 		}
@@ -140,7 +141,7 @@ IFCRenderer* plt_FCRenderer_Create( std::string name )
 		
 		mat = rot * trans;
 		
-		FCGLShaderUniform* uniform = [mesh.shaderProgram getUniform:@"modelview"];		
+		FCGLShaderUniformPtr uniform = [mesh.shaderProgram getUniform:@"modelview"];		
 		[mesh.shaderProgram setUniformValue:uniform to:&mat size:sizeof(mat)];
 		
 		uniform = [mesh.shaderProgram getUniform:@"light_direction"];

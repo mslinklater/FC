@@ -47,15 +47,15 @@
 	self = [super initWithVertex:vertexShader andFragment:fragmentShader];
 	if (self) {		
 		_stride = 36;
-		self.ambientUniform = &(_uniforms[ "ambient_color" ]);
-		self.lightColorUniform = &(_uniforms[ "light_color" ]);
-		self.textureUniform = &(_uniforms[ "texture" ]);
+		self.ambientUniform = _uniforms[ "ambient_color" ];
+		self.lightColorUniform = _uniforms[ "light_color" ];
+		self.textureUniform = _uniforms[ "texture" ];
 		
-		self.positionAttribute = &(_attributes[ "position" ]);
-		self.normalAttribute = &(_attributes[ "normal" ]);
-		self.diffuseColorAttribute = &(_attributes[ "diffuse_color" ]);
-		self.specularColorAttribute = &(_attributes[ "specular_color" ]);
-		self.uv1Attribute = &(_attributes[ "uv1" ]);
+		self.positionAttribute = _attributes[ "position" ];
+		self.normalAttribute = _attributes[ "normal" ];
+		self.diffuseColorAttribute = _attributes[ "diffuse_color" ];
+		self.specularColorAttribute = _attributes[ "specular_color" ];
+		self.uv1Attribute = _attributes[ "uv1" ];
 	}
 	return self;
 }

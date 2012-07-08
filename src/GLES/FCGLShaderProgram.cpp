@@ -20,30 +20,6 @@
  THE SOFTWARE.
  */
 
-#import "FCShaderProgram_apple.h"
-#include "GLES/FCGLShader.h"
+#include "FCGLShaderProgram.h"
 
-class FCGLShaderAttribute;
 
-@interface FCShaderProgram1TexPLit_apple : FCShaderProgram_apple {
-	
-	FCGLShaderUniformPtr			_ambientUniform;
-	FCGLShaderUniformPtr			_lightColorUniform;
-	
-	FCGLShaderAttributePtr	_positionAttribute;
-	FCGLShaderAttributePtr	_normalAttribute;
-	FCGLShaderAttributePtr	_diffuseColorAttribute;
-	FCGLShaderAttributePtr	_specularColorAttribute;
-}
-@property(nonatomic) FCGLShaderUniformPtr ambientUniform;
-@property(nonatomic) FCGLShaderUniformPtr lightColorUniform;
-
-@property(nonatomic) FCGLShaderAttributePtr positionAttribute;
-@property(nonatomic) FCGLShaderAttributePtr normalAttribute;
-@property(nonatomic) FCGLShaderAttributePtr diffuseColorAttribute;
-@property(nonatomic) FCGLShaderAttributePtr specularColorAttribute;
-
--(id)initWithVertex:(FCGLShaderPtr)vertexShader andFragment:(FCGLShaderPtr)fragmentShader;
--(void)bindUniformsWithMesh:(FCMesh_apple*)mesh;
--(void)bindAttributes;
-@end

@@ -26,11 +26,11 @@
 
 
 @interface FCShaderProgramFlatUnlit_apple : FCShaderProgram_apple {
-	FCGLShaderAttribute*	_diffuseColorAttribute;
-	FCGLShaderAttribute*	_positionAttribute;
+	FCGLShaderAttributePtr	_diffuseColorAttribute;
+	FCGLShaderAttributePtr	_positionAttribute;
 }
-@property(nonatomic) FCGLShaderAttribute* diffuseColorAttribute;
-@property(nonatomic) FCGLShaderAttribute* positionAttribute;
+@property(nonatomic) FCGLShaderAttributePtr diffuseColorAttribute;
+@property(nonatomic) FCGLShaderAttributePtr positionAttribute;
 
 -(id)initWithVertex:(FCGLShaderPtr)vertexShader andFragment:(FCGLShaderPtr)fragmentShader;
 -(void)bindUniformsWithMesh:(FCMesh_apple*)mesh;
