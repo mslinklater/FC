@@ -28,6 +28,8 @@ FCModelRef plt_FCModel_Create()
 	return FCModelRef( new FCGLModel );
 }
 
+static uint16_t kNumCircleSegments = 36;
+
 FCGLModel::FCGLModel()
 : m_pos( FCVector3f(0.0f, 0.0f, 0.0f))
 , m_rotation(0.0f)
@@ -209,7 +211,7 @@ void FCGLModel::AddDebugRectangle( DebugRectangleInitParams& params, FCColor4f& 
 	mesh->SetNumVertices( 4 );
 	mesh->SetNumTriangles( 2 );
 	
-	FCVector2f size( params.size.x, params.size.y );
+	FCVector2f size( params.size.x * 0.5f, params.size.y * 0.5f);
 	
 	FCVector3f center;
 	center.x = params.fixture.x;
@@ -254,12 +256,99 @@ void FCGLModel::AddDebugRectangle( DebugRectangleInitParams& params, FCColor4f& 
 
 void FCGLModel::AddDebugCircle( DebugCircleInitParams& params, FCColor4f& color )
 {
+	FCGLMeshRef mesh = FCGLMeshRef( new FCGLMesh( kFCKeyShaderDebug, GL_TRIANGLES ) );
 	
+	m_meshes.push_back( mesh );
+	mesh->SetParentModel( this );
+	
+	mesh->SetNumVertices( kNumCircleSegments + 1 );
+	mesh->SetNumTriangles( kNumCircleSegments );
+
+	float radius = params.radius;
+	
+	FCVector3f* pVert;
+	FCVector3f center;
+	center.x = params.fixture.x;
+	center.y = params.fixture.y;
+	center.z = 0.0f;
+	
+	pVert = (FCVector3f*)((unsigned long)mesh->VertexBuffer());
+	pVert->x = center.x;
+	pVert->y = center.y;
+	pVert->z = center.z;
+	
+	for( int i = 0 ; i < kNumCircleSegments ; i++ )
+	{
+		float angle1 = ( 3.142f * 2.0f / kNumCircleSegments ) * i;
+		
+		pVert = (FCVector3f*)((unsigned int)pVert + 12);
+		
+		pVert->x = center.x + sinf( angle1 ) * radius;
+		pVert->y = center.y + cosf( angle1 ) * radius;
+		pVert->z = center.z;
+	}
+	
+	mesh->SetDiffuseColor( color );
+
+	unsigned short* pIndex;
+	
+	for (uint16_t i = 0 ; i < kNumCircleSegments - 1; i++)
+	{
+		pIndex = mesh->PIndexBufferAtIndex(i*3);
+		*pIndex = 0;
+		*(pIndex+1) = i+1;
+		*(pIndex+2) = i+2;
+	}
+	
+	pIndex = mesh->PIndexBufferAtIndex((kNumCircleSegments - 1) * 3);
+	*pIndex = 0;
+	*(pIndex+1) = kNumCircleSegments;
+	*(pIndex+2) = 1;
 }
 
 void FCGLModel::AddDebugPolygon( DebugPolygonInitParams& params, FCColor4f& color )
 {
+	FCGLMeshRef mesh = FCGLMeshRef( new FCGLMesh( kFCKeyShaderDebug, GL_TRIANGLES ) );
 	
+	m_meshes.push_back( mesh );
+	mesh->SetParentModel( this );
+	
+	mesh->SetNumVertices( params.verts.size() );
+	mesh->SetNumTriangles( mesh->NumVertices() - 2 );
+
+	FCVector3f* pVert;
+	
+	FCVector3fVec& vertsArray = params.verts;
+	
+	pVert = (FCVector3f*)((unsigned long)mesh->VertexBuffer());
+	
+	float xOffset = params.fixture.x;
+	float yOffset = params.fixture.y;
+	float zOffset = params.fixture.z;
+	
+	pVert->x = vertsArray[0].x + xOffset;
+	pVert->y = vertsArray[0].y + yOffset;
+	pVert->z = vertsArray[0].z + zOffset;
+	
+	for (uint16_t i = 1 ; i < mesh->NumVertices() ; i++)
+	{
+		pVert = (FCVector3f*)((unsigned int)pVert + 12);
+		pVert->x = vertsArray[i].x + xOffset;
+		pVert->y = vertsArray[i].y + yOffset;
+		pVert->z = vertsArray[i].z + zOffset;
+	}
+	
+	mesh->SetDiffuseColor( color );
+
+	unsigned short* pIndex;
+	
+	for (uint16_t i = 0; i < mesh->NumTriangles(); i++)
+	{
+		pIndex = mesh->PIndexBufferAtIndex( i * 3 );
+		*pIndex = 0;
+		*(pIndex+1) = i+1;
+		*(pIndex+2) = i+2;
+	}
 }
 
 void FCGLModel::SetDebugMeshColor( FCColor4f& color )
@@ -272,10 +361,10 @@ void FCGLModel::SetDebugMeshColor( FCColor4f& color )
 
 void FCGLModel::SetRotation( float rot )
 {
-	
+	m_rotation = rot;
 }
 
 void FCGLModel::SetPosition( FCVector3f& pos )
 {
-	
+	m_pos = pos;
 }
