@@ -63,22 +63,22 @@ static int lua_SetBackgroundColor( lua_State* _state )
 	
 	lua_next(_state, -2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	color.r = lua_tonumber(_state, -1);
+	color.r = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	color.g = lua_tonumber(_state, -1);
+	color.g = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	color.b = lua_tonumber(_state, -1);
+	color.b = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	color.a = lua_tonumber(_state, -1);
+	color.a = (float)lua_tonumber(_state, -1);
 	
 	s_pInstance->SetBackgroundColor( color );
 	
@@ -223,7 +223,7 @@ void FCApplication::Update()
 	float dt = (float)m_performanceCounter->MilliValue() / 1000.0f;
 	m_performanceCounter->Zero();		
 	
-	FCClamp<float>(dt, 0, 0.1);
+	FCClamp<float>(dt, 0, 0.1f);
 	
 	float gameTime;
 	

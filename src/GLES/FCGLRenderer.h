@@ -20,13 +20,25 @@
  THE SOFTWARE.
  */
 
-#if 0
-#ifndef CR1_FileIO_h
-#define CR1_FileIO_h
+#ifndef CR1_FCGLRenderer_h
+#define CR1_FCGLRenderer_h
 
-#include <string>
+#include "Shared/Graphics/FCRenderer.h"
+#include "GLES/FCGLModel.h"
 
-//extern std::string plt_PathForFileInBundle( std::string filename );
+class FCGLRenderer : public IFCRenderer
+{
+public:
+	FCGLRenderer( std::string name);
+	virtual ~FCGLRenderer();
+	
+	void Init( std::string );	// not used ?
+	void Render();
+	void AddToGatherList( FCActorPtr actor );
+	void RemoveFromGatherList( FCActorPtr actor );
+private:
+	std::string		m_name;
+	FCActorVec		m_gatherList;
+};
 
-#endif
 #endif

@@ -20,18 +20,16 @@
  THE SOFTWARE.
  */
 
+#if 0
+
 #if defined(FC_GRAPHICS)
 
 #import "FCCore.h"
-#import "FCRenderer_apple.h"
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
-#import "FCModel_apple.h"
-#import "FCShaderManager_apple.h"
 #import "FCLua.h"
 #import "FCActorSystem.h"
-#import "FCMesh_apple.h"
 
 #include "GLES/FCGLShaderUniform.h"
 
@@ -156,3 +154,5 @@ IFCRenderer* plt_FCRenderer_Create( std::string name )
 @end
 
 #endif // defined(FC_GRAPHICS)
+
+#endif

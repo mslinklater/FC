@@ -20,12 +20,34 @@
  THE SOFTWARE.
  */
 
-#include "FCTypes.h"
-#include "FCKeys.h"
-#include "FCMacros.h"
-#include "FCColor.h"
-#include "FCNotifications.h"
+#ifndef CR1_FCGLShaderManager_h
+#define CR1_FCGLShaderManager_h
 
-#include "Shared/Core/Maths/FCMaths.h"
-#include "FCStringUtils.h"
-#include "FCError.h"
+#include "FCGL.h"
+#include "FCGLShaderProgram.h"
+#include "Shared/Graphics/FCShaderManager.h"
+#include "GLES/FCGLShaderUniform.h"
+#include "GLES/FCGLShader.h"
+
+class FCGLShaderManager : public IFCShaderManager
+{
+public:
+	FCGLShaderManager();
+	virtual ~FCGLShaderManager();
+	
+	static FCGLShaderManager* Instance();
+	
+	FCGLShaderRef AddShader( std::string name );
+	FCGLShaderRef Shader( std::string name );
+	FCGLShaderProgramRef AddProgram( std::string name, std::string shaderName );
+	FCGLShaderProgramRef Program( std::string name );
+	FCGLShaderProgramRefVec	AllShaders();
+	
+	void	ActivateShader( std::string name );
+	
+private:
+	FCGLShaderRefMapByString		m_shaders;
+	FCGLShaderProgramRefMapByString	m_programs;
+};
+
+#endif

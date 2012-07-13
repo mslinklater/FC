@@ -24,6 +24,8 @@
 #define FCModel_h
 
 #include "Shared/Core/FCCore.h"
+#include "Shared/Core/FCXML.h"
+#include "Shared/Core/Resources/FCResource.h"
 
 class IFCModel {
 public:
@@ -31,16 +33,16 @@ public:
 	virtual ~IFCModel(){}
 	
 	virtual void InitWithModel( FCXMLNode modelXML, FCResourcePtr resource ) = 0;
-	virtual void InitWithPhysics( FCXMLNode physicsXML, FCColor4f* pColor ) = 0;
-	virtual void SetDebugMeshColor( FCColor4f* pColor ) = 0;
+	virtual void InitWithPhysics( FCXMLNode physicsXML, FCColor4f& color ) = 0;
+	virtual void SetDebugMeshColor( FCColor4f& color ) = 0;
 	virtual void SetRotation( float rot ) = 0;
-	virtual void SetPosition( FCVector3f* pPos ) = 0;
+	virtual void SetPosition( FCVector3f& pos ) = 0;
 };
 
-typedef std::shared_ptr<IFCModel>	FCModelPtr;
-typedef std::vector<FCModelPtr>		FCModelVec;
-typedef FCModelVec::iterator		FCModelVecIter;
+typedef std::shared_ptr<IFCModel>	FCModelRef;
+typedef std::vector<FCModelRef>		FCModelRefVec;
+typedef FCModelRefVec::iterator		FCModelRefVecIter;
 
-extern FCModelPtr plt_FCModel_Create();
+extern FCModelRef plt_FCModel_Create();
 
 #endif

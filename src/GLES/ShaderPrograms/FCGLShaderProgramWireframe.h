@@ -20,12 +20,41 @@
  THE SOFTWARE.
  */
 
-#include "FCTypes.h"
-#include "FCKeys.h"
-#include "FCMacros.h"
-#include "FCColor.h"
-#include "FCNotifications.h"
+#ifndef CR1_FCGLShaderProgramWireframe_h
+#define CR1_FCGLShaderProgramWireframe_h
 
-#include "Shared/Core/Maths/FCMaths.h"
-#include "FCStringUtils.h"
-#include "FCError.h"
+#include "GLES/FCGLShaderProgram.h"
+
+class FCGLShaderProgramWireframe : public FCGLShaderProgram
+{
+public:
+	FCGLShaderProgramWireframe( FCGLShaderRef vertexShader, FCGLShaderRef fragmentShader )
+	: FCGLShaderProgram( vertexShader, fragmentShader )
+	{
+		m_stride = 12;
+		m_diffuseColorUniform = m_uniforms[ "diffuse_color" ];
+		m_positionAttribute = m_attributes[ "position" ];
+	}
+	
+	virtual ~FCGLShaderProgramWireframe()
+	{
+		
+	}
+
+	void BindUniformsWithMesh( FCGLMesh* mesh )
+	{
+		FCColor4f diffuseColor = mesh->DiffuseColor();
+		FCglUniform4fv( m_diffuseColorUniform->Location(), m_diffuseColorUniform->Num(), (GLfloat*)&diffuseColor );
+	}
+	
+	void BindAttributes()
+	{
+		FCglVertexAttribPointer( m_positionAttribute->Location(), 3, GL_FLOAT, GL_FALSE, m_stride, (void*)0 );
+		FCglEnableVertexAttribArray( m_positionAttribute->Location() );
+	}
+	
+	FCGLShaderUniformRef	m_diffuseColorUniform;
+	FCGLShaderAttributeRef	m_positionAttribute;
+};
+
+#endif

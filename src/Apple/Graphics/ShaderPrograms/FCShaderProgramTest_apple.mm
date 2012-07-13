@@ -20,9 +20,9 @@
  THE SOFTWARE.
  */
 
+#if 0
 #import "FCShaderProgramTest_apple.h"
 #import "FCCore.h"
-#import "FCMesh_apple.h"
 
 #include "GLES/FCGL.h"
 
@@ -97,3 +97,5 @@ class FCGLShader;
 }
 
 @end
+
+#endif

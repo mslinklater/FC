@@ -49,8 +49,8 @@ private:
 	GLenum	m_type;
 };
 
-typedef std::shared_ptr<FCGLShaderUniform>			FCGLShaderUniformPtr;
-typedef std::map<std::string, FCGLShaderUniformPtr>	FCGLShaderUniformPtrMapByString;
-typedef FCGLShaderUniformPtrMapByString::iterator	FCGLShaderUniformPtrMapByStringIter;
+typedef std::shared_ptr<FCGLShaderUniform>			FCGLShaderUniformRef;
+typedef std::map<std::string, FCGLShaderUniformRef>	FCGLShaderUniformRefMapByString;
+typedef FCGLShaderUniformRefMapByString::iterator	FCGLShaderUniformRefMapByStringIter;
 
 #endif

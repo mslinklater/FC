@@ -87,7 +87,13 @@ void FCActor::Init(	FCXMLNode		xml,
 			// physics but no model so build a physics mode
 			
 			m_model = plt_FCModel_Create();
-			m_model->InitWithPhysics(bodyXML, (FCColor4f*)res->UserData());
+			FCColor4f* pColor = (FCColor4f*)res->UserData();
+			if( pColor )
+				m_model->InitWithPhysics(bodyXML, *pColor);
+			else {
+				FCColor4f grey(0.5f, 0.5f, 0.5f, 1.0f );
+				m_model->InitWithPhysics(bodyXML, grey);
+			}
 		}
 	}
 }
@@ -114,7 +120,7 @@ FCVector3f FCActor::LinearVelocity()
 
 void FCActor::SetDebugModelColor(FCColor4f color)
 {
-	m_model->SetDebugMeshColor(&color);
+	m_model->SetDebugMeshColor(color);
 }
 
 void FCActor::ApplyImpulseAtWorldPos(FCVector3f impulse, FCVector3f pos)
@@ -132,7 +138,7 @@ void FCActor::Update(float realTime, float gameTime)
 		if( m_model )
 		{
 			m_model->SetRotation(rot);
-			m_model->SetPosition(&pos);
+			m_model->SetPosition(pos);
 		}
 	}
 }
@@ -152,8 +158,8 @@ bool FCActor::RespondsToTapGesture()
 	return false;
 }
 
-FCModelVec FCActor::RenderGather()
+FCModelRefVec FCActor::RenderGather()
 {
-	FCModelVec ret;
+	FCModelRefVec ret;
 	return ret;
 }

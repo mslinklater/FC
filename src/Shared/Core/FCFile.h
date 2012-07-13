@@ -34,21 +34,21 @@ extern std::string plt_FCFile_DocumentsFolderPathForPath( std::string filename )
 
 enum FCFileLocation
 {
-	FCFileLocationApplicationBundle,
-	FCFileLocationNormalFile,
-	FCFileLocationDocumentsFolder
+	kFCFileLocationApplicationBundle,
+	kFCFileLocationNormalFile,
+	kFCFileLocationDocumentsFolder
 };
 
 enum FCFileOpenMode
 {
-	FCFileOpenModeReadOnly,
-	FCFileOpenModeReadWrite
+	kFCFileOpenModeReadOnly,
+	kFCFileOpenModeReadWrite
 };
 
 enum FCFileReturn
 {
-	FCFileReturnOK,
-	FCFileReturnError
+	kFCFileReturnOK,
+	kFCFileReturnError
 };
 
 class FCFile
@@ -69,7 +69,7 @@ private:
 	// internal state
 	
 	FILE*		m_handle;
-	char*		m_data;
+	FCDataPtr	m_data;
 	uint32_t	m_fileSize;
 	bool		m_isDataInMemory;
 };

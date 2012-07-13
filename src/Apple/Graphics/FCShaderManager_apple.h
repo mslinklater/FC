@@ -20,17 +20,17 @@
  THE SOFTWARE.
  */
 
+#if 0
+
 #if defined(FC_GRAPHICS)
 
 #import <Foundation/Foundation.h>
-#import "FCShaderProgram_apple.h"
 
 #include "Shared/Graphics/FCShaderManager.h"
 #include "GLES/FCGLShaderUniform.h"
 #include "GLES/FCGLShader.h"
 
 @interface FCShaderManager_apple : NSObject {
-//	NSMutableDictionary* _shaders;
 	FCGLShaderPtrMapByString	_shaders;
 	NSMutableDictionary* _programs;
 }
@@ -74,3 +74,4 @@ public:
 
 #endif // defined(FC_GRAPHICS)
 
+#endif

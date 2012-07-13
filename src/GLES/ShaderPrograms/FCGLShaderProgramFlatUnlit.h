@@ -20,12 +20,42 @@
  THE SOFTWARE.
  */
 
-#include "FCTypes.h"
-#include "FCKeys.h"
-#include "FCMacros.h"
-#include "FCColor.h"
-#include "FCNotifications.h"
+#ifndef CR1_FCGLShaderProgramFlatUnlit_h
+#define CR1_FCGLShaderProgramFlatUnlit_h
 
-#include "Shared/Core/Maths/FCMaths.h"
-#include "FCStringUtils.h"
-#include "FCError.h"
+#include "GLES/FCGLShaderProgram.h"
+
+class FCGLShaderProgramFlatUnlit : public FCGLShaderProgram
+{
+public:
+	FCGLShaderProgramFlatUnlit( FCGLShaderRef vertexShader, FCGLShaderRef fragmentShader )
+	: FCGLShaderProgram( vertexShader, fragmentShader )
+	{
+		m_stride = 16;
+		m_positionAttribute = m_attributes[ "position" ];
+		m_diffuseColorAttribute = m_attributes[ "diffuse_color" ];
+	}
+	
+	virtual ~FCGLShaderProgramFlatUnlit()
+	{
+		
+	}
+	
+	void BindUniformsWithMesh( FCGLMesh* mesh )
+	{
+	}
+	
+	void BindAttributes()
+	{
+		FCglVertexAttribPointer( m_positionAttribute->Location(), 3, GL_FLOAT, GL_FALSE, m_stride, (void*)0);
+		FCglEnableVertexAttribArray( m_positionAttribute->Location() );
+		
+		FCglVertexAttribPointer( m_diffuseColorAttribute->Location(), 4, GL_UNSIGNED_BYTE, GL_TRUE, m_stride, (void*)20);
+		FCglEnableVertexAttribArray( m_diffuseColorAttribute->Location() );
+	}
+	
+	FCGLShaderAttributeRef	m_positionAttribute;
+	FCGLShaderAttributeRef	m_diffuseColorAttribute;
+};
+
+#endif

@@ -28,13 +28,12 @@
 
 #import "FCGLView_apple.h"
 #import "FCDevice.h"
-#import "FCShaderManager_apple.h"
-#import "FCRenderer_apple.h"
 #import "FCLua.h"
 
 #include "GLES/FCGL.h"
+#include "GLES/FCGLShaderManager.h"
 
-FCGLViewPtr plt_FCGLView_Create( std::string name, std::string parent, const FCVector2i& size )
+FCGLViewRef plt_FCGLView_Create( std::string name, std::string parent, const FCVector2i& size )
 {
 	FCGLViewProxyPtr proxy = FCGLViewProxyPtr( new FCGLViewProxy( name, parent, size ) );
 	return proxy;
@@ -183,8 +182,8 @@ FCGLViewPtr plt_FCGLView_Create( std::string name, std::string parent, const FCV
 		FCglTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); GLCHECK;
 		FCglTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); GLCHECK;
 		
-		_supersampleBufferWidth = _frameBufferWidth * _superSamplingScale;
-		_supersampleBufferHeight = _frameBufferHeight * _superSamplingScale;
+		_supersampleBufferWidth = (GLint)(_frameBufferWidth * _superSamplingScale);
+		_supersampleBufferHeight = (GLint)(_frameBufferHeight * _superSamplingScale);
 
 		// try
 		FCglTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, _supersampleBufferWidth, _supersampleBufferHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
@@ -442,16 +441,16 @@ FCGLViewPtr plt_FCGLView_Create( std::string name, std::string parent, const FCV
 	
 	mat = trans * mat;
 	
-	FCShaderManager_apple* shaderManager = [FCShaderManager_apple instance];
+	FCGLShaderManager* shaderManager = FCGLShaderManager::Instance();
 
 	FCColor4f ambientColor( 0.25f, 0.25f, 0.25f, 1.0f );
 
-	NSArray* programs = [shaderManager allShaders];
+	FCGLShaderProgramRefVec programs = shaderManager->AllShaders();
 
-	for( FCShaderProgram_apple* program in programs )
+	for( FCGLShaderProgramRefVecIter i = programs.begin() ; i != programs.end() ; i++ )
 	{
-		FCGLShaderUniformPtr projectionUniform = [program getUniform:@"projection"];
-		[program setUniformValue:projectionUniform to:&mat size:sizeof(FCMatrix4f)];		
+		FCGLShaderUniformRef projectionUniform = (*i)->GetUniform("projection");
+		(*i)->SetUniformValue(projectionUniform, &mat, sizeof(FCMatrix4f));
 	}
 }
 

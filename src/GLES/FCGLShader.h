@@ -42,9 +42,9 @@ private:
 	GLuint	m_glHandle;
 };
 
-typedef std::shared_ptr<FCGLShader>	FCGLShaderPtr;
+typedef std::shared_ptr<FCGLShader>	FCGLShaderRef;
 
-typedef std::map<std::string, FCGLShaderPtr>	FCGLShaderPtrMapByString;
-typedef FCGLShaderPtrMapByString::iterator		FCGLShaderPtrMapByStringIter;
+typedef std::map<std::string, FCGLShaderRef>	FCGLShaderRefMapByString;
+typedef FCGLShaderRefMapByString::iterator		FCGLShaderRefMapByStringIter;
 
 #endif

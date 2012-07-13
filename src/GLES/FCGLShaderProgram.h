@@ -20,8 +20,6 @@
  THE SOFTWARE.
  */
 
-#if 0
-
 #ifndef CR1_FCGLShaderProgram_h
 #define CR1_FCGLShaderProgram_h
 
@@ -29,31 +27,48 @@
 #include "GLES/FCGLShader.h"
 #include "GLES/FCGLShaderAttribute.h"
 #include "GLES/FCGLShaderUniform.h"
+//#include "GLES/FCGLMesh.h"
+
+class FCGLMesh;
 
 class FCGLShaderProgram
 {
 public:
-	FCGLShaderProgram( FCGLShaderPtr vertexShader, FCGLShaderPtr fragmentShader );
+	FCGLShaderProgram( FCGLShaderRef vertexShader, FCGLShaderRef fragmentShader );
 	virtual ~FCGLShaderProgram();
 	
-	FCGLShaderUniformPtr GetUniform( std::string name );
-	void SetUniformValue( FCGLShaderUniformPtr uniform, void* pValues, uint32_t size );
+	FCGLShaderUniformRef GetUniform( std::string name );
+	void SetUniformValue( FCGLShaderUniformRef uniform, void* pValues, uint32_t size );
 	GLuint	GetAttribLocation( std::string name );
+	
+	void ProcessUniforms();
+	void ProcessAttributes();
 	
 	void Use();
 	void Validate();
-	void BindUniformsWithMesh( FCGLMeshPtr mesh );
-	void BindAttributes();
-	FCGLShaderAttributePtrVec	GetActiveAttributes();
-	
-private:
+	FCGLShaderAttributeRefVec	GetActiveAttributes();
+	uint32_t	Stride(){ return m_stride; }
+	GLuint		GLHandle(){ return m_glHandle; }
+
+	virtual void BindUniformsWithMesh( FCGLMesh* mesh ){ FC_HALT; };
+	virtual void BindAttributes(){ FC_HALT; };
+
+protected:
 	GLuint							m_glHandle;
-	FCGLShaderPtr					m_vertexShader;
-	FCGLShaderPtr					m_fragmentShader;
-	FCGLShaderAttributeMapByString	m_attributes;
-	FCGLShaderUniformMapByString	m_uniforms;
+	FCGLShaderRef					m_vertexShader;
+	FCGLShaderRef					m_fragmentShader;
+	FCGLShaderAttributeRefMapByString	m_attributes;
+	FCGLShaderUniformRefMapByString	m_uniforms;
 	uint32_t						m_stride;
 };
 
+typedef std::shared_ptr<FCGLShaderProgram> FCGLShaderProgramRef;
+
+typedef std::map<std::string, FCGLShaderProgramRef> FCGLShaderProgramRefMapByString;
+typedef FCGLShaderProgramRefMapByString::iterator	FCGLShaderProgramRefMapByStringIter;
+typedef std::vector<FCGLShaderProgramRef>			FCGLShaderProgramRefVec;
+typedef FCGLShaderProgramRefVec::iterator			FCGLShaderProgramRefVecIter;
+typedef FCGLShaderProgramRefVec::const_iterator		FCGLShaderProgramRefVecConstIter;
+
 #endif
-#endif
+

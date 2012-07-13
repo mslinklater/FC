@@ -20,20 +20,17 @@
  THE SOFTWARE.
  */
 
+#if 0
+
 #if defined(FC_GRAPHICS)
 
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 
-#import "FCModel_apple.h"
 #import "FCMaths.h"
 #import "FCKeys.h"
-#import "FCMesh_apple.h"
 #import "FCResource.h"
-#import "FCShaderManager_apple.h"
-#import "FCShaderProgram_apple.h"
-#import "FCRenderer_apple.h"
 
 static 	FCColor4f	s_whiteColor( 1.0f, 1.0f, 1.0f, 1.0f );
 static uint16_t kNumCircleSegments = 36;
@@ -393,3 +390,5 @@ FCModelPtr plt_FCModel_Create()
 @end
 
 #endif // defined(FC_GRAPHICS)
+
+#endif

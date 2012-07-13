@@ -20,11 +20,9 @@
  THE SOFTWARE.
  */
 
-#if defined (FC_GRAPHICS)
+#if 0
 
-#import "FCMesh_apple.h"
-#import "FCShaderManager_apple.h"
-#import "FCRenderer_apple.h"
+#if defined (FC_GRAPHICS)
 
 #include "GLES/FCGL.h"
 
@@ -184,3 +182,5 @@
 @end
 
 #endif // defined(FC_GRAPHICS)
+
+#endif

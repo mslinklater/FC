@@ -20,12 +20,12 @@
  THE SOFTWARE.
  */
 
+#if 0
+
 #if defined(FC_GRAPHICS)
 
 #import "FCCore.h"
-#import "FCShaderManager_apple.h"
 //#import "FCShader_apple.h"
-#import "FCShaderProgram_apple.h"
 #import "FCShaderProgramDebug_apple.h"
 #import "FCShaderProgramFlatUnlit_apple.h"
 #import "FCShaderProgramWireframe_apple.h"
@@ -195,3 +195,4 @@ IFCShaderManager* plt_FCShaderManager_Instance()
 
 #endif // defined(FC_GRAPHICS)
 
+#endif

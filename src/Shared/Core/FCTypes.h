@@ -25,6 +25,7 @@
 
 #include "FCColor.h"
 #include "FCKeys.h"
+#include "Shared/Core/Maths/FCVector.h"
 
 #include <map>
 #include <string>
@@ -83,6 +84,10 @@ typedef FCDataPtrVector::iterator			FCDataPtrVectorIter;
 typedef FCDataPtrVector::const_iterator		FCDataPtrVectorConstIter;
 typedef std::map<std::string, FCDataPtr>	FCDataPtrMapByString;
 
+typedef std::vector<FCVector3f>			FCVector3fVec;
+typedef FCVector3fVec::iterator			FCVector3fVecIter;
+typedef FCVector3fVec::const_iterator	FCVector3fVecConstIter;
+
 class FCData
 {
 public:
@@ -94,12 +99,6 @@ typedef std::vector<FCData>					FCDataVector;
 typedef FCDataVector::iterator				FCDataVectorIter;
 typedef FCDataVector::const_iterator		FCDataVectorConstIter;
 typedef std::map<std::string, FCData>		FCDataMapByString;
-
-//typedef std::shared_ptr<void*>			FCVoidPtr;
-//typedef std::vector<FCVoidPtr>			FCVoidPtrVector;
-//typedef FCVoidPtrVector::iterator		FCVoidPtrVectorIter;
-//typedef FCVoidPtrVector::const_iterator	FCVoidPtrVectorConstIter;
-//typedef std::map<std::string, FCVoidPtr> FCVoidPtrMapByString;
 
 // Function pointer types
 

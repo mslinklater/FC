@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#if 1
+#if 0
 
 #if defined(FC_GRAPHICS)
 

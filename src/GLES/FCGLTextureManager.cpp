@@ -20,7 +20,6 @@
  THE SOFTWARE.
  */
 
-
 #include "FCGLTextureManager.h"
 
 static FCGLTextureManager* s_pInstance = 0;

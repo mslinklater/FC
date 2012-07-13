@@ -32,7 +32,7 @@ FCGLTextureFilePVR::~FCGLTextureFilePVR()
 
 void FCGLTextureFilePVR::Load( std::string filename )
 {
-	m_file.Open(filename, FCFileOpenModeReadOnly, FCFileLocationApplicationBundle);
+	m_file.Open(filename, kFCFileOpenModeReadOnly, kFCFileLocationApplicationBundle);
 }
 
 GLenum	FCGLTextureFilePVR::Format()

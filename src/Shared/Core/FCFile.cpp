@@ -36,9 +36,9 @@ FCFile::~FCFile()
 	if (m_handle) {
 		fclose(m_handle);
 	}
-	if (m_data) {
-		delete [] m_data;
-	}
+//	if (m_data) {
+//		delete [] m_data;
+//	}
 }
 
 FCFileReturn FCFile::Open(std::string filename, FCFileOpenMode mode, FCFileLocation loc)
@@ -50,13 +50,13 @@ FCFileReturn FCFile::Open(std::string filename, FCFileOpenMode mode, FCFileLocat
 	std::string filepath;
 	
 	switch (loc) {
-		case FCFileLocationApplicationBundle:
+		case kFCFileLocationApplicationBundle:
 			filepath = plt_FCFile_ApplicationBundlePathForPath( filename );
 			break;
-		case FCFileLocationNormalFile:
+		case kFCFileLocationNormalFile:
 			filepath = plt_FCFile_NormalPathForPath( filename );
 			break;
-		case FCFileLocationDocumentsFolder:
+		case kFCFileLocationDocumentsFolder:
 			filepath = plt_FCFile_DocumentsFolderPathForPath( filename );
 			break;			
 		default:
@@ -67,10 +67,10 @@ FCFileReturn FCFile::Open(std::string filename, FCFileOpenMode mode, FCFileLocat
 	
 	switch( mode ) 
 	{
-		case FCFileOpenModeReadOnly:
+		case kFCFileOpenModeReadOnly:
 			modeString = "r";
 			break;
-		case FCFileOpenModeReadWrite:
+		case kFCFileOpenModeReadWrite:
 			modeString = "w";
 			break;
 	}
@@ -79,24 +79,24 @@ FCFileReturn FCFile::Open(std::string filename, FCFileOpenMode mode, FCFileLocat
 
 	if (!m_handle) {
 		FC_WARNING(std::string("Cannot open file: " + filename));
-		return FCFileReturnError;
+		return kFCFileReturnError;
 	}
 	
 	fseek( m_handle, 0, SEEK_END );
 	m_fileSize = ftell( m_handle );
 	fseek( m_handle, 0, SEEK_SET );
 
-	return FCFileReturnOK;
+	return kFCFileReturnOK;
 }
 
 FCFileReturn FCFile::Close()
 {
 	fclose( m_handle );
 	m_handle = 0;
-	delete [] m_data;
-	m_data = 0;
+//	delete [] m_data;
+//	m_data = 0;
 
-	return FCFileReturnOK;
+	return kFCFileReturnOK;
 }
 
 FCDataPtr FCFile::Data()
@@ -105,7 +105,7 @@ FCDataPtr FCFile::Data()
 		ReadIntoMemory();
 	}
 	
-	return FCDataPtr( m_data );
+	return m_data;
 }
 
 FCFileReturn FCFile::ReadIntoMemory()
@@ -114,12 +114,12 @@ FCFileReturn FCFile::ReadIntoMemory()
 	FC_ASSERT(!m_isDataInMemory);
 	FC_ASSERT(!m_data);
 	
-	m_data = new char[ m_fileSize ];
+	m_data = FCDataPtr( new char[ m_fileSize ] );
 	
 	fseek( m_handle, 0, SEEK_SET );
-	fread( m_data, m_fileSize, 1, m_handle );
+	fread( m_data.get(), m_fileSize, 1, m_handle );
 	
-	return FCFileReturnOK;
+	return kFCFileReturnOK;
 }
 
 

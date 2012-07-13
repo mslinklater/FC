@@ -24,7 +24,7 @@
 #include "Shared/Lua/FCLua.h"
 
 static FCGLViewMap s_viewMap;
-static FCGLViewPtr s_currentLuaTarget = 0;
+static FCGLViewRef s_currentLuaTarget = 0;
 
 static int lua_SetCurrentView( lua_State* _state )
 {
@@ -50,22 +50,22 @@ static int lua_SetClearColor( lua_State* _state )
 	
 	lua_next(_state, -2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	float r = lua_tonumber(_state, -1);
+	float r = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	float g = lua_tonumber(_state, -1);
+	float g = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	float b = lua_tonumber(_state, -1);
+	float b = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	lua_next(_state, -2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	float a = lua_tonumber(_state, -1);
+	float a = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
 	FC_ASSERT( s_currentLuaTarget );
@@ -81,7 +81,7 @@ static int lua_SetFOV( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
 	FC_ASSERT( s_currentLuaTarget );
-	s_currentLuaTarget->SetFOV( lua_tonumber(_state, 1) );
+	s_currentLuaTarget->SetFOV( (float)lua_tonumber(_state, 1) );
 	
 	return 0;
 }
@@ -93,8 +93,8 @@ static int lua_SetNearFarClip( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
 	
 	FC_ASSERT( s_currentLuaTarget );
-	s_currentLuaTarget->SetNearClip( lua_tonumber(_state, 1) );
-	s_currentLuaTarget->SetFarClip( lua_tonumber(_state, 2) );
+	s_currentLuaTarget->SetNearClip( (float)lua_tonumber(_state, 1) );
+	s_currentLuaTarget->SetFarClip( (float)lua_tonumber(_state, 2) );
 	
 	return 0;
 }
@@ -107,9 +107,9 @@ static int lua_SetFrustumTranslation( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 
 	s_currentLuaTarget->SetFrustumTranslation( FCVector3f(
-														 lua_tonumber(_state, 1),
-														 lua_tonumber(_state, 2),
-														 lua_tonumber(_state, 3) ) );
+														 (float)lua_tonumber(_state, 1),
+														 (float)lua_tonumber(_state, 2),
+														 (float)lua_tonumber(_state, 3) ) );
 	
 	return 0;
 }
@@ -126,7 +126,7 @@ FCGLView::FCGLView( std::string name, std::string parent, const FCVector2i& size
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetNearFarClip, "GLView.SetNearFarClip");
 		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetFrustumTranslation, "GLView.SetFrustumTranslation");
 	}
-	s_viewMap[ name ] = FCGLViewPtr( this );
+	s_viewMap[ name ] = FCGLViewRef( this );
 }
 
 FCGLView::~FCGLView()
@@ -167,12 +167,14 @@ void FCGLView::PresentFramebuffer()
 
 FCVector2f FCGLView::ViewSize()
 {
-	
+	FC_HALT;
 }
+
 FCVector3f FCGLView::PosOnPlane( const FCVector2f& point )
 {
-	
+	FC_HALT;
 }
+
 void FCGLView::SetClearColor(const FCColor4f &color)
 {
 	

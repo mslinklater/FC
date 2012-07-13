@@ -20,7 +20,8 @@
  THE SOFTWARE.
  */
 
-#import "FCShaderProgram_apple.h"
+#if 0
+
 
 #include "GLES/FCGLShader.h"
 
@@ -50,3 +51,5 @@
 -(void)bindUniformsWithMesh:(FCMesh_apple*)mesh;
 -(void)bindAttributes;
 @end
+
+#endif

@@ -19,8 +19,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
-#import "FCShaderProgram_apple.h"
+#if 0
 
 #include "GLES/FCGLShader.h"
 
@@ -47,3 +46,4 @@
 -(void)bindUniformsWithMesh:(FCMesh_apple*)mesh;
 -(void)bindAttributes;
 @end
+#endif

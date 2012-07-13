@@ -62,14 +62,14 @@ public:
 	virtual bool NeedsRender();
 	virtual bool RespondsToTapGesture();
 	
-	virtual FCModelVec	RenderGather();
+	virtual FCModelRefVec	RenderGather();
 
 	FCHandle			m_handle;
 	std::string			m_name;
 	std::string			m_id;
 	std::string			m_fullName;
 	FCXMLNode			m_createXML;
-	FCModelPtr			m_model;
+	FCModelRef			m_model;
 	FCPhysics2DBodyPtr	m_physicsBody;
 };
 

@@ -60,9 +60,9 @@ static int lua_SetActorPosition( lua_State* _state )
 	FCHandle handle = lua_tointeger(_state, 1);
 	
 	FCVector3f pos;
-	pos.x = lua_tonumber(_state, 2);
-	pos.y = lua_tonumber(_state, 3);
-	pos.z = lua_tonumber(_state, 4);
+	pos.x = (float)lua_tonumber(_state, 2);
+	pos.y = (float)lua_tonumber(_state, 3);
+	pos.z = (float)lua_tonumber(_state, 4);
 	
 	FCActorPtr actor = s_pInstance->ActorWithHandle( handle );
 	
@@ -95,7 +95,7 @@ static int lua_SetActorLinearVelocity( lua_State* _state )
 	
 	FCHandle handle = lua_tointeger(_state, 1);
 	FCActorPtr actor = s_pInstance->ActorWithHandle( handle );
-	actor->SetLinearVelocity( FCVector3f( lua_tonumber(_state, 2), lua_tonumber(_state, 3), lua_tonumber(_state, 4) ) );
+	actor->SetLinearVelocity( FCVector3f( (float)lua_tonumber(_state, 2), (float)lua_tonumber(_state, 3), (float)lua_tonumber(_state, 4) ) );
 	
 	return 0;
 }
@@ -110,7 +110,7 @@ static int lua_ApplyImpulse( lua_State* _state )
 	
 	FCHandle handle = lua_tointeger(_state, 1);
 	FCActorPtr actor = s_pInstance->ActorWithHandle( handle );
-	actor->ApplyImpulseAtWorldPos( FCVector3f(lua_tonumber(_state, 2), lua_tonumber(_state, 3), lua_tonumber(_state, 4)), actor->Position());
+	actor->ApplyImpulseAtWorldPos( FCVector3f((float)lua_tonumber(_state, 2), (float)lua_tonumber(_state, 3),(float) lua_tonumber(_state, 4)), actor->Position());
 	return 0;
 }
 

@@ -20,13 +20,11 @@
  THE SOFTWARE.
  */
 
-#if 1
+#if 0
 
 #if defined(FC_GRAPHICS)
 
-#import "FCShaderProgram_apple.h"
 #import "FCCore.h"
-#import "FCMesh_apple.h"
 
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/glext.h>

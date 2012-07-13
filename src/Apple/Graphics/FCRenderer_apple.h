@@ -24,6 +24,8 @@
 		Add perf metrics
  */
 
+#if 0
+
 #ifndef FCRENDERER_APPLE_H
 #define FCRENDERER_APPLE_H
 
@@ -103,3 +105,5 @@ private:
 };
 
 #endif // define FCRENDERER_APPLE_H
+
+#endif

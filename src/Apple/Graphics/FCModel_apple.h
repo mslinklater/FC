@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if 0
+
 #if defined(FC_GRAPHICS)
 
 #import <Foundation/Foundation.h>
@@ -94,3 +96,5 @@ public:
 //----------------------------------------------
 
 #endif // defined(FC_GRAPHICS)
+
+#endif
