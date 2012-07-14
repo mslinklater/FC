@@ -36,7 +36,7 @@ public:
 	FCGLModel();
 	virtual ~FCGLModel();
 	
-	void InitWithModel( FCXMLNode modelXML, FCResourcePtr resource );
+	void InitWithModel( FCXMLNode modelXML, FCResourceRef resource );
 	void InitWithPhysics( FCXMLNode physicsXML, FCColor4f& color );
 	void SetDebugMeshColor( FCColor4f& color );
 	void SetRotation( float rot );

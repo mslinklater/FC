@@ -47,7 +47,7 @@ static int lua_SetMaterial( lua_State* _state )
 	
 	// get string and components
 	
-	FCPhysicsMaterialPtr material = FCPhysicsMaterialPtr( new FCPhysicsMaterial );
+	FCPhysicsMaterialRef material = FCPhysicsMaterialRef( new FCPhysicsMaterial );
 	
 	material->name = lua_tostring(_state, 1);
 	
@@ -112,18 +112,18 @@ void FCPhysics::Reset()
 void FCPhysics::Create2DSystem()
 {
 	if (m_2D == 0) {
-		m_2D = FCPhysics2DPtr( new FCPhysics2D );
+		m_2D = FCPhysics2DRef( new FCPhysics2D );
 		m_2D->Init();
 	}
 
 }
 
-void FCPhysics::SetMaterial( FCPhysicsMaterialPtr material )
+void FCPhysics::SetMaterial( FCPhysicsMaterialRef material )
 {
 	m_materials[ material->name ] = material;
 }
 
-FCPhysicsMaterialMapByString& FCPhysics::GetMaterials()
+FCPhysicsMaterialRefMapByString& FCPhysics::GetMaterials()
 {
 	return m_materials;
 }

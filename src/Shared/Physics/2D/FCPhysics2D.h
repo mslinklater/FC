@@ -49,11 +49,11 @@ public:
 	void	Update( float realTime, float gameTime );
 	void	PrepareForDealloc();
 	
-	FCPhysics2DBodyPtr	CreateBody( FCPhysics2DBodyDefPtr def, std::string name, FCHandle actorHandle );
-	void				DestroyBody( FCPhysics2DBodyPtr body );
-	FCPhysics2DBodyPtr	BodyWithName( std::string name );
+	FCPhysics2DBodyRef	CreateBody( FCPhysics2DBodyDefRef def, std::string name, FCHandle actorHandle );
+	void				DestroyBody( FCPhysics2DBodyRef body );
+	FCPhysics2DBodyRef	BodyWithName( std::string name );
 	
-	FCHandle	CreateJoint( FCPhysics2DJointCreateDefPtr def );
+	FCHandle	CreateJoint( FCPhysics2DJointCreateDefRef def );
 	void		SetRevoluteJointMotor( FCHandle joint, bool enabled, float torque, float speed );
 	void		SetRevoluteJointLimits( FCHandle joint, bool enable, float min, float max );
 	
@@ -66,11 +66,11 @@ private:
 	b2World*					m_pWorld;
 	b2Vec2						m_gravity;
 	FCPhysics2DJointMapByHandle	m_joints;
-	FCPhysics2DBodyPtrByHandle	m_bodies;
-	FCPhysics2DBodyPtrMapByName	m_bodiesByName;
+	FCPhysics2DBodyRefByHandle	m_bodies;
+	FCPhysics2DBodyRefMapByName	m_bodiesByName;
 	FCPhysics2DContactListener*	m_contactListener;
 };
 
-typedef std::shared_ptr<FCPhysics2D> FCPhysics2DPtr;
+typedef std::shared_ptr<FCPhysics2D> FCPhysics2DRef;
 
 #endif

@@ -37,6 +37,6 @@ public:
 	}
 };
 
-typedef std::shared_ptr<FCBase> FCBasePtr;
+typedef std::shared_ptr<FCBase> FCBaseRef;
 
 #endif

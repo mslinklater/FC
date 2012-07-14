@@ -34,7 +34,7 @@ FCActor::~FCActor()
 void FCActor::Init(	FCXMLNode		xml,
 					FCXMLNode		bodyXML,
 					FCXMLNode		modelXML,
-					FCResourcePtr	res,
+					FCResourceRef	res,
 					std::string		name,
 					FCHandle		handle)
 {
@@ -46,7 +46,7 @@ void FCActor::Init(	FCXMLNode		xml,
 	
 	if (bodyXML) 
 	{
-		FCPhysics2DBodyDefPtr bodyDef = FCPhysics2DBodyDefPtr( new FCPhysics2DBodyDef );
+		FCPhysics2DBodyDefRef bodyDef = FCPhysics2DBodyDefRef( new FCPhysics2DBodyDef );
 		
 		FCVector2f pos;
 		pos.Zero();

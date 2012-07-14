@@ -32,13 +32,13 @@ public:
 	virtual ~FCPhaseManager();
 	
 	void Update( float dt );
-	void AttachPhase( FCPhasePtr phase );
+	void AttachPhase( FCPhaseRef phase );
 	void AddPhaseToQueue( std::string name );
 	void DeactivatePhase( std::string name );
 protected:
-	FCPhasePtr		m_rootPhase;
-	FCPhaseVector	m_phaseQueue;
-	FCPhaseVector	m_activePhases;
+	FCPhaseRef		m_rootPhase;
+	FCPhaseRefVector	m_phaseQueue;
+	FCPhaseRefVector	m_activePhases;
 };
 
 

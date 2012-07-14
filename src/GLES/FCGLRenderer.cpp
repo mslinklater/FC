@@ -52,7 +52,7 @@ void FCGLRenderer::Render()
 	
 	// gather from objects on the gather list
 	
-	for (FCActorVecIter i = m_gatherList.begin(); i != m_gatherList.end(); i++)
+	for (FCActorRefVecIter i = m_gatherList.begin(); i != m_gatherList.end(); i++)
 	{
 		FCModelRefVec vec = (*i)->RenderGather();
 		
@@ -105,14 +105,14 @@ void FCGLRenderer::Render()
 	}
 }
 
-void FCGLRenderer::AddToGatherList( FCActorPtr actor )
+void FCGLRenderer::AddToGatherList( FCActorRef actor )
 {
 	m_gatherList.push_back( actor );
 }
 
-void FCGLRenderer::RemoveFromGatherList( FCActorPtr actor )
+void FCGLRenderer::RemoveFromGatherList( FCActorRef actor )
 {
-	for (FCActorVecIter i = m_gatherList.begin(); i != m_gatherList.end(); i++) {
+	for (FCActorRefVecIter i = m_gatherList.begin(); i != m_gatherList.end(); i++) {
 		if (*i == actor) {
 			m_gatherList.erase(i);
 			return;

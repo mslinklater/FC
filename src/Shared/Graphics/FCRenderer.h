@@ -37,8 +37,8 @@ public:
 //	virtual void SetTextureManager( IFCTextureManager* pTextureManager ) = 0;
 	virtual void Render( void ) = 0;
 	
-	virtual void AddToGatherList( FCActorPtr actor ) = 0;
-	virtual void RemoveFromGatherList( FCActorPtr actor ) = 0;
+	virtual void AddToGatherList( FCActorRef actor ) = 0;
+	virtual void RemoveFromGatherList( FCActorRef actor ) = 0;
 };
 
 extern IFCRenderer* plt_FCRenderer_Create( std::string name );

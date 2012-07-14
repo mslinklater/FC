@@ -41,7 +41,7 @@ public:
 	void Init(	FCXMLNode		xml,
 				FCXMLNode		bodyXML,
 				FCXMLNode		modelXML,
-				FCResourcePtr	res,
+				FCResourceRef	res,
 				std::string		name,
 				FCHandle		handle);
 	
@@ -70,18 +70,18 @@ public:
 	std::string			m_fullName;
 	FCXMLNode			m_createXML;
 	FCModelRef			m_model;
-	FCPhysics2DBodyPtr	m_physicsBody;
+	FCPhysics2DBodyRef	m_physicsBody;
 };
 
-typedef std::shared_ptr<FCActor>	FCActorPtr;
+typedef std::shared_ptr<FCActor>	FCActorRef;
 
-typedef std::vector<FCActorPtr>		FCActorVec;
-typedef FCActorVec::iterator		FCActorVecIter;
-typedef FCActorVec::const_iterator	FCActorVecConstIter;
+typedef std::vector<FCActorRef>		FCActorRefVec;
+typedef FCActorRefVec::iterator		FCActorRefVecIter;
+typedef FCActorRefVec::const_iterator	FCActorRefVecConstIter;
 
-typedef std::map<FCHandle, FCActorPtr>	FCActorMapByHandle;
-typedef FCActorMapByHandle::iterator	FCActorMapByHandleIter;
+typedef std::map<FCHandle, FCActorRef>	FCActorRefMapByHandle;
+typedef FCActorRefMapByHandle::iterator	FCActorRefMapByHandleIter;
 
-typedef std::map<std::string, FCActorPtr> FCActorMapByString;
+typedef std::map<std::string, FCActorRef> FCActorRefMapByString;
 
 #endif	// FCACTOR_H

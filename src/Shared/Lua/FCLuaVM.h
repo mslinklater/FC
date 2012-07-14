@@ -70,6 +70,6 @@ private:
 	lua_State* m_state;
 };
 
-typedef std::shared_ptr<FCLuaVM> FCLuaVMPtr;
+typedef std::shared_ptr<FCLuaVM> FCLuaVMRef;
 
 #endif

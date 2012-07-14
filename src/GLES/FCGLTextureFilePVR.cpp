@@ -61,7 +61,7 @@ GLenum	FCGLTextureFilePVR::Type()
 
 void*	FCGLTextureFilePVR::Data()
 {
-	FCDataPtr dataPtr = m_file.Data();
+	FCDataRef dataPtr = m_file.Data();
 	
 	return (void*)dataPtr.get();
 }

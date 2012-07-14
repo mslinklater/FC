@@ -32,7 +32,7 @@ public:
 	
 	static FCResourceManager* Instance();
 	
-	FCResourcePtr ResourceWithPath( std::string path );
+	FCResourceRef ResourceWithPath( std::string path );
 private:
 	std::string ActualResourceName( std::string path );
 	

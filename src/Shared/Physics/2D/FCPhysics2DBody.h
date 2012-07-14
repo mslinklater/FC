@@ -35,10 +35,10 @@ public:
 	FCPhysics2DBody(){}
 	virtual ~FCPhysics2DBody();
 
-	void	InitWithDef(FCPhysics2DBodyDefPtr def);
+	void	InitWithDef(FCPhysics2DBodyDefRef def);
 	void	ApplyImpulseAtWorldPos( FCVector3f& impulse, FCVector3f& pos );
-	void	CreateFixturesFromDef( FCPhysics2DBodyDefPtr def );
-	void	CreateBodyFromDef( FCPhysics2DBodyDefPtr def );
+	void	CreateFixturesFromDef( FCPhysics2DBodyDefRef def );
+	void	CreateBodyFromDef( FCPhysics2DBodyDefRef def );
 	
 	float		Rotation();
 	void		SetRotation( float rot );
@@ -56,9 +56,9 @@ public:
 	FCHandle	handle;
 };
 
-typedef std::shared_ptr<FCPhysics2DBody> FCPhysics2DBodyPtr;
+typedef std::shared_ptr<FCPhysics2DBody> FCPhysics2DBodyRef;
 
-typedef std::map<std::string, FCPhysics2DBodyPtr> FCPhysics2DBodyPtrMapByName;
-typedef std::map<FCHandle, FCPhysics2DBodyPtr> FCPhysics2DBodyPtrByHandle;
+typedef std::map<std::string, FCPhysics2DBodyRef> FCPhysics2DBodyRefMapByName;
+typedef std::map<FCHandle, FCPhysics2DBodyRef> FCPhysics2DBodyRefByHandle;
 
 #endif

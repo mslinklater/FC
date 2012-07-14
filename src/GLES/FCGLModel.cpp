@@ -42,7 +42,7 @@ FCGLModel::~FCGLModel()
 	FC_LOG("");
 }
 
-void FCGLModel::InitWithModel( FCXMLNode modelXML, FCResourcePtr resource )
+void FCGLModel::InitWithModel( FCXMLNode modelXML, FCResourceRef resource )
 {
 	FCXMLNodeVec meshArray = FCXML::VectorForChildNodesOfType(modelXML, kFCKeyMesh);
 	

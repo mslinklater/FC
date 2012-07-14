@@ -42,6 +42,6 @@ public:
 private:
 };
 
-typedef std::shared_ptr<FCPerformanceCounter> FCPerformanceCounterPtr;
+typedef std::shared_ptr<FCPerformanceCounter> FCPerformanceCounterRef;
 
 #endif

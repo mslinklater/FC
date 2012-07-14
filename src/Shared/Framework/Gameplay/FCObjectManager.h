@@ -33,7 +33,7 @@ public:
 	
 	static FCObjectManager* Instance();
 	
-	void AddObjectsFromResource(FCResourcePtr resource);
+	void AddObjectsFromResource(FCResourceRef resource);
 	void Reset();
 	FCXMLNodeMapByString& Nulls(){ return m_nulls; }
 private:

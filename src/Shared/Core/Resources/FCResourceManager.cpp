@@ -39,11 +39,11 @@ FCResourceManager::FCResourceManager()
 	m_suffixedFileTypes.insert("jpg");
 }
 
-FCResourcePtr FCResourceManager::ResourceWithPath(std::string path)
+FCResourceRef FCResourceManager::ResourceWithPath(std::string path)
 {
 	std::string assetPath = std::string("Assets/") + ActualResourceName(path);
 	
-	FCResourcePtr resource = FCResourcePtr(new FCResource );
+	FCResourceRef resource = FCResourceRef(new FCResource );
 	resource->InitWithContentsOfFile( assetPath );
 	resource->SetName( assetPath );
 	

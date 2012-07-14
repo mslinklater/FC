@@ -34,11 +34,11 @@ public:
 	
 	void Init( std::string );	// not used ?
 	void Render();
-	void AddToGatherList( FCActorPtr actor );
-	void RemoveFromGatherList( FCActorPtr actor );
+	void AddToGatherList( FCActorRef actor );
+	void RemoveFromGatherList( FCActorRef actor );
 private:
 	std::string		m_name;
-	FCActorVec		m_gatherList;
+	FCActorRefVec	m_gatherList;
 };
 
 #endif

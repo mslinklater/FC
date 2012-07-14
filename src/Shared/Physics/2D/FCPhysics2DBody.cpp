@@ -31,7 +31,7 @@ FCPhysics2DBody::~FCPhysics2DBody()
 	pWorld->DestroyBody( pBody );
 }
 
-void FCPhysics2DBody::InitWithDef(FCPhysics2DBodyDefPtr def)
+void FCPhysics2DBody::InitWithDef(FCPhysics2DBodyDefRef def)
 {
 	ID = def->ID();
 	CreateBodyFromDef( def );
@@ -51,7 +51,7 @@ void FCPhysics2DBody::ApplyImpulseAtWorldPos( FCVector3f& impulse, FCVector3f& p
 	pBody->ApplyLinearImpulse( b2Imp, b2Pos );
 }
 
-void FCPhysics2DBody::CreateFixturesFromDef( FCPhysics2DBodyDefPtr def )
+void FCPhysics2DBody::CreateFixturesFromDef( FCPhysics2DBodyDefRef def )
 {
 	FCXMLNode shapeXML = def->shapeXML;
 	FCXMLNodeVec fixtures = FCXML::VectorForChildNodesOfType( shapeXML, "fixture" );
@@ -66,7 +66,7 @@ void FCPhysics2DBody::CreateFixturesFromDef( FCPhysics2DBodyDefPtr def )
 		
 		std::string materialString = FCXML::StringValueForNodeAttribute(*fixture, kFCKeyMaterial);
 		
-		FCPhysicsMaterialPtr material = FCPhysics::Instance()->GetMaterials()[materialString];
+		FCPhysicsMaterialRef material = FCPhysics::Instance()->GetMaterials()[materialString];
 		FC_ASSERT(material);
 		
 		fixtureDef.density = material->density;
@@ -139,7 +139,7 @@ void FCPhysics2DBody::CreateFixturesFromDef( FCPhysics2DBodyDefPtr def )
 	}
 }
 
-void FCPhysics2DBody::CreateBodyFromDef( FCPhysics2DBodyDefPtr def )
+void FCPhysics2DBody::CreateBodyFromDef( FCPhysics2DBodyDefRef def )
 {
 	b2BodyDef b2def;
 	b2def.position.x = def->position.x;

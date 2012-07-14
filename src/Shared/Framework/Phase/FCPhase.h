@@ -40,11 +40,11 @@ enum FCPhaseState {
 
 class FCPhase;
 
-typedef std::shared_ptr<FCPhase> FCPhasePtr;
-typedef std::vector<FCPhasePtr>	FCPhaseVector;
-typedef FCPhaseVector::iterator	FCPhaseVectorIter;
-typedef FCPhaseVector::const_iterator	FCPhaseVectorConstIter;
-typedef std::map<std::string, FCPhasePtr>	FCPhaseMapByString;
+typedef std::shared_ptr<FCPhase> FCPhaseRef;
+typedef std::vector<FCPhaseRef>	FCPhaseRefVector;
+typedef FCPhaseRefVector::iterator	FCPhaseRefVectorIter;
+typedef FCPhaseRefVector::const_iterator	FCPhaseRefVectorConstIter;
+typedef std::map<std::string, FCPhaseRef>	FCPhaseRefMapByString;
 
 class FCPhase : public FCBase
 {
@@ -68,9 +68,9 @@ public:
 	
 	std::string m_name;
 	std::string	m_namePath;
-	FCPhasePtr	m_parent;
-	FCPhaseMapByString	m_children;
-	FCPhasePtr	m_activeChild;
+	FCPhaseRef	m_parent;
+	FCPhaseRefMapByString	m_children;
+	FCPhaseRef	m_activeChild;
 	float		m_activateTimer;
 	float		m_deactivateTimer;
 	FCPhaseState	m_state;

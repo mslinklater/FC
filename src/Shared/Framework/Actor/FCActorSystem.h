@@ -26,7 +26,7 @@
 #include "Shared/Core/FCCore.h"
 #include "FCActor.h"
 
-typedef FCActorPtr (*FCActorCreateFunc)(void);
+typedef FCActorRef (*FCActorCreateFunc)(void);
 
 class FCActorSystem : public FCBase
 {
@@ -37,23 +37,23 @@ public:
 	static FCActorSystem* Instance();
 	
 	void Init();
-	FCActorPtr ActorWithFullName(std::string name);
-	FCActorPtr ActorWithHandle(FCHandle handle);
+	FCActorRef ActorWithFullName(std::string name);
+	FCActorRef ActorWithHandle(FCHandle handle);
 	
-	void AddToDeleteArray(FCActorPtr actor);
-	void RemoveActor(FCActorPtr actor);
+	void AddToDeleteArray(FCActorRef actor);
+	void RemoveActor(FCActorRef actor);
 	void RemoveAllActors();
 	void Reset();
 	
-	FCActorVec CreateActors(std::string actorClass, FCResourcePtr res, std::string name);
+	FCActorRefVec CreateActors(std::string actorClass, FCResourceRef res, std::string name);
 	
-	FCActorPtr CreateActor( FCXMLNode actorXML, std::string actorClass, FCResourcePtr res, std::string name);
-	FCActorPtr CreateActor( std::string actorClass, std::string name );
+	FCActorRef CreateActor( FCXMLNode actorXML, std::string actorClass, FCResourceRef res, std::string name);
+	FCActorRef CreateActor( std::string actorClass, std::string name );
 	
 	void Update(float realTime, float gameTime);
 
-	const FCActorVec& TapGestureActorsVec(){ return m_tapGestureActorsVec; }
-	const FCActorMapByHandle& ActorByHandleMap(){ return m_actorHandleMap; }
+	const FCActorRefVec& TapGestureActorsVec(){ return m_tapGestureActorsVec; }
+	const FCActorRefMapByHandle& ActorByHandleMap(){ return m_actorHandleMap; }
 	
 	void AddActorCreateFunction( std::string type, FCActorCreateFunc func)
 	{
@@ -66,16 +66,16 @@ private:
 
 	ActorCreateFunctionMap	m_createFuncs;
 	
-	FCActorPtr ActorOfClass(std::string actorClass);
+	FCActorRef ActorOfClass(std::string actorClass);
 	
-	FCActorVec		m_allActorsVec;
-	FCActorVec		m_updateActorsVec;
-	FCActorVec		m_renderActorsVec;
-	FCActorVec		m_tapGestureActorsVec;
-	FCActorVec		m_deleteList;
+	FCActorRefVec		m_allActorsVec;
+	FCActorRefVec		m_updateActorsVec;
+	FCActorRefVec		m_renderActorsVec;
+	FCActorRefVec		m_tapGestureActorsVec;
+	FCActorRefVec		m_deleteList;
 	
-	FCActorMapByString m_actorFullNameMap;
-	FCActorMapByHandle m_actorHandleMap;
+	FCActorRefMapByString m_actorFullNameMap;
+	FCActorRefMapByHandle m_actorHandleMap;
 };
 
 #endif // FCACTORSYSTEM_H

@@ -36,14 +36,14 @@ public:
 	static FCPhysics* Instance();
 	
 	void Create2DSystem();
-	void SetMaterial( FCPhysicsMaterialPtr material );
-	FCPhysicsMaterialMapByString& GetMaterials();
+	void SetMaterial( FCPhysicsMaterialRef material );
+	FCPhysicsMaterialRefMapByString& GetMaterials();
 	void Update( float realTime, float gameTime );
 	void Reset();
-	FCPhysics2DPtr TwoD(){ return m_2D; }
+	FCPhysics2DRef TwoD(){ return m_2D; }
 private:
-	FCPhysics2DPtr	m_2D;
-	FCPhysicsMaterialMapByString m_materials;
+	FCPhysics2DRef	m_2D;
+	FCPhysicsMaterialRefMapByString m_materials;
 };
 
 #endif

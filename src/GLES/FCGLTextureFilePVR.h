@@ -41,7 +41,7 @@ public:
 	void*	Data();
 	
 private:
-	FCDataPtr			m_imageData;
+	FCDataRef			m_imageData;
 	PVR_Texture_Header*	m_pHeader;
 	FCFile				m_file;
 };

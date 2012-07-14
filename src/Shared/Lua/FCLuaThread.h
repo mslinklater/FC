@@ -61,10 +61,10 @@ private:
 };
 
 //typedef FCSharedPtr<FCLuaThread> FCLuaThreadPtr;
-typedef std::shared_ptr<FCLuaThread> FCLuaThreadPtr;
+typedef std::shared_ptr<FCLuaThread> FCLuaThreadRef;
 
-typedef std::map<FCHandle, FCLuaThreadPtr> FCLuaThreadMap;
-typedef FCLuaThreadMap::iterator FCLuaThreadMapIter;
-typedef FCLuaThreadMap::const_iterator FCLuaThreadMapConstIter;
+typedef std::map<FCHandle, FCLuaThreadRef> FCLuaThreadRefMap;
+typedef FCLuaThreadRefMap::iterator FCLuaThreadRefMapIter;
+typedef FCLuaThreadRefMap::const_iterator FCLuaThreadRefMapConstIter;
 
 #endif

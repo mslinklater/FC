@@ -33,7 +33,7 @@ static int lua_CreateDistanceJoint( lua_State* _state )
 	FC_ASSERT(lua_gettop(_state) >= 4);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
-	FCPhysics2DDistanceJointCreateDefPtr def = FCPhysics2DDistanceJointCreateDefPtr( new FCPhysics2DDistanceJointCreateDef );
+	FCPhysics2DDistanceJointCreateDefRef def = FCPhysics2DDistanceJointCreateDefRef( new FCPhysics2DDistanceJointCreateDef );
 	
 	std::string body1Name = lua_tostring(_state, 1);
 	def->body1 = s_pInstance->BodyWithName( body1Name );
@@ -96,7 +96,7 @@ static int lua_CreateRevoluteJoint( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
 	
-	FCPhysics2DRevoluteJointCreateDefPtr def = FCPhysics2DRevoluteJointCreateDefPtr( new FCPhysics2DRevoluteJointCreateDef );
+	FCPhysics2DRevoluteJointCreateDefRef def = FCPhysics2DRevoluteJointCreateDefRef( new FCPhysics2DRevoluteJointCreateDef );
 	
 	def->body1 = s_pInstance->BodyWithName(lua_tostring(_state, 1));
 	FC_ASSERT(def->body1);
@@ -129,7 +129,7 @@ static int lua_CreatePrismaticJoint( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(3, LUA_TSTRING);
 	
-	FCPhysics2DPrismaticJointCreateDefPtr def = FCPhysics2DPrismaticJointCreateDefPtr( new FCPhysics2DPrismaticJointCreateDef );
+	FCPhysics2DPrismaticJointCreateDefRef def = FCPhysics2DPrismaticJointCreateDefRef( new FCPhysics2DPrismaticJointCreateDef );
 	
 	def->body1 = s_pInstance->BodyWithName(lua_tostring(_state, 1));
 	FC_ASSERT(def->body1);
@@ -162,7 +162,7 @@ static int lua_CreatePulleyJoint( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(6, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(7, LUA_TNUMBER);
 	
-	FCPhysics2DPulleyJointCreateDefPtr def = FCPhysics2DPulleyJointCreateDefPtr( new FCPhysics2DPulleyJointCreateDef );
+	FCPhysics2DPulleyJointCreateDefRef def = FCPhysics2DPulleyJointCreateDefRef( new FCPhysics2DPulleyJointCreateDef );
 	
 	def->body1 = s_pInstance->BodyWithName(lua_tostring(_state, 1));
 	FC_ASSERT(def->body1);
@@ -204,7 +204,7 @@ static int lua_CreateRopeJoint( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(5, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(6, LUA_TNUMBER);
 	
-	FCPhysics2DRopeJointCreateDefPtr def = FCPhysics2DRopeJointCreateDefPtr( new FCPhysics2DRopeJointCreateDef );
+	FCPhysics2DRopeJointCreateDefRef def = FCPhysics2DRopeJointCreateDefRef( new FCPhysics2DRopeJointCreateDef );
 	
 	def->body1 = s_pInstance->BodyWithName(lua_tostring(_state, 1));
 	FC_ASSERT(def->body1);
@@ -306,7 +306,7 @@ static int lua_GetBodyAngularVelocity( lua_State* _state )
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
-	FCPhysics2DBodyPtr thisBody = s_pInstance->BodyWithName(lua_tostring(_state, 1));
+	FCPhysics2DBodyRef thisBody = s_pInstance->BodyWithName(lua_tostring(_state, 1));
 	
 	lua_pushnumber(_state, thisBody->AngularVelocity());
 	return 1;
@@ -371,12 +371,12 @@ void FCPhysics2D::Update( float realTime, float gameTime )
 	m_contactListener->DispatchToSubscribers();
 }
 
-FCPhysics2DBodyPtr FCPhysics2D::CreateBody( FCPhysics2DBodyDefPtr def, std::string name, FCHandle actorHandle )
+FCPhysics2DBodyRef FCPhysics2D::CreateBody( FCPhysics2DBodyDefRef def, std::string name, FCHandle actorHandle )
 {
 	def->pWorld = m_pWorld;
 	def->hActor = actorHandle;
 	
-	FCPhysics2DBodyPtr body = FCPhysics2DBodyPtr( new FCPhysics2DBody );
+	FCPhysics2DBodyRef body = FCPhysics2DBodyRef( new FCPhysics2DBody );
 	body->InitWithDef(def);
 	
 	body->handle = actorHandle;
@@ -392,7 +392,7 @@ FCPhysics2DBodyPtr FCPhysics2D::CreateBody( FCPhysics2DBodyDefPtr def, std::stri
 	return body;
 }
 
-void FCPhysics2D::DestroyBody( FCPhysics2DBodyPtr body )
+void FCPhysics2D::DestroyBody( FCPhysics2DBodyRef body )
 {
 	m_bodies.erase(body->handle);
 	if (body->name.length()) {
@@ -400,17 +400,17 @@ void FCPhysics2D::DestroyBody( FCPhysics2DBodyPtr body )
 	}
 }
 
-FCPhysics2DBodyPtr FCPhysics2D::BodyWithName( std::string name )
+FCPhysics2DBodyRef FCPhysics2D::BodyWithName( std::string name )
 {
 	FC_ASSERT(m_bodiesByName.find(name) != m_bodiesByName.end());
 	return m_bodiesByName[name];
 }
 
-FCHandle FCPhysics2D::CreateJoint( FCPhysics2DJointCreateDefPtr def )
+FCHandle FCPhysics2D::CreateJoint( FCPhysics2DJointCreateDefRef def )
 {
 	FCHandle handle = NewFCHandle();
 	
-	FCPhysics2DDistanceJointCreateDefPtr distancePtr = std::dynamic_pointer_cast<FCPhysics2DDistanceJointCreateDef>(def);	
+	FCPhysics2DDistanceJointCreateDefRef distancePtr = std::dynamic_pointer_cast<FCPhysics2DDistanceJointCreateDef>(def);	
 	if (distancePtr) {
 		b2Vec2 pos1;
 		pos1.x = distancePtr->pos1.x;
@@ -429,7 +429,7 @@ FCHandle FCPhysics2D::CreateJoint( FCPhysics2DJointCreateDefPtr def )
 		return handle;
 	}
 	
-	FCPhysics2DRevoluteJointCreateDefPtr revolutePtr = std::dynamic_pointer_cast<FCPhysics2DRevoluteJointCreateDef>(def);
+	FCPhysics2DRevoluteJointCreateDefRef revolutePtr = std::dynamic_pointer_cast<FCPhysics2DRevoluteJointCreateDef>(def);
 	if (revolutePtr) {
 		b2Vec2 pos;
 		pos.x = revolutePtr->pos.x;
@@ -445,7 +445,7 @@ FCHandle FCPhysics2D::CreateJoint( FCPhysics2DJointCreateDefPtr def )
 		return handle;
 	}
 	
-	FCPhysics2DPrismaticJointCreateDefPtr prismaticPtr = std::dynamic_pointer_cast<FCPhysics2DPrismaticJointCreateDef>(def);	
+	FCPhysics2DPrismaticJointCreateDefRef prismaticPtr = std::dynamic_pointer_cast<FCPhysics2DPrismaticJointCreateDef>(def);	
 	if (prismaticPtr) {
 		b2Vec2 axis;
 		axis.x = prismaticPtr->axis.x;
@@ -464,7 +464,7 @@ FCHandle FCPhysics2D::CreateJoint( FCPhysics2DJointCreateDefPtr def )
 		return handle;
 	}
 	
-	FCPhysics2DPulleyJointCreateDefPtr pulleyPtr = std::dynamic_pointer_cast<FCPhysics2DPulleyJointCreateDef>(def);
+	FCPhysics2DPulleyJointCreateDefRef pulleyPtr = std::dynamic_pointer_cast<FCPhysics2DPulleyJointCreateDef>(def);
 	if (pulleyPtr) {
 		b2PulleyJointDef jointDef;
 		b2Vec2 groundAnchor1;
@@ -492,7 +492,7 @@ FCHandle FCPhysics2D::CreateJoint( FCPhysics2DJointCreateDefPtr def )
 		return handle;
 	}
 	
-	FCPhysics2DRopeJointCreateDefPtr ropePtr = std::dynamic_pointer_cast<FCPhysics2DRopeJointCreateDef>(def);
+	FCPhysics2DRopeJointCreateDefRef ropePtr = std::dynamic_pointer_cast<FCPhysics2DRopeJointCreateDef>(def);
 	
 	if (ropePtr) {
 		b2RopeJointDef jointDef;

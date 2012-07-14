@@ -223,10 +223,10 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 	{
 		CollisionInfo* pCollisionInfo = &(i->second);
 		
-		const FCActorMapByHandle actorMap = FCActorSystem::Instance()->ActorByHandleMap();
+		const FCActorRefMapByHandle actorMap = FCActorSystem::Instance()->ActorByHandleMap();
 		
-		const FCActorPtr obj1 = actorMap.find( pCollisionInfo->hActor1 )->second;
-		const FCActorPtr obj2 = actorMap.find( pCollisionInfo->hActor2 )->second;
+		const FCActorRef obj1 = actorMap.find( pCollisionInfo->hActor1 )->second;
+		const FCActorRef obj2 = actorMap.find( pCollisionInfo->hActor2 )->second;
 
 		NSString* key = [NSString stringWithFormat:@"%s%s", obj1->Class().c_str(), obj2->Class().c_str()];
 

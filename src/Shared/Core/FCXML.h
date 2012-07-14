@@ -66,6 +66,6 @@ private:
 	rapidxml::xml_document<> m_doc;
 };
 
-typedef std::shared_ptr<FCXML> FCXMLPtr;
+typedef std::shared_ptr<FCXML> FCXMLRef;
 
 #endif

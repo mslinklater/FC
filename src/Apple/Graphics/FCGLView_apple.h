@@ -212,6 +212,6 @@ public:
 	NSString*		m_nsName;
 };
 
-typedef std::shared_ptr<FCGLViewProxy> FCGLViewProxyPtr;
+typedef std::shared_ptr<FCGLViewProxy> FCGLViewProxyRef;
 
 #endif // defined(FC_GRAPHICS)

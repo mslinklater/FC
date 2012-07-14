@@ -36,7 +36,7 @@ public:
 	float		friction;
 };
 
-typedef std::shared_ptr<FCPhysicsMaterial> FCPhysicsMaterialPtr;
-typedef std::map<std::string, FCPhysicsMaterialPtr> FCPhysicsMaterialMapByString;
+typedef std::shared_ptr<FCPhysicsMaterial> FCPhysicsMaterialRef;
+typedef std::map<std::string, FCPhysicsMaterialRef> FCPhysicsMaterialRefMapByString;
 
 #endif // defined(FC_PHYSICS)

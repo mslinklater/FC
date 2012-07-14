@@ -78,11 +78,11 @@ typedef std::map<FCHandle, std::string>		FCStringMapByHandle;
 
 typedef std::set<std::string>	FCStringSet;
 
-typedef std::shared_ptr<char>				FCDataPtr;
-typedef std::vector<FCDataPtr>				FCDataPtrVector;
-typedef FCDataPtrVector::iterator			FCDataPtrVectorIter;
-typedef FCDataPtrVector::const_iterator		FCDataPtrVectorConstIter;
-typedef std::map<std::string, FCDataPtr>	FCDataPtrMapByString;
+typedef std::shared_ptr<char>				FCDataRef;
+typedef std::vector<FCDataRef>				FCDataRefVector;
+typedef FCDataRefVector::iterator			FCDataRefVectorIter;
+typedef FCDataRefVector::const_iterator		FCDataRefVectorConstIter;
+typedef std::map<std::string, FCDataRef>	FCDataRefMapByString;
 
 typedef std::vector<FCVector3f>			FCVector3fVec;
 typedef FCVector3fVec::iterator			FCVector3fVecIter;
@@ -91,7 +91,7 @@ typedef FCVector3fVec::const_iterator	FCVector3fVecConstIter;
 class FCData
 {
 public:
-	FCDataPtr	ptr;
+	FCDataRef	ptr;
 	uint32_t	size;
 };
 

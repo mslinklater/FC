@@ -99,7 +99,7 @@ FCFileReturn FCFile::Close()
 	return kFCFileReturnOK;
 }
 
-FCDataPtr FCFile::Data()
+FCDataRef FCFile::Data()
 {
 	if (!m_isDataInMemory) {
 		ReadIntoMemory();
@@ -114,7 +114,7 @@ FCFileReturn FCFile::ReadIntoMemory()
 	FC_ASSERT(!m_isDataInMemory);
 	FC_ASSERT(!m_data);
 	
-	m_data = FCDataPtr( new char[ m_fileSize ] );
+	m_data = FCDataRef( new char[ m_fileSize ] );
 	
 	fseek( m_handle, 0, SEEK_SET );
 	fread( m_data.get(), m_fileSize, 1, m_handle );

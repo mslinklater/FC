@@ -39,7 +39,7 @@ static int lua_GetActorPosition( lua_State* _state )
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
-	FCActorPtr actor = s_pInstance->ActorWithHandle(lua_tointeger(_state, 1));
+	FCActorRef actor = s_pInstance->ActorWithHandle(lua_tointeger(_state, 1));
 	FCVector3f pos = actor->Position();
 	
 	lua_pushnumber(_state, pos.x);
@@ -64,7 +64,7 @@ static int lua_SetActorPosition( lua_State* _state )
 	pos.y = (float)lua_tonumber(_state, 3);
 	pos.z = (float)lua_tonumber(_state, 4);
 	
-	FCActorPtr actor = s_pInstance->ActorWithHandle( handle );
+	FCActorRef actor = s_pInstance->ActorWithHandle( handle );
 	
 	actor->SetPosition( pos );
 	return 0;
@@ -76,7 +76,7 @@ static int lua_GetActorLinearVelocity( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
 	FCHandle handle = lua_tointeger(_state, 1);
-	FCActorPtr actor = s_pInstance->ActorWithHandle( handle );
+	FCActorRef actor = s_pInstance->ActorWithHandle( handle );
 	FCVector3f vel = actor->LinearVelocity();
 	
 	lua_pushnumber(_state, vel.x);
@@ -94,7 +94,7 @@ static int lua_SetActorLinearVelocity( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(4, LUA_TNUMBER);
 	
 	FCHandle handle = lua_tointeger(_state, 1);
-	FCActorPtr actor = s_pInstance->ActorWithHandle( handle );
+	FCActorRef actor = s_pInstance->ActorWithHandle( handle );
 	actor->SetLinearVelocity( FCVector3f( (float)lua_tonumber(_state, 2), (float)lua_tonumber(_state, 3), (float)lua_tonumber(_state, 4) ) );
 	
 	return 0;
@@ -109,7 +109,7 @@ static int lua_ApplyImpulse( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(4, LUA_TNUMBER);
 	
 	FCHandle handle = lua_tointeger(_state, 1);
-	FCActorPtr actor = s_pInstance->ActorWithHandle( handle );
+	FCActorRef actor = s_pInstance->ActorWithHandle( handle );
 	actor->ApplyImpulseAtWorldPos( FCVector3f((float)lua_tonumber(_state, 2), (float)lua_tonumber(_state, 3),(float) lua_tonumber(_state, 4)), actor->Position());
 	return 0;
 }
@@ -143,11 +143,11 @@ void FCActorSystem::Init()
 	FC_HALT;
 }
 
-FCActorPtr FCActorSystem::ActorOfClass(std::string actorClass)
+FCActorRef FCActorSystem::ActorOfClass(std::string actorClass)
 {
 	FC_ASSERT(m_createFuncs.find(actorClass) != m_createFuncs.end());
 	
-	FCActorPtr actor = (m_createFuncs[ actorClass ])();
+	FCActorRef actor = (m_createFuncs[ actorClass ])();
 	
 	m_allActorsVec.push_back( actor );
 	
@@ -169,22 +169,22 @@ FCActorPtr FCActorSystem::ActorOfClass(std::string actorClass)
 	return actor;
 }
 
-FCActorPtr FCActorSystem::ActorWithFullName(std::string name)
+FCActorRef FCActorSystem::ActorWithFullName(std::string name)
 {
 	return m_actorFullNameMap[ name ];
 }
 
-FCActorPtr FCActorSystem::ActorWithHandle(FCHandle handle)
+FCActorRef FCActorSystem::ActorWithHandle(FCHandle handle)
 {
 	return m_actorHandleMap[ handle ];
 }
 
-void FCActorSystem::AddToDeleteArray(FCActorPtr actor)
+void FCActorSystem::AddToDeleteArray(FCActorRef actor)
 {
 	m_deleteList.push_back(actor);
 }
 
-void FCActorSystem::RemoveActor(FCActorPtr actor)
+void FCActorSystem::RemoveActor(FCActorRef actor)
 {
 	if (actor->m_fullName.size())
 	{
@@ -192,7 +192,7 @@ void FCActorSystem::RemoveActor(FCActorPtr actor)
 	}
 	
 	if (actor->NeedsUpdate()) {
-		for (FCActorVecIter i = m_updateActorsVec.begin(); i != m_updateActorsVec.end(); i++) {
+		for (FCActorRefVecIter i = m_updateActorsVec.begin(); i != m_updateActorsVec.end(); i++) {
 			if (*i == actor) {
 				m_updateActorsVec.erase(i);
 				break;
@@ -201,7 +201,7 @@ void FCActorSystem::RemoveActor(FCActorPtr actor)
 	}
 	
 	if (actor->NeedsRender()) {
-		for (FCActorVecIter i = m_renderActorsVec.begin(); i != m_renderActorsVec.end(); i++) {
+		for (FCActorRefVecIter i = m_renderActorsVec.begin(); i != m_renderActorsVec.end(); i++) {
 			if (*i == actor) {
 				m_renderActorsVec.erase(i);
 				break;
@@ -210,7 +210,7 @@ void FCActorSystem::RemoveActor(FCActorPtr actor)
 	}
 	
 	if (actor->RespondsToTapGesture()) {
-		for (FCActorVecIter i = m_tapGestureActorsVec.begin(); i != m_tapGestureActorsVec.end(); i++) {
+		for (FCActorRefVecIter i = m_tapGestureActorsVec.begin(); i != m_tapGestureActorsVec.end(); i++) {
 			if (*i == actor) {
 				m_tapGestureActorsVec.erase(i);
 				break;
@@ -218,7 +218,7 @@ void FCActorSystem::RemoveActor(FCActorPtr actor)
 		}
 	}
 	
-	for (FCActorVecIter i = m_allActorsVec.begin(); i != m_allActorsVec.end(); i++) {
+	for (FCActorRefVecIter i = m_allActorsVec.begin(); i != m_allActorsVec.end(); i++) {
 		if (*i == actor) {
 			m_allActorsVec.erase(i);
 			break;
@@ -246,9 +246,9 @@ void FCActorSystem::Reset()
 	RemoveAllActors();
 }
 
-FCActorVec FCActorSystem::CreateActors(std::string actorClass, FCResourcePtr res, std::string name)
+FCActorRefVec FCActorSystem::CreateActors(std::string actorClass, FCResourceRef res, std::string name)
 {
-	FCActorVec createdActors;
+	FCActorRefVec createdActors;
 	
 	FCXMLNodeVec actors;
 	
@@ -257,20 +257,20 @@ FCActorVec FCActorSystem::CreateActors(std::string actorClass, FCResourcePtr res
 		
 		for (FCXMLNodeVecIter i = actors.begin(); i != actors.end(); i++) 
 		{
-			FCActorPtr createdActor = CreateActor(*i, actorClass, res, name);
+			FCActorRef createdActor = CreateActor(*i, actorClass, res, name);
 			createdActors.push_back(createdActor);
 		}
 	} else {
-		FCActorPtr createdActor = CreateActor(actorClass, name);
+		FCActorRef createdActor = CreateActor(actorClass, name);
 		createdActors.push_back(createdActor);
 	}
 		
 	return createdActors;
 }
 
-FCActorPtr FCActorSystem::CreateActor(std::string actorClass, std::string name)
+FCActorRef FCActorSystem::CreateActor(std::string actorClass, std::string name)
 {
-	FCActorPtr actor = ActorOfClass( actorClass );
+	FCActorRef actor = ActorOfClass( actorClass );
 	
 	FCHandle handle = NewFCHandle();
 	
@@ -281,7 +281,7 @@ FCActorPtr FCActorSystem::CreateActor(std::string actorClass, std::string name)
 	return actor;	
 }
 
-FCActorPtr FCActorSystem::CreateActor(FCXMLNode actorXML, std::string actorClass, FCResourcePtr res, std::string name)
+FCActorRef FCActorSystem::CreateActor(FCXMLNode actorXML, std::string actorClass, FCResourceRef res, std::string name)
 {
 	std::string bodyId = FCXML::StringValueForNodeAttribute(actorXML, kFCKeyBody);
 	
@@ -321,7 +321,7 @@ FCActorPtr FCActorSystem::CreateActor(FCXMLNode actorXML, std::string actorClass
 	
 	// instantiate actor
 	
-	FCActorPtr actor = ActorOfClass( actorClass );
+	FCActorRef actor = ActorOfClass( actorClass );
 	
 	FCHandle handle = NewFCHandle();
 	
@@ -349,7 +349,7 @@ FCActorPtr FCActorSystem::CreateActor(FCXMLNode actorXML, std::string actorClass
 
 void FCActorSystem::Update(float realTime, float gameTime)
 {
-	for (FCActorVecIter i = m_deleteList.begin(); i != m_deleteList.end(); i++) {
+	for (FCActorRefVecIter i = m_deleteList.begin(); i != m_deleteList.end(); i++) {
 		RemoveActor( *i );
 	}
 	
@@ -357,7 +357,7 @@ void FCActorSystem::Update(float realTime, float gameTime)
 	
 	// update active actors
 	
-	for (FCActorVecIter i = m_updateActorsVec.begin(); i != m_updateActorsVec.end(); i++) 
+	for (FCActorRefVecIter i = m_updateActorsVec.begin(); i != m_updateActorsVec.end(); i++) 
 	{
 		(*i)->Update( realTime, gameTime );
 	}

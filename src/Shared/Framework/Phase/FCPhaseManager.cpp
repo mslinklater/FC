@@ -59,7 +59,7 @@ FCPhaseManager* FCPhaseManager::Instance()
 
 FCPhaseManager::FCPhaseManager()
 {
-	m_rootPhase = FCPhasePtr( new FCPhase( "root" ) );
+	m_rootPhase = FCPhaseRef( new FCPhase( "root" ) );
 
 	FCLua::Instance()->CoreVM()->CreateGlobalTable("FCPhaseManager");
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_AddPhaseToQueue, "FCPhaseManager.AddPhaseToQueue");
@@ -73,12 +73,12 @@ FCPhaseManager::~FCPhaseManager()
 
 void FCPhaseManager::DeactivatePhase(std::string name)
 {
-	for (FCPhaseVectorIter i = m_activePhases.begin(); i != m_activePhases.end(); i++) {
+	for (FCPhaseRefVectorIter i = m_activePhases.begin(); i != m_activePhases.end(); i++) {
 		
-		FCPhasePtr phasePtr = *i;
+		FCPhaseRef phasePtr = *i;
 		
 		if (phasePtr->m_name == name) {
-			FCPhasePtr freshPhase = m_phaseQueue[0];
+			FCPhaseRef freshPhase = m_phaseQueue[0];
 			m_activePhases.push_back(freshPhase);
 			m_phaseQueue.erase(m_phaseQueue.begin());
 			
@@ -103,7 +103,7 @@ void FCPhaseManager::Update(float dt)
 {
 	if (m_activePhases.size() == 0) {
 		if (m_phaseQueue.size() > 0) {
-			FCPhasePtr firstPhase = m_phaseQueue[0];
+			FCPhaseRef firstPhase = m_phaseQueue[0];
 			
 			firstPhase->WillActivate();
 			FCLua::Instance()->CoreVM()->CallFuncWithSig(firstPhase->m_luaWillActivateFunc, false, "");
@@ -115,11 +115,11 @@ void FCPhaseManager::Update(float dt)
 		}
 	}
 	
-	FCPhaseVector deleteVec;
+	FCPhaseRefVector deleteVec;
 	
-	for (FCPhaseVectorConstIter i = m_activePhases.begin(); i != m_activePhases.end(); i++) 
+	for (FCPhaseRefVectorConstIter i = m_activePhases.begin(); i != m_activePhases.end(); i++) 
 	{
-		FCPhasePtr phasePtr = *i;
+		FCPhaseRef phasePtr = *i;
 		
 		switch (phasePtr->Update(dt)) {
 			case kFCPhaseUpdateOK:
@@ -158,9 +158,9 @@ void FCPhaseManager::Update(float dt)
 		}
 	}
 	
-	for (FCPhaseVectorIter i = deleteVec.begin(); i != deleteVec.end(); i++) 
+	for (FCPhaseRefVectorIter i = deleteVec.begin(); i != deleteVec.end(); i++) 
 	{
-		for (FCPhaseVectorIter j = m_activePhases.begin(); j != m_activePhases.end(); j++) 
+		for (FCPhaseRefVectorIter j = m_activePhases.begin(); j != m_activePhases.end(); j++) 
 		{
 			if ((*i)->m_name == (*j)->m_name)
 			{
@@ -171,7 +171,7 @@ void FCPhaseManager::Update(float dt)
 	}
 }
 
-void FCPhaseManager::AttachPhase(FCPhasePtr phase)
+void FCPhaseManager::AttachPhase(FCPhaseRef phase)
 {
 	phase->m_parent = m_rootPhase;
 	m_rootPhase->m_children[ phase->m_name ] = phase;
@@ -181,7 +181,7 @@ void FCPhaseManager::AddPhaseToQueue(std::string name)
 {
 	FC_ASSERT(m_rootPhase->m_children.find(name) != m_rootPhase->m_children.end());
 	
-	FCPhasePtr thisPhase = m_rootPhase->m_children[ name ];
+	FCPhaseRef thisPhase = m_rootPhase->m_children[ name ];
 	
 	m_phaseQueue.push_back(thisPhase);
 	thisPhase->WasAddedToQueue();

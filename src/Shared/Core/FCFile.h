@@ -62,18 +62,18 @@ public:
 	FCFileReturn	ReadIntoMemory();	// this happens automatically, but nice to choose when
 	FCFileReturn	Close();
 	FCFileReturn	DeleteData();
-	FCDataPtr		Data();
+	FCDataRef		Data();
 	uint32_t		Size(){ return m_fileSize; }
 private:
 	
 	// internal state
 	
 	FILE*		m_handle;
-	FCDataPtr	m_data;
+	FCDataRef	m_data;
 	uint32_t	m_fileSize;
 	bool		m_isDataInMemory;
 };
 
-typedef std::shared_ptr<FCFile> FCFilePtr;
+typedef std::shared_ptr<FCFile> FCFileRef;
 
 #endif

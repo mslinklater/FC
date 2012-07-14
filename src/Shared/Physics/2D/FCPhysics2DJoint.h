@@ -32,11 +32,11 @@ class FCPhysics2DJointCreateDef {
 public:
 	virtual ~FCPhysics2DJointCreateDef(){}
 	
-	FCPhysics2DBodyPtr body1;
-	FCPhysics2DBodyPtr body2;
+	FCPhysics2DBodyRef body1;
+	FCPhysics2DBodyRef body2;
 };
 
-typedef std::shared_ptr<FCPhysics2DJointCreateDef> FCPhysics2DJointCreateDefPtr;
+typedef std::shared_ptr<FCPhysics2DJointCreateDef> FCPhysics2DJointCreateDefRef;
 typedef std::map<FCHandle,b2Joint*> FCPhysics2DJointMapByHandle;
 
 //
@@ -48,7 +48,7 @@ public:
 	FCVector2f pos2;
 };
 
-typedef std::shared_ptr<FCPhysics2DDistanceJointCreateDef> FCPhysics2DDistanceJointCreateDefPtr;
+typedef std::shared_ptr<FCPhysics2DDistanceJointCreateDef> FCPhysics2DDistanceJointCreateDefRef;
 
 //
 
@@ -58,7 +58,7 @@ public:
 	FCVector2f pos;
 };
 
-typedef std::shared_ptr<FCPhysics2DRevoluteJointCreateDef> FCPhysics2DRevoluteJointCreateDefPtr;
+typedef std::shared_ptr<FCPhysics2DRevoluteJointCreateDef> FCPhysics2DRevoluteJointCreateDefRef;
 
 //
 
@@ -68,7 +68,7 @@ public:
 	FCVector2f axis;
 };
 
-typedef std::shared_ptr<FCPhysics2DPrismaticJointCreateDef> FCPhysics2DPrismaticJointCreateDefPtr;
+typedef std::shared_ptr<FCPhysics2DPrismaticJointCreateDef> FCPhysics2DPrismaticJointCreateDefRef;
 
 //
 
@@ -79,7 +79,7 @@ public:
 	FCVector2f bodyAnchor2;
 };
 
-typedef std::shared_ptr<FCPhysics2DRopeJointCreateDef> FCPhysics2DRopeJointCreateDefPtr;
+typedef std::shared_ptr<FCPhysics2DRopeJointCreateDef> FCPhysics2DRopeJointCreateDefRef;
 
 //
 
@@ -93,6 +93,6 @@ public:
 	float ratio;
 };
 
-typedef std::shared_ptr<FCPhysics2DPulleyJointCreateDef> FCPhysics2DPulleyJointCreateDefPtr;
+typedef std::shared_ptr<FCPhysics2DPulleyJointCreateDef> FCPhysics2DPulleyJointCreateDefRef;
 
 #endif

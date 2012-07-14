@@ -35,7 +35,7 @@
 
 FCGLViewRef plt_FCGLView_Create( std::string name, std::string parent, const FCVector2i& size )
 {
-	FCGLViewProxyPtr proxy = FCGLViewProxyPtr( new FCGLViewProxy( name, parent, size ) );
+	FCGLViewProxyRef proxy = FCGLViewProxyRef( new FCGLViewProxy( name, parent, size ) );
 	return proxy;
 }
 

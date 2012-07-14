@@ -42,7 +42,7 @@ FCObjectManager* FCObjectManager::Instance()
 	return s_pInstance;
 }
 
-void FCObjectManager::AddObjectsFromResource(FCResourcePtr resource)
+void FCObjectManager::AddObjectsFromResource(FCResourceRef resource)
 {
 	FCXMLNodeVec locators = resource->XML()->VectorForKeyPath("fcr.gameplay.locator");
 	

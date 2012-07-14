@@ -53,13 +53,13 @@ public:
 	void ExecuteLine( std::string line );
 	void PrintStats();
 
-	FCLuaThreadMap	m_threadsMap;
+	FCLuaThreadRefMap	m_threadsMap;
 	
 private:
 	static FCLua*	s_pInstance;
 	FCLuaVM*		m_coreVM;
 
-	FCPerformanceCounterPtr	m_perfCounter;
+	FCPerformanceCounterRef	m_perfCounter;
 	float					m_maxCPUTime;
 	float					m_avgCPUTime;
 	uint32_t				m_avgCount;

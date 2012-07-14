@@ -43,7 +43,7 @@ static FCHandle common_newThread( lua_State* _state )
 	
 	FCLuaThread* thread = new FCLuaThread( _state, handle );
 	
-	fcLua->m_threadsMap[handle] = FCLuaThreadPtr( thread );
+	fcLua->m_threadsMap[handle] = FCLuaThreadRef( thread );
 	
 	thread->Resume();
 	
@@ -79,8 +79,8 @@ static int lua_WaitThread( lua_State* _state )
 	// find thread with this state
 	FCLua* instance = FCLua::Instance();
 
-	for (FCLuaThreadMapConstIter i = instance->m_threadsMap.begin(); i != instance->m_threadsMap.end(); ++i) {
-		FCLuaThreadPtr pThread = i->second;
+	for (FCLuaThreadRefMapConstIter i = instance->m_threadsMap.begin(); i != instance->m_threadsMap.end(); ++i) {
+		FCLuaThreadRef pThread = i->second;
 		
 		if (!pThread) {
 			FC_FATAL(std::string("Trying to kill nonexistent thread " + i->first));
@@ -106,8 +106,8 @@ static int lua_WaitGameThread( lua_State* _state )
 	// find thread with this state
 	FCLua* instance = FCLua::Instance();
 	
-	for (FCLuaThreadMapConstIter i = instance->m_threadsMap.begin(); i != instance->m_threadsMap.end(); ++i) {
-		FCLuaThreadPtr pThread = i->second;
+	for (FCLuaThreadRefMapConstIter i = instance->m_threadsMap.begin(); i != instance->m_threadsMap.end(); ++i) {
+		FCLuaThreadRef pThread = i->second;
 		if (_state == pThread->LuaState()) {
 			float time = (float)lua_tonumber(_state, 1);
 			pThread->PauseGameTime(time);
@@ -133,7 +133,7 @@ static int lua_KillThread( lua_State* _state )
 	
 	FCLua* instance = FCLua::Instance();
 	
-	FCLuaThreadPtr thread = instance->m_threadsMap[ killid ];
+	FCLuaThreadRef thread = instance->m_threadsMap[ killid ];
 	
 	if (thread) {
 		thread->Die();
@@ -192,7 +192,7 @@ FCLua::FCLua()
 	m_coreVM->RegisterCFunction(lua_Warning, "FCWarning");
 	m_coreVM->RegisterCFunction(lua_Fatal, "FCFatal");
 
-	m_perfCounter = FCPerformanceCounterPtr( new FCPerformanceCounter );
+	m_perfCounter = FCPerformanceCounterRef( new FCPerformanceCounter );
 	m_maxCPUTime = 0.0f;
 	m_avgCPUTime = 0.0f;
 	m_avgCount = 0;
@@ -219,9 +219,9 @@ void FCLua::UpdateThreads( float realDelta, float gameDelta )
 	
 	// update threads
 	
-	std::vector<FCLuaThreadMapIter> delList;
+	std::vector<FCLuaThreadRefMapIter> delList;
 	
-	for (FCLuaThreadMapIter i = m_threadsMap.begin(); i != m_threadsMap.end(); ++i) 
+	for (FCLuaThreadRefMapIter i = m_threadsMap.begin(); i != m_threadsMap.end(); ++i) 
 	{
 		i->second->Update(realDelta, gameDelta);
 		

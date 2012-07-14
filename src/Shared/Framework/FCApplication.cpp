@@ -164,8 +164,8 @@ FCApplication::~FCApplication()
 void FCApplication::ColdBoot( FCApplicationDelegate* pDelegate )
 {
 	m_delegate = pDelegate;
-	m_performanceCounter = FCPerformanceCounterPtr( new FCPerformanceCounter );
-	m_lua = FCLuaVMPtr( FCLua::Instance()->CoreVM() );
+	m_performanceCounter = FCPerformanceCounterRef( new FCPerformanceCounter );
+	m_lua = FCLuaVMRef( FCLua::Instance()->CoreVM() );
 	
 	FCPhaseManager::Instance();
 	FCViewManager::Instance();
@@ -216,7 +216,7 @@ void FCApplication::Update()
 	static int fps = 0;
 	static float seconds = 0.0f;
 	
-	FCPerformanceCounterPtr localCounter = FCPerformanceCounterPtr( new FCPerformanceCounter );
+	FCPerformanceCounterRef localCounter = FCPerformanceCounterRef( new FCPerformanceCounter );
 	localCounter->Zero();
 	
 	static float pauseSmooth = 0.0f;

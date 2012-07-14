@@ -32,7 +32,7 @@ public:
 	IFCModel(){}
 	virtual ~IFCModel(){}
 	
-	virtual void InitWithModel( FCXMLNode modelXML, FCResourcePtr resource ) = 0;
+	virtual void InitWithModel( FCXMLNode modelXML, FCResourceRef resource ) = 0;
 	virtual void InitWithPhysics( FCXMLNode physicsXML, FCColor4f& color ) = 0;
 	virtual void SetDebugMeshColor( FCColor4f& color ) = 0;
 	virtual void SetRotation( float rot ) = 0;

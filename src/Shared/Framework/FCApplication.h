@@ -81,8 +81,8 @@ public:
 private:
 	
 	FCApplicationDelegate*	m_delegate;
-	FCPerformanceCounterPtr	m_performanceCounter;
-	FCLuaVMPtr				m_lua;
+	FCPerformanceCounterRef	m_performanceCounter;
+	FCLuaVMRef				m_lua;
 	bool					m_paused;
 };
 

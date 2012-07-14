@@ -65,7 +65,7 @@ FCGLShaderRef FCGLShaderManager::AddShader( std::string name )
 	{
 		FCFile shaderFile;
 		shaderFile.Open(name, kFCFileOpenModeReadOnly, kFCFileLocationApplicationBundle);
-		FCDataPtr shaderData = shaderFile.Data();
+		FCDataRef shaderData = shaderFile.Data();
 		
 		// process it
 		

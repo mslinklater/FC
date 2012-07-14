@@ -40,18 +40,18 @@ public:
 	
 	void*		UserData(){ return m_userData; }
 	void		SetUserData( void* ud ){ m_userData = ud; }
-	FCXMLPtr	XML(){ return m_xml; }
+	FCXMLRef	XML(){ return m_xml; }
 	char*		BinaryPayload(){ return m_binaryPayload; }
 	void		SetName( std::string name ){ m_name = name; }
 	
 private:
 	char*	m_binaryPayload;
 	uint32_t m_binaryPayloadSize;
-	FCXMLPtr m_xml;
+	FCXMLRef m_xml;
 	std::string m_name;
 	void* m_userData;
 };
 
-typedef std::shared_ptr<FCResource> FCResourcePtr;
+typedef std::shared_ptr<FCResource> FCResourceRef;
 
 #endif // FCRESOURCE_H
