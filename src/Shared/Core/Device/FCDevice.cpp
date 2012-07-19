@@ -20,8 +20,6 @@
  THE SOFTWARE.
  */
 
-#if 1
-
 #include "FCDevice.h"
 #include "Shared/Core/FCError.h"
 #include "Shared/Lua/FCLua.h"
@@ -149,5 +147,3 @@ void FCDevice::Print()
 		FC_LOG( i->first + " : " + i->second );
 	}
 }
-
-#endif

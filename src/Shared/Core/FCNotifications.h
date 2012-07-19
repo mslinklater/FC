@@ -20,10 +20,12 @@
  THE SOFTWARE.
  */
 
+
 #ifndef FCNotifications_h
 #define FCNotifications_h
 
 #include <string>
+#include "Shared/Core/FCCore.h"
 
 extern std::string kFCNotificationContinue;
 extern std::string kFCNotificationQuit;
@@ -35,5 +37,44 @@ extern std::string kFCNotificationResume;
 
 extern std::string kFCNotificationPlayerIDChanged;
 extern std::string kFCNotificationHighScoresChanged;
+
+class FCNotification
+{
+public:
+	std::string	notification;
+	FCDataRef	data;
+};
+
+typedef void (*FCNotificationHandler)(FCNotification, void*);
+
+class FCNotificationHandlerInfo
+{
+public:
+	FCNotificationHandler	handler;
+	void*					context;
+};
+
+typedef std::vector<FCNotificationHandlerInfo>			FCNotificationHandlerInfoVec;
+typedef FCNotificationHandlerInfoVec::iterator			FCNotificationHandlerInfoVecIter;
+typedef FCNotificationHandlerInfoVec::const_iterator	FCNotificationHandlerInfoVecConstIter;
+
+typedef std::map<std::string, FCNotificationHandlerInfoVec> FCNotificationHandlerVecMapByString;
+
+class FCNotificationManager
+{
+public:
+	FCNotificationManager(){}
+	virtual ~FCNotificationManager(){}
+	
+	static FCNotificationManager* Instance();
+
+	FCReturn AddSubscription( FCNotificationHandler func, std::string notification, void* context );
+	FCReturn RemoveSubscription( FCNotificationHandler func, std::string notification );
+
+	FCReturn SendNotification( FCNotification& notification );
+	
+private:
+	FCNotificationHandlerVecMapByString	m_notificationSubscriptions;
+};
 
 #endif // FCNotifications_h

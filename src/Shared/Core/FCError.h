@@ -62,8 +62,6 @@ public:
 
 #else // DEBUG
 
-#define
-
 #define FC_LOG( n )
 #define FC_WARNING( n )
 

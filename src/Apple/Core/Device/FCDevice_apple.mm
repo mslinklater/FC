@@ -23,7 +23,10 @@
 #import "GameKit/GameKit.h"
 
 #import "FCDevice_apple.h"
+
+#include "Shared/Core/FCCore.h"
 #include "Shared/Core/Device/FCDevice.h"
+
 #include <sstream>
 
 #pragma mark - plt Interface

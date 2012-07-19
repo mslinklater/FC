@@ -36,9 +36,6 @@ FCFile::~FCFile()
 	if (m_handle) {
 		fclose(m_handle);
 	}
-//	if (m_data) {
-//		delete [] m_data;
-//	}
 }
 
 FCFileReturn FCFile::Open(std::string filename, FCFileOpenMode mode, FCFileLocation loc)
@@ -93,8 +90,6 @@ FCFileReturn FCFile::Close()
 {
 	fclose( m_handle );
 	m_handle = 0;
-//	delete [] m_data;
-//	m_data = 0;
 
 	return kFCFileReturnOK;
 }

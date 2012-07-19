@@ -25,7 +25,6 @@
 
 #include <string>
 #include <memory>
-//#include "Shared/Core/FCSharedPtr.h"
 
 extern "C" {
 #include <lua.h>
@@ -43,10 +42,13 @@ public:
 	
 	void LoadScript( std::string path );
 	void LoadScriptOptional( std::string path );
+	
 	void ExecuteLine( std::string line );
 	void AddStandardLibraries();
+	
 	void CreateGlobalTable( std::string tableName );
 	void DestroyGlobalTable( std::string tableName );
+	
 	void RegisterCFunction( tLuaCallableCFunction func, std::string name );
 	void RemoveCFunction( std::string name );
 	
@@ -54,12 +56,8 @@ public:
 	
 	// should get rid of these.
 	
-//	long GlobalNumber( std::string name );
-	 // GlobalColor...	
-//	void SetGlobalInteger( std::string name, int number );
 	void SetGlobalNumber( std::string name, double number );
 	void SetGlobalBool( std::string name, bool value );
-	// SetGlobalColor...
 
 	void CallFuncWithSig( std::string func, bool required, std::string sig, ... );
 	

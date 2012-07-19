@@ -20,8 +20,6 @@
  THE SOFTWARE.
  */
 
-#if 1
-
 #ifndef CR1_Device_h
 #define CR1_Device_h
 
@@ -54,7 +52,5 @@ public:
 private:
 	FCStringStringMap m_caps;
 };
-
-#endif
 
 #endif

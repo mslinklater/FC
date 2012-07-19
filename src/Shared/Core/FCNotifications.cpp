@@ -22,6 +22,8 @@
 
 #include "FCNotifications.h"
 
+static FCNotificationManager* s_pInstance = 0;
+
 std::string kFCNotificationContinue = "FCN_Continue";
 std::string kFCNotificationQuit = "FCN_Quit";
 std::string kFCNotificationRestart = "FCN_Restart";
@@ -32,3 +34,63 @@ std::string kFCNotificationResume = "FCN_Resume";
 
 std::string kFCNotificationPlayerIDChanged = "FCN_PlayerIDChanged";
 std::string kFCNotificationHighScoresChanged = "FCN_HighScoresChanged";
+
+FCNotificationManager* FCNotificationManager::Instance()
+{
+	if( !s_pInstance )
+	{
+		s_pInstance = new FCNotificationManager;
+	}
+	return s_pInstance;
+}
+
+FCReturn FCNotificationManager::AddSubscription(FCNotificationHandler func, std::string notification, void* context )
+{
+	if (m_notificationSubscriptions.find(notification) == m_notificationSubscriptions.end()) {
+		FCNotificationHandlerInfoVec vec;
+		m_notificationSubscriptions[ notification ] = vec;
+	}
+	
+	FCNotificationHandlerInfo info;
+	info.handler = func;
+	info.context = context;
+	
+	m_notificationSubscriptions[ notification ].push_back( info );
+	
+	return kFCReturnOK;
+}
+
+FCReturn FCNotificationManager::RemoveSubscription(FCNotificationHandler func, std::string notification)
+{
+	if( m_notificationSubscriptions.find(notification) == m_notificationSubscriptions.end() )
+	{
+		return kFCReturnError_NotFound;
+	}
+
+	FCNotificationHandlerInfoVec& vec = m_notificationSubscriptions[ notification ];
+
+	for (FCNotificationHandlerInfoVecIter i = vec.begin(); i != vec.end(); i++) {
+		if (i->handler == func) {
+			vec.erase(i);
+			return kFCReturnOK;
+		}
+	}
+	
+	return kFCReturnError_NotFound;
+}
+
+FCReturn FCNotificationManager::SendNotification(FCNotification &notification)
+{
+	if (m_notificationSubscriptions.find( notification.notification ) != m_notificationSubscriptions.end())
+	{
+		FCNotificationHandlerInfoVec& vec = m_notificationSubscriptions[ notification.notification ];
+		
+		for (FCNotificationHandlerInfoVecIter i = vec.begin(); i != vec.end(); i++) {
+			
+			(i->handler)( notification, i->context );
+		}
+	}
+	return kFCReturnOK;
+}
+
+

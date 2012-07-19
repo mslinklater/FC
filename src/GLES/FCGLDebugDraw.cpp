@@ -20,13 +20,26 @@
  THE SOFTWARE.
  */
 
-// TODO - change this to use FCDataRef
+#include "FCGLDebugDraw.h"
 
-#ifndef CR1_FCCrypto_h
-#define CR1_FCCrypto_h
+extern void plt_FCDebugDraw_2DLine( FCVector2f& p1, FCVector2f& p2 );
 
-#include "Shared/Core/FCTypes.h"
+static FCGLDebugDraw* s_pInstance = 0;
 
-std::string FCCrypto_SHA1ForData( void* pData, uint32_t size);
+FCGLDebugDraw* FCGLDebugDraw::Instance()
+{
+	if (!s_pInstance) {
+		s_pInstance = new FCGLDebugDraw();
+	}
+	return s_pInstance;
+}
 
-#endif
+FCGLDebugDraw::FCGLDebugDraw()
+{
+	
+}
+
+FCGLDebugDraw::~FCGLDebugDraw()
+{
+	
+}

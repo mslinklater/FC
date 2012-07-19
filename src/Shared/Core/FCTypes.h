@@ -42,7 +42,8 @@ extern FCHandle NewFCHandle( void );
 enum FCReturn
 {
 	kFCReturnOK = 0,
-	kFCReturnError
+	kFCReturnError,
+	kFCReturnError_NotFound
 };
 
 enum FCInterfaceOrientation

@@ -21,6 +21,7 @@
  */
 
 #include "FCGLRenderer.h"
+#include "FCGLDebugDraw.h"
 
 #include <string>
 
@@ -103,6 +104,14 @@ void FCGLRenderer::Render()
 		
 		(*i)->Render();
 	}
+	
+	// Now do any debug drawing...
+	
+#if defined(DEBUG)
+	
+	
+	
+#endif
 }
 
 void FCGLRenderer::AddToGatherList( FCActorRef actor )

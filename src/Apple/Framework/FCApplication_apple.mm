@@ -27,6 +27,8 @@
 #import "FlurryAnalytics.h"
 #import "TestFlight.h"
 
+#include "Shared/Core/FCCore.h"
+
 UIViewController* s_rootViewController = nil;
 
 UIViewController* FCRootViewController()
@@ -243,12 +245,24 @@ static void uncaughtExceptionHandler(NSException *exception) {
 
 -(void)pause
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithUTF8String:kFCNotificationPause.c_str()] object:nil];
+//	FC_HALT;
+//	[[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithUTF8String:kFCNotificationPause.c_str()] object:nil];
+	
+	FCNotification note;
+	note.notification = kFCNotificationPause;
+	
+	FCNotificationManager::Instance()->SendNotification( note );
 }
 
 -(void)resume
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithUTF8String:kFCNotificationResume.c_str()] object:nil];	
+//	FC_HALT;
+//	[[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithUTF8String:kFCNotificationResume.c_str()] object:nil];
+	
+	FCNotification note;
+	note.notification = kFCNotificationResume;
+	
+	FCNotificationManager::Instance()->SendNotification( note );
 }
 
 -(void)showStatusBar:(bool)visible
