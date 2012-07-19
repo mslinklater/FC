@@ -23,6 +23,8 @@
 #ifndef CR1_FCGLShaderProgramNoTexPLit_h
 #define CR1_FCGLShaderProgramNoTexPLit_h
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "GLES/FCGLShaderProgram.h"
 
 class FCGLShaderProgramNoTexPLit : public FCGLShaderProgram

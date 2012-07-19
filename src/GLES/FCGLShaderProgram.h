@@ -23,11 +23,12 @@
 #ifndef CR1_FCGLShaderProgram_h
 #define CR1_FCGLShaderProgram_h
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "GLES/FCGL.h"
 #include "GLES/FCGLShader.h"
 #include "GLES/FCGLShaderAttribute.h"
 #include "GLES/FCGLShaderUniform.h"
-//#include "GLES/FCGLMesh.h"
 
 class FCGLMesh;
 

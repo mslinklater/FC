@@ -20,8 +20,11 @@
  THE SOFTWARE.
  */
 
+#include "FCGraphics.h"
+
 #include"FCRenderer.h"
 #include "Shared/Lua/FCLua.h"
+
 
 static std::map<std::string, IFCRenderer*>	s_renderers;
 static IFCRenderer* s_luaRenderer = 0;

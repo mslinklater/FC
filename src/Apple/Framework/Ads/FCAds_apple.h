@@ -25,3 +25,4 @@
 
 void plt_FCAds_ShowBanner( std::string key );
 void plt_FCAds_HideBanner();
+

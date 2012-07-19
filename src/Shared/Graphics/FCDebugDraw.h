@@ -23,6 +23,8 @@
 #ifndef CR1_FCDebugDraw_h
 #define CR1_FCDebugDraw_h
 
+#include "FCGraphics.h"
+
 extern void plt_FCDebugDraw_2DLine( FCVector2f& p1, FCVector2f& p2 );
 
 void FCDebugDraw_2DLine( FCVector2f& p1, FCVector2f& p2 )
@@ -31,3 +33,4 @@ void FCDebugDraw_2DLine( FCVector2f& p1, FCVector2f& p2 )
 }
 
 #endif
+

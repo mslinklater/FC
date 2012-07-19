@@ -22,6 +22,8 @@
 
 // Not really sure if this is used - hence tha halts
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "FCGLTextureFilePVR.h"
 #include "Shared/Core/FCFile.h"
 
@@ -65,3 +67,4 @@ void*	FCGLTextureFilePVR::Data()
 	
 	return (void*)dataPtr.get();
 }
+

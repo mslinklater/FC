@@ -23,6 +23,8 @@
 #ifndef CR1_FCGLShader_h
 #define CR1_FCGLShader_h
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include <string>
 #include <map>
 

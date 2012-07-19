@@ -20,8 +20,6 @@
  THE SOFTWARE.
  */
 
-#if defined (FC_PHYSICS)
-
 //#import "FCPhysicsMaterial.h"
 //
 //@implementation FCPhysicsMaterial
@@ -52,4 +50,3 @@
 //}
 //@end
 
-#endif // defined(FC_PHYSICS)

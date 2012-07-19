@@ -23,6 +23,8 @@
 #ifndef FCRenderer_h
 #define FCRenderer_h
 
+#include "FCGraphics.h"
+
 #include "Shared/Core/FCCore.h"
 #include "Shared/Framework/Actor/FCActor.h"
 

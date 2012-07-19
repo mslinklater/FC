@@ -21,6 +21,7 @@
  */
 
 #include "FCAnalytics.h"
+
 #include "Shared/Lua/FCLua.h"
 
 extern void		plt_FCAnalytics_RegisterEvent( std::string event );
@@ -116,8 +117,6 @@ void FCAnalytics::EndTimedEvent(FCHandle hEvent)
 void FCAnalytics::DiscardTimedEvent(FCHandle hEvent)
 {
 	std::string event = m_timedEvents[hEvent];
-//	plt_FCAnalytics_EndTimedEvent( event );
 	m_timedEvents.erase( hEvent );
 }
-
 

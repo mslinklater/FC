@@ -23,6 +23,8 @@
 #ifndef CR1_FCGLMesh_h
 #define CR1_FCGLMesh_h
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "Shared/Core/FCCore.h"
 #include "FCGLShaderProgram.h"
 

@@ -23,6 +23,8 @@
 #ifndef CR1_FCGLShaderProgramFlatUnlit_h
 #define CR1_FCGLShaderProgramFlatUnlit_h
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "GLES/FCGLShaderProgram.h"
 
 class FCGLShaderProgramFlatUnlit : public FCGLShaderProgram
@@ -57,5 +59,6 @@ public:
 	FCGLShaderAttributeRef	m_positionAttribute;
 	FCGLShaderAttributeRef	m_diffuseColorAttribute;
 };
+
 
 #endif

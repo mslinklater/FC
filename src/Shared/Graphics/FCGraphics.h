@@ -20,20 +20,7 @@
  THE SOFTWARE.
  */
 
-class FCPhysicsMaterial {
-public:
-	FCPhysicsMaterial()
-	: name( "unknown" )
-	, density( 1.0f )
-	, restitution( 0.5f )
-	, friction( 0.5f )
-	{}
-	std::string name;
-	float		density;
-	float		restitution;
-	float		friction;
-};
+#ifndef CR2_FCGraphics_h
+#define CR2_FCGraphics_h
 
-typedef std::shared_ptr<FCPhysicsMaterial> FCPhysicsMaterialRef;
-typedef std::map<std::string, FCPhysicsMaterialRef> FCPhysicsMaterialRefMapByString;
-
+#endif

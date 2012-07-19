@@ -99,3 +99,4 @@ bool FCLua_GetTableIsTable( lua_State* _state, int stackIdx, const char* name )
 	lua_pop(_state, 1);
 	return ret;
 }
+

@@ -23,6 +23,8 @@
 #ifndef CR1_FCGLTextureFilePVR_h
 #define CR1_FCGLTextureFilePVR_h
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "Shared/Core/FCFile.h"
 #include "FCGLTextureFile.h"
 #include "PVRTTexture.h"
@@ -45,5 +47,6 @@ private:
 	PVR_Texture_Header*	m_pHeader;
 	FCFile				m_file;
 };
+
 
 #endif

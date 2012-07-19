@@ -276,3 +276,4 @@ void FCLua::PrintStats()
 	ss << m_avgCPUTime;
 	FC_LOG(ss.str());	
 }
+

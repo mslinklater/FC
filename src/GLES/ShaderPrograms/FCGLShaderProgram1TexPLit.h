@@ -23,6 +23,8 @@
 #ifndef CR1_FCGLShaderProgram1TexPLit_h
 #define CR1_FCGLShaderProgram1TexPLit_h
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "GLES/FCGLShaderProgram.h"
 #include "GLES/FCGLMesh.h"
 #include "GLES/FCGLTextureManager.h"
@@ -89,6 +91,5 @@ public:
 	FCGLShaderAttributeRef	m_specularColorAttribute;
 	FCGLShaderAttributeRef	m_uv1Attribute;
 };
-
 
 #endif

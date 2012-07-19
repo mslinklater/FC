@@ -20,7 +20,6 @@
  THE SOFTWARE.
  */
 
-
 #ifndef CR1_FCPhysics2DContactListener_h
 #define CR1_FCPhysics2DContactListener_h
 
@@ -66,4 +65,6 @@ private:
 	tCollisionMap	m_collisions;
 	tSubscriberSet	m_subscribers;
 };
+
 #endif
+

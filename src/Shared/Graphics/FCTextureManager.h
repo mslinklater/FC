@@ -23,6 +23,8 @@
 #ifndef FCTextureManager_h
 #define FCTextureManager_h
 
+#include "FCGraphics.h"
+
 #include "Shared/Core/FCCore.h"
 
 class IFCTextureManager {

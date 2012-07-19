@@ -23,6 +23,8 @@
 #ifndef CR1_FCGLShaderManager_h
 #define CR1_FCGLShaderManager_h
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "FCGL.h"
 #include "FCGLShaderProgram.h"
 #include "Shared/Graphics/FCShaderManager.h"

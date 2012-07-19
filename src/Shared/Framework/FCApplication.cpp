@@ -35,6 +35,7 @@
 #include "Shared/Framework/Actor/FCActorSystem.h"
 
 static FCApplication* s_pInstance = 0;
+
 static FCHandle	s_sessionActiveAnalyticsHandle = kFCHandleInvalid;
 
 extern FCApplication* plt_FCApplication_Instance();
@@ -182,9 +183,9 @@ void FCApplication::ColdBoot( FCApplicationDelegate* pDelegate )
 	m_lua->SetGlobalBool("FCApp.paused", false);
 
 	FCConnect::Instance()->Start();
-	FCConnect::Instance()->EnableWithName("FCConnect");
-	
+	FCConnect::Instance()->EnableWithName("FCConnect");	
 	FCAnalytics::Instance();
+	
 	FCTwitter::Instance();
 	FCAudioManager::Instance();
 	FCDevice::Instance()->ColdProbe();

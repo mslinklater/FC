@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "FCGLMesh.h"
 #include "FCGLShaderManager.h"
 
@@ -157,3 +159,4 @@ uint16_t* FCGLMesh::PIndexBufferAtIndex( uint16_t index )
 {
 	return m_pIndexBuffer + index;
 }
+

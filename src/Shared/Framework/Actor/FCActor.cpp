@@ -44,7 +44,7 @@ void FCActor::Init(	FCXMLNode		xml,
 	
 	// hardwired to 2D for now 8)
 	
-	if (bodyXML) 
+	if (bodyXML)
 	{
 		FCPhysics2DBodyDefRef bodyDef = FCPhysics2DBodyDefRef( new FCPhysics2DBodyDef );
 		
@@ -75,7 +75,7 @@ void FCActor::Init(	FCXMLNode		xml,
 	}
 	
 	// now create a model
-	if (modelXML) 
+	if (modelXML)
 	{
 		m_model = plt_FCModel_Create();
 		m_model->InitWithModel(modelXML, res);

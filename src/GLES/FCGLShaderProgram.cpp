@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "FCGLShaderProgram.h"
 #include "FCGLShader.h"
 
@@ -276,4 +278,3 @@ FCGLShaderAttributeRefVec FCGLShaderProgram::GetActiveAttributes()
 	
 	return ret;
 }
-

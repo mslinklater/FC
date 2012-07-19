@@ -23,6 +23,8 @@
 #ifndef FCShaderManager_h
 #define FCShaderManager_h
 
+#include "FCGraphics.h"
+
 #include "Shared/Core/FCCore.h"
 
 class IFCShaderManager {

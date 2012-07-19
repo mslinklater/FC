@@ -21,8 +21,6 @@
  */
 
 #import "FCPhysics2DContactListener.h"
-//#import "FCLua.h"
-//#import "FCActor.h"
 
 FCPhysics2DContactListener::FCPhysics2DContactListener()
 {
@@ -112,3 +110,4 @@ void FCPhysics2DContactListener::DispatchToSubscribers()
 		}
 	}
 }
+

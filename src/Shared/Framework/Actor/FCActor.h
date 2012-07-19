@@ -28,7 +28,7 @@
 #include "Shared/Core/FCXML.h"
 #include "FCResource.h"
 
-//@class FCModel_apple;
+#include "Shared/Graphics/FCGraphics.h"
 
 #include "Shared/Graphics/FCModel.h"
 
@@ -76,7 +76,9 @@ protected:
 	std::string			m_id;
 	std::string			m_fullName;
 	FCXMLNode			m_createXML;
+	
 	FCModelRef			m_model;
+
 	FCPhysics2DBodyRef	m_physicsBody;
 };
 

@@ -22,7 +22,6 @@
 
 #include "FCPhysics2D.h"
 #include "Shared/Lua/FCLua.h"
-//#include "FCObjectManager_old.h"
 
 #include "Shared/Framework/Gameplay/FCObjectManager.h"
 
@@ -539,7 +538,6 @@ void FCPhysics2D::SetRevoluteJointMotor( FCHandle handle, bool enabled, float to
 
 void FCPhysics2D::SetRevoluteJointLimits( FCHandle handle, bool enable, float min, float max )
 {
-//	NSNumber* number = [_joints objectForKey:[NSNumber numberWithInt:handle]];
 	b2RevoluteJoint* joint = (b2RevoluteJoint*)m_joints[handle];
 	
 	if (enable) {

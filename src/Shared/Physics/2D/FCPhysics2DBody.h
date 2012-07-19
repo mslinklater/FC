@@ -62,3 +62,4 @@ typedef std::map<std::string, FCPhysics2DBodyRef> FCPhysics2DBodyRefMapByName;
 typedef std::map<FCHandle, FCPhysics2DBodyRef> FCPhysics2DBodyRefByHandle;
 
 #endif
+

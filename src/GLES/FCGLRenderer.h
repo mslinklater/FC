@@ -23,6 +23,8 @@
 #ifndef CR1_FCGLRenderer_h
 #define CR1_FCGLRenderer_h
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "Shared/Graphics/FCRenderer.h"
 #include "GLES/FCGLModel.h"
 

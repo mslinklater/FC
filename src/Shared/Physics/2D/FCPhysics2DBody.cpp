@@ -215,3 +215,4 @@ void FCPhysics2DBody::SetLinearVelocity( FCVector3f& newVel )
 	vel.y = newVel.y;
 	pBody->SetLinearVelocity( vel );
 }
+

@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "FCGLRenderer.h"
 #include "FCGLDebugDraw.h"
 

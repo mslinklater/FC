@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "FCGLShader.h"
 
 FCGLShader::FCGLShader( eFCShaderType type, std::string source )
@@ -69,5 +71,4 @@ FCGLShader::FCGLShader( eFCShaderType type, std::string source )
 FCGLShader::~FCGLShader()
 {
 }
-
 

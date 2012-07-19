@@ -23,6 +23,8 @@
 #ifndef FCModel_h
 #define FCModel_h
 
+#include "FCGraphics.h"
+
 #include "Shared/Core/FCCore.h"
 #include "Shared/Core/FCXML.h"
 #include "Shared/Core/Resources/FCResource.h"

@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "FCGLModel.h"
 #include "Shared/Core/FCStringUtils.h"
 
@@ -367,3 +369,4 @@ void FCGLModel::SetPosition( FCVector3f& pos )
 {
 	m_pos = pos;
 }
+

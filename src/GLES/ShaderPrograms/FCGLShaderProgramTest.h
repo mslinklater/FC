@@ -23,6 +23,8 @@
 #ifndef CR1_FCGLShaderProgramTest_h
 #define CR1_FCGLShaderProgramTest_h
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "GLES/FCGLShaderProgram.h"
 
 class FCGLShaderProgramTest : public FCGLShaderProgram

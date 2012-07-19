@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include <string>
 
 #include "FCGLTextureFile.h"
@@ -81,5 +83,4 @@ GLuint FCGLTextureFile::GLHandle()
 {
 	return m_glHandle;
 }
-
 

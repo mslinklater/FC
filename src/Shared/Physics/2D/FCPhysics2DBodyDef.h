@@ -52,3 +52,4 @@ public:
 };
 
 typedef std::shared_ptr<FCPhysics2DBodyDef> FCPhysics2DBodyDefRef;
+

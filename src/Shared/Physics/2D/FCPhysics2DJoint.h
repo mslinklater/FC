@@ -96,3 +96,4 @@ public:
 typedef std::shared_ptr<FCPhysics2DPulleyJointCreateDef> FCPhysics2DPulleyJointCreateDefRef;
 
 #endif
+

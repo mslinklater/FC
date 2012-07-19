@@ -21,6 +21,7 @@
  */
 
 #import "FCAnalytics_apple.h"
+
 #import "FlurryAnalytics.h"
 
 #include <string>
@@ -44,4 +45,3 @@ void	plt_FCAnalytics_EndTimedEvent( std::string event )
 {
 	[FlurryAnalytics endTimedEvent:[NSString stringWithUTF8String:event.c_str()] withParameters:nil];
 }
-

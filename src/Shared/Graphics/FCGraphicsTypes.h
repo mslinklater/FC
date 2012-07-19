@@ -23,6 +23,8 @@
 #ifndef FCGraphicsTypes_h
 #define FCGraphicsTypes_h
 
+#include "FCGraphics.h"
+
 enum eFCShaderType {
 	kShaderTypeFragment,
 	kShaderTypeVertex

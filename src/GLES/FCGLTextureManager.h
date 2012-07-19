@@ -24,6 +24,8 @@
 #ifndef CR1_FCGLTextureManager_h
 #define CR1_FCGLTextureManager_h
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "Shared/Graphics/FCTextureManager.h"
 #include "FCGL.h"
 
@@ -39,5 +41,6 @@ public:
 private:
 	GLuint	m_hDebugTexture;
 };
+
 
 #endif

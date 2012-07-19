@@ -23,6 +23,8 @@
 #ifndef CR1_FCGLShaderProgramWireframe_h
 #define CR1_FCGLShaderProgramWireframe_h
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "GLES/FCGLShaderProgram.h"
 
 class FCGLShaderProgramWireframe : public FCGLShaderProgram
@@ -56,5 +58,6 @@ public:
 	FCGLShaderUniformRef	m_diffuseColorUniform;
 	FCGLShaderAttributeRef	m_positionAttribute;
 };
+
 
 #endif

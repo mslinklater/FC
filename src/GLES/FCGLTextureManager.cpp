@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "FCGLTextureManager.h"
 
 static FCGLTextureManager* s_pInstance = 0;
@@ -88,3 +90,4 @@ void FCGLTextureManager::BindDebugTextureToAttributeHandle( GLuint handle )
 	FCglBindTexture( GL_TEXTURE_2D, m_hDebugTexture );
 	FCglUniform1i( handle, 0 );
 }
+

@@ -23,6 +23,8 @@
 #ifndef CR1_FCGLShaderProgramDebug_h
 #define CR1_FCGLShaderProgramDebug_h
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "GLES/FCGLShaderProgram.h"
 
 class FCGLShaderProgramDebug : public FCGLShaderProgram

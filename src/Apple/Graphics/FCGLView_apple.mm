@@ -20,8 +20,6 @@
  THE SOFTWARE.
  */
 
-#if defined(FC_GRAPHICS)
-
 #import <QuartzCore/QuartzCore.h>
 
 #import "FCCore.h"
@@ -487,4 +485,3 @@ FCGLViewRef plt_FCGLView_Create( std::string name, std::string parent, const FCV
 
 @end
 
-#endif // defined(FC_GRAPHICS)

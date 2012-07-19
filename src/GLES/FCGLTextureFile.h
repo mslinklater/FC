@@ -23,6 +23,8 @@
 #ifndef CR1_FCGLTextureFile_h
 #define CR1_FCGLTextureFile_h
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "Shared/Core/FCCore.h"
 #include "GLES/FCGL.h"
 #include "Shared/Graphics/FCGraphicsTypes.h"
@@ -61,5 +63,6 @@ private:
 	std::string					m_filename;
 	IFCGLTextureFileDelegate*	m_delegate;
 };
+
 
 #endif

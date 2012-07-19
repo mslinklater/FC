@@ -22,3 +22,5 @@
 
 #import <Foundation/Foundation.h>
 
+#include "Shared/Framework/Analytics/FCAnalytics.h"
+

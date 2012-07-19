@@ -23,6 +23,8 @@
 #ifndef CR1_FCGLModel_h
 #define CR1_FCGLModel_h
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "Shared/Graphics/FCModel.h"
 #include "Shared/Core/FCXML.h"
 #include "Shared/Core/Resources/FCResource.h"

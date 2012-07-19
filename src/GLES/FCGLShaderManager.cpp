@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#include "Shared/Graphics/FCGraphics.h"
+
 #include "FCGLShaderManager.h"
 #include "Shared/Core/FCFile.h"
 
@@ -176,4 +178,3 @@ void FCGLShaderManager::ActivateShader( std::string name )
 {
 	AddProgram(name, name);
 }
-

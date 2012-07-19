@@ -20,8 +20,6 @@
  THE SOFTWARE.
  */
 
-#if defined(FC_GRAPHICS)
-
 #import <UIKit/UIKit.h>
 
 #import <OpenGLES/ES2/gl.h>
@@ -214,4 +212,3 @@ public:
 
 typedef std::shared_ptr<FCGLViewProxy> FCGLViewProxyRef;
 
-#endif // defined(FC_GRAPHICS)
