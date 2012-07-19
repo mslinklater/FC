@@ -186,9 +186,9 @@ void FCActorSystem::AddToDeleteArray(FCActorRef actor)
 
 void FCActorSystem::RemoveActor(FCActorRef actor)
 {
-	if (actor->m_fullName.size())
+	if (actor->FullName().size())
 	{
-		m_actorFullNameMap.erase(actor->m_fullName);
+		m_actorFullNameMap.erase( actor->FullName() );
 	}
 	
 	if (actor->NeedsUpdate()) {
@@ -225,7 +225,7 @@ void FCActorSystem::RemoveActor(FCActorRef actor)
 		}
 	}
 	
-	m_actorHandleMap.erase(actor->m_handle);
+	m_actorHandleMap.erase( actor->Handle() );
 
 }
 
@@ -274,7 +274,7 @@ FCActorRef FCActorSystem::CreateActor(std::string actorClass, std::string name)
 	
 	FCHandle handle = NewFCHandle();
 	
-	actor->m_handle = handle;
+	actor->SetHandle( handle );
 
 	m_actorHandleMap[ handle ] = actor;
 
@@ -333,11 +333,11 @@ FCActorRef FCActorSystem::CreateActor(FCXMLNode actorXML, std::string actorClass
 	
 	if (name.size()) // id is optional
 	{
-		actor->m_fullName = name + "_" + actorId;
+		actor->SetFullName( name + "_" + actorId );
 		
-		FC_ASSERT( m_actorFullNameMap.find(actor->m_fullName) == m_actorFullNameMap.end() );
+		FC_ASSERT( m_actorFullNameMap.find( actor->FullName() ) == m_actorFullNameMap.end() );
 		
-		m_actorFullNameMap[ actor->m_fullName ] = actor;
+		m_actorFullNameMap[ actor->FullName() ] = actor;
 	}
 	
 	// handle

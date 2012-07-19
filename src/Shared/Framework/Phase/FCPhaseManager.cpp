@@ -77,22 +77,22 @@ void FCPhaseManager::DeactivatePhase(std::string name)
 		
 		FCPhaseRef phasePtr = *i;
 		
-		if (phasePtr->m_name == name) {
+		if (phasePtr->Name() == name) {
 			FCPhaseRef freshPhase = m_phaseQueue[0];
 			m_activePhases.push_back(freshPhase);
 			m_phaseQueue.erase(m_phaseQueue.begin());
 			
 			freshPhase->WillActivate();
-			FCLua::Instance()->CoreVM()->CallFuncWithSig(freshPhase->m_luaWillActivateFunc, false, "");
+			FCLua::Instance()->CoreVM()->CallFuncWithSig(freshPhase->LuaWillActivateFunc(), false, "");
 			freshPhase->WillActivatePostLua();
 			
-			freshPhase->m_state = kFCPhaseStateActivating;
+			freshPhase->SetState( kFCPhaseStateActivating );
 			
 			phasePtr->WillDeactivate();
-			FCLua::Instance()->CoreVM()->CallFuncWithSig(phasePtr->m_luaWillDeactivateFunc, false, "");
+			FCLua::Instance()->CoreVM()->CallFuncWithSig(phasePtr->LuaWillDeactivateFunc(), false, "");
 			phasePtr->WillDeactivatePostLua();
 			
-			phasePtr->m_state = kFCPhaseStateDeactivating;
+			phasePtr->SetState( kFCPhaseStateDeactivating );
 			return;
 		}
 	}
@@ -106,10 +106,10 @@ void FCPhaseManager::Update(float dt)
 			FCPhaseRef firstPhase = m_phaseQueue[0];
 			
 			firstPhase->WillActivate();
-			FCLua::Instance()->CoreVM()->CallFuncWithSig(firstPhase->m_luaWillActivateFunc, false, "");
+			FCLua::Instance()->CoreVM()->CallFuncWithSig(firstPhase->LuaWillActivateFunc(), false, "");
 			firstPhase->WillActivatePostLua();
 			
-			firstPhase->m_state = kFCPhaseStateActivating;
+			firstPhase->SetState( kFCPhaseStateActivating );
 			m_activePhases.push_back(firstPhase);
 			m_phaseQueue.erase(m_phaseQueue.begin());
 		}
@@ -125,32 +125,32 @@ void FCPhaseManager::Update(float dt)
 			case kFCPhaseUpdateOK:
 				break;
 			case kFCPhaseUpdateDeactivate:
-				DeactivatePhase( phasePtr->m_name );
+				DeactivatePhase( phasePtr->Name() );
 				break;
 			default:
 				break;
 		}
 		
-		switch (phasePtr->m_state) {
+		switch( phasePtr->State() ) {
 			case kFCPhaseStateActivating:
-				if (phasePtr->m_activateTimer <= 0.0) {
-					phasePtr->m_state = kFCPhaseStateUpdating;
+				if (phasePtr->ActivateTimer() <= 0.0) {
+					phasePtr->SetState( kFCPhaseStateUpdating );
 					phasePtr->IsNowActive();
-					FCLua::Instance()->CoreVM()->CallFuncWithSig(phasePtr->m_luaIsNowActiveFunc, false, "");
+					FCLua::Instance()->CoreVM()->CallFuncWithSig(phasePtr->LuaIsNowActiveFunc(), false, "");
 					phasePtr->IsNowActivePostLua();					
 				} else {
-					phasePtr->m_activateTimer -= dt;
+					phasePtr->DecrementActivateTimer( dt );
 				}
 				break;
 			case kFCPhaseStateDeactivating:
-				if (phasePtr->m_deactivateTimer <= 0.0) {
-					phasePtr->m_state = kFCPhaseStateInactive;
+				if (phasePtr->DeactivateTimer() <= 0.0) {
+					phasePtr->SetState( kFCPhaseStateInactive );
 					phasePtr->IsNowDeactive();
-					FCLua::Instance()->CoreVM()->CallFuncWithSig(phasePtr->m_luaIsNowDeactiveFunc, false, "");
+					FCLua::Instance()->CoreVM()->CallFuncWithSig(phasePtr->LuaIsNowDeactiveFunc(), false, "");
 					phasePtr->IsNowDeactivePostLua();
 					deleteVec.push_back( phasePtr );
 				} else {
-					phasePtr->m_deactivateTimer -= dt;
+					phasePtr->DecrementDeactivateTimer( dt );
 				}
 				break;
 			default:
@@ -162,7 +162,7 @@ void FCPhaseManager::Update(float dt)
 	{
 		for (FCPhaseRefVectorIter j = m_activePhases.begin(); j != m_activePhases.end(); j++) 
 		{
-			if ((*i)->m_name == (*j)->m_name)
+			if ((*i)->Name() == (*j)->Name())
 			{
 				m_activePhases.erase(j);
 				break;
@@ -174,7 +174,7 @@ void FCPhaseManager::Update(float dt)
 void FCPhaseManager::AttachPhase(FCPhaseRef phase)
 {
 	phase->m_parent = m_rootPhase;
-	m_rootPhase->m_children[ phase->m_name ] = phase;
+	m_rootPhase->m_children[ phase->Name() ] = phase;
 }
 
 void FCPhaseManager::AddPhaseToQueue(std::string name)

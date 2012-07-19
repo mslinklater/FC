@@ -65,11 +65,29 @@ public:
 	virtual void WillDeactivatePostLua();
 	virtual void IsNowDeactivePostLua();
 	
+	const std::string&	Name() const { return m_name; }
+	void SetName( std::string name ){ m_name = name; }
 	
-	std::string m_name;
-	std::string	m_namePath;
+	const std::string&	LuaWillActivateFunc() const { return m_luaWillActivateFunc; }
+	const std::string&	LuaWillDeactivateFunc() const { return m_luaWillDeactivateFunc; }
+	const std::string&	LuaIsNowActiveFunc() const { return m_luaIsNowActiveFunc; }
+	const std::string&	LuaIsNowDeactiveFunc() const { return m_luaIsNowDeactiveFunc; }
+	
+	FCPhaseState	State() const { return m_state; }
+	void			SetState( FCPhaseState state ){ m_state = state; }
+	
+	float	ActivateTimer(){ return m_activateTimer; }
+	void	DecrementActivateTimer( float amount ){ m_activateTimer -= amount; }
+
+	float	DeactivateTimer(){ return m_deactivateTimer; }
+	void	DecrementDeactivateTimer( float amount ){ m_deactivateTimer -= amount; }
+
 	FCPhaseRef	m_parent;
 	FCPhaseRefMapByString	m_children;
+
+protected:
+	std::string m_name;
+	std::string	m_namePath;
 	FCPhaseRef	m_activeChild;
 	float		m_activateTimer;
 	float		m_deactivateTimer;
@@ -83,72 +101,6 @@ public:
 	std::string	m_luaIsNowActiveFunc;
 	std::string	m_luaWillDeactivateFunc;
 	std::string	m_luaIsNowDeactiveFunc;
-protected:
 };
 
-
 #endif // FCPHASE_H
-
-#if 0
-#import <Foundation/Foundation.h>
-
-@interface FCPhase : NSObject {
-	NSString* _name;
-	NSString* _namePath;
-	__weak FCPhase* _parent;
-	NSMutableDictionary* _children;
-	FCPhase* _activeChild;
-	float _activateTimer;
-	float _deactivateTimer;
-	FCPhaseState _state;
-	
-	NSString* _luaTable;
-	BOOL _luaLoaded;
-	
-	NSString* _luaUpdateFunc;
-	NSString* _luaWasAddedToQueueFunc;
-	NSString* _luaWasRemovedFromQueueFunc;
-	NSString* _luaWillActivateFunc;
-	NSString* _luaIsNowActiveFunc;
-	NSString* _luaWillDeactivateFunc;
-	NSString* _luaIsNowDeactiveFunc;
-}
-@property(nonatomic, strong) NSString* name;
-@property(nonatomic, strong) NSString* namePath;
-@property(nonatomic, weak) FCPhase* parent;
-@property(nonatomic, strong) NSMutableDictionary* children;
-@property(nonatomic, strong) FCPhase* activeChild;
-@property(nonatomic) float activateTimer;
-@property(nonatomic) float deactivateTimer;
-@property(nonatomic) FCPhaseState state;
-
-#if defined (FC_LUA)
-@property(nonatomic, strong) NSString* luaTable;
-@property(nonatomic, readonly) BOOL luaLoaded;
-
-@property(nonatomic, strong) NSString* luaUpdateFunc;
-@property(nonatomic, strong) NSString* luaWasAddedToQueueFunc;
-@property(nonatomic, strong) NSString* luaWasRemovedFromQueueFunc;
-@property(nonatomic, strong) NSString* luaWillActivateFunc;
-@property(nonatomic, strong) NSString* luaIsNowActiveFunc;
-@property(nonatomic, strong) NSString* luaWillDeactivateFunc;
-@property(nonatomic, strong) NSString* luaIsNowDeactiveFunc;
-#endif
-
--(id)initWithName:(NSString*)name;
-
--(FCPhaseUpdate)update:(float)dt;
-
--(void)wasAddedToQueue;
--(void)wasRemovedFromQueue;
--(void)willActivate;
--(void)isNowActive;
--(void)willDeactivate;
--(void)isNowDeactive;
-
--(void)willActivatePostLua;
--(void)isNowActivePostLua;
--(void)willDeactivatePostLua;
--(void)isNowDeactivePostLua;
-@end
-#endif

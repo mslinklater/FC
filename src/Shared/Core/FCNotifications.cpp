@@ -24,6 +24,11 @@
 
 static FCNotificationManager* s_pInstance = 0;
 
+std::string kFCNotificationAppWillEnterBackground = "FCN_WillEnterBackground";
+std::string kFCNotificationAppWillEnterForeground = "FCN_WillEnterForeground";
+std::string kFCNotificationAppWillBeTerminated = "FCN_WillBeTerminated";
+std::string kFCNotificationAppNeedsToFreeMemory = "FCN_NeedsToFreeMemory";
+
 std::string kFCNotificationContinue = "FCN_Continue";
 std::string kFCNotificationQuit = "FCN_Quit";
 std::string kFCNotificationRestart = "FCN_Restart";

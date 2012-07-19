@@ -27,6 +27,11 @@
 #include <string>
 #include "Shared/Core/FCCore.h"
 
+extern std::string kFCNotificationAppWillEnterBackground;
+extern std::string kFCNotificationAppWillEnterForeground;
+extern std::string kFCNotificationAppWillBeTerminated;
+extern std::string kFCNotificationAppNeedsToFreeMemory;
+
 extern std::string kFCNotificationContinue;
 extern std::string kFCNotificationQuit;
 extern std::string kFCNotificationRestart;

@@ -48,22 +48,29 @@ public:
 	virtual std::string Class(){ return "FCActor"; }
 	
 	void SetPosition(FCVector3f pos);
-	FCVector3f Position();
+	FCVector3f Position() const;
 	
 	void SetLinearVelocity(FCVector3f vel);
-	FCVector3f LinearVelocity();
+	FCVector3f LinearVelocity() const;
 	
 	void SetDebugModelColor(FCColor4f color);
 	
 	void ApplyImpulseAtWorldPos(FCVector3f impulse, FCVector3f pos);
+
+	FCHandle	Handle() const { return m_handle; }
+	void		SetHandle( FCHandle handle ){ m_handle = handle; }
 	
+	const std::string& FullName() const { return m_fullName; }
+	void		SetFullName( std::string name ){ m_fullName = name; }
+
 	virtual void Update(float realTime, float gameTime);
 	virtual bool NeedsUpdate();
 	virtual bool NeedsRender();
 	virtual bool RespondsToTapGesture();
 	
 	virtual FCModelRefVec	RenderGather();
-
+	
+protected:
 	FCHandle			m_handle;
 	std::string			m_name;
 	std::string			m_id;

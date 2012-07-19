@@ -301,6 +301,10 @@ void FCApplication::WillResignActive()
 	FCPersistentData::Instance()->Save();
 	
 	m_lua->CallFuncWithSig("FCApp.WillResignActive", false, "");
+
+	FCNotification note;
+	note.notification = kFCNotificationAppWillEnterBackground;
+	FCNotificationManager::Instance()->SendNotification(note);
 }
 
 void FCApplication::DidEnterBackground()
@@ -311,6 +315,10 @@ void FCApplication::DidEnterBackground()
 void FCApplication::WillEnterForeground()
 {
 	m_lua->CallFuncWithSig("FCApp.WillEnterForeground", false, "");
+
+	FCNotification note;
+	note.notification = kFCNotificationAppWillEnterForeground;
+	FCNotificationManager::Instance()->SendNotification(note);
 }
 
 void FCApplication::DidBecomeActive()
@@ -318,7 +326,11 @@ void FCApplication::DidBecomeActive()
 	FCConnect::Instance()->Start();
 	FCConnect::Instance()->EnableWithName("FCConnect");
 	
-	FC_ASSERT(s_sessionActiveAnalyticsHandle == kFCHandleInvalid);
+	if( s_sessionActiveAnalyticsHandle != kFCHandleInvalid )
+	{
+		FCAnalytics::Instance()->DiscardTimedEvent( kFCHandleInvalid );
+		FC_WARNING("Analytics playSessionTime started twice - don't know why");
+	}
 	
 	s_sessionActiveAnalyticsHandle = FCAnalytics::Instance()->BeginTimedEvent("playSessionTime");
 	
@@ -328,6 +340,10 @@ void FCApplication::DidBecomeActive()
 void FCApplication::WillTerminate()
 {
 	m_lua->CallFuncWithSig("FCApp.WillTerminate", false, "");
+	
+	FCNotification note;
+	note.notification = kFCNotificationAppWillBeTerminated;
+	FCNotificationManager::Instance()->SendNotification(note);
 }
 
 bool FCApplication::ShouldAutorotateToInterfaceOrientation( FCInterfaceOrientation orient )
@@ -370,11 +386,6 @@ FCVector2f FCApplication::MainViewSize()
 	FC_HALT;
 	return FCVector2f( 0.0f, 0.0f );
 }
-
-//FCLuaVM* FCApplication::Lua()
-//{
-//	return 0;
-//}
 
 void FCApplication::LaunchExternalURL( std::string url )
 {

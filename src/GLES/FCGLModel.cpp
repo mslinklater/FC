@@ -39,7 +39,6 @@ FCGLModel::FCGLModel()
 
 FCGLModel::~FCGLModel()
 {
-	FC_LOG("");
 }
 
 void FCGLModel::InitWithModel( FCXMLNode modelXML, FCResourceRef resource )

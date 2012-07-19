@@ -103,7 +103,7 @@ void FCActor::SetPosition(FCVector3f pos)
 	m_physicsBody->SetPosition(pos);
 }
 
-FCVector3f FCActor::Position()
+FCVector3f FCActor::Position() const
 {
 	return m_physicsBody->Position();
 }
@@ -113,7 +113,7 @@ void FCActor::SetLinearVelocity(FCVector3f vel)
 	m_physicsBody->SetLinearVelocity(vel);
 }
 
-FCVector3f FCActor::LinearVelocity()
+FCVector3f FCActor::LinearVelocity() const
 {
 	return m_physicsBody->LinearVelocity();
 }

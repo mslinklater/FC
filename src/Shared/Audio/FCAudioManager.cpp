@@ -226,13 +226,7 @@ static int lua_SourceSetVolume( lua_State* _state )
 	FCHandle hSource = lua_tointeger(_state, 1);
 	float vol = (float)lua_tonumber(_state, 2);
 	
-//	FCAudioSource_apple* source = [[FCAudioManager_apple instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
-
 	plt_FCAudio_SourceSetVolume(hSource, vol);
-	
-//	FC_ASSERT(source);
-	
-//	source.volume = vol;
 	
 	return 0;
 }
@@ -246,12 +240,6 @@ static int lua_SourcePlay( lua_State* _state )
 	
 	plt_FCAudio_SourcePlay( hSource );
 	
-//	FCAudioSource_apple* source = [[FCAudioManager_apple instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
-	
-//	FC_ASSERT(source);
-	
-//	[source play];
-	
 	return 0;
 }
 
@@ -263,12 +251,6 @@ static int lua_SourceStop( lua_State* _state )
 	FCHandle hSource = lua_tointeger(_state, 1);	
 	
 	plt_FCAudio_SourceStop( hSource );
-	
-//	FCAudioSource_apple* source = [[FCAudioManager_apple instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
-	
-//	FC_ASSERT(source);
-	
-//	[source stop];
 	
 	return 0;
 }
@@ -285,12 +267,6 @@ static int lua_SourceLooping( lua_State* _state )
 	
 	plt_FCAudio_SourceLooping(hSource, looping);
 	
-//	FCAudioSource_apple* source = [[FCAudioManager_apple instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
-	
-//	FC_ASSERT(source);
-	
-//	source.looping = lua_toboolean(_state, 2);
-	
 	return 0;
 }
 
@@ -306,15 +282,6 @@ static int lua_SourcePosition( lua_State* _state )
 	
 	plt_FCAudio_SourcePosition(hSource, (float)lua_tonumber(_state, 2), (float)lua_tonumber(_state, 3), (float)lua_tonumber(_state, 4));
 	
-//	FCAudioSource_apple* source = [[FCAudioManager_apple instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
-	
-//	FCVector3f pos;
-//	pos.x = lua_tonumber(_state, 2);
-//	pos.y = lua_tonumber(_state, 3);
-//	pos.z = lua_tonumber(_state, 4);
-	
-//	source.position = pos;
-	
 	return 0;
 }
 
@@ -325,10 +292,6 @@ static int lua_SourcePitch( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
 	
 	FCHandle hSource = lua_tointeger(_state, 1);	
-//	FCAudioSource_apple* source = [[FCAudioManager_apple instance].activeSources objectForKey:[NSNumber numberWithInt:hSource]];
-	
-//	float pitch = lua_tonumber(_state, 2);
-//	source.pitch = pitch;
 
 	plt_FCAudio_SourcePitch(hSource, (float)lua_tonumber(_state, 2));
 	

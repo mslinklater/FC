@@ -96,31 +96,26 @@ void FCApplicationProxy::Resume()
 void FCApplicationProxy::SetAnalyticsID( std::string ident )
 {
 	[FlurryAnalytics startSession:[NSString stringWithUTF8String:ident.c_str()]];
-//	[m_pApp setAnalyticsID:[NSString stringWithUTF8String:ident.c_str()]];
 }
 
 void FCApplicationProxy::SetTestFlightID( std::string ident )
 {
 	[TestFlight takeOff:[NSString stringWithUTF8String:ident.c_str()]];
-//	[m_pApp setTestFlightID:[NSString stringWithUTF8String:ident.c_str()]];
 }
 
 void FCApplicationProxy::WillResignActive()
 {
-	FC_HALT;
-	
+	FCApplication::WillResignActive();
 }
 
 void FCApplicationProxy::DidEnterBackground()
 {
-	FC_HALT;
-	
+	FCApplication::DidEnterBackground();
 }
 
 void FCApplicationProxy::WillEnterForeground()
 {
-	FC_HALT;
-	
+	FCApplication::WillEnterForeground();
 }
 
 //void FCApplicationProxy::DidBecomeActive()
@@ -131,8 +126,7 @@ void FCApplicationProxy::WillEnterForeground()
 
 void FCApplicationProxy::WillTerminate()
 {
-	FC_HALT;
-	
+	FCApplication::WillTerminate();
 }
 
 //bool FCApplicationProxy::ShouldAutorotateToInterfaceOrientation( FCInterfaceOrientation orient )

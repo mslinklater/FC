@@ -61,12 +61,23 @@ static int lua_EndTimedEvent( lua_State* _state )
 	return 0;
 }
 
+static int lua_DiscardTimedEvent( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	
+	FCAnalytics::Instance()->DiscardTimedEvent( (FCHandle)lua_tointeger(_state, 1) );
+	
+	return 0;
+}
+
 FCAnalytics::FCAnalytics()
 {
 	FCLua::Instance()->CoreVM()->CreateGlobalTable("FCAnalytics");
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_RegisterEvent, "FCAnalytics.RegisterEvent");
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_BeginTimedEvent, "FCAnalytics.BeginTimedEvent");
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_EndTimedEvent, "FCAnalytics.EndTimedEvent");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_DiscardTimedEvent, "FCAnalytics.DiscardTimedEvent");
 }
 
 FCAnalytics::~FCAnalytics()
@@ -99,6 +110,13 @@ void FCAnalytics::EndTimedEvent(FCHandle hEvent)
 {
 	std::string event = m_timedEvents[hEvent];	
 	plt_FCAnalytics_EndTimedEvent( event );
+	m_timedEvents.erase( hEvent );
+}
+
+void FCAnalytics::DiscardTimedEvent(FCHandle hEvent)
+{
+	std::string event = m_timedEvents[hEvent];
+//	plt_FCAnalytics_EndTimedEvent( event );
 	m_timedEvents.erase( hEvent );
 }
 

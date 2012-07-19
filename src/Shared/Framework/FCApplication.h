@@ -73,7 +73,6 @@ public:
 	virtual void SetUpdateFrequency( int freq );
 	
 	virtual FCVector2f MainViewSize();
-//	virtual FCLuaVM* Lua();
 	
 	virtual void LaunchExternalURL( std::string url );
 

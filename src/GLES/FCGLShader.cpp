@@ -68,7 +68,6 @@ FCGLShader::FCGLShader( eFCShaderType type, std::string source )
 
 FCGLShader::~FCGLShader()
 {
-	FC_LOG("");
 }
 
 

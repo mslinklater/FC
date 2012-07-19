@@ -32,9 +32,10 @@ public:
 	
 	static FCAnalytics* Instance();
 
-	void		RegisterEvent(std::string event);
-	FCHandle	BeginTimedEvent(std::string event);
-	void		EndTimedEvent(FCHandle hEvent);
+	void		RegisterEvent( std::string event );
+	FCHandle	BeginTimedEvent( std::string event );
+	void		EndTimedEvent( FCHandle hEvent );
+	void		DiscardTimedEvent( FCHandle hEvent );
 	
 private:
 	FCStringMapByHandle	m_timedEvents;
