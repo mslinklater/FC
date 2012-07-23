@@ -298,8 +298,6 @@ static int lua_SetViewPropertyString( lua_State* _state )
 
 static int lua_PrintViews( lua_State* _state )
 {
-//	FC_LUA_ASSERT_NUMPARAMS(0);
-//	[[FCViewManager instance] printViews];
 	return 0;
 }
 
