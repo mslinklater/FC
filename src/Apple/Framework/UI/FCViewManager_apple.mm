@@ -108,7 +108,7 @@ void plt_FCViewManager_CreateView( const std::string& viewName, const std::strin
 
 	if (!NSClassFromString(appleClassName)) 
 	{
-		FC_HALT;
+		FC_FATAL( std::string("FCViewManager_apple - Unknown view class: ") + className );
 	}
 	
 	if (parent.size()) {
@@ -493,7 +493,7 @@ bool plt_FCViewManager_ViewExists( const std::string& viewName )
 		[invocation invoke];
 		
 	} else {
-		FC_FATAL( std::string("Sending 'setAlpha' to a view which does not respond to setAlpha - ") + [[thisView description] UTF8String]);
+		FC_FATAL( std::string("Sending 'setOnSelectLuaFunction' to a view which does not respond to setOnSelectLuaFunction - ") + [[thisView description] UTF8String]);
 	}	
 	
 }

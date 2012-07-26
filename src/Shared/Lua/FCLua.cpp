@@ -22,7 +22,7 @@
 
 #include "FCLua.h"
 
-static FCHandle common_newThread( lua_State* _state )
+static FCHandle common_newThread( lua_State* _state, std::string name )
 {
 	static int s_recurseCount = 0;
 	
@@ -46,6 +46,7 @@ static FCHandle common_newThread( lua_State* _state )
 	fcLua->m_threadsMap[handle] = FCLuaThreadRef( thread );
 	
 	thread->Resume();
+	thread->SetName( name );
 	
 	s_recurseCount--;
 	
@@ -58,9 +59,18 @@ static int lua_NewThread( lua_State* _state )
 {
 	FC_LUA_ASSERT_TYPE(1, LUA_TFUNCTION);
 	
+	std::string name = "";
+	
+	// check for name parameter - it is optional
+	
+	if (lua_gettop(_state) == 2)
+	{
+		name = lua_tostring(_state, 2);
+	}
+	
 	if (lua_isfunction(_state, 1))
 	{
-		FCHandle threadId = common_newThread( _state );
+		FCHandle threadId = common_newThread( _state, name );
 		
 		lua_settop( _state, 0 );
 		

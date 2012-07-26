@@ -187,16 +187,19 @@ FCPersistentData::~FCPersistentData()
 
 void FCPersistentData::Load()
 {
+	FCLog("FCPersistentData:Load()");
 	plt_FCPersistentData_Load();
 }
 
 void FCPersistentData::Save()
 {
-	plt_FCPersistentData_Save();	
+	FCLog("FCPersistentData:Save()");
+	plt_FCPersistentData_Save();
 }
 
 void FCPersistentData::Clear()
 {
+	FCLog("FCPersistentData:Clear()");
 	plt_FCPersistentData_Clear();
 }
 

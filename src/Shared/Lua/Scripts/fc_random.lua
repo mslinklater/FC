@@ -7,7 +7,7 @@ function FCRandom.New( seed )
 	local ret = {}
 	
 	if seed == nil then
-		seed = 1
+		seed = os.time()
 	end
 	
 	ret.x = seed

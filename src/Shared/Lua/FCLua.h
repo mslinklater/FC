@@ -49,7 +49,6 @@ public:
 	static FCLua* Instance();
 	void UpdateThreads( float realDelta, float gameDelta );
 	FCLuaVM* CoreVM(){ return m_coreVM; }
-//	FCLuaVM* NewVM();
 	void ExecuteLine( std::string line );
 	void PrintStats();
 

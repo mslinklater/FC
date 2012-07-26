@@ -50,6 +50,8 @@ public:
 	FCHandle Handle(){ return m_handle; }
 	lua_State* LuaState(){ return m_luaState; }
 	eLuaThreadState ThreadState(){ return m_threadState; }
+	std::string Name(){ return m_name; }
+	void SetName( std::string name ){ m_name = name; }
 	
 private:
 	eLuaThreadState	m_threadState;
@@ -58,6 +60,7 @@ private:
 	FCHandle		m_handle;
 	lua_State*		m_luaState;
 	int32_t			m_numResumedArgs;
+	std::string		m_name;
 };
 
 //typedef FCSharedPtr<FCLuaThread> FCLuaThreadPtr;
