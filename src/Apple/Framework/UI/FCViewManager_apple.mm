@@ -43,6 +43,7 @@ void plt_FCViewManager_SetViewPropertyString( const std::string& viewName, const
 void plt_FCViewManager_SendViewToFront( const std::string& viewName );
 void plt_FCViewManager_SendViewToBack( const std::string& viewName );
 bool plt_FCViewManager_ViewExists( const std::string& viewName );
+void plt_FCViewManager_SetViewBackgroundColor( const std::string& viewName, const FCColor4f& color );
 
 static FCViewManager_apple* s_pInstance;
 
@@ -124,29 +125,19 @@ void plt_FCViewManager_CreateView( const std::string& viewName, const std::strin
 
 void plt_FCViewManager_DestroyView( const std::string& viewName )
 {
-	if (viewName == "gameView") {
-		FC_HALT;
-	}
 	[s_pInstance destroyView:[NSString stringWithUTF8String:viewName.c_str()]];
 }
 
 void plt_FCViewManager_SetViewPropertyInt( const std::string& viewName, const std::string& property, int32_t value )
 {
-	if (viewName == "gameView") {
-		FC_HALT;
-	}
-	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] 
+	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()]
 								   property:[NSString stringWithUTF8String:property.c_str()] to:[NSNumber numberWithInt:value]];
 }
 
 void plt_FCViewManager_SetViewPropertyString( const std::string& viewName, const std::string& property, const std::string& value )
 {
-	if (viewName == "gameView") {
-		FC_HALT;
-	}
 	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] 
 								   property:[NSString stringWithUTF8String:property.c_str()] to:[NSString stringWithUTF8String:value.c_str()]];
-//	FC_HALT;
 }
 
 void plt_FCViewManager_SendViewToFront( const std::string& viewName )
@@ -166,6 +157,12 @@ bool plt_FCViewManager_ViewExists( const std::string& viewName )
 	} else {
 		return false;
 	}
+}
+
+void plt_FCViewManager_SetViewBackgroundColor( const std::string& viewName, const FCColor4f& color )
+{
+	UIColor* uiColor = [UIColor colorWithRed:color.r green:color.g blue:color.b alpha:color.a];
+	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] backgroundColor:uiColor];
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -442,13 +439,34 @@ bool plt_FCViewManager_ViewExists( const std::string& viewName )
 	
 }
 
+-(void)setView:(NSString*)viewName backgroundColor:(UIColor*)color
+{
+	UIView* thisView = [_viewDictionary valueForKey:viewName];
+	
+	FC_ASSERT(thisView);
+
+	thisView.backgroundColor = color;
+}
+
 -(CGRect)getViewFrame:(NSString*)viewName
 {
 	UIView* thisView = [_viewDictionary valueForKey:viewName];
 	
 	FC_ASSERT(thisView);
 	
-	return thisView.frame;
+	CGRect frame = thisView.frame;
+	
+	CGRect containerFrame = [thisView superview].frame;
+	
+	frame.origin.x /= containerFrame.size.width;
+	frame.size.width /= containerFrame.size.width;
+	
+	frame.origin.y /= containerFrame.size.height;
+	frame.size.height /= containerFrame.size.height;
+	
+	NSLog(@"%f %f %f %f", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
+	
+	return frame;
 }
 
 -(void)setView:(NSString*)viewName alpha:(float)alpha over:(float)seconds

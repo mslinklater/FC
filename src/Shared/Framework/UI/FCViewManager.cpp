@@ -33,6 +33,7 @@ extern void plt_FCViewManager_SetViewAlpha( const std::string& viewName, float a
 extern void plt_FCViewManager_SetViewOnSelectLuaFunction( const std::string& viewName, const std::string& func );
 extern void plt_FCViewManager_SetViewImage( const std::string& viewName, const std::string& image );
 extern void plt_FCViewManager_SetViewURL( const std::string& viewName, const std::string& url );
+extern void plt_FCViewManager_SetViewBackgroundColor( const std::string& viewName, const FCColor4f& color );
 extern void plt_FCViewManager_CreateView( const std::string& viewName, const std::string& className, const std::string& parent );
 extern void plt_FCViewManager_DestroyView( const std::string& viewName );
 extern void plt_FCViewManager_SetViewPropertyInt( const std::string& viewName, const std::string& property, int32_t value );
@@ -103,16 +104,16 @@ static int lua_GetFrame( lua_State* _state )
 	
 	lua_newtable(_state);
 	int table = lua_gettop(_state);
-	lua_pushstring(_state, "x");
+	lua_pushinteger(_state, 1);
 	lua_pushnumber(_state, rect.x);
 	lua_settable(_state, table);
-	lua_pushstring(_state, "y");
+	lua_pushinteger(_state, 2);
 	lua_pushnumber(_state, rect.y);
 	lua_settable(_state, table);
-	lua_pushstring(_state, "w");
+	lua_pushinteger(_state, 3);
 	lua_pushnumber(_state, rect.w);
 	lua_settable(_state, table);
-	lua_pushstring(_state, "h");
+	lua_pushinteger(_state, 4);
 	lua_pushnumber(_state, rect.h);
 	lua_settable(_state, table);
 	
@@ -199,6 +200,42 @@ static int lua_SetOnSelectLuaFunction( lua_State* _state )
 	}
 	
 	s_pInstance->SetViewOnSelectLuaFunction(viewName, funcName);
+	
+	return 0;
+}
+
+static int lua_SetBackgroundColor( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TTABLE);
+
+	std::string viewName = lua_tostring(_state, 1);
+	
+	FCColor4f color;
+	
+	lua_pushnil(_state);
+	
+	lua_next(_state, -2);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
+	color.r = (float)lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	lua_next(_state, -2);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
+	color.g = (float)lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	lua_next(_state, -2);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
+	color.b = (float)lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	lua_next(_state, -2);
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
+	color.a = (float)lua_tonumber(_state, -1);
+	
+	s_pInstance->SetViewBackgroundColor( viewName, color );
 	
 	return 0;
 }
@@ -330,6 +367,7 @@ FCViewManager::FCViewManager()
 	lua->RegisterCFunction(lua_SetOnSelectLuaFunction, "FCViewManager.SetOnSelectLuaFunction");
 	lua->RegisterCFunction(lua_SetImage, "FCViewManager.SetImage");
 	lua->RegisterCFunction(lua_SetURL, "FCViewManager.SetURL");
+	lua->RegisterCFunction(lua_SetBackgroundColor, "FCViewManager.SetBackgroundColor");
 	
 	lua->RegisterCFunction(lua_CreateView, "FCViewManager.CreateView");
 	lua->RegisterCFunction(lua_DestroyView, "FCViewManager.DestroyView");
@@ -395,6 +433,11 @@ void FCViewManager::SetViewImage(const std::string &viewName, const std::string 
 void FCViewManager::SetViewURL(const std::string &viewName, const std::string &url)
 {
 	plt_FCViewManager_SetViewURL(viewName, url);
+}
+
+void FCViewManager::SetViewBackgroundColor( const std::string& viewName, const FCColor4f& color )
+{
+	plt_FCViewManager_SetViewBackgroundColor( viewName, color );
 }
 
 void FCViewManager::CreateView( const std::string& viewName, const std::string& classType, const std::string& parent )

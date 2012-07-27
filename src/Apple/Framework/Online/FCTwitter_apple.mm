@@ -26,6 +26,8 @@
 
 #include "Shared/Core/FCCore.h"
 
+extern UIViewController* FCRootViewController();
+
 bool plt_FCTwitter_CanTweet();
 bool plt_FCTwitter_TweetWithText( std::string text );
 bool plt_FCTwitter_AddHyperlink( std::string hyperlink );
@@ -90,8 +92,7 @@ static FCTwitter_apple* s_pInstance;
 
 -(void)send
 {
-	FC_HALT;
-//	[[[FCApplication_old instance] rootViewController] presentModalViewController:_vc animated:YES];
+	[FCRootViewController() presentModalViewController:_vc animated:YES];
 }
 
 @end

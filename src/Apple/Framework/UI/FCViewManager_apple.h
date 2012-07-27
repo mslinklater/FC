@@ -60,6 +60,7 @@ class FCLuaVM;
 
 -(CGRect)rectForRect:(CGRect)rect containedInView:(UIView*)view;
 
+-(void)setView:(NSString*)viewName backgroundColor:(UIColor*)color;
 -(void)setView:(NSString*)viewName text:(NSString*)text;
 -(void)setView:(NSString*)viewName textColor:(UIColor*)color;
 -(void)setView:(NSString*)viewName frame:(CGRect)frame over:(float)seconds;
