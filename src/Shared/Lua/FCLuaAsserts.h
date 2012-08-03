@@ -35,6 +35,7 @@
 		error << "Lua (" << __FUNCTION__ << "): Wrong type of assert, wanted " << lua_typename( _state, type) << ", but found " << lua_typename( _state, lua_type( _state, stackpos));	\
 		FC_LOG(error.str());	\
 		FCLua_DumpStack( _state );	\
+		FC_HALT;	\
 		return 0;	\
 	}	\
 }
@@ -47,6 +48,7 @@
 		error << "Lua (" << __FUNCTION__ << "): Wrong number of parameters. Expected " << n << " but received " << lua_gettop( _state );	\
 		FC_LOG(error.str());	\
 		FCLua_DumpStack( _state );		\
+		FC_HALT;	\
 		return 0;	\
 	}			\
 }

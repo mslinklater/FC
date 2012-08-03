@@ -158,7 +158,11 @@ static int lua_Log( lua_State* _state )
 {
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
-	FC_LOG(std::string("Lua: ") + lua_tostring(_state, 1));
+	char buffer[16];
+	
+	sprintf(buffer, "0x%08x", (unsigned int)_state);
+	
+	FC_LOG(std::string("Lua(") + std::string(buffer) + "): " + lua_tostring(_state, 1));
 	return 0;
 }
 
@@ -166,7 +170,12 @@ static int lua_Warning( lua_State* _state )
 {
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
-	FC_WARNING(std::string("Lua: ") + lua_tostring(_state, 1));
+	
+	char buffer[16];
+	
+	sprintf(buffer, "0x%08x", (unsigned int)_state);
+	
+	FC_WARNING(std::string("Lua(") + std::string(buffer) + "): " + lua_tostring(_state, 1));
 	return 0;
 }
 

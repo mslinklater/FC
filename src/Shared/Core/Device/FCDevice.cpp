@@ -60,16 +60,33 @@ static int lua_GetDeviceString( lua_State* _state )
 	return 1;
 }
 
-static int lua_GetDeviceNumber( lua_State* _state )
+static int lua_GetDeviceFloat( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	
+	std::string key = lua_tostring(_state, 1);
+		
+	std::string val = FCDevice::Instance()->GetCap(key);
+	
+	float value = atof(val.c_str());
+	
+	lua_pushnumber(_state, value);
+	return 1;
+}
+
+static int lua_GetDeviceInteger( lua_State* _state )
 {
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
 	std::string key = lua_tostring(_state, 1);
 	
-	float value;
-	sscanf("%f", FCDevice::Instance()->GetCap(key).c_str(), &value);
 	
+	std::string val = FCDevice::Instance()->GetCap(key);
+	
+	int value = atoi(val.c_str());
+		
 	lua_pushnumber(_state, value);
 	return 1;
 }
@@ -108,7 +125,8 @@ FCDevice::FCDevice()
 	lua->RegisterCFunction(lua_WarmProbe, "FCDevice.WarmProbe");
 	lua->RegisterCFunction(lua_Print, "FCDevice.Print");
 	lua->RegisterCFunction(lua_GetDeviceString, "FCDevice.GetString");
-	lua->RegisterCFunction(lua_GetDeviceNumber, "FCDevice.GetNumber");
+	lua->RegisterCFunction(lua_GetDeviceFloat, "FCDevice.GetFloat");
+	lua->RegisterCFunction(lua_GetDeviceInteger, "FCDevice.GetInteger");
 	lua->RegisterCFunction(lua_GetGameCenterID, "FCDevice.GetGameCenterID");
 }
 
