@@ -5,3 +5,4 @@ Build/iOS/FC/FC.xcodeproj/xcuserdata/
 Build/OSX/FC/FC.xcodeproj/project.xcworkspace/
 Build/OSX/FC/FC.xcodeproj/xcuserdata/
 *.DS_Store
+/doc/

@@ -5,19 +5,26 @@ Welcome the FC, the development framework used by CurlyRocket.
 
 First, some caveats:
 
-FC builds on both iOS and OSX but has limited functionality depending on platform.
-FC is very immature - pretty much everything is open to change, so don't build your livelihood on it just yet.
-FC is meant for both target executables and tools.
-FC is written in Objective-C++ and works only on iOS and OSX. Don't expect a C++, Java or C# version - FC is not built 
-to be cross platform.
+FC currently builds on iOS, but will support more platforms as I feel the need to port
+FC is immature but built upon some firm philosophies
+	Lua hooks into every system... Most of the control code you write should be in Lua
+	Performance isn't critical. Don't use FC to build the next great thing - use it for fast development of simple games
+FC is meant for platform executables. It isn't designed for tools - that work is set aside for Python
+FC is written in a mix of languages, bridged together with C interfaces. Currently FC consists of
+	C++
+	Objective C
+	Lua
+	Python
 
 What does FC do ?
 =================
 
 FC is the backbone of all software written by CurlyRocket. It is aimed quite loosely at games development, but includes 
-code which should be useful for tools and general app development too. At the moment FC is one monolithic chunk of code.
+code which should be useful for general app development too. At the moment FC is one monolithic chunk of code.
 Moving forward I expect the physical structure to be broken up a bit and more tightly focused on the thing it is doing
 for you.
+
+NOTE: All the rest needs re-writing... things have changed a lot since this was written.
 
 FC currently consists of a few folders covering the following functionality:
 

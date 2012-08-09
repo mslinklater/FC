@@ -48,8 +48,8 @@ enum FCReturn
 
 enum FCInterfaceOrientation
 {
-	kFCInterfaceOrientation_Portrait,
-	kFCInterfaceOrientation_Landscape
+	kFCInterfaceOrientation_Portrait =	1 << 0,
+	kFCInterfaceOrientation_Landscape = 1 << 1
 };
 
 class FCRect

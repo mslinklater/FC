@@ -61,7 +61,7 @@ public:
 	FCApplicationProxy();
 	virtual ~FCApplicationProxy();
 	
-	void ColdBoot( FCApplicationDelegate* pDelegate );
+	void ColdBoot( FCApplicationColdBootParams& params );
 	void Shutdown();
 	void Pause();
 	void Resume();
@@ -81,7 +81,6 @@ public:
 	void SetUpdateFrequency( int freq );
 	
 	FCVector2f MainViewSize();
-//	FCLuaVM* Lua();
 	
 	void LaunchExternalURL( std::string url );
 	

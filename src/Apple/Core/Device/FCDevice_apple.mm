@@ -39,9 +39,9 @@ void plt_FCDevice_ColdProbe()
 	[[FCDevice_apple instance] coldBoot];
 }
 
-void plt_FCDevice_WarmProbe()
+void plt_FCDevice_WarmProbe( uint32_t options )
 {
-	[[FCDevice_apple instance] warmBoot];
+	[[FCDevice_apple instance] warmBoot:options];
 }
 
 #pragma mark - Objective-C class
@@ -85,14 +85,14 @@ void plt_FCDevice_WarmProbe()
 	
 	// bounds are always reported for portrait, so do some swapping if landscape
 	
-	if (UIDeviceOrientationIsLandscape( [UIDevice currentDevice].orientation )) 
+	if (UIDeviceOrientationIsLandscape( [UIDevice currentDevice].orientation ) && (m_warmBootOptions & kFCInterfaceOrientation_Landscape))
 	{
 		float temp = bounds.size.height;
 		bounds.size.height = bounds.size.width;
 		bounds.size.width = temp;
 	}
 	
-	if (UIDeviceOrientationIsPortrait( [UIDevice currentDevice].orientation )) 
+	if (UIDeviceOrientationIsPortrait( [UIDevice currentDevice].orientation ) && (m_warmBootOptions & kFCInterfaceOrientation_Portrait))
 	{
 		float temp = screenSize.height;
 		screenSize.height = screenSize.width;
@@ -145,8 +145,10 @@ void plt_FCDevice_WarmProbe()
 	}
 }
 
--(void)warmBoot
+-(void)warmBoot:(uint32_t)options
 {
+	m_warmBootOptions = options;
+	
 	[self getScreenCaps];
 	
 	NSString* localeCode = [[NSLocale preferredLanguages] objectAtIndex:0];

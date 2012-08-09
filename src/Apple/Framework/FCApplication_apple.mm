@@ -62,10 +62,10 @@ FCApplicationProxy::~FCApplicationProxy()
 	m_pApp = nil;
 }
 
-void FCApplicationProxy::ColdBoot( FCApplicationDelegate* pDelegate )
+void FCApplicationProxy::ColdBoot( FCApplicationColdBootParams& params )
 {
 	[m_pApp coldBoot];
-	FCApplication::ColdBoot(pDelegate);
+	FCApplication::ColdBoot( params );
 }
 
 //void FCApplicationProxy::WarmBoot()
@@ -153,6 +153,8 @@ void FCApplicationProxy::ShowStatusBar( bool visible )
 
 void FCApplicationProxy::SetBackgroundColor(FCColor4f &color)
 {
+	FCApplication::SetBackgroundColor(color);
+	
 	[m_pApp setBackgroundColor:color];
 }
 

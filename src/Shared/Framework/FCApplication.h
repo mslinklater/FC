@@ -40,6 +40,18 @@ public:
 	virtual void Update( float realTime, float gameTime ) = 0;
 };
 
+class FCApplicationColdBootParams
+{
+public:
+	FCApplicationDelegate*	pDelegate;
+	uint32_t				allowableOrientationsMask;
+};
+
+typedef void (*FCApplicationUpdateFuncPtr)( float realTime, float gameTime );
+
+typedef std::set<FCApplicationUpdateFuncPtr>	FCApplicationUpdateFuncPtrSet;
+typedef FCApplicationUpdateFuncPtrSet::iterator	FCApplicationUpdateFuncPtrSetIter;
+
 class FCApplication
 {
 public:
@@ -48,7 +60,7 @@ public:
 	FCApplication();
 	virtual ~FCApplication();
 	
-	virtual void ColdBoot( FCApplicationDelegate* pDelegate );
+	virtual void ColdBoot( FCApplicationColdBootParams& params );
 	
 	void WarmBoot();	// no need for platform layer
 	
@@ -69,7 +81,13 @@ public:
 	
 	virtual void ShowExternalLeaderboard();
 	virtual void ShowStatusBar( bool visible );
+	
 	virtual void SetBackgroundColor( FCColor4f& color );
+	FCColor4f&	BackgroundColor(){ return m_backgroundColor; }
+	
+	void AddUpdateSubscriber( FCApplicationUpdateFuncPtr func );
+	void RemoveUpdateSubscriber( FCApplicationUpdateFuncPtr func );
+	
 	virtual void SetUpdateFrequency( int freq );
 	
 	virtual FCVector2f MainViewSize();
@@ -79,10 +97,12 @@ public:
 	bool ShouldAutorotateToInterfaceOrientation( FCInterfaceOrientation orient );
 private:
 	
-	FCApplicationDelegate*	m_delegate;
-	FCPerformanceCounterRef	m_performanceCounter;
-	FCLuaVMRef				m_lua;
-	bool					m_paused;
+	FCApplicationDelegate*			m_delegate;
+	FCPerformanceCounterRef			m_performanceCounter;
+	FCLuaVMRef						m_lua;
+	bool							m_paused;
+	FCColor4f						m_backgroundColor;
+	FCApplicationUpdateFuncPtrSet	m_updateSubscribers;
 };
 
 #endif

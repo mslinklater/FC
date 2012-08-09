@@ -23,13 +23,13 @@
 #import <Foundation/Foundation.h>
 
 @interface FCDevice_apple : NSObject {
-	
+	uint32_t	m_warmBootOptions;
 }
 +(FCDevice_apple*)instance;
 
 -(void)screenRotateResponder:(NSNotification*)note;
 -(void)getScreenCaps;
 -(void)coldBoot;
--(void)warmBoot;
+-(void)warmBoot:(uint32_t)options;
 
 @end

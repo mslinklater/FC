@@ -153,7 +153,6 @@ FCApplication* FCApplication::Instance()
 }
 
 FCApplication::FCApplication()
-// TODO - initializers
 {
 }
 
@@ -162,9 +161,9 @@ FCApplication::~FCApplication()
 	FC_HALT;
 }
 
-void FCApplication::ColdBoot( FCApplicationDelegate* pDelegate )
+void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 {
-	m_delegate = pDelegate;
+	m_delegate = params.pDelegate;
 	m_performanceCounter = FCPerformanceCounterRef( new FCPerformanceCounter );
 	m_lua = FCLuaVMRef( FCLua::Instance()->CoreVM() );
 	
@@ -182,14 +181,15 @@ void FCApplication::ColdBoot( FCApplicationDelegate* pDelegate )
 	m_lua->RegisterCFunction(lua_SetUpdateFrequency, "FCApp.SetUpdateFrequency");	
 	m_lua->SetGlobalBool("FCApp.paused", false);
 
-	FCConnect::Instance()->Start();
-	FCConnect::Instance()->EnableWithName("FCConnect");	
+//	FCConnect::Instance()->Start();
+//	FCConnect::Instance()->EnableWithName("FCConnect");
 	FCAnalytics::Instance();
 	
 	FCTwitter::Instance();
 	FCAudioManager::Instance();
 	FCDevice::Instance()->ColdProbe();
-	FCDevice::Instance()->WarmProbe();
+	
+	FCDevice::Instance()->WarmProbe( params.allowableOrientationsMask );
 	
 	FCPersistentData::Instance()->Load();
 	FCPhysics::Instance();
@@ -252,6 +252,11 @@ void FCApplication::Update()
 	// Keep this as the last update - since render views are updated here.
 	FCPhaseManager::Instance()->Update( dt );
 	
+	
+	for (FCApplicationUpdateFuncPtrSetIter i = m_updateSubscribers.begin(); i != m_updateSubscribers.end(); i++) {
+		(*i)(dt, gameTime);
+	}
+	
 	seconds += dt;
 	if (seconds >= 1.0f) {
 		if (fps < 55) {
@@ -262,6 +267,16 @@ void FCApplication::Update()
 		fps++;
 	}
 //	FC_HALT;
+}
+
+void FCApplication::AddUpdateSubscriber(FCApplicationUpdateFuncPtr func)
+{
+	m_updateSubscribers.insert( func );
+}
+
+void FCApplication::RemoveUpdateSubscriber(FCApplicationUpdateFuncPtr func)
+{
+	m_updateSubscribers.erase( func );
 }
 
 void FCApplication::Pause()
@@ -379,7 +394,7 @@ void FCApplication::ShowStatusBar( bool visible )
 
 void FCApplication::SetBackgroundColor(FCColor4f &color)
 {
-	FC_HALT;
+	m_backgroundColor = color;
 }
 
 FCVector2f FCApplication::MainViewSize()

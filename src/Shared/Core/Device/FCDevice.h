@@ -42,7 +42,7 @@ public:
 	~FCDevice();
 
 	void ColdProbe();	// Once, on boot probes.
-	void WarmProbe();	// Repeatable, changeable probes.
+	void WarmProbe( uint32_t options );	// Repeatable, changeable probes.
 	
 	std::string GetCap( std::string cap );
 	void SetCap( std::string cap, std::string value );

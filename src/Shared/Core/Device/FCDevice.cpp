@@ -25,7 +25,7 @@
 #include "Shared/Lua/FCLua.h"
 
 extern void plt_FCDevice_ColdProbe();
-extern void plt_FCDevice_WarmProbe();
+extern void plt_FCDevice_WarmProbe( uint32_t options );
 
 static int lua_ColdProbe( lua_State* _state )
 {
@@ -37,7 +37,7 @@ static int lua_ColdProbe( lua_State* _state )
 static int lua_WarmProbe( lua_State* _state )
 {
 	FC_LUA_ASSERT_NUMPARAMS(0);
-	plt_FCDevice_WarmProbe();
+	plt_FCDevice_WarmProbe( 0 );	// what to do here ?
 	return 0;
 }
 
@@ -140,9 +140,9 @@ void FCDevice::ColdProbe()
 	plt_FCDevice_ColdProbe();
 }
 
-void FCDevice::WarmProbe()
+void FCDevice::WarmProbe( uint32_t options )
 {
-	plt_FCDevice_WarmProbe();	
+	plt_FCDevice_WarmProbe( options );
 }
 
 std::string FCDevice::GetCap(std::string cap)

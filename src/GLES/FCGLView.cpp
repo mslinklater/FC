@@ -168,11 +168,13 @@ void FCGLView::PresentFramebuffer()
 FCVector2f FCGLView::ViewSize()
 {
 	FC_HALT;
+	return FCVector2f( 0.0f, 0.0f);
 }
 
 FCVector3f FCGLView::PosOnPlane( const FCVector2f& point )
 {
 	FC_HALT;
+	return FCVector3f( 0.0f, 0.0f, 0.0f);
 }
 
 void FCGLView::SetClearColor(const FCColor4f &color)

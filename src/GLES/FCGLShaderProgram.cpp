@@ -255,7 +255,7 @@ FCGLShaderAttributeRefVec FCGLShaderProgram::GetActiveAttributes()
 	FCGLShaderAttributeRefVec ret;
 
 	GLint numActive;
-	GLint maxLength;
+//	GLint maxLength;
 	
 	FCglGetProgramiv( m_glHandle, GL_ACTIVE_ATTRIBUTES, &numActive );
 	
