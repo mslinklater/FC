@@ -38,7 +38,7 @@ bool plt_FCConnect_Start()
 
 bool plt_FCConnect_EnableWithName( std::string name )
 {
-	return [[FCConnect_apple instance] enableWithName:[NSString stringWithUTF8String:name.c_str()]];
+	return [[FCConnect_apple instance] enableWithName:@(name.c_str())];
 }
 
 void plt_FCConnect_Stop()
@@ -48,7 +48,7 @@ void plt_FCConnect_Stop()
 
 void plt_FCConnect_SendString( std::string s )
 {
-	[[FCConnect_apple instance] sendString:[NSString stringWithUTF8String:s.c_str()]];
+	[[FCConnect_apple instance] sendString:@(s.c_str())];
 }
 
 #pragma mark - Objective-C API

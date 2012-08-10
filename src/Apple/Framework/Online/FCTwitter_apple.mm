@@ -40,12 +40,12 @@ bool plt_FCTwitter_CanTweet()
 
 bool plt_FCTwitter_TweetWithText( std::string text )
 {
-	return [[FCTwitter_apple instance] tweetWithText:[NSString stringWithUTF8String:text.c_str()]];
+	return [[FCTwitter_apple instance] tweetWithText:@(text.c_str())];
 }
 
 bool plt_FCTwitter_AddHyperlink( std::string hyperlink )
 {
-	return [[FCTwitter_apple instance] addHyperlink:[NSString stringWithUTF8String:hyperlink.c_str()]];
+	return [[FCTwitter_apple instance] addHyperlink:@(hyperlink.c_str())];
 }
 
 void plt_FCTwitter_Send()

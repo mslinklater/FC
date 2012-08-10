@@ -37,16 +37,16 @@ void plt_FCHalt()
 
 void plt_FCLog( std::string log )
 {
-	NSLog( @"Log: %@", [NSString stringWithUTF8String:log.c_str()] );
+	NSLog( @"Log: %@", @(log.c_str()) );
 }
 
 void plt_FCWarning( std::string log )
 {
-	NSLog( @"Warning: %@", [NSString stringWithUTF8String:log.c_str()] );	
+	NSLog( @"Warning: %@", @(log.c_str()) );	
 }
 
 void plt_FCFatal( std::string log )
 {
-	NSLog( @"FATAL: %@", [NSString stringWithUTF8String:log.c_str()] );	
+	NSLog( @"FATAL: %@", @(log.c_str()) );	
 	plt_FCHalt();
 }

@@ -53,12 +53,12 @@ void plt_FCPersistentData_Print()
 
 void plt_FCPersistentData_SetValueForKey( std::string value, std::string key )
 {
-	[[FCPersistentData_apple instance].dataRoot setValue:[NSString stringWithUTF8String:value.c_str()] forKey:[NSString stringWithUTF8String:key.c_str()]];
+	[[FCPersistentData_apple instance].dataRoot setValue:@(value.c_str()) forKey:@(key.c_str())];
 }
 
 std::string plt_FCPersistentData_ValueForKey( std::string key )
 {
-	NSString* ret = [[FCPersistentData_apple instance].dataRoot valueForKey:[NSString stringWithUTF8String:key.c_str()]];
+	NSString* ret = [[FCPersistentData_apple instance].dataRoot valueForKey:@(key.c_str())];
 		
 	if (ret) {
 		FC_ASSERT( [ret isKindOfClass:[NSString class]] );

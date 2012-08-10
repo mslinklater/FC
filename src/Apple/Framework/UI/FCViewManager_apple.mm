@@ -54,17 +54,17 @@ void plt_FCViewManager_SetScreenAspectRatio( float w, float h )
 
 void plt_FCViewManager_SetViewText( const std::string& viewName, std::string text )
 {
-	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] text:[NSString stringWithUTF8String:text.c_str()]];
+	[s_pInstance setView:@(viewName.c_str()) text:@(text.c_str())];
 }
 
 void plt_FCViewManager_SetViewTextColor( const std::string& viewName, FCColor4f color )
 {
-	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] textColor:[UIColor colorWithRed:color.r green:color.g blue:color.b alpha:color.a]];
+	[s_pInstance setView:@(viewName.c_str()) textColor:[UIColor colorWithRed:color.r green:color.g blue:color.b alpha:color.a]];
 }
 
 FCRect plt_FCViewManager_ViewFrame( const std::string& viewName )
 {
-	CGRect rect = [s_pInstance getViewFrame:[NSString stringWithUTF8String:viewName.c_str()]];
+	CGRect rect = [s_pInstance getViewFrame:@(viewName.c_str())];
 	FCRect ret = FCRect( rect.origin.x, rect.origin.y, rect.size.width, rect.size.height );
 	return ret;
 }
@@ -78,29 +78,29 @@ FCRect plt_FCViewManager_FullFrame()
 
 void plt_FCViewManager_SetViewFrame( const std::string& viewName, const FCRect& rect, float seconds )
 {
-	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] 
+	[s_pInstance setView:@(viewName.c_str()) 
 									  frame:CGRectMake(rect.x, rect.y, rect.w, rect.h) over:seconds];
 }
 
 void plt_FCViewManager_SetViewAlpha( const std::string& viewName, float alpha, float seconds )
 {
-	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] alpha:alpha over:seconds];
+	[s_pInstance setView:@(viewName.c_str()) alpha:alpha over:seconds];
 }
 
 void plt_FCViewManager_SetViewOnSelectLuaFunction( const std::string& viewName, const std::string& func )
 {
-	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] onSelectLuaFunc:[NSString stringWithUTF8String:func.c_str()]];
+	[s_pInstance setView:@(viewName.c_str()) onSelectLuaFunc:@(func.c_str())];
 }
 
 void plt_FCViewManager_SetViewImage( const std::string& viewName, const std::string& image )
 {
-	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] image:[NSString stringWithUTF8String:image.c_str()]];
+	[s_pInstance setView:@(viewName.c_str()) image:@(image.c_str())];
 }
 
 void plt_FCViewManager_SetViewURL( const std::string& viewName, const std::string& url )
 {
-	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] 
-										url:[NSString stringWithUTF8String:url.c_str()]];
+	[s_pInstance setView:@(viewName.c_str()) 
+										url:@(url.c_str())];
 }
 
 void plt_FCViewManager_CreateView( const std::string& viewName, const std::string& className, const std::string& parent )
@@ -113,11 +113,11 @@ void plt_FCViewManager_CreateView( const std::string& viewName, const std::strin
 	}
 	
 	if (parent.size()) {
-		[s_pInstance createView:[NSString stringWithUTF8String:viewName.c_str()] 
+		[s_pInstance createView:@(viewName.c_str()) 
 										   asClass:appleClassName 
-										withParent:[NSString stringWithUTF8String:parent.c_str()]];
+										withParent:@(parent.c_str())];
 	} else {
-		[s_pInstance createView:[NSString stringWithUTF8String:viewName.c_str()] 
+		[s_pInstance createView:@(viewName.c_str()) 
 										   asClass:appleClassName 
 										withParent:nil];		
 	}
@@ -125,34 +125,34 @@ void plt_FCViewManager_CreateView( const std::string& viewName, const std::strin
 
 void plt_FCViewManager_DestroyView( const std::string& viewName )
 {
-	[s_pInstance destroyView:[NSString stringWithUTF8String:viewName.c_str()]];
+	[s_pInstance destroyView:@(viewName.c_str())];
 }
 
 void plt_FCViewManager_SetViewPropertyInt( const std::string& viewName, const std::string& property, int32_t value )
 {
-	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()]
-								   property:[NSString stringWithUTF8String:property.c_str()] to:[NSNumber numberWithInt:value]];
+	[s_pInstance setView:@(viewName.c_str())
+								   property:@(property.c_str()) to:@(value)];
 }
 
 void plt_FCViewManager_SetViewPropertyString( const std::string& viewName, const std::string& property, const std::string& value )
 {
-	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] 
-								   property:[NSString stringWithUTF8String:property.c_str()] to:[NSString stringWithUTF8String:value.c_str()]];
+	[s_pInstance setView:@(viewName.c_str()) 
+								   property:@(property.c_str()) to:@(value.c_str())];
 }
 
 void plt_FCViewManager_SendViewToFront( const std::string& viewName )
 {
-	[s_pInstance sendViewToFront:[NSString stringWithUTF8String:viewName.c_str()]];
+	[s_pInstance sendViewToFront:@(viewName.c_str())];
 }
 
 void plt_FCViewManager_SendViewToBack( const std::string& viewName )
 {
-	[s_pInstance sendViewToBack:[NSString stringWithUTF8String:viewName.c_str()]];
+	[s_pInstance sendViewToBack:@(viewName.c_str())];
 }
 
 bool plt_FCViewManager_ViewExists( const std::string& viewName )
 {
-	if ([s_pInstance viewNamed:[NSString stringWithUTF8String:viewName.c_str()]]) {
+	if ([s_pInstance viewNamed:@(viewName.c_str())]) {
 		return true;
 	} else {
 		return false;
@@ -162,7 +162,7 @@ bool plt_FCViewManager_ViewExists( const std::string& viewName )
 void plt_FCViewManager_SetViewBackgroundColor( const std::string& viewName, const FCColor4f& color )
 {
 	UIColor* uiColor = [UIColor colorWithRed:color.r green:color.g blue:color.b alpha:color.a];
-	[s_pInstance setView:[NSString stringWithUTF8String:viewName.c_str()] backgroundColor:uiColor];
+	[s_pInstance setView:@(viewName.c_str()) backgroundColor:uiColor];
 }
 
 //----------------------------------------------------------------------------------------------------------------------

@@ -99,7 +99,7 @@ void FCApplicationProxy::Resume()
 void FCApplicationProxy::SetAnalyticsID( std::string ident )
 {
 //#if defined( _FC_FLURRY )
-	[FlurryAnalytics startSession:[NSString stringWithUTF8String:ident.c_str()]];
+	[FlurryAnalytics startSession:@(ident.c_str())];
 //#endif // _FC_FLURRY
 }
 
@@ -178,7 +178,7 @@ void FCApplicationProxy::SetUpdateFrequency(int freq)
 
 void FCApplicationProxy::LaunchExternalURL( std::string url )
 {
-	NSString* stringURL = [NSString stringWithUTF8String:url.c_str()];
+	NSString* stringURL = @(url.c_str());
 	[m_pApp launchExternalURL:stringURL];
 }
 

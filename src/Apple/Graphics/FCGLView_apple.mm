@@ -65,10 +65,8 @@ FCGLViewRef plt_FCGLView_Create( std::string name, std::string parent, const FCV
         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
         
         eaglLayer.opaque = FALSE;
-        eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
-                                        [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking,
-                                        kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
-                                        nil];
+        eaglLayer.drawableProperties = @{kEAGLDrawablePropertyRetainedBacking: [NSNumber numberWithBool:FALSE],
+                                        kEAGLDrawablePropertyColorFormat: kEAGLColorFormatRGBA8};
 
 		// clear some values
 	

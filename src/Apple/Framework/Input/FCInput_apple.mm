@@ -40,7 +40,7 @@ void plt_FCInput_AddTapToView( std::string viewName )
 {
 	FC_ASSERT(s_pInstance);
 	
-	NSString* stringViewName = [NSString stringWithUTF8String:viewName.c_str()];
+	NSString* stringViewName = @(viewName.c_str());
 	
 	UIView* thisView = [[FCViewManager_apple instance] viewNamed:stringViewName];
 
@@ -57,7 +57,7 @@ void plt_FCInput_RemoveTapFromView( std::string viewName )
 {
 	FC_ASSERT(s_pInstance);
 	
-	NSString* stringViewName = [NSString stringWithUTF8String:viewName.c_str()];
+	NSString* stringViewName = @(viewName.c_str());
 	
 	UIView* thisView = [[FCViewManager_apple instance] viewNamed:stringViewName];
 	

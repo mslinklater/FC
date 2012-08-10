@@ -118,7 +118,7 @@ public:
 	FCGLViewProxy( std::string name, std::string parent, const FCVector2i size )
 	: FCGLView( name, parent, size )
 	{
-		m_nsName = [NSString stringWithUTF8String:name.c_str()];
+		m_nsName = @(name.c_str());
 		
 		m_appleView = [[FCGLView_apple alloc] initWithFrame:CGRectMake(0, 0, size.x, size.y) name:m_nsName];
 //		[[FCViewManager_apple instance].viewDictionary setValue:m_appleView forKey:m_nsName];

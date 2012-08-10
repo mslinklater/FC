@@ -36,7 +36,7 @@ void plt_FCAds_ShowBanner(std::string adWhirlKey)
 	{
 		FCViewManager_apple* vm = [FCViewManager_apple instance];
 		s_bannerView = [[FCAdBannerView_apple alloc] initWithFrame:CGRectMake(0, 0, 0, 0) 
-															   key:[NSString stringWithUTF8String:adWhirlKey.c_str()]];
+															   key:@(adWhirlKey.c_str())];
 		[vm.rootView addSubview:s_bannerView];
 		[vm add:s_bannerView as:@"adbanner"];
 		s_bannerView.viewController = FCRootViewController();

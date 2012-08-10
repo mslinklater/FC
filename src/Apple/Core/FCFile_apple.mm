@@ -31,7 +31,7 @@ std::string plt_FCFile_DocumentsFolderPathForPath( std::string filename );
 
 std::string plt_FCFile_ApplicationBundlePathForPath( std::string filename )
 {
-	NSArray* components = [[NSString stringWithUTF8String:filename.c_str()] componentsSeparatedByString:@"."];
+	NSArray* components = [@(filename.c_str()) componentsSeparatedByString:@"."];
 	NSString* fullPath = [[NSBundle mainBundle] pathForResource:[components objectAtIndex:0] ofType:[components objectAtIndex:1]];
 	
 	if (fullPath) {

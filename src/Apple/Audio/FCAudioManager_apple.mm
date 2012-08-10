@@ -55,7 +55,7 @@ void plt_FCAudio_SourcePitch( FCHandle h, float pitch );
 
 void plt_FCAudio_PlayMusic( std::string name )
 {
-	NSString* namestring = [NSString stringWithUTF8String:name.c_str()];
+	NSString* namestring = @(name.c_str());
 	[[FCAudioManager_apple instance] playMusic:namestring];
 }
 
@@ -71,7 +71,7 @@ void plt_FCAudio_SetSFXVolume( float vol )
 
 void plt_FCAudio_SetMusicFinishedCallback( std::string name )
 {
-	NSString* namestring = [NSString stringWithUTF8String:name.c_str()];
+	NSString* namestring = @(name.c_str());
 	[[FCAudioManager_apple instance] setMusicFinishedLuaCallback:namestring];
 }
 
@@ -97,7 +97,7 @@ void plt_FCAudio_DeleteBuffer( FCHandle h )
 
 FCHandle plt_FCAudio_LoadSimpleSound( std::string name )
 {
-	NSString* namestring = [NSString stringWithUTF8String:name.c_str()];
+	NSString* namestring = @(name.c_str());
 	return [[FCAudioManager_apple instance] loadSimpleSound:namestring];
 }
 
@@ -123,23 +123,23 @@ void plt_FCAudio_UnsubscribeToPhysics2D()
 
 FCHandle plt_FCAudio_CreateBufferWithFile( std::string name )
 {
-	NSString* namestring = [NSString stringWithUTF8String:name.c_str()];
+	NSString* namestring = @(name.c_str());
 	
 	return [[FCAudioManager_apple instance] createBufferWithFile:namestring];
 }
 
 void plt_FCAudio_AddCollisionTypeHandler( std::string type1, std::string type2, std::string func )
 {
-	NSString* type1string = [NSString stringWithUTF8String:type1.c_str()];
-	NSString* type2string = [NSString stringWithUTF8String:type2.c_str()];
-	NSString* funcstring = [NSString stringWithUTF8String:func.c_str()];
+	NSString* type1string = @(type1.c_str());
+	NSString* type2string = @(type2.c_str());
+	NSString* funcstring = @(func.c_str());
 	[[FCAudioManager_apple instance] addCollisionTypeHanderFor:type1string andType:type2string luaFunc:funcstring];
 }
 
 void plt_FCAudio_RemoveCollisionTypeHandler( std::string type1, std::string type2 )
 {
-	NSString* type1string = [NSString stringWithUTF8String:type1.c_str()];
-	NSString* type2string = [NSString stringWithUTF8String:type2.c_str()];
+	NSString* type1string = @(type1.c_str());
+	NSString* type2string = @(type2.c_str());
 	[[FCAudioManager_apple instance] removeCollisionTypeHanderFor:type1string andType:type2string];
 }
 

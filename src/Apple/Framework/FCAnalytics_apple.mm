@@ -33,15 +33,15 @@ void	plt_FCAnalytics_EndTimedEvent( std::string event );
 
 void	plt_FCAnalytics_RegisterEvent( std::string event )
 {
-	[FlurryAnalytics logEvent:[NSString stringWithUTF8String:event.c_str()]];
+	[FlurryAnalytics logEvent:@(event.c_str())];
 }
 
 void	plt_FCAnalytics_BeginTimedEvent( std::string event )
 {
-	[FlurryAnalytics logEvent:[NSString stringWithUTF8String:event.c_str()] timed:YES];
+	[FlurryAnalytics logEvent:@(event.c_str()) timed:YES];
 }
 
 void	plt_FCAnalytics_EndTimedEvent( std::string event )
 {
-	[FlurryAnalytics endTimedEvent:[NSString stringWithUTF8String:event.c_str()] withParameters:nil];
+	[FlurryAnalytics endTimedEvent:@(event.c_str()) withParameters:nil];
 }
