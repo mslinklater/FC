@@ -7,3 +7,9 @@ FCLoadScript( "fc_vector" )
 FCLoadScript( "fc_random" )
 FCLoadScript( "fc_stats" )
 FCLoadScript( "fc_keys" )
+
+-- View Management
+
+FCLoadScript( "fc_view" )
+
+

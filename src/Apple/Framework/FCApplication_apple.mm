@@ -24,7 +24,7 @@
 
 #import "FCApplication_apple.h"
 #import "FCViewManager_apple.h"
-//#import "FlurryAnalytics.h"
+#import "FlurryAnalytics.h"
 
 #if defined( _FC_TESTFLIGHT )
 #import "TestFlight.h"
@@ -98,9 +98,9 @@ void FCApplicationProxy::Resume()
 
 void FCApplicationProxy::SetAnalyticsID( std::string ident )
 {
-#if defined( _FC_FLURRY )
+//#if defined( _FC_FLURRY )
 	[FlurryAnalytics startSession:[NSString stringWithUTF8String:ident.c_str()]];
-#endif // _FC_FLURRY
+//#endif // _FC_FLURRY
 }
 
 void FCApplicationProxy::SetTestFlightID( std::string ident )
@@ -190,9 +190,9 @@ void FCApplicationProxy::RegisterExceptionHandler()
 static void uncaughtExceptionHandler(NSException *exception) {
     FC_LOG( "Sending uncaught exception to Flurry" );
 	
-#if defined( _FC_FLURRY )
+//#if defined( _FC_FLURRY )
     [FlurryAnalytics logError:@"Uncaught" message:@"Crash!" exception:exception];
-#endif // _FC_FLURRY
+//#endif // _FC_FLURRY
 }
 
 

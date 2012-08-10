@@ -167,10 +167,6 @@ void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 	m_performanceCounter = FCPerformanceCounterRef( new FCPerformanceCounter );
 	m_lua = FCLuaVMRef( FCLua::Instance()->CoreVM() );
 	
-	FCPhaseManager::Instance();
-	FCViewManager::Instance();
-	FCBuild::Instance();
-
 	m_lua->CreateGlobalTable("FCApp");
 	m_lua->RegisterCFunction(lua_ShowStatusBar, "FCApp.ShowStatusBar");
 	m_lua->RegisterCFunction(lua_SetBackgroundColor, "FCApp.SetBackgroundColor");
@@ -180,6 +176,10 @@ void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 	m_lua->RegisterCFunction(lua_PauseGame, "FCApp.Pause");
 	m_lua->RegisterCFunction(lua_SetUpdateFrequency, "FCApp.SetUpdateFrequency");	
 	m_lua->SetGlobalBool("FCApp.paused", false);
+
+	FCPhaseManager::Instance();
+	FCViewManager::Instance();
+	FCBuild::Instance();
 
 //	FCConnect::Instance()->Start();
 //	FCConnect::Instance()->EnableWithName("FCConnect");

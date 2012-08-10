@@ -129,7 +129,7 @@ static int lua_SetFrame( lua_State* _state )
 	std::string viewName = lua_tostring(_state, 1);
 	float seconds = 0.0f;
 	
-	if (lua_gettop(_state) > 2) {
+	if ((lua_gettop(_state) > 2) && (lua_type(_state, 3) != LUA_TNIL)){
 		FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 		seconds = (float)lua_tonumber(_state, 3);
 		lua_pop(_state, 1);
@@ -137,22 +137,22 @@ static int lua_SetFrame( lua_State* _state )
 	
 	lua_pushnil(_state);
 	
-	lua_next(_state, -2);
+	lua_next(_state, 2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float x = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
-	lua_next(_state, -2);
+	lua_next(_state, 2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float y = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
-	lua_next(_state, -2);
+	lua_next(_state, 2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float w = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
-	lua_next(_state, -2);
+	lua_next(_state, 2);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float h = (float)lua_tonumber(_state, -1);
 	
@@ -173,7 +173,7 @@ static int lua_SetAlpha( lua_State* _state )
 	
 	float seconds = 0.0f;
 	
-	if (lua_gettop(_state) > 2) {
+	if ((lua_gettop(_state) > 2) && (lua_type(_state, 3) != LUA_TNIL)){
 		FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 		seconds = (float)lua_tonumber(_state, 3);
 	}
@@ -274,7 +274,9 @@ static int lua_CreateView( lua_State* _state )
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
 	
-	std::string name = lua_tostring(_state, 1);
+	const char* first = lua_tostring(_state, 1);
+	
+	std::string name = first;
 	std::string className = lua_tostring(_state, 2);
 	
 	std::string parent = "";
