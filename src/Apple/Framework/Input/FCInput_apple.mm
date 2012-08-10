@@ -74,9 +74,6 @@ void plt_FCInput_RemoveTapFromView( std::string viewName )
 
 @implementation FCInput_apple
 
-@synthesize tapSubscriber = _tapSubscriber;
-@synthesize tapDictionary = _tapDictionary;
-
 +(FCInput_apple*)instance
 {
 	if (!s_pInstance) {

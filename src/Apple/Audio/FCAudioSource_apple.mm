@@ -26,15 +26,6 @@
 
 @implementation FCAudioSource_apple
 
-@synthesize handle = _handle;
-@synthesize ALHandle = _ALHandle;
-@synthesize ALBufferHandle = _ALBufferHandle;
-@synthesize position = _position;
-@synthesize stopped = _stopped;
-@synthesize volume = _volume;
-@synthesize pitch = _pitch;
-@synthesize looping = _looping;
-
 -(id)init
 {
 	self = [super init];

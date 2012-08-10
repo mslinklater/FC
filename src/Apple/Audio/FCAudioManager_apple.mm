@@ -254,21 +254,6 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 
 @implementation FCAudioManager_apple
 
-@synthesize device = _device;
-@synthesize context = _context;
-
-@synthesize iPodIsPlaying = _iPodIsPlaying;
-@synthesize bgPlayer = _bgPlayer;
-@synthesize listener = _listener;
-@synthesize activeSources = _activeSources;
-@synthesize buffers = _buffers;
-@synthesize simpleSounds = _simpleSounds;
-@synthesize activeSimpleSounds = _activeSimpleSounds;
-@synthesize musicVolume = _musicVolume;
-@synthesize musicFinishedLuaCallback = _musicFinishedLuaCallback;
-@synthesize sfxVolume = _sfxVolume;
-@synthesize collisionTypeHandlers = _collisionTypeHandlers;
-
 +(FCAudioManager_apple*)instance
 {
 	static FCAudioManager_apple* pInstance;

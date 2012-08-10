@@ -169,9 +169,6 @@ void plt_FCViewManager_SetViewBackgroundColor( const std::string& viewName, cons
 
 @implementation FCViewManager_apple
 
-@synthesize rootView = _rootView;
-@synthesize viewDictionary = _viewDictionary;
-
 #pragma mark - FCSingleton
 
 +(id)instance

@@ -31,12 +31,6 @@
 
 @implementation FCAudioBuffer_apple
 
-@synthesize ALHandle = _ALHandle;
-@synthesize bufferData = _bufferData;
-@synthesize format = _format;
-@synthesize size = _size;
-@synthesize freq = _freq;
-
 -(id)initWithFilename:(NSString*)filename
 {
 	self = [super init];

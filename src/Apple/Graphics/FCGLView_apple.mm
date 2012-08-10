@@ -49,37 +49,6 @@ FCGLViewRef plt_FCGLView_Create( std::string name, std::string parent, const FCV
 
 @implementation FCGLView_apple
 
-@synthesize managedName = _managedName;
-@synthesize currentLuaTarget = _currentLuaTarget;
-
-@synthesize context = _context;
-@synthesize frustumTranslation = _frustumTranslation;
-@synthesize fov = _fov;
-@synthesize nearClip = _nearClip;
-@synthesize farClip = _farClip;
-@synthesize clearColor = _clearColor;
-@synthesize depthBuffer = _depthBuffer;
-@synthesize superSampling = _superSampling;
-@synthesize superSamplingScale = _superSamplingScale;
-@synthesize renderTarget = _renderTarget;
-@synthesize renderAction = _renderAction;
-
-@synthesize aspectRatio = _aspectRatio;
-
-@synthesize frameBufferWidth = _frameBufferWidth;
-@synthesize frameBufferHeight = _frameBufferHeight;
-@synthesize supersampleBufferWidth = _supersampleBufferWidth;
-@synthesize supersampleBufferHeight = _supersampleBufferHeight;
-
-@synthesize normalFrameBuffer = _normalFrameBuffer;
-@synthesize normalDepthRenderBuffer = _normalDepthRenderBuffer;
-@synthesize normalColorRenderBuffer = _normalColorRenderBuffer;
-
-@synthesize superFrameBuffer = _superFrameBuffer;
-@synthesize superColorRenderBuffer = _superColorRenderBuffer;
-@synthesize superDepthRenderBuffer = _superDepthRenderBuffer;
-@synthesize superOffScreenTexture = _superOffScreenTexture;
-
 // You must implement this method
 
 + (Class)layerClass

@@ -69,7 +69,6 @@ std::string plt_FCPersistentData_ValueForKey( std::string key )
 }
 
 @implementation FCPersistentData_apple
-@synthesize dataRoot = _dataRoot;
 
 +(FCPersistentData_apple*)instance
 {

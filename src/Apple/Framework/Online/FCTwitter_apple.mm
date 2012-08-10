@@ -56,7 +56,6 @@ void plt_FCTwitter_Send()
 static FCTwitter_apple* s_pInstance;
 
 @implementation FCTwitter_apple
-@synthesize vc = _vc;
 
 +(FCTwitter_apple*)instance
 {

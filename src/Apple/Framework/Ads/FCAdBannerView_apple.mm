@@ -26,11 +26,6 @@
 
 @implementation FCAdBannerView_apple
 
-@synthesize managedViewName = _managedViewName;
-@synthesize adWhirlView = _adWhirlView;
-@synthesize viewController = _viewController;
-@synthesize adWhirlKey = _adWhirlKey;
-
 - (id)initWithFrame:(CGRect)frame key:(NSString*)key
 {
     self = [super initWithFrame:frame];

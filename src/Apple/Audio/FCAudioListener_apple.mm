@@ -26,8 +26,6 @@
 #import "FCAudioListener_apple.h"
 
 @implementation FCAudioListener_apple
-@synthesize position = _position;
-@synthesize rotation = _rotation;
 
 -(id)init
 {
