@@ -21,8 +21,11 @@
  */
 
 #import "FCAdBannerView_apple.h"
+#import "FCViewManager_apple.h"
 
 #include "Shared/Lua/FCLua.h"
+
+extern UIViewController* s_rootViewController;
 
 @implementation FCAdBannerView_apple
 
@@ -33,6 +36,9 @@
 		_adWhirlKey = key;
 		_adWhirlView = [AdWhirlView requestAdWhirlViewWithDelegate:self];
 		[self addSubview:_adWhirlView];
+
+//        [s_rootViewController.view addSubview:_adWhirlView];
+        
 		FCLua::Instance()->CoreVM()->SetGlobalNumber("AdBannerHeight", 0);
     }
     return self;
@@ -42,6 +48,14 @@
 {
 	FCLua::Instance()->CoreVM()->SetGlobalNumber("AdBannerHeight", 0);
 }
+
+//-(void)setFrame:(CGRect)frame
+//{
+////    if( frame.origin.x < 0.0f )
+//  //      frame.origin.x = 0.0f;
+//    NSLog(@"%f %f %f %f", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height );
+//    [super setFrame:frame];
+//}
 
 - (NSString *)adWhirlApplicationKey 
 {
@@ -55,9 +69,8 @@
 
 - (void)adWhirlDidReceiveAd:(AdWhirlView *)adWhirlView 
 {
-	FCViewManager_apple* vm = [FCViewManager_apple instance];
-	
-	[vm.rootView bringSubviewToFront:self];
+//	[vm.rootView bringSubviewToFront:self];
+//    [s_rootViewController.view bringSubviewToFront:self];
 	[self bringSubviewToFront:_adWhirlView];
 	
 	[UIView beginAnimations:@"blah" context:nil];
@@ -68,7 +81,7 @@
 	CGRect newFrame = _adWhirlView.frame;
 	
 	newFrame.size = adSize;
-	newFrame.origin.x = (vm.rootView.bounds.size.width - adSize.width)/ 2;
+    newFrame.origin.x = (s_rootViewController.view.bounds.size.width - adSize.width)/ 2;
 	
 	_adWhirlView.frame = newFrame;
 	self.frame = newFrame;
