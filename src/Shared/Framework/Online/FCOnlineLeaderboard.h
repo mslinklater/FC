@@ -41,6 +41,8 @@ public:
     
     void    PostScore( std::string leaderboardName, unsigned int score );
 
+    void    CheckForStoredScore( std::string leaderboardName );
+    
     void    Show();
     
     // read score API... TBD
@@ -54,8 +56,6 @@ private:
     {
         m_pendingScores.erase( handle );
     }
-    
-    void FailedPost( FCHandle handle );
     
     struct PendingScore {
         std::string     leaderboardName;

@@ -29,6 +29,7 @@ extern void plt_FCPersistentData_Clear();
 extern void plt_FCPersistentData_Print();
 extern void plt_FCPersistentData_SetValueForKey( std::string value, std::string key );
 extern std::string plt_FCPersistentData_ValueForKey( std::string key );
+extern void plt_FCPersistentData_ClearValueForKey( std::string key );
 
 static FCPersistentData* s_pInstance = 0;
 
@@ -218,6 +219,11 @@ bool FCPersistentData::Exists( std::string key )
 	} else {
 		return false;
 	}
+}
+
+void FCPersistentData::ClearValueForKey( std::string key )
+{
+    plt_FCPersistentData_ClearValueForKey( key );
 }
 
 void FCPersistentData::AddStringForKey( std::string value, std::string key )

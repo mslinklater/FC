@@ -74,7 +74,6 @@ void plt_FCOnlineLeaderboard_PostScore(  const char* leaderboardName,
 {
     self = [super init];
     if (self) {
-        // try to sign in
         [self authenticateLocalPlayer];
     }
     return self;
@@ -89,12 +88,9 @@ void plt_FCOnlineLeaderboard_PostScore(  const char* leaderboardName,
         GKScore *scoreReporter = [[GKScore alloc] initWithCategory:leaderboardName];
         scoreReporter.value = score;
         
-        NSLog(@"Posting a score of %d", score);
-        
         [scoreReporter reportScoreWithCompletionHandler:^(NSError *error) {
             if (error != nil)
             {
-                NSLog(@"Error posting: %@", error);
                 (callback)(handle, false);
             }
             else
@@ -107,7 +103,6 @@ void plt_FCOnlineLeaderboard_PostScore(  const char* leaderboardName,
 
 -(void)show
 {
-    NSLog(@"Show GC");
     GKLeaderboardViewController *leaderboardController = [[GKLeaderboardViewController alloc] init];
     if (leaderboardController != nil)
     {

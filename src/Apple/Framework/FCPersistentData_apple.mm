@@ -27,6 +27,7 @@
 void plt_FCPersistentData_Load();
 void plt_FCPersistentData_Save();
 void plt_FCPersistentData_Clear();
+void plt_FCPersistentData_ClearValueForKey( std::string key );
 void plt_FCPersistentData_Print();
 void plt_FCPersistentData_SetValueForKey( std::string value, std::string key );
 std::string plt_FCPersistentData_ValueForKey( std::string key );
@@ -44,6 +45,11 @@ void plt_FCPersistentData_Save()
 void plt_FCPersistentData_Clear()
 {
 	[[FCPersistentData_apple instance] clear];	
+}
+
+void plt_FCPersistentData_ClearValueForKey( std::string key )
+{
+	[[FCPersistentData_apple instance].dataRoot removeObjectForKey:@(key.c_str())];
 }
 
 void plt_FCPersistentData_Print()

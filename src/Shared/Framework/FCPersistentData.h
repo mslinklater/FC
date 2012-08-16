@@ -40,6 +40,8 @@ public:
 	
 	bool Exists( std::string key );
 	
+    void ClearValueForKey( std::string key );
+    
 	void AddStringForKey( std::string value, std::string key );
 	std::string StringForKey( std::string key );
 							 

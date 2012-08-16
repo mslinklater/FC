@@ -22,6 +22,7 @@
 
 #include "FCOnlineLeaderboard.h"
 #include "Shared/Lua/FCLua.h"
+#include "Shared/Framework/FCPersistentData.h"
 
 static FCOnlineLeaderboard* s_pInstance = 0;
 
@@ -58,6 +59,15 @@ static int lua_PostScore( lua_State* _state )
     return 0;
 }
 
+static int lua_CheckForStoredScore( lua_State* _state )
+{
+    FC_LUA_ASSERT_NUMPARAMS(1);
+    FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+    
+    s_pInstance->CheckForStoredScore( lua_tostring(_state, 1) );
+    return 0;
+}
+
 // Impl
 
 FCOnlineLeaderboard* FCOnlineLeaderboard::Instance()
@@ -76,7 +86,8 @@ FCOnlineLeaderboard::FCOnlineLeaderboard()
     FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Available, "FCOnlineLeaderboard.Available");
     FCLua::Instance()->CoreVM()->RegisterCFunction(lua_PostScore, "FCOnlineLeaderboard.PostScore");
     FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Show, "FCOnlineLeaderboard.Show");
-    
+    FCLua::Instance()->CoreVM()->RegisterCFunction(lua_CheckForStoredScore, "FCOnlineLeaderboard.CheckForStoredScore");
+
     // sign in ?
     plt_FCOnlineLeaderboard_Init();
 }
@@ -113,15 +124,33 @@ void FCOnlineLeaderboard::PostScore( std::string leaderboardName, unsigned int s
     }
 }
 
-void FCOnlineLeaderboard::StoreScoreForLater(FCHandle handle)
+void FCOnlineLeaderboard::CheckForStoredScore(std::string leaderboardName)
 {
-    // add score to persistent storage
-    // remove from pending scores map
+    if (Available()) {
+        if (FCPersistentData::Instance()->Exists(leaderboardName + "_highscore"))
+        {
+            PostScore(leaderboardName, FCPersistentData::Instance()->IntForKey(leaderboardName + "_highscore"));
+            FCPersistentData::Instance()->ClearValueForKey(leaderboardName + "_highscore");
+        }
+    }
 }
 
-void FCOnlineLeaderboard::FailedPost( FCHandle handle )
+void FCOnlineLeaderboard::StoreScoreForLater(FCHandle handle)
 {
+    std::string leaderboardName = m_pendingScores[ handle ].leaderboardName;
     
+    int existingScore = 0;
+    
+    if( FCPersistentData::Instance()->Exists( leaderboardName + "_highscore" ) )
+    {
+        existingScore = FCPersistentData::Instance()->IntForKey( leaderboardName + "_highscore" );
+    }
+    
+    if ( m_pendingScores[ handle ].score > existingScore ) {
+        FCPersistentData::Instance()->AddIntForKey( m_pendingScores[ handle ].score, leaderboardName + "_highscore" );
+    }
+    
+    m_pendingScores.erase( handle );
 }
 
 void FCOnlineLeaderboard::ScoreCallback(unsigned int handle, bool success)
@@ -129,6 +158,6 @@ void FCOnlineLeaderboard::ScoreCallback(unsigned int handle, bool success)
     if (success) {
         s_pInstance->SuccessfulPost( handle );
     } else {
-        s_pInstance->FailedPost( handle );
+        s_pInstance->StoreScoreForLater( handle );
     }
 }
