@@ -21,5 +21,101 @@
  */
 
 #include "FCOnlineLeaderboard.h"
+#include "Shared/Lua/FCLua.h"
 
-static FCOnlineLeaderboard* s_pInstance;
+static FCOnlineLeaderboard* s_pInstance = 0;
+
+// Lua Interface
+
+static int lua_Available( lua_State* _state )
+{
+    FC_LUA_ASSERT_NUMPARAMS(0);
+    
+    if ( s_pInstance->Available() ) {
+        lua_pushboolean( _state, 1 );
+    } else {
+        lua_pushboolean( _state, 0 );
+    }
+    
+    return 1;
+}
+
+static int lua_PostScore( lua_State* _state )
+{
+    FC_LUA_ASSERT_NUMPARAMS(2);
+    FC_LUA_ASSERT_TYPE( 1, LUA_TSTRING );
+    FC_LUA_ASSERT_TYPE( 2, LUA_TNUMBER );
+    
+    s_pInstance->PostScore( lua_tostring(_state, 1), lua_tointeger(_state, 2));
+    
+    return 0;
+}
+
+// Impl
+
+FCOnlineLeaderboard* FCOnlineLeaderboard::Instance()
+{
+    if( !s_pInstance ) {
+        s_pInstance = new FCOnlineLeaderboard;
+    }
+    return s_pInstance;
+}
+
+FCOnlineLeaderboard::FCOnlineLeaderboard()
+{
+    // register Lua functions
+    
+    FCLua::Instance()->CoreVM()->CreateGlobalTable("FCOnlineLeaderboard" );
+    FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Available, "FCOnlineLeaderboard.Available");
+    FCLua::Instance()->CoreVM()->RegisterCFunction(lua_PostScore, "FCOnlineLeaderboard.PostScore");
+    
+    // sign in ?
+    plt_FCOnlineLeaderboard_Init();
+}
+
+FCOnlineLeaderboard::~FCOnlineLeaderboard()
+{
+    
+}
+
+bool FCOnlineLeaderboard::Available()
+{
+    return plt_FCOnlineLeaderboard_Available();
+}
+
+void FCOnlineLeaderboard::PostScore( std::string leaderboardName, unsigned int score )
+{
+    FCHandle handle = NewFCHandle();
+    
+    PendingScore newPendingScore;
+    newPendingScore.leaderboardName = leaderboardName;
+    newPendingScore.score = score;
+    
+    m_pendingScores[ handle ] = newPendingScore;
+    
+    if (plt_FCOnlineLeaderboard_Available()) {
+        plt_FCOnlineLeaderboard_PostScore( leaderboardName.c_str(), score, (unsigned int)handle, ScoreCallback );
+    } else {
+        StoreScoreForLater( handle );
+    }
+}
+
+void FCOnlineLeaderboard::StoreScoreForLater(FCHandle handle)
+{
+    // add score to persistent storage
+    // remove from pending scores map
+}
+
+void FCOnlineLeaderboard::FailedPost( FCHandle handle )
+{
+    
+}
+
+void FCOnlineLeaderboard::ScoreCallback(unsigned int handle, bool success)
+{
+    if (success) {
+        s_pInstance->SuccessfulPost( handle );
+    } else {
+        s_pInstance->FailedPost( handle );
+    }
+}

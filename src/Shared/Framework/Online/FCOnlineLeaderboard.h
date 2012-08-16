@@ -23,9 +23,46 @@
 #ifndef CR2_FCOnlineLeaderboard_h
 #define CR2_FCOnlineLeaderboard_h
 
+#include <string>
+#include <map>
+#include "FCOnline_platform.h"
+#include "Shared/Core/FCCore.h"
+
 class FCOnlineLeaderboard
 {
 public:
+    
+    static FCOnlineLeaderboard* Instance();
+
+    FCOnlineLeaderboard();
+    virtual ~FCOnlineLeaderboard();
+    
+    bool    Available();    // Do we really need this ? Should auto-save for when online anyway
+    
+    void    PostScore( std::string leaderboardName, unsigned int score );
+
+    // read score API... TBD
+    
+private:
+    
+    static void ScoreCallback( unsigned int handle, bool success );
+    void StoreScoreForLater( FCHandle handle );
+    
+    void SuccessfulPost( FCHandle handle )
+    {
+        m_pendingScores.erase( handle );
+    }
+    
+    void FailedPost( FCHandle handle );
+    
+    struct PendingScore {
+        std::string     leaderboardName;
+        unsigned int    score;
+    };
+    
+    typedef std::map<FCHandle, PendingScore>    PendingScoreMap;
+    
+    PendingScoreMap m_pendingScores;
 };
 
 #endif

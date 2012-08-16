@@ -206,7 +206,7 @@ void plt_FCAudio_SourcePitch( FCHandle h, float pitch )
 static void InterruptionListener(	void *	inClientData,
 						  UInt32	inInterruptionState)
 {
-	NSLog(@"interruptionListener");
+//	NSLog(@"interruptionListener");
 }
 
 static void RouteChangeListener(	void *                  inClientData,
@@ -214,7 +214,7 @@ static void RouteChangeListener(	void *                  inClientData,
 									UInt32					inDataSize,
 									const void *            inData)
 {
-	NSLog(@"RouteChangeListener");
+//	NSLog(@"RouteChangeListener");
 }
 
 static void CollisionSubscriber(tCollisionMap& collisions)
@@ -287,7 +287,7 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 				break;
 				
 			default:
-				NSLog(@"%@", [FCAudioManager_apple instance].activeSources);
+//				NSLog(@"%@", [FCAudioManager_apple instance].activeSources);
 				NSString* string = [NSString stringWithFormat:@"Unknown AL error %d", error];
 				FC_LOG( [string UTF8String] );
 				break;

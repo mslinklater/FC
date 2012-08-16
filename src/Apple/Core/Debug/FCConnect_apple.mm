@@ -308,42 +308,42 @@ static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
 
 -(void)netServiceWillPublish:(NSNetService *)sender
 {
-	NSLog(@"netServiceWillPublish");
+//	NSLog(@"netServiceWillPublish");
 }
 
 -(void)netServiceDidPublish:(NSNetService*)sender
 {
-	NSLog(@"netServiceDidPublish");
+//	NSLog(@"netServiceDidPublish");
 }
 
 -(void)netService:(NSNetService*)sender didNotPublish:(NSDictionary *)errorDict
 {
-	NSLog(@"netService:didNotPublish");
+//	NSLog(@"netService:didNotPublish");
 }
 
 -(void)netServiceWillResolve:(NSNetService *)sender
 {
-	NSLog(@"netServiceWillResolve");
+//	NSLog(@"netServiceWillResolve");
 }
 
 -(void)netService:(NSNetService *)sender didNotResolve:(NSDictionary *)errorDict
 {
-	NSLog(@"netService:didNotResolve");
+//	NSLog(@"netService:didNotResolve");
 }
 
 -(void)netServiceDidResolveAddress:(NSNetService *)sender
 {
-	NSLog(@"netServiceDidResolveAddress");
+//	NSLog(@"netServiceDidResolveAddress");
 }
 
 -(void)netService:(NSNetService *)sender didUpdateTXTRecordData:(NSData *)data
 {
-	NSLog(@"netService:didUpdateTXTRecordData");
+//	NSLog(@"netService:didUpdateTXTRecordData");
 }
 
 -(void)netServiceDidStop:(NSNetService *)sender
 {
-	NSLog(@"netServiceDidStop");
+//	NSLog(@"netServiceDidStop");
 }
 
 #pragma mark - NSStreamDelegate

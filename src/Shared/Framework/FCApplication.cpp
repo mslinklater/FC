@@ -33,6 +33,7 @@
 #include "Shared/Framework/FCPersistentData.h"
 #include "Shared/Physics/FCPhysics.h"
 #include "Shared/Framework/Actor/FCActorSystem.h"
+#include "Shared/Framework/Online/FCOnlineLeaderboard.h"
 
 static FCApplication* s_pInstance = 0;
 
@@ -184,6 +185,7 @@ void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 //	FCConnect::Instance()->Start();
 //	FCConnect::Instance()->EnableWithName("FCConnect");
 	FCAnalytics::Instance();
+    FCOnlineLeaderboard::Instance();
 	
 	FCTwitter::Instance();
 	FCAudioManager::Instance();
@@ -339,9 +341,11 @@ void FCApplication::WillEnterForeground()
 
 void FCApplication::DidBecomeActive()
 {
+#if defined(DEBUG)
 	FCConnect::Instance()->Start();
 	FCConnect::Instance()->EnableWithName("FCConnect");
-	
+#endif
+    
 	if( s_sessionActiveAnalyticsHandle != kFCHandleInvalid )
 	{
 		FCAnalytics::Instance()->DiscardTimedEvent( kFCHandleInvalid );

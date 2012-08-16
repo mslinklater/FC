@@ -118,8 +118,8 @@ std::string plt_FCPersistentData_ValueForKey( std::string key )
 
 -(void)print
 {
-	NSLog(@"Persistent Sote:");
-	NSLog(@"%@", self.dataRoot);
+//	NSLog(@"Persistent Sote:");
+//	NSLog(@"%@", self.dataRoot);
 }
 
 @end

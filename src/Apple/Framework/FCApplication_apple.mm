@@ -240,7 +240,7 @@ static void uncaughtExceptionHandler(NSException *exception) {
 	[_displayLink setFrameInterval:1];
 	[_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	
-	s_rootViewController.view.backgroundColor = [UIColor redColor];
+	s_rootViewController.view.backgroundColor = [UIColor blackColor];
     UIView* gameRootView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     [s_rootViewController.view addSubview:gameRootView];
     [FCViewManager_apple instance].rootView = gameRootView;

@@ -463,8 +463,6 @@ void plt_FCViewManager_SetViewBackgroundColor( const std::string& viewName, cons
 	frame.origin.y /= containerFrame.size.height;
 	frame.size.height /= containerFrame.size.height;
 	
-	NSLog(@"%f %f %f %f", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height);
-	
 	return frame;
 }
 

@@ -38,14 +38,14 @@ bool plt_FCTwitter_CanTweet()
 	return [[FCTwitter_apple instance] canTweet];
 }
 
-bool plt_FCTwitter_TweetWithText( std::string text )
+bool plt_FCTwitter_TweetWithText( const char* text )
 {
-	return [[FCTwitter_apple instance] tweetWithText:@(text.c_str())];
+	return [[FCTwitter_apple instance] tweetWithText:@(text)];
 }
 
-bool plt_FCTwitter_AddHyperlink( std::string hyperlink )
+bool plt_FCTwitter_AddHyperlink( const char* hyperlink )
 {
-	return [[FCTwitter_apple instance] addHyperlink:@(hyperlink.c_str())];
+	return [[FCTwitter_apple instance] addHyperlink:@(hyperlink)];
 }
 
 void plt_FCTwitter_Send()

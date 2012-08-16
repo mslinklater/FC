@@ -30,15 +30,8 @@ class lua_State;
 
 //extern void FCError_RegisterLuaFunctions( lua_State* _state );
 
-extern void FCHalt();
 
-extern void FCLog( std::string log );
 
-//extern void FCAssert( bool condition );
-
-extern void FCFatal( std::string message );
-
-extern void FCWarning( std::string message );
 
 class FCError
 {
@@ -48,12 +41,17 @@ public:
 
 // Always present ----------------------------
 
+extern void FCHalt();
+
 #define FC_HALT FCHalt()
 #define FC_UNUSED( n ) (void)n
 
 // Only when debug ---------------------------
 
 #if defined (DEBUG)
+
+extern void FCLog( std::string log );
+extern void FCWarning( std::string message );
 
 #define FC_LOG( n ) FCLog( n )
 #define FC_WARNING( n ) FCWarning( n )
@@ -68,6 +66,9 @@ public:
 #endif // DEBUG
 
 // Always present ----------------------------
+
+extern void FCAssert( bool condition );
+extern void FCFatal( std::string message );
 
 #define FC_ASSERT( n ) if(!(n)) FC_HALT
 #define FC_ASSERT_MSG( n, msg ) if(!(n)){ FC_LOG( msg ); FC_HALT; }

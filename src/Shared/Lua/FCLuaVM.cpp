@@ -159,7 +159,7 @@ FCLuaVM::~FCLuaVM()
 
 void FCLuaVM::LoadScript( std::string path )
 {
-	FCLog(std::string("Loading Lua script: ") + path );
+	FC_LOG( (std::string("Loading Lua script: ") + path) );
 	common_LoadScriptForState(path, m_state, false);
 }
 

@@ -22,11 +22,7 @@
 
 #include "FCTwitter.h"
 #include "Shared/Lua/FCLua.h"
-
-extern bool plt_FCTwitter_CanTweet();
-extern bool plt_FCTwitter_TweetWithText( std::string text );
-extern bool plt_FCTwitter_AddHyperlink( std::string hyperlink );
-extern void plt_FCTwitter_Send();
+#include "FCOnline_platform.h"
 
 static FCTwitter* s_pInstance = 0;
 
@@ -99,12 +95,12 @@ bool FCTwitter::CanTweet()
 
 bool FCTwitter::TweetWithText( std::string text )
 {
-	return plt_FCTwitter_TweetWithText( text );
+	return plt_FCTwitter_TweetWithText( text.c_str() );
 }
 
 bool FCTwitter::AddHyperlink( std::string hyperlink )
 {
-	return plt_FCTwitter_AddHyperlink( hyperlink );
+	return plt_FCTwitter_AddHyperlink( hyperlink.c_str() );
 }
 
 void FCTwitter::Send()
