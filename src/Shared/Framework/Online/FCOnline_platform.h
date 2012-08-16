@@ -35,6 +35,7 @@ extern void plt_FCTwitter_Send();
 typedef void (*plt_FCOnlineLeaderboard_PostCallback)( unsigned int handle, bool success );
 
 extern void plt_FCOnlineLeaderboard_Init( void );
+extern void plt_FCOnlineLeaderboard_Show( void );
 extern bool plt_FCOnlineLeaderboard_Available( void );
 extern void plt_FCOnlineLeaderboard_PostScore(  const char* leaderboardName,
                                                 unsigned int score,

@@ -41,6 +41,8 @@ public:
     
     void    PostScore( std::string leaderboardName, unsigned int score );
 
+    void    Show();
+    
     // read score API... TBD
     
 private:

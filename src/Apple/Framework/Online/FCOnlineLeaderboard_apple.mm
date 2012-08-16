@@ -22,6 +22,7 @@
 
 #import "FCOnlineLeaderboard_apple.h"
 
+extern UIViewController* s_rootViewController;
 
 static FCOnlineLeaderboard_apple* s_pInstance;
 
@@ -35,6 +36,11 @@ void plt_FCOnlineLeaderboard_PostScore(  const char* leaderboardName,
 void plt_FCOnlineLeaderboard_Init( void )
 {
     [FCOnlineLeaderboard_apple instance];
+}
+
+void plt_FCOnlineLeaderboard_Show( void )
+{
+    [s_pInstance show];
 }
 
 bool plt_FCOnlineLeaderboard_Available( void )
@@ -99,6 +105,17 @@ void plt_FCOnlineLeaderboard_PostScore(  const char* leaderboardName,
     }
 }
 
+-(void)show
+{
+    NSLog(@"Show GC");
+    GKLeaderboardViewController *leaderboardController = [[GKLeaderboardViewController alloc] init];
+    if (leaderboardController != nil)
+    {
+        leaderboardController.leaderboardDelegate = self;
+        [s_rootViewController presentModalViewController: leaderboardController animated: YES];
+    }
+}
+
 -(void)authenticateLocalPlayer
 {
     GKLocalPlayer *localPlayer = [GKLocalPlayer localPlayer];
@@ -112,6 +129,10 @@ void plt_FCOnlineLeaderboard_PostScore(  const char* leaderboardName,
     }];
 }
 
+- (void)leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController
+{
+    [s_rootViewController dismissModalViewControllerAnimated:YES];
+}
 @end
 
 

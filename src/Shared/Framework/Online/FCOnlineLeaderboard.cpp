@@ -40,6 +40,13 @@ static int lua_Available( lua_State* _state )
     return 1;
 }
 
+static int lua_Show( lua_State* _state )
+{
+    s_pInstance->Show();
+    
+    return 0;
+}
+
 static int lua_PostScore( lua_State* _state )
 {
     FC_LUA_ASSERT_NUMPARAMS(2);
@@ -68,6 +75,7 @@ FCOnlineLeaderboard::FCOnlineLeaderboard()
     FCLua::Instance()->CoreVM()->CreateGlobalTable("FCOnlineLeaderboard" );
     FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Available, "FCOnlineLeaderboard.Available");
     FCLua::Instance()->CoreVM()->RegisterCFunction(lua_PostScore, "FCOnlineLeaderboard.PostScore");
+    FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Show, "FCOnlineLeaderboard.Show");
     
     // sign in ?
     plt_FCOnlineLeaderboard_Init();
@@ -81,6 +89,11 @@ FCOnlineLeaderboard::~FCOnlineLeaderboard()
 bool FCOnlineLeaderboard::Available()
 {
     return plt_FCOnlineLeaderboard_Available();
+}
+
+void FCOnlineLeaderboard::Show()
+{
+    plt_FCOnlineLeaderboard_Show();
 }
 
 void FCOnlineLeaderboard::PostScore( std::string leaderboardName, unsigned int score )

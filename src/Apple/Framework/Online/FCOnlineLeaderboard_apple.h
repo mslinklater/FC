@@ -25,7 +25,7 @@
 
 #include "Shared/Framework/Online/FCOnline_platform.h"
 
-@interface FCOnlineLeaderboard_apple : NSObject {
+@interface FCOnlineLeaderboard_apple : NSObject <GKLeaderboardViewControllerDelegate> {
     GKLocalPlayer*  _localPlayer;
 }
 @property(nonatomic, strong) GKLocalPlayer* localPlayer;
@@ -39,4 +39,5 @@
       withHandle:(unsigned int)handle
         callback:(plt_FCOnlineLeaderboard_PostCallback)callback;
 
+-(void)show;
 @end
