@@ -403,8 +403,10 @@ void plt_FCViewManager_SetViewBackgroundColor( const std::string& viewName, cons
 		scaledFrame.origin.x = containerFrame.size.width * frame.origin.x;			
 		scaledFrame.origin.y = containerFrame.size.height * frame.origin.y;			
 		
-		CGSize mainViewSize;	//= [[FCApplication_old instance] mainViewSize];
-		FCVector2f size = FCApplication::Instance()->MainViewSize();
+		CGSize mainViewSize;
+        FCVector2f size;
+        size.x = _rootView.frame.size.width;
+        size.y = _rootView.frame.size.height;
 		mainViewSize.width = size.x;
 		mainViewSize.height = size.y;
 		

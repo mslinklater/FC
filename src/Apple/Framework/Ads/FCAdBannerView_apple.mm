@@ -37,8 +37,6 @@ extern UIViewController* s_rootViewController;
 		_adWhirlView = [AdWhirlView requestAdWhirlViewWithDelegate:self];
 		[self addSubview:_adWhirlView];
 
-//        [s_rootViewController.view addSubview:_adWhirlView];
-        
 		FCLua::Instance()->CoreVM()->SetGlobalNumber("AdBannerHeight", 0);
     }
     return self;
@@ -48,14 +46,6 @@ extern UIViewController* s_rootViewController;
 {
 	FCLua::Instance()->CoreVM()->SetGlobalNumber("AdBannerHeight", 0);
 }
-
-//-(void)setFrame:(CGRect)frame
-//{
-////    if( frame.origin.x < 0.0f )
-//  //      frame.origin.x = 0.0f;
-//    NSLog(@"%f %f %f %f", frame.origin.x, frame.origin.y, frame.size.width, frame.size.height );
-//    [super setFrame:frame];
-//}
 
 - (NSString *)adWhirlApplicationKey 
 {
@@ -69,8 +59,6 @@ extern UIViewController* s_rootViewController;
 
 - (void)adWhirlDidReceiveAd:(AdWhirlView *)adWhirlView 
 {
-//	[vm.rootView bringSubviewToFront:self];
-//    [s_rootViewController.view bringSubviewToFront:self];
 	[self bringSubviewToFront:_adWhirlView];
 	
 	[UIView beginAnimations:@"blah" context:nil];
