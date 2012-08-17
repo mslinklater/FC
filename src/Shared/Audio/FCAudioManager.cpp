@@ -22,30 +22,7 @@
 
 #include "FCAudioManager.h"
 #include "Shared/Lua/FCLua.h"
-
-extern void plt_FCAudio_PlayMusic( std::string name );
-extern void plt_FCAudio_SetMusicVolume( float vol );
-extern void plt_FCAudio_SetSFXVolume( float vol );
-extern void plt_FCAudio_SetMusicFinishedCallback( std::string name );
-extern void plt_FCAudio_PauseMusic();
-extern void plt_FCAudio_ResumeMusic();
-extern void plt_FCAudio_StopMusic();
-extern void plt_FCAudio_DeleteBuffer( FCHandle h );
-extern FCHandle plt_FCAudio_LoadSimpleSound( std::string name );
-extern void plt_FCAudio_UnloadSimpleSound( FCHandle h );
-extern void plt_FCAudio_PlaySimpleSound( FCHandle h );
-extern void plt_FCAudio_SubscribeToPhysics2D();
-extern void plt_FCAudio_UnsubscribeToPhysics2D();
-extern FCHandle plt_FCAudio_CreateBufferWithFile( std::string name );
-extern void plt_FCAudio_AddCollisionTypeHandler( std::string type1, std::string type2, std::string func );
-extern void plt_FCAudio_RemoveCollisionTypeHandler( std::string type1, std::string type2 );
-extern FCHandle plt_FCAudio_PrepareSourceWithBuffer( FCHandle h, bool vital );
-extern void plt_FCAudio_SourceSetVolume( FCHandle h, float vol );
-extern void plt_FCAudio_SourcePlay( FCHandle h );
-extern void plt_FCAudio_SourceStop( FCHandle h );
-extern void plt_FCAudio_SourceLooping( FCHandle h, bool looping );
-extern void plt_FCAudio_SourcePosition( FCHandle h, float x, float y, float z );
-extern void plt_FCAudio_SourcePitch( FCHandle h, float pitch );
+#include "FCAudio_platform.h"
 
 static FCAudioManager* s_pInstance;
 

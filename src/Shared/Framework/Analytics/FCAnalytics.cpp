@@ -21,12 +21,8 @@
  */
 
 #include "FCAnalytics.h"
-
 #include "Shared/Lua/FCLua.h"
-
-extern void		plt_FCAnalytics_RegisterEvent( std::string event );
-extern void		plt_FCAnalytics_BeginTimedEvent( std::string event );
-extern void		plt_FCAnalytics_EndTimedEvent( std::string event );
+#include "FCAnalytics_platform.h"
 
 static FCAnalytics* s_pInstance = 0;
 

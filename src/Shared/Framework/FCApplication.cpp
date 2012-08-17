@@ -35,11 +35,13 @@
 #include "Shared/Framework/Actor/FCActorSystem.h"
 #include "Shared/Framework/Online/FCOnlineLeaderboard.h"
 
+#include "FCFramework_platform.h"
+
 static FCApplication* s_pInstance = 0;
 
 static FCHandle	s_sessionActiveAnalyticsHandle = kFCHandleInvalid;
 
-extern FCApplication* plt_FCApplication_Instance();
+
 
 // Lua functions
 

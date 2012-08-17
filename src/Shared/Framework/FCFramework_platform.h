@@ -20,19 +20,18 @@
  THE SOFTWARE.
  */
 
-#include "FCAds.h"
-#include <string>
-#include "FCAds_platform.h"
+#ifndef CR2_FCFramework_platform_h
+#define CR2_FCFramework_platform_h
 
+class FCApplication;
 
-namespace FCAds {
-	void ShowBanner( std::string key )
-	{
-		plt_FCAds_ShowBanner( key );
-	}
-	
-	void HideBanner()
-	{
-		plt_FCAds_HideBanner();		
-	}
-}
+extern FCApplication* plt_FCApplication_Instance();
+
+extern void plt_FCPersistentData_Load();
+extern void plt_FCPersistentData_Save();
+extern void plt_FCPersistentData_Clear();
+extern void plt_FCPersistentData_Print();
+extern void plt_FCPersistentData_SetValueForKey( std::string value, std::string key );
+extern std::string plt_FCPersistentData_ValueForKey( std::string key );
+extern void plt_FCPersistentData_ClearValueForKey( std::string key );
+#endif

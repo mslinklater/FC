@@ -22,14 +22,7 @@
 
 #include "FCPersistentData.h"
 #include "Shared/Lua/FCLua.h"
-
-extern void plt_FCPersistentData_Load();
-extern void plt_FCPersistentData_Save();
-extern void plt_FCPersistentData_Clear();
-extern void plt_FCPersistentData_Print();
-extern void plt_FCPersistentData_SetValueForKey( std::string value, std::string key );
-extern std::string plt_FCPersistentData_ValueForKey( std::string key );
-extern void plt_FCPersistentData_ClearValueForKey( std::string key );
+#include "FCFramework_platform.h"
 
 static FCPersistentData* s_pInstance = 0;
 

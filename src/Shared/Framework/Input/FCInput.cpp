@@ -22,10 +22,7 @@
 
 #include "FCInput.h"
 #include "Shared/Lua/FCLua.h"
-
-extern void plt_FCInput_SetTapSubscriberFunc( FCInputPlatformTapSubscriber func );
-extern void plt_FCInput_AddTapToView( std::string viewName );
-extern void plt_FCInput_RemoveTapFromView( std::string viewName );
+#include "FCInput_platform.h"
 
 static FCInput* s_pInstance;
 

@@ -20,19 +20,11 @@
  THE SOFTWARE.
  */
 
-#include "FCAds.h"
-#include <string>
-#include "FCAds_platform.h"
+#ifndef CR2_FCAnalytics_platform_h
+#define CR2_FCAnalytics_platform_h
 
+extern void		plt_FCAnalytics_RegisterEvent( std::string event );
+extern void		plt_FCAnalytics_BeginTimedEvent( std::string event );
+extern void		plt_FCAnalytics_EndTimedEvent( std::string event );
 
-namespace FCAds {
-	void ShowBanner( std::string key )
-	{
-		plt_FCAds_ShowBanner( key );
-	}
-	
-	void HideBanner()
-	{
-		plt_FCAds_HideBanner();		
-	}
-}
+#endif

@@ -22,26 +22,7 @@
 
 #include "FCViewManager.h"
 #include "Shared/Lua/FCLua.h"
-
-extern void plt_FCViewManager_SetScreenAspectRatio( float w, float h );
-extern void plt_FCViewManager_SetViewText( const std::string& viewName, std::string text );
-extern void plt_FCViewManager_SetViewTextColor( const std::string& viewName, FCColor4f color );
-extern FCRect plt_FCViewManager_ViewFrame( const std::string& viewName );
-extern FCRect plt_FCViewManager_FullFrame();
-extern void plt_FCViewManager_SetViewFrame( const std::string& viewName, const FCRect& rect, float seconds );
-extern void plt_FCViewManager_SetViewAlpha( const std::string& viewName, float alpha, float seconds );
-extern void plt_FCViewManager_SetViewOnSelectLuaFunction( const std::string& viewName, const std::string& func );
-extern void plt_FCViewManager_SetViewImage( const std::string& viewName, const std::string& image );
-extern void plt_FCViewManager_SetViewURL( const std::string& viewName, const std::string& url );
-extern void plt_FCViewManager_SetViewBackgroundColor( const std::string& viewName, const FCColor4f& color );
-extern void plt_FCViewManager_CreateView( const std::string& viewName, const std::string& className, const std::string& parent );
-extern void plt_FCViewManager_DestroyView( const std::string& viewName );
-extern void plt_FCViewManager_SetViewPropertyInt( const std::string& viewName, const std::string& property, int32_t value );
-extern void plt_FCViewManager_SetViewPropertyString( const std::string& viewName, const std::string& property, const std::string& value );
-
-extern void plt_FCViewManager_SendViewToFront( const std::string& viewName );
-extern void plt_FCViewManager_SendViewToBack( const std::string& viewName );
-extern bool plt_FCViewManager_ViewExists( const std::string& viewName );
+#include "FCUI_platform.h"
 
 static FCViewManager* s_pInstance = 0;
 

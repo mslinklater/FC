@@ -29,22 +29,22 @@
 #import "FCLua.h"
 #include "Shared/Physics/FCPhysics.h"
 
-void plt_FCAudio_PlayMusic( std::string name );
+void plt_FCAudio_PlayMusic( const char* name );
 void plt_FCAudio_SetMusicVolume( float vol );
 void plt_FCAudio_SetSFXVolume( float vol );
-void plt_FCAudio_SetMusicFinishedCallback( std::string name );
+void plt_FCAudio_SetMusicFinishedCallback( const char* name );
 void plt_FCAudio_PauseMusic();
 void plt_FCAudio_ResumeMusic();
 void plt_FCAudio_StopMusic();
 void plt_FCAudio_DeleteBuffer( FCHandle h );
-FCHandle plt_FCAudio_LoadSimpleSound( std::string name );
+FCHandle plt_FCAudio_LoadSimpleSound( const char* name );
 void plt_FCAudio_UnloadSimpleSound( FCHandle h );
 void plt_FCAudio_PlaySimpleSound( FCHandle h );
 void plt_FCAudio_SubscribeToPhysics2D();
 void plt_FCAudio_UnsubscribeToPhysics2D();
-FCHandle plt_FCAudio_CreateBufferWithFile( std::string name );
-void plt_FCAudio_AddCollisionTypeHandler( std::string type1, std::string type2, std::string func );
-void plt_FCAudio_RemoveCollisionTypeHandler( std::string type1, std::string type2 );
+FCHandle plt_FCAudio_CreateBufferWithFile( const char* name );
+void plt_FCAudio_AddCollisionTypeHandler( const char* type1, const char* type2, const char* func );
+void plt_FCAudio_RemoveCollisionTypeHandler( const char* type1, const char* type2 );
 FCHandle plt_FCAudio_PrepareSourceWithBuffer( FCHandle h, bool vital );
 void plt_FCAudio_SourceSetVolume( FCHandle h, float vol );
 void plt_FCAudio_SourcePlay( FCHandle h );
@@ -53,9 +53,9 @@ void plt_FCAudio_SourceLooping( FCHandle h, bool looping );
 void plt_FCAudio_SourcePosition( FCHandle h, float x, float y, float z );
 void plt_FCAudio_SourcePitch( FCHandle h, float pitch );
 
-void plt_FCAudio_PlayMusic( std::string name )
+void plt_FCAudio_PlayMusic( const char* name )
 {
-	NSString* namestring = @(name.c_str());
+	NSString* namestring = @(name);
 	[[FCAudioManager_apple instance] playMusic:namestring];
 }
 
@@ -69,9 +69,9 @@ void plt_FCAudio_SetSFXVolume( float vol )
 	[[FCAudioManager_apple instance] setSfxVolume:vol];
 }
 
-void plt_FCAudio_SetMusicFinishedCallback( std::string name )
+void plt_FCAudio_SetMusicFinishedCallback( const char* name )
 {
-	NSString* namestring = @(name.c_str());
+	NSString* namestring = @(name);
 	[[FCAudioManager_apple instance] setMusicFinishedLuaCallback:namestring];
 }
 
@@ -95,9 +95,9 @@ void plt_FCAudio_DeleteBuffer( FCHandle h )
 	[[FCAudioManager_apple instance] deleteBuffer:h];
 }
 
-FCHandle plt_FCAudio_LoadSimpleSound( std::string name )
+FCHandle plt_FCAudio_LoadSimpleSound( const char* name )
 {
-	NSString* namestring = @(name.c_str());
+	NSString* namestring = @(name);
 	return [[FCAudioManager_apple instance] loadSimpleSound:namestring];
 }
 
@@ -121,25 +121,25 @@ void plt_FCAudio_UnsubscribeToPhysics2D()
 	[[FCAudioManager_apple instance] unsubscribeFromPhysics2D];
 }
 
-FCHandle plt_FCAudio_CreateBufferWithFile( std::string name )
+FCHandle plt_FCAudio_CreateBufferWithFile( const char* name )
 {
-	NSString* namestring = @(name.c_str());
+	NSString* namestring = @(name);
 	
 	return [[FCAudioManager_apple instance] createBufferWithFile:namestring];
 }
 
-void plt_FCAudio_AddCollisionTypeHandler( std::string type1, std::string type2, std::string func )
+void plt_FCAudio_AddCollisionTypeHandler( const char* type1, const char* type2, const char* func )
 {
-	NSString* type1string = @(type1.c_str());
-	NSString* type2string = @(type2.c_str());
-	NSString* funcstring = @(func.c_str());
+	NSString* type1string = @(type1);
+	NSString* type2string = @(type2);
+	NSString* funcstring = @(func);
 	[[FCAudioManager_apple instance] addCollisionTypeHanderFor:type1string andType:type2string luaFunc:funcstring];
 }
 
-void plt_FCAudio_RemoveCollisionTypeHandler( std::string type1, std::string type2 )
+void plt_FCAudio_RemoveCollisionTypeHandler( const char* type1, const char* type2 )
 {
-	NSString* type1string = @(type1.c_str());
-	NSString* type2string = @(type2.c_str());
+	NSString* type1string = @(type1);
+	NSString* type2string = @(type2);
 	[[FCAudioManager_apple instance] removeCollisionTypeHanderFor:type1string andType:type2string];
 }
 

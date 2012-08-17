@@ -20,19 +20,10 @@
  THE SOFTWARE.
  */
 
-#include "FCAds.h"
-#include <string>
-#include "FCAds_platform.h"
+#ifndef CR2_FCAds_platform_h
+#define CR2_FCAds_platform_h
 
+extern void plt_FCAds_ShowBanner( std::string key );
+extern void plt_FCAds_HideBanner();
 
-namespace FCAds {
-	void ShowBanner( std::string key )
-	{
-		plt_FCAds_ShowBanner( key );
-	}
-	
-	void HideBanner()
-	{
-		plt_FCAds_HideBanner();		
-	}
-}
+#endif
