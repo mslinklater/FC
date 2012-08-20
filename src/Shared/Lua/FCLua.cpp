@@ -194,7 +194,7 @@ FCLua::FCLua()
 	m_coreVM = new FCLuaVM;
 	m_coreVM->AddStandardLibraries();
 	
-#if defined (DEBUG)
+#if defined (FC_DEBUG)
 	lua_pushboolean(m_coreVM->State(), 1);
 #else
 	lua_pushboolean(m_coreVM->State(), 0);

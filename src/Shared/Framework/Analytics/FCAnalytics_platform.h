@@ -23,8 +23,8 @@
 #ifndef CR2_FCAnalytics_platform_h
 #define CR2_FCAnalytics_platform_h
 
-extern void		plt_FCAnalytics_RegisterEvent( std::string event );
-extern void		plt_FCAnalytics_BeginTimedEvent( std::string event );
-extern void		plt_FCAnalytics_EndTimedEvent( std::string event );
+extern void		plt_FCAnalytics_RegisterEvent( const char* event );
+extern void		plt_FCAnalytics_BeginTimedEvent( const char* event );
+extern void		plt_FCAnalytics_EndTimedEvent( const char* event );
 
 #endif

@@ -28,7 +28,7 @@ static FCBuild* s_pInstance = 0;
 static int lua_Debug( lua_State* _state )
 {
 	FC_LUA_ASSERT_NUMPARAMS(0);
-#if DEBUG
+#if FC_DEBUG
 	lua_pushboolean(_state, 1);
 #else
 	lua_pushboolean(_state, 0);

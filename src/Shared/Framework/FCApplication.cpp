@@ -343,7 +343,7 @@ void FCApplication::WillEnterForeground()
 
 void FCApplication::DidBecomeActive()
 {
-#if defined(DEBUG)
+#if defined(FC_DEBUG)
 	FCConnect::Instance()->Start();
 	FCConnect::Instance()->EnableWithName("FCConnect");
 #endif

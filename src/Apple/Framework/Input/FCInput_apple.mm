@@ -36,11 +36,11 @@ void plt_FCInput_SetTapSubscriberFunc( FCInputPlatformTapSubscriber func )
 	[FCInput_apple instance].tapSubscriber = func;
 }
 
-void plt_FCInput_AddTapToView( std::string viewName )
+void plt_FCInput_AddTapToView( const char* viewName )
 {
 	FC_ASSERT(s_pInstance);
 	
-	NSString* stringViewName = @(viewName.c_str());
+	NSString* stringViewName = @(viewName);
 	
 	UIView* thisView = [[FCViewManager_apple instance] viewNamed:stringViewName];
 
@@ -53,11 +53,11 @@ void plt_FCInput_AddTapToView( std::string viewName )
 	[s_pInstance.tapDictionary setValue:gr forKey:stringViewName];
 }
 
-void plt_FCInput_RemoveTapFromView( std::string viewName )
+void plt_FCInput_RemoveTapFromView( const char* viewName )
 {
 	FC_ASSERT(s_pInstance);
 	
-	NSString* stringViewName = @(viewName.c_str());
+	NSString* stringViewName = @(viewName);
 	
 	UIView* thisView = [[FCViewManager_apple instance] viewNamed:stringViewName];
 	

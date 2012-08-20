@@ -48,7 +48,7 @@ extern void FCHalt();
 
 // Only when debug ---------------------------
 
-#if defined (DEBUG)
+#if defined (FC_DEBUG)
 
 extern void FCLog( std::string log );
 extern void FCWarning( std::string message );

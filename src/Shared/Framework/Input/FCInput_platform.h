@@ -24,7 +24,7 @@
 #define CR2_FCInput_platform_h
 
 extern void plt_FCInput_SetTapSubscriberFunc( FCInputPlatformTapSubscriber func );
-extern void plt_FCInput_AddTapToView( std::string viewName );
-extern void plt_FCInput_RemoveTapFromView( std::string viewName );
+extern void plt_FCInput_AddTapToView( const char* viewName );
+extern void plt_FCInput_RemoveTapFromView( const char* viewName );
 
 #endif

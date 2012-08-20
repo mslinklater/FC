@@ -39,7 +39,7 @@ extern std::string FCGLQueryExtensions( void );
 
 extern GLint FCGLCapsMaxTextureSize( void );
 
-#if defined (DEBUG)
+#if defined (FC_DEBUG)
 #define GLCHECK FCGLCheckErrors()
 #else
 #define GLCHECK

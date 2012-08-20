@@ -92,12 +92,12 @@ FCAnalytics* FCAnalytics::Instance()
 
 void FCAnalytics::RegisterEvent(std::string event)
 {
-	plt_FCAnalytics_RegisterEvent( event );
+	plt_FCAnalytics_RegisterEvent( event.c_str() );
 }
 
 FCHandle FCAnalytics::BeginTimedEvent(std::string event)
 {
-	plt_FCAnalytics_BeginTimedEvent( event );
+	plt_FCAnalytics_BeginTimedEvent( event.c_str() );
 	FCHandle h = NewFCHandle();
 	m_timedEvents[h] = event;
 	return h;
@@ -106,7 +106,7 @@ FCHandle FCAnalytics::BeginTimedEvent(std::string event)
 void FCAnalytics::EndTimedEvent(FCHandle hEvent)
 {
 	std::string event = m_timedEvents[hEvent];	
-	plt_FCAnalytics_EndTimedEvent( event );
+	plt_FCAnalytics_EndTimedEvent( event.c_str() );
 	m_timedEvents.erase( hEvent );
 }
 

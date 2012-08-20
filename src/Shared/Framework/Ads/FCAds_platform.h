@@ -23,7 +23,7 @@
 #ifndef CR2_FCAds_platform_h
 #define CR2_FCAds_platform_h
 
-extern void plt_FCAds_ShowBanner( std::string key );
+extern void plt_FCAds_ShowBanner( const char* key );
 extern void plt_FCAds_HideBanner();
 
 #endif

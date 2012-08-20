@@ -375,17 +375,17 @@ FCViewManager* FCViewManager::Instance()
 
 void FCViewManager::SetViewText( const std::string& viewName, std::string text )
 {
-	plt_FCViewManager_SetViewText( viewName, text );
+	plt_FCViewManager_SetViewText( viewName.c_str(), text.c_str() );
 }
 
 void FCViewManager::SetViewTextColor( const std::string& viewName, FCColor4f color)
 {
-	plt_FCViewManager_SetViewTextColor( viewName, color );
+	plt_FCViewManager_SetViewTextColor( viewName.c_str(), color );
 }
 
 FCRect FCViewManager::ViewFrame( const std::string& viewName)
 {
-	return plt_FCViewManager_ViewFrame( viewName );
+	return plt_FCViewManager_ViewFrame( viewName.c_str() );
 }
 
 FCRect FCViewManager::FullFrame()
@@ -395,66 +395,66 @@ FCRect FCViewManager::FullFrame()
 
 void FCViewManager::SetViewFrame(const std::string &viewName, const FCRect &rect, float seconds)
 {
-	plt_FCViewManager_SetViewFrame( viewName, rect, seconds );
+	plt_FCViewManager_SetViewFrame( viewName.c_str(), rect, seconds );
 }
 
 void FCViewManager::SetViewAlpha(const std::string &viewName, float alpha, float seconds)
 {
-	plt_FCViewManager_SetViewAlpha(viewName, alpha, seconds);
+	plt_FCViewManager_SetViewAlpha(viewName.c_str(), alpha, seconds);
 }
 
 void FCViewManager::SetViewOnSelectLuaFunction(const std::string& viewName, const std::string &func)
 {
-	plt_FCViewManager_SetViewOnSelectLuaFunction(viewName, func);
+	plt_FCViewManager_SetViewOnSelectLuaFunction(viewName.c_str(), func.c_str());
 }
 
 void FCViewManager::SetViewImage(const std::string &viewName, const std::string &image)
 {
-	plt_FCViewManager_SetViewImage(viewName, image);
+	plt_FCViewManager_SetViewImage(viewName.c_str(), image.c_str());
 }
 
 void FCViewManager::SetViewURL(const std::string &viewName, const std::string &url)
 {
-	plt_FCViewManager_SetViewURL(viewName, url);
+	plt_FCViewManager_SetViewURL(viewName.c_str(), url.c_str());
 }
 
 void FCViewManager::SetViewBackgroundColor( const std::string& viewName, const FCColor4f& color )
 {
-	plt_FCViewManager_SetViewBackgroundColor( viewName, color );
+	plt_FCViewManager_SetViewBackgroundColor( viewName.c_str(), color );
 }
 
 void FCViewManager::CreateView( const std::string& viewName, const std::string& classType, const std::string& parent )
 {
-	plt_FCViewManager_CreateView(viewName, classType, parent);
+	plt_FCViewManager_CreateView(viewName.c_str(), classType.c_str(), parent.c_str());
 }
 
 void FCViewManager::DestroyView(const std::string &viewName)
 {
-	plt_FCViewManager_DestroyView( viewName );
+	plt_FCViewManager_DestroyView( viewName.c_str() );
 }
 
 void FCViewManager::SetViewPropertyInt(const std::string &viewName, const std::string &property, int32_t value)
 {
-	plt_FCViewManager_SetViewPropertyInt( viewName, property, value );
+	plt_FCViewManager_SetViewPropertyInt( viewName.c_str(), property.c_str(), value );
 }
 
 void FCViewManager::SetViewPropertyString(const std::string &viewName, const std::string &property, const std::string& value)
 {
-	plt_FCViewManager_SetViewPropertyString( viewName, property, value );
+	plt_FCViewManager_SetViewPropertyString( viewName.c_str(), property.c_str(), value.c_str() );
 }
 
 void FCViewManager::SendViewToFront( const std::string& viewname )
 {
-	plt_FCViewManager_SendViewToFront( viewname );
+	plt_FCViewManager_SendViewToFront( viewname.c_str() );
 }
 
 void FCViewManager::SendViewToBack( const std::string& viewname )
 {
-	plt_FCViewManager_SendViewToBack( viewname );
+	plt_FCViewManager_SendViewToBack( viewname.c_str() );
 }
 
 bool FCViewManager::ViewExists(const std::string& viewName)
 {
-	return plt_FCViewManager_ViewExists( viewName );
+	return plt_FCViewManager_ViewExists( viewName.c_str() );
 }
 

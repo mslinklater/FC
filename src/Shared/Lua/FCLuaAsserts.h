@@ -25,7 +25,7 @@
 
 #include <sstream>
 
-#if defined(DEBUG)
+#if defined(FC_DEBUG)
 
 #define FC_LUA_ASSERT_TYPE( stackpos, type )	\
 {							\

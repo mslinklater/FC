@@ -28,7 +28,7 @@
 namespace FCAds {
 	void ShowBanner( std::string key )
 	{
-		plt_FCAds_ShowBanner( key );
+		plt_FCAds_ShowBanner( key.c_str() );
 	}
 	
 	void HideBanner()

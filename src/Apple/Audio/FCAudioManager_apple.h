@@ -30,7 +30,7 @@
 
 #import "FCCore.h"
 
-#if defined (DEBUG)
+#if defined (FC_DEBUG)
 #define AL_CHECK [FCAudioManager_apple checkALError]
 #else
 #define AL_CHECK

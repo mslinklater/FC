@@ -107,7 +107,7 @@ void FCGLMesh::Render()
 	m_shaderProgram->BindUniformsWithMesh( this );
 	m_shaderProgram->BindAttributes();
 
-#if defined (DEBUG)
+#if defined (FC_DEBUG)
 	m_shaderProgram->Validate();
 #endif
 	

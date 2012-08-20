@@ -27,21 +27,21 @@
 #include <string>
 #include "Shared/Core/FCCore.h"
 
-void	plt_FCAnalytics_RegisterEvent( std::string event );
-void	plt_FCAnalytics_BeginTimedEvent( std::string event );
-void	plt_FCAnalytics_EndTimedEvent( std::string event );
+void	plt_FCAnalytics_RegisterEvent( const char* event );
+void	plt_FCAnalytics_BeginTimedEvent( const char* event );
+void	plt_FCAnalytics_EndTimedEvent( const char* event );
 
-void	plt_FCAnalytics_RegisterEvent( std::string event )
+void	plt_FCAnalytics_RegisterEvent( const char* event )
 {
-	[FlurryAnalytics logEvent:@(event.c_str())];
+	[FlurryAnalytics logEvent:@(event)];
 }
 
-void	plt_FCAnalytics_BeginTimedEvent( std::string event )
+void	plt_FCAnalytics_BeginTimedEvent( const char* event )
 {
-	[FlurryAnalytics logEvent:@(event.c_str()) timed:YES];
+	[FlurryAnalytics logEvent:@(event) timed:YES];
 }
 
-void	plt_FCAnalytics_EndTimedEvent( std::string event )
+void	plt_FCAnalytics_EndTimedEvent( const char* event )
 {
-	[FlurryAnalytics endTimedEvent:@(event.c_str()) withParameters:nil];
+	[FlurryAnalytics endTimedEvent:@(event) withParameters:nil];
 }

@@ -61,7 +61,7 @@ FCHandle FCInput::AddTapSubscriber( const std::string& viewName, const std::stri
 	FCHandle h = NewFCHandle();
 	tapSubscribers[h] = luaFunc;
 	
-	plt_FCInput_AddTapToView( viewName );
+	plt_FCInput_AddTapToView( viewName.c_str() );
 	return h;
 }
 
@@ -72,7 +72,7 @@ void FCInput::RemoveTapSubscriber( const std::string& viewName, FCHandle hFunc )
 	FC_ASSERT(tapSubscribers.find(hFunc) != tapSubscribers.end());
 	
 	tapSubscribers.erase( hFunc );
-	plt_FCInput_RemoveTapFromView( viewName );
+	plt_FCInput_RemoveTapFromView( viewName.c_str() );
 }
 
 

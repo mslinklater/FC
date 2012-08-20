@@ -109,7 +109,7 @@ void FCGLRenderer::Render()
 	
 	// Now do any debug drawing...
 	
-#if defined(DEBUG)
+#if defined(FC_DEBUG)
 	
 	
 	

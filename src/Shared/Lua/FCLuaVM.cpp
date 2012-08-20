@@ -48,7 +48,7 @@ static void common_LoadScriptForState( std::string path, lua_State* _state, bool
 	}
 	else
 	{
-#if defined (DEBUG)
+#if defined (FC_DEBUG)
 		path = "Assets/LuaDebug/" + path;
 #else
 		path = "Assets/Lua/" + path;
