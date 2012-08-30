@@ -28,6 +28,9 @@ FCPhase::FCPhase( std::string name )
 	m_name = name;
 	m_state = kFCPhaseStateInactive;
 	
+	m_activateTimer = 0.0f;
+	m_deactivateTimer = 0.0f;
+	
 	m_luaUpdateFunc = name + "Phase.Update";
 	m_luaWasAddedToQueueFunc = name + "Phase.WasAddedToQueue";
 	m_luaWasRemovedFromQueueFunc = name + "Phase.WasRemovedFromQueue";
