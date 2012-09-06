@@ -30,6 +30,10 @@ function FCView:SetFrame( frame, duration )
 	FCViewManager.SetFrame( self.m_name, frame, duration )
 end
 
+function FCView:GetFrame()
+	return FCViewManager.GetFrame( self.m_name )
+end
+
 function FCView:SetAlpha( alpha, duration )
 	FCViewManager.SetAlpha( self.m_name, alpha, duration )
 end
@@ -46,11 +50,11 @@ function FCView:SetOnSelectLuaFunction( func )
 	FCViewManager.SetOnSelectLuaFunction( self.m_name, func )
 end
 
-function FCView:SetViewPropertyInteger( prop, value )
+function FCView:SetIntegerProperty( prop, value )
 	FCViewManager.SetViewPropertyInteger( self.m_name, prop, value )
 end
 
-function FCView:SetViewPropertyString( prop, value )
+function FCView:SetStringProperty( prop, value )
 	FCViewManager.SetViewPropertyString( self.m_name, prop, value )
 end
 
