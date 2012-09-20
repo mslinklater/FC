@@ -24,6 +24,7 @@
 #define FCRESOURCE_H
 
 #include <memory>
+#include "Shared/Core/FCCore.h"
 #include "Shared/Core/FCTypes.h"
 #include "Shared/Core/FCXML.h"
 
@@ -52,6 +53,6 @@ private:
 	void* m_userData;
 };
 
-typedef std::shared_ptr<FCResource> FCResourceRef;
+typedef FCSharedPtr<FCResource> FCResourceRef;
 
 #endif // FCRESOURCE_H

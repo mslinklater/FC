@@ -56,7 +56,7 @@ public:
 	FCHandle	handle;
 };
 
-typedef std::shared_ptr<FCPhysics2DBody> FCPhysics2DBodyRef;
+typedef FCSharedPtr<FCPhysics2DBody> FCPhysics2DBodyRef;
 
 typedef std::map<std::string, FCPhysics2DBodyRef> FCPhysics2DBodyRefMapByName;
 typedef std::map<FCHandle, FCPhysics2DBodyRef> FCPhysics2DBodyRefByHandle;

@@ -63,7 +63,7 @@ protected:
 	uint32_t						m_stride;
 };
 
-typedef std::shared_ptr<FCGLShaderProgram> FCGLShaderProgramRef;
+typedef FCSharedPtr<FCGLShaderProgram> FCGLShaderProgramRef;
 
 typedef std::map<std::string, FCGLShaderProgramRef> FCGLShaderProgramRefMapByString;
 typedef FCGLShaderProgramRefMapByString::iterator	FCGLShaderProgramRefMapByStringIter;

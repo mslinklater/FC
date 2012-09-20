@@ -49,7 +49,7 @@ protected:
 	std::string	m_name;
 };
 
-typedef std::shared_ptr<FCGLView> FCGLViewRef;
+typedef FCSharedPtr<FCGLView> FCGLViewRef;
 typedef std::map<std::string, FCGLViewRef>	FCGLViewMap;
 
 extern FCGLViewRef plt_FCGLView_Create( std::string name, std::string parent, const FCVector2i& size );

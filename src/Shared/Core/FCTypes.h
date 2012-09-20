@@ -25,7 +25,8 @@
 
 #include "FCColor.h"
 #include "FCKeys.h"
-#include "Shared/Core/Maths/FCVector.h"
+#include "Maths/FCVector.h"
+#include "FCSharedPtr.h"
 
 #include <map>
 #include <string>
@@ -79,7 +80,8 @@ typedef std::map<FCHandle, std::string>		FCStringMapByHandle;
 
 typedef std::set<std::string>	FCStringSet;
 
-typedef std::shared_ptr<char>				FCDataRef;
+//typedef std::shared_ptr<char>				FCDataRef;
+typedef FCSharedPtr<char>					FCDataRef;
 typedef std::vector<FCDataRef>				FCDataRefVector;
 typedef FCDataRefVector::iterator			FCDataRefVectorIter;
 typedef FCDataRefVector::const_iterator		FCDataRefVectorConstIter;

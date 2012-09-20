@@ -33,7 +33,7 @@ public:
 	void Update( float realTime, float gameTime );
 };
 
-typedef std::shared_ptr<FCPhysics3D> FCPhysics3DRef;
+typedef FCSharedPtr<FCPhysics3D> FCPhysics3DRef;
 
 #endif
 

@@ -25,6 +25,7 @@
 #include "FCMacros.h"
 #include "FCColor.h"
 #include "FCNotifications.h"
+#include "FCSharedPtr.h"
 
 #include "Shared/Core/Maths/FCMaths.h"
 #include "FCStringUtils.h"

@@ -51,5 +51,5 @@ public:
 	void*		actor;	// deprecate
 };
 
-typedef std::shared_ptr<FCPhysics2DBodyDef> FCPhysics2DBodyDefRef;
+typedef FCSharedPtr<FCPhysics2DBodyDef> FCPhysics2DBodyDefRef;
 

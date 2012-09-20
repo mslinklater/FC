@@ -41,7 +41,7 @@ public:
 	virtual void SetPosition( FCVector3f& pos ) = 0;
 };
 
-typedef std::shared_ptr<IFCModel>	FCModelRef;
+typedef FCSharedPtr<IFCModel>	FCModelRef;
 typedef std::vector<FCModelRef>		FCModelRefVec;
 typedef FCModelRefVec::iterator		FCModelRefVecIter;
 

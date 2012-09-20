@@ -49,7 +49,7 @@ private:
 	GLenum	m_type;
 };
 
-typedef std::shared_ptr<FCGLShaderAttribute>			FCGLShaderAttributeRef;
+typedef FCSharedPtr<FCGLShaderAttribute>			FCGLShaderAttributeRef;
 typedef std::map<std::string, FCGLShaderAttributeRef>	FCGLShaderAttributeRefMapByString;
 typedef FCGLShaderAttributeRefMapByString::iterator		FCGLShaderAttributeRefMapByStringIter;
 

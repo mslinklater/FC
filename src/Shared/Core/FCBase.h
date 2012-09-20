@@ -27,6 +27,8 @@
 
 #include <string>
 
+#include "FCSharedPtr.h"
+
 class FCBase {
 public:
 	virtual ~FCBase(){}
@@ -37,6 +39,6 @@ public:
 	}
 };
 
-typedef std::shared_ptr<FCBase> FCBaseRef;
+typedef FCSharedPtr<FCBase> FCBaseRef;
 
 #endif

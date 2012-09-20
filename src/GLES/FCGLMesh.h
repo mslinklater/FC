@@ -101,7 +101,7 @@ private:
 	FCColor4f				m_specularColor;
 };
 
-typedef std::shared_ptr<FCGLMesh>		FCGLMeshRef;
+typedef FCSharedPtr<FCGLMesh>		FCGLMeshRef;
 typedef std::vector<FCGLMeshRef>		FCGLMeshRefVec;
 typedef FCGLMeshRefVec::iterator		FCGLMeshRefVecIter;
 typedef FCGLMeshRefVec::const_iterator	FCGLMeshRefVecConstIter;

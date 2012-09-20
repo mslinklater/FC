@@ -77,7 +77,7 @@ private:
 	float			m_rotation;
 };
 
-typedef std::shared_ptr<FCGLModel>		FCGLModelRef;
+typedef FCSharedPtr<FCGLModel>		FCGLModelRef;
 typedef std::vector<FCGLModelRef>		FCGLModelRefVec;
 typedef FCGLModelRefVec::iterator		FCGLModelRefVecIter;
 typedef FCGLModelRefVec::const_iterator	FCGLModelRefVecConstIter;

@@ -35,6 +35,6 @@ public:
 private:
 };
 
-typedef std::shared_ptr<FCAudioManager> FCAudioManagerRef;
+typedef FCSharedPtr<FCAudioManager> FCAudioManagerRef;
 
 #endif

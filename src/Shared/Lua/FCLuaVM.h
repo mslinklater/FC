@@ -30,6 +30,8 @@ extern "C" {
 #include <lua.h>
 }
 
+#include "Shared/Core/FCCore.h"
+
 class luaL_Reg;
 typedef int(*tLuaCallableCFunction)(lua_State*);
 
@@ -68,6 +70,6 @@ private:
 	lua_State* m_state;
 };
 
-typedef std::shared_ptr<FCLuaVM> FCLuaVMRef;
+typedef FCSharedPtr<FCLuaVM> FCLuaVMRef;
 
 #endif

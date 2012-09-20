@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#include "Shared/Core/FCCore.h"
+
 class FCPhysicsMaterial {
 public:
 	FCPhysicsMaterial()
@@ -34,6 +36,6 @@ public:
 	float		friction;
 };
 
-typedef std::shared_ptr<FCPhysicsMaterial> FCPhysicsMaterialRef;
+typedef FCSharedPtr<FCPhysicsMaterial> FCPhysicsMaterialRef;
 typedef std::map<std::string, FCPhysicsMaterialRef> FCPhysicsMaterialRefMapByString;
 

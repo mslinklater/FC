@@ -53,7 +53,14 @@ public:
 	void				DestroyBody( FCPhysics2DBodyRef body );
 	FCPhysics2DBodyRef	BodyWithName( std::string name );
 	
-	FCHandle	CreateJoint( FCPhysics2DJointCreateDefRef def );
+//	FCHandle	CreateJoint( FCPhysics2DJointCreateDefRef def );
+	
+	FCHandle	CreateDistanceJoint( FCPhysics2DDistanceJointCreateDefRef def );
+	FCHandle	CreateRevoluteJoint( FCPhysics2DRevoluteJointCreateDefRef def );
+	FCHandle	CreatePrismaticJoint( FCPhysics2DPrismaticJointCreateDefRef def );
+	FCHandle	CreatePulleyJoint( FCPhysics2DPulleyJointCreateDefRef def );
+	FCHandle	CreateRopeJoint( FCPhysics2DRopeJointCreateDefRef def );
+	
 	void		SetRevoluteJointMotor( FCHandle joint, bool enabled, float torque, float speed );
 	void		SetRevoluteJointLimits( FCHandle joint, bool enable, float min, float max );
 	
@@ -71,7 +78,7 @@ private:
 	FCPhysics2DContactListener*	m_contactListener;
 };
 
-typedef std::shared_ptr<FCPhysics2D> FCPhysics2DRef;
+typedef FCSharedPtr<FCPhysics2D> FCPhysics2DRef;
 
 #endif
 

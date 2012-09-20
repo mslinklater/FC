@@ -25,6 +25,7 @@
 
 #include <map>
 
+#include "Shared/Core/FCCore.h"
 #include "Shared/Core/Maths/FCMaths.h"
 #include "Shared/Physics/2D/FCPhysics2DBody.h"
 
@@ -36,7 +37,7 @@ public:
 	FCPhysics2DBodyRef body2;
 };
 
-typedef std::shared_ptr<FCPhysics2DJointCreateDef> FCPhysics2DJointCreateDefRef;
+typedef FCSharedPtr<FCPhysics2DJointCreateDef> FCPhysics2DJointCreateDefRef;
 typedef std::map<FCHandle,b2Joint*> FCPhysics2DJointMapByHandle;
 
 //
@@ -48,7 +49,7 @@ public:
 	FCVector2f pos2;
 };
 
-typedef std::shared_ptr<FCPhysics2DDistanceJointCreateDef> FCPhysics2DDistanceJointCreateDefRef;
+typedef FCSharedPtr<FCPhysics2DDistanceJointCreateDef> FCPhysics2DDistanceJointCreateDefRef;
 
 //
 
@@ -58,7 +59,7 @@ public:
 	FCVector2f pos;
 };
 
-typedef std::shared_ptr<FCPhysics2DRevoluteJointCreateDef> FCPhysics2DRevoluteJointCreateDefRef;
+typedef FCSharedPtr<FCPhysics2DRevoluteJointCreateDef> FCPhysics2DRevoluteJointCreateDefRef;
 
 //
 
@@ -68,7 +69,7 @@ public:
 	FCVector2f axis;
 };
 
-typedef std::shared_ptr<FCPhysics2DPrismaticJointCreateDef> FCPhysics2DPrismaticJointCreateDefRef;
+typedef FCSharedPtr<FCPhysics2DPrismaticJointCreateDef> FCPhysics2DPrismaticJointCreateDefRef;
 
 //
 
@@ -79,7 +80,7 @@ public:
 	FCVector2f bodyAnchor2;
 };
 
-typedef std::shared_ptr<FCPhysics2DRopeJointCreateDef> FCPhysics2DRopeJointCreateDefRef;
+typedef FCSharedPtr<FCPhysics2DRopeJointCreateDef> FCPhysics2DRopeJointCreateDefRef;
 
 //
 
@@ -93,7 +94,7 @@ public:
 	float ratio;
 };
 
-typedef std::shared_ptr<FCPhysics2DPulleyJointCreateDef> FCPhysics2DPulleyJointCreateDefRef;
+typedef FCSharedPtr<FCPhysics2DPulleyJointCreateDef> FCPhysics2DPulleyJointCreateDefRef;
 
 #endif
 

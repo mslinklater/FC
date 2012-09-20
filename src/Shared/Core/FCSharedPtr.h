@@ -20,28 +20,84 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCPerformanceCounter_h
-#define CR1_FCPerformanceCounter_h
+#ifndef CR2_FCSharedPtr_h
+#define CR2_FCSharedPtr_h
 
-#include <stdint.h>
-#include <memory>
+// Based on shared_ptr impl by Itay Maman:
+// http://www.codeproject.com/KB/cpp/auto_ref.aspx
 
-#include "Shared/Core/FCCore.h"
+#include <algorithm>
 
-class FCPerformanceCounter
+template<typename T>
+class FCSharedPtr
 {
-public:
-	FCPerformanceCounter();
-	~FCPerformanceCounter();
+	public:
+	FCSharedPtr( T* pT = 0 )
+	: m_pT( pT )
+	{
+		m_pRefCount = new unsigned int;
+		*m_pRefCount = 1;
+	}
 	
-	void Zero();
-	double	NanoValue();
-	double	MicroValue();
-	double	MilliValue();
-	double	SecondsValue();
+	FCSharedPtr( const FCSharedPtr<T> &other )
+	: m_pT( other.m_pT )
+	, m_pRefCount( other.m_pRefCount )
+	{
+		(*m_pRefCount)++;
+	}
+	
+	~FCSharedPtr()
+	{
+		(*m_pRefCount)--;
+		
+		if (*m_pRefCount <= 0) {
+			delete m_pT;
+			m_pT = 0;
+			delete m_pRefCount;
+			m_pRefCount = 0;
+		}
+	}
+	
+	// Operator equals
+	
+	FCSharedPtr& operator=( const FCSharedPtr<T> &rhs )
+	{
+		FCSharedPtr<T> temp(rhs);
+		swap(temp);
+		return *this;
+	}
+	
+	T& operator*() const
+	{
+		return *m_pT;
+	}
+	
+	T* operator->() const
+	{
+		return m_pT;
+	}
+	
+	operator bool() const
+	{
+		return m_pT != 0;
+	}
+	
+	T* get() const
+	{
+		return m_pT;
+	}
+	
+	void swap( FCSharedPtr<T> &other )
+	{
+		std::swap( m_pT, other.m_pT );
+		std::swap( m_pRefCount, other.m_pRefCount );
+	}
+		
 private:
+	unsigned int* m_pRefCount;
+	T* m_pT;
+	
 };
 
-typedef FCSharedPtr<FCPerformanceCounter> FCPerformanceCounterRef;
 
 #endif

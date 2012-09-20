@@ -30,6 +30,7 @@
 
 #include "FCGL.h"
 #include "Shared/Graphics/FCGraphicsTypes.h"
+#include "Shared/Core/FCCore.h"
 
 class FCGLShader
 {
@@ -44,7 +45,7 @@ private:
 	GLuint	m_glHandle;
 };
 
-typedef std::shared_ptr<FCGLShader>	FCGLShaderRef;
+typedef FCSharedPtr<FCGLShader>	FCGLShaderRef;
 
 typedef std::map<std::string, FCGLShaderRef>	FCGLShaderRefMapByString;
 typedef FCGLShaderRefMapByString::iterator		FCGLShaderRefMapByStringIter;

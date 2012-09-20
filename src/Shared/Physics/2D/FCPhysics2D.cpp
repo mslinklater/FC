@@ -82,7 +82,7 @@ static int lua_CreateDistanceJoint( lua_State* _state )
 	
 	// call through to OBJ-C
 	
-	FCHandle hJoint = s_pInstance->CreateJoint( def );
+	FCHandle hJoint = s_pInstance->CreateDistanceJoint( def );
 	
 	lua_pushinteger(_state, hJoint);
 	
@@ -114,7 +114,7 @@ static int lua_CreateRevoluteJoint( lua_State* _state )
 		def->pos = FCVector2f( FCXML::FloatValueForNodeAttribute(null, kFCKeyOffsetX), FCXML::FloatValueForNodeAttribute(null, kFCKeyOffsetY) );
 	}
 	
-	FCHandle hJoint = s_pInstance->CreateJoint( def );
+	FCHandle hJoint = s_pInstance->CreateRevoluteJoint( def );
 	
 	lua_pushinteger(_state, hJoint);
 	
@@ -143,7 +143,7 @@ static int lua_CreatePrismaticJoint( lua_State* _state )
 	FCVector2f axis( (float)sin(angle), (float)cos(angle) );
 	def->axis = axis;
 	
-	FCHandle hJoint = s_pInstance->CreateJoint( def );
+	FCHandle hJoint = s_pInstance->CreatePrismaticJoint( def );
 	
 	lua_pushinteger(_state, hJoint);
 	
@@ -186,7 +186,7 @@ static int lua_CreatePulleyJoint( lua_State* _state )
 	
 	def->ratio = (float)lua_tonumber(_state, 7);
 	
-	FCHandle hJoint = s_pInstance->CreateJoint( def );
+	FCHandle hJoint = s_pInstance->CreatePulleyJoint( def );
 	
 	lua_pushinteger(_state, hJoint);
 	
@@ -213,7 +213,7 @@ static int lua_CreateRopeJoint( lua_State* _state )
 	def->bodyAnchor1 = FCVector2f( (float)lua_tonumber(_state, 3), (float)lua_tonumber(_state, 4) );
 	def->bodyAnchor2 = FCVector2f( (float)lua_tonumber(_state, 5), (float)lua_tonumber(_state, 6) );
 	
-	FCHandle hJoint = s_pInstance->CreateJoint( def );
+	FCHandle hJoint = s_pInstance->CreateRopeJoint( def );
 	
 	lua_pushinteger(_state, hJoint);
 	
@@ -405,123 +405,141 @@ FCPhysics2DBodyRef FCPhysics2D::BodyWithName( std::string name )
 	return m_bodiesByName[name];
 }
 
-FCHandle FCPhysics2D::CreateJoint( FCPhysics2DJointCreateDefRef def )
+FCHandle FCPhysics2D::CreateDistanceJoint(FCPhysics2DDistanceJointCreateDefRef def)
 {
+	b2Vec2 pos1;
+	pos1.x = def->pos1.x;
+	pos1.y = def->pos1.y;
+	
+	b2Vec2 pos2;
+	pos2.x = def->pos2.x;
+	pos2.y = def->pos2.y;
+	
+	b2DistanceJointDef jointDef;
+	jointDef.Initialize( def->body1->pBody, def->body2->pBody, pos1, pos2);
+	jointDef.collideConnected = true;
+	b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
+
 	FCHandle handle = NewFCHandle();
 	
-	FCPhysics2DDistanceJointCreateDefRef distancePtr = std::dynamic_pointer_cast<FCPhysics2DDistanceJointCreateDef>(def);	
-	if (distancePtr) {
-		b2Vec2 pos1;
-		pos1.x = distancePtr->pos1.x;
-		pos1.y = distancePtr->pos1.y;
-		
-		b2Vec2 pos2;
-		pos2.x = distancePtr->pos2.x;
-		pos2.y = distancePtr->pos2.y;
-		
-		b2DistanceJointDef jointDef;
-		jointDef.Initialize( distancePtr->body1->pBody, distancePtr->body2->pBody, pos1, pos2);
-		jointDef.collideConnected = true;
-		b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
-		
-		m_joints[handle] = joint;
-		return handle;
-	}
+	m_joints[ handle ] = joint;
+	return handle;
 	
-	FCPhysics2DRevoluteJointCreateDefRef revolutePtr = std::dynamic_pointer_cast<FCPhysics2DRevoluteJointCreateDef>(def);
-	if (revolutePtr) {
-		b2Vec2 pos;
-		pos.x = revolutePtr->pos.x;
-		pos.y = revolutePtr->pos.y;
-		
-		b2RevoluteJointDef jointDef;
-		jointDef.Initialize( revolutePtr->body1->pBody, revolutePtr->body2->pBody, pos);
-		jointDef.enableMotor = false;
-		jointDef.enableLimit = false;
-		b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
-		
-		m_joints[handle] = joint;
-		return handle;
-	}
-	
-	FCPhysics2DPrismaticJointCreateDefRef prismaticPtr = std::dynamic_pointer_cast<FCPhysics2DPrismaticJointCreateDef>(def);	
-	if (prismaticPtr) {
-		b2Vec2 axis;
-		axis.x = prismaticPtr->axis.x;
-		axis.y = prismaticPtr->axis.y;
-		
-		b2Vec2 pos;
-		pos.x = prismaticPtr->body2->Position().x;
-		pos.y = prismaticPtr->body2->Position().y;
-		
-		b2PrismaticJointDef jointDef;
-		jointDef.Initialize( prismaticPtr->body1->pBody, prismaticPtr->body2->pBody, pos, axis);
-		
-		b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
-		
-		m_joints[handle] = joint;
-		return handle;
-	}
-	
-	FCPhysics2DPulleyJointCreateDefRef pulleyPtr = std::dynamic_pointer_cast<FCPhysics2DPulleyJointCreateDef>(def);
-	if (pulleyPtr) {
-		b2PulleyJointDef jointDef;
-		b2Vec2 groundAnchor1;
-		groundAnchor1.x = pulleyPtr->groundAnchor1.x;
-		groundAnchor1.y = pulleyPtr->groundAnchor1.y;
-		
-		b2Vec2 groundAnchor2;
-		groundAnchor2.x = pulleyPtr->groundAnchor2.x;
-		groundAnchor2.y = pulleyPtr->groundAnchor2.y;
-		
-		b2Vec2 bodyAnchor1;
-		bodyAnchor1.x = pulleyPtr->bodyAnchor1.x;
-		bodyAnchor1.y = pulleyPtr->bodyAnchor1.y;
-		
-		b2Vec2 bodyAnchor2;
-		bodyAnchor2.x = pulleyPtr->bodyAnchor2.x;
-		bodyAnchor2.y = pulleyPtr->bodyAnchor2.y;
-		
-		jointDef.Initialize( pulleyPtr->body1->pBody, pulleyPtr->body2->pBody, groundAnchor1, groundAnchor2, 
-							bodyAnchor1, bodyAnchor2, pulleyPtr->ratio );
-		
-		b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
-		
-		m_joints[handle] = joint;
-		return handle;
-	}
-	
-	FCPhysics2DRopeJointCreateDefRef ropePtr = std::dynamic_pointer_cast<FCPhysics2DRopeJointCreateDef>(def);
-	
-	if (ropePtr) {
-		b2RopeJointDef jointDef;
-		
-		jointDef.bodyA = ropePtr->body1->pBody;
-		jointDef.bodyB = ropePtr->body2->pBody;
-		
-		b2Vec2 bodyAnchor1;
-		bodyAnchor1.x = ropePtr->bodyAnchor1.x;
-		bodyAnchor1.y = ropePtr->bodyAnchor1.y;
-		
-		b2Vec2 bodyAnchor2;
-		bodyAnchor2.x = ropePtr->bodyAnchor2.x;
-		bodyAnchor2.y = ropePtr->bodyAnchor2.y;
-		
-		jointDef.localAnchorA = bodyAnchor1;
-		jointDef.localAnchorB = bodyAnchor2;
-		
-		jointDef.maxLength = 1.0f;
-		
-		b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
-		
-		m_joints[handle] = joint;
-		return handle;
-	}
-	
-	FC_ASSERT(0);
-	
-	return kFCHandleInvalid;
 }
+
+FCHandle FCPhysics2D::CreateRevoluteJoint(FCPhysics2DRevoluteJointCreateDefRef def)
+{
+	b2Vec2 pos;
+	pos.x = def->pos.x;
+	pos.y = def->pos.y;
+	
+	b2RevoluteJointDef jointDef;
+	jointDef.Initialize( def->body1->pBody, def->body2->pBody, pos);
+	jointDef.enableMotor = false;
+	jointDef.enableLimit = false;
+	b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
+	
+	FCHandle handle = NewFCHandle();
+	
+	m_joints[ handle ] = joint;
+	return handle;
+}
+
+FCHandle FCPhysics2D::CreatePrismaticJoint(FCPhysics2DPrismaticJointCreateDefRef def)
+{
+	b2Vec2 axis;
+	axis.x = def->axis.x;
+	axis.y = def->axis.y;
+	
+	b2Vec2 pos;
+	pos.x = def->body2->Position().x;
+	pos.y = def->body2->Position().y;
+	
+	b2PrismaticJointDef jointDef;
+	jointDef.Initialize( def->body1->pBody, def->body2->pBody, pos, axis);
+	
+	b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
+	
+	FCHandle handle = NewFCHandle();
+	
+	m_joints[ handle ] = joint;
+	return handle;
+}
+
+FCHandle FCPhysics2D::CreatePulleyJoint(FCPhysics2DPulleyJointCreateDefRef def)
+{
+	b2PulleyJointDef jointDef;
+	b2Vec2 groundAnchor1;
+	groundAnchor1.x = def->groundAnchor1.x;
+	groundAnchor1.y = def->groundAnchor1.y;
+	
+	b2Vec2 groundAnchor2;
+	groundAnchor2.x = def->groundAnchor2.x;
+	groundAnchor2.y = def->groundAnchor2.y;
+	
+	b2Vec2 bodyAnchor1;
+	bodyAnchor1.x = def->bodyAnchor1.x;
+	bodyAnchor1.y = def->bodyAnchor1.y;
+	
+	b2Vec2 bodyAnchor2;
+	bodyAnchor2.x = def->bodyAnchor2.x;
+	bodyAnchor2.y = def->bodyAnchor2.y;
+	
+	jointDef.Initialize( def->body1->pBody, def->body2->pBody, groundAnchor1, groundAnchor2,
+						bodyAnchor1, bodyAnchor2, def->ratio );
+	
+	b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
+	
+	FCHandle handle = NewFCHandle();
+	
+	m_joints[ handle ] = joint;
+	return handle;
+}
+
+FCHandle FCPhysics2D::CreateRopeJoint(FCPhysics2DRopeJointCreateDefRef def)
+{
+	b2RopeJointDef jointDef;
+	
+	jointDef.bodyA = def->body1->pBody;
+	jointDef.bodyB = def->body2->pBody;
+	
+	b2Vec2 bodyAnchor1;
+	bodyAnchor1.x = def->bodyAnchor1.x;
+	bodyAnchor1.y = def->bodyAnchor1.y;
+	
+	b2Vec2 bodyAnchor2;
+	bodyAnchor2.x = def->bodyAnchor2.x;
+	bodyAnchor2.y = def->bodyAnchor2.y;
+	
+	jointDef.localAnchorA = bodyAnchor1;
+	jointDef.localAnchorB = bodyAnchor2;
+	
+	jointDef.maxLength = 1.0f;
+	
+	b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
+	
+	FCHandle handle = NewFCHandle();
+	
+	m_joints[ handle ] = joint;
+	return handle;
+}
+
+//FCHandle FCPhysics2D::CreateJoint( FCPhysics2DJointCreateDefRef def )
+//{
+//	FCHandle handle = NewFCHandle();
+//		
+//	FCPhysics2DRopeJointCreateDefRef ropePtr = std::dynamic_pointer_cast<FCPhysics2DRopeJointCreateDef>(def);
+//	
+//	if (ropePtr) {
+//		
+//		m_joints[handle] = joint;
+//		return handle;
+//	}
+//	
+//	FC_ASSERT(0);
+//	
+//	return kFCHandleInvalid;
+//}
 
 void FCPhysics2D::SetRevoluteJointMotor( FCHandle handle, bool enabled, float torque, float speed )
 {

@@ -74,6 +74,6 @@ private:
 	bool		m_isDataInMemory;
 };
 
-typedef std::shared_ptr<FCFile> FCFileRef;
+typedef FCSharedPtr<FCFile> FCFileRef;
 
 #endif

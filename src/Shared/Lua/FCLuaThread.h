@@ -27,7 +27,7 @@
 #include <memory>
 
 #include "FCLuaVM.h"
-#include "Shared/Core/FCTypes.h"
+#include "Shared/Core/FCCore.h"
 
 enum eLuaThreadState {
 	kLuaThreadStateNew,
@@ -64,7 +64,7 @@ private:
 };
 
 //typedef FCSharedPtr<FCLuaThread> FCLuaThreadPtr;
-typedef std::shared_ptr<FCLuaThread> FCLuaThreadRef;
+typedef FCSharedPtr<FCLuaThread> FCLuaThreadRef;
 
 typedef std::map<FCHandle, FCLuaThreadRef> FCLuaThreadRefMap;
 typedef FCLuaThreadRefMap::iterator FCLuaThreadRefMapIter;

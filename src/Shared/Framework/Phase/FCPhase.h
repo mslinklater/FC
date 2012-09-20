@@ -40,7 +40,7 @@ enum FCPhaseState {
 
 class FCPhase;
 
-typedef std::shared_ptr<FCPhase> FCPhaseRef;
+typedef FCSharedPtr<FCPhase> FCPhaseRef;
 typedef std::vector<FCPhaseRef>	FCPhaseRefVector;
 typedef FCPhaseRefVector::iterator	FCPhaseRefVectorIter;
 typedef FCPhaseRefVector::const_iterator	FCPhaseRefVectorConstIter;

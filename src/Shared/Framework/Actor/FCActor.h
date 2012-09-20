@@ -82,7 +82,7 @@ protected:
 	FCPhysics2DBodyRef	m_physicsBody;
 };
 
-typedef std::shared_ptr<FCActor>	FCActorRef;
+typedef FCSharedPtr<FCActor>	FCActorRef;
 
 typedef std::vector<FCActorRef>		FCActorRefVec;
 typedef FCActorRefVec::iterator		FCActorRefVecIter;
