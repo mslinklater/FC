@@ -26,7 +26,7 @@
 #include <stdint.h>
 #include <memory>
 
-#include "Shared/Core/FCCore.h"
+#include "../FCCore.h"
 
 class FCPerformanceCounter
 {

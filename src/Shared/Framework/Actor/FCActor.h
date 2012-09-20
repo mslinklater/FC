@@ -26,7 +26,7 @@
 #include "Shared/Core/FCCore.h"
 #include "Shared/Physics/FCPhysics.h"
 #include "Shared/Core/FCXML.h"
-#include "FCResource.h"
+#include "Shared/Core/Resources/FCResource.h"
 
 #include "Shared/Graphics/FCGraphics.h"
 

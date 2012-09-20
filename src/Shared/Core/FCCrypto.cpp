@@ -21,7 +21,7 @@
  */
 
 #include "FCCrypto.h"
-#include "sha1.h"
+#include "sha1/sha1.h"
 
 std::string FCCrypto_SHA1ForData( void* pData, uint32_t size)
 {

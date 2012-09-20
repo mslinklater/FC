@@ -25,7 +25,7 @@
 #ifndef CR1_FCCrypto_h
 #define CR1_FCCrypto_h
 
-#include "Shared/Core/FCTypes.h"
+#include "FCTypes.h"
 
 std::string FCCrypto_SHA1ForData( void* pData, uint32_t size);
 

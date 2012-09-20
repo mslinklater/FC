@@ -26,7 +26,7 @@
 #include <iostream>
 #include <string>
 
-#include "Shared/Core/FCCore.h"
+#include "FCCore.h"
 
 extern std::string plt_FCFile_ApplicationBundlePathForPath( std::string filename );
 extern std::string plt_FCFile_NormalPathForPath( std::string filename );

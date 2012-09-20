@@ -26,9 +26,9 @@
 #include <string>
 
 extern "C" {
-#import "lua.h"
-#import "lauxlib.h"
-#import "lualib.h"
+#include "lua.h"
+#include "lauxlib.h"
+#include "lualib.h"
 }
 
 extern void			FCLua_DumpStack( lua_State* _state );

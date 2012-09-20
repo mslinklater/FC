@@ -249,7 +249,7 @@ void FCLua::UpdateThreads( float realDelta, float gameDelta )
 		}
 	}
 
-	for (auto i = delList.begin(); i != delList.end(); i++) {
+	for (std::vector<FCLuaThreadRefMapIter>::iterator i = delList.begin(); i != delList.end(); i++) {
 		m_threadsMap.erase(*i);
 	}
 	

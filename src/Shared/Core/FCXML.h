@@ -25,7 +25,7 @@
 
 #include <memory>
 #include <rapidxml.hpp>
-#include "Shared/Core/FCCore.h"
+#include "FCCore.h"
 
 typedef rapidxml::xml_node<>*			FCXMLNode;
 typedef std::vector< FCXMLNode >		FCXMLNodeVec;

@@ -220,20 +220,25 @@ void FCGLLogCaps( void )
 std::string FCGLStringForEnum( GLenum thisEnum )
 {
 	switch ( thisEnum ) {
+			
+#ifdef PLATFORM_IOS
+		case GL_ACTIVE_PROGRAM_EXT: return "GL_ACTIVE_PROGRAM_EXT"; break;
+		case GL_ALL_SHADER_BITS_EXT: return "GL_ALL_SHADER_BITS_EXT"; break;
+		case GL_ANY_SAMPLES_PASSED_CONSERVATIVE_EXT: return "GL_ANY_SAMPLES_PASSED_CONSERVATIVE_EXT"; break;
+		case GL_ANY_SAMPLES_PASSED_EXT: return "GL_ANY_SAMPLES_PASSED_EXT"; break;
+		case GL_BGRA: return "GL_BGRA"; break;
+#endif
+			
 		case GL_ACTIVE_ATTRIBUTE_MAX_LENGTH: return "GL_ACTIVE_ATTRIBUTE_MAX_LENGTH"; break;
 		case GL_ACTIVE_ATTRIBUTES: return "GL_ACTIVE_ATTRIBUTES"; break;
-		case GL_ACTIVE_PROGRAM_EXT: return "GL_ACTIVE_PROGRAM_EXT"; break;
 		case GL_ACTIVE_TEXTURE: return "GL_ACTIVE_TEXTURE"; break;
 		case GL_ACTIVE_UNIFORM_MAX_LENGTH: return "GL_ACTIVE_UNIFORM_MAX_LENGTH"; break;
 		case GL_ACTIVE_UNIFORMS: return "GL_ACTIVE_UNIFORMS"; break;
 		case GL_ALIASED_LINE_WIDTH_RANGE: return "GL_ALIASED_LINE_WIDTH_RANGE"; break;
 		case GL_ALIASED_POINT_SIZE_RANGE: return "GL_ALIASED_POINT_SIZE_RANGE"; break;
-		case GL_ALL_SHADER_BITS_EXT: return "GL_ALL_SHADER_BITS_EXT"; break;
 		case GL_ALPHA: return "GL_ALPHA"; break;
 		case GL_ALPHA_BITS: return "GL_ALPHA_BITS"; break;
 		case GL_ALWAYS: return "GL_ALWAYS"; break;
-		case GL_ANY_SAMPLES_PASSED_CONSERVATIVE_EXT: return "GL_ANY_SAMPLES_PASSED_CONSERVATIVE_EXT"; break;
-		case GL_ANY_SAMPLES_PASSED_EXT: return "GL_ANY_SAMPLES_PASSED_EXT"; break;
 			//		case GL_API: return @"GL_API"; break;
 			//		case GL_APIENTRY: return @"GL_APIENTRY"; break;
 			//		case GL_APIENTRYP: return @"GL_APIENTRYP"; break;
@@ -242,7 +247,6 @@ std::string FCGLStringForEnum( GLenum thisEnum )
 		case GL_ATTACHED_SHADERS: return "GL_ATTACHED_SHADERS"; break;
 			
 		case GL_BACK: return "GL_BACK"; break;
-		case GL_BGRA: return "GL_BGRA"; break;
 			//		case GL_BGRA_EXT: return @"GL_BGRA_EXT"; break;
 			//		case GL_BGRA_IMG: return @"GL_BGRA_IMG"; break;
 		case GL_BLEND: return "GL_BLEND"; break;

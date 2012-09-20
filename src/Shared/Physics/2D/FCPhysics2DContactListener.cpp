@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#import "FCPhysics2DContactListener.h"
+#include "FCPhysics2DContactListener.h"
 
 FCPhysics2DContactListener::FCPhysics2DContactListener()
 {

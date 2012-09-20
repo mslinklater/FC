@@ -23,7 +23,7 @@
 #ifndef CR1_FCPhysics2DContactListener_h
 #define CR1_FCPhysics2DContactListener_h
 
-#import "FCCore.h"
+#include "Shared/Core/FCCore.h"
 
 #include <map>
 #include <set>

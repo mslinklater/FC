@@ -27,7 +27,16 @@
 
 #include "Shared/Core/FCFile.h"
 #include "FCGLTextureFile.h"
+
+
+#ifdef PLATFORM_IOS
 #include "PVRTTexture.h"
+#endif
+
+#ifdef PLATFORM_ANDROID
+// TODO: texture formats on Android need sorting.
+class PVR_Texture_Header;
+#endif
 
 class FCGLTextureFilePVR : public IFCGLTextureFileDelegate
 {

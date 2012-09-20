@@ -26,7 +26,7 @@
 #define FCMatrix_h
 
 #include <math.h>
-#include "Shared/Core/Maths/FCVector.h"
+#include "FCVector.h"
 
 class FCMatrix4f {
 public:

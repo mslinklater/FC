@@ -32,7 +32,7 @@
 
 #include <map>
 
-#include "Shared/Core/FCTypes.h"
+#include "../FCTypes.h"
 
 class FCDevice {
 public:

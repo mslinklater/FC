@@ -27,6 +27,6 @@
 #include "FCNotifications.h"
 #include "FCSharedPtr.h"
 
-#include "Shared/Core/Maths/FCMaths.h"
+#include "Maths/FCMaths.h"
 #include "FCStringUtils.h"
 #include "FCError.h"

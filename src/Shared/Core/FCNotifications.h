@@ -25,7 +25,7 @@
 #define FCNotifications_h
 
 #include <string>
-#include "Shared/Core/FCCore.h"
+#include "FCCore.h"
 
 extern std::string kFCNotificationAppWillEnterBackground;
 extern std::string kFCNotificationAppWillEnterForeground;

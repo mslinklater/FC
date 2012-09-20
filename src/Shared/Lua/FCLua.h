@@ -27,7 +27,7 @@
 
 #include "Shared/Core/Debug/FCPerformanceCounter.h"
 
-#include "FCCore.h"
+#include "Shared/Core/FCCore.h"
 #include "FCLuaVM.h"
 #include "FCLuaThread.h"
 #include "FCLuaCommon.h"

@@ -21,7 +21,7 @@
  */
 
 #include "FCError.h"
-#include "Shared/Core/Debug/FCConnect.h"
+#include "Debug/FCConnect.h"
 
 extern void plt_FCHalt();
 extern void plt_FCLog( std::string log );

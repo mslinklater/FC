@@ -25,7 +25,7 @@
 
 static FCBuild* s_pInstance = 0;
 
-static int lua_Debug( lua_State* _state )
+static int lua_FCDebug( lua_State* _state )
 {
 	FC_LUA_ASSERT_NUMPARAMS(0);
 #if FC_DEBUG
@@ -40,7 +40,7 @@ static int lua_Debug( lua_State* _state )
 FCBuild::FCBuild()
 {
 	FCLua::Instance()->CoreVM()->CreateGlobalTable("FCBuild");
-	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Debug, "FCBuild.Debug");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_FCDebug, "FCBuild.Debug");
 }
 
 FCBuild::~FCBuild()

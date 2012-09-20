@@ -11,11 +11,20 @@
 
 #ifdef __APPLE__
 #include "TargetConditionals.h"
-#ifdef TARGET_OS_IPHONE
+
+#ifdef PLATFORM_IOS
 #include <OpenGLES/ES2/gl.h>
 #include <OpenGLES/ES2/glext.h>
 #endif
+
+#endif	// __APPLE__
+
+#ifdef PLATFORM_ANDROID
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#include <GLES2/gl2platform.h>
 #endif
+
 
 #include <string>
 

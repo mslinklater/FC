@@ -21,7 +21,7 @@
  */
 
 #include "FCDevice.h"
-#include "Shared/Core/FCError.h"
+#include "../FCError.h"
 #include "Shared/Lua/FCLua.h"
 
 extern void plt_FCDevice_ColdProbe();

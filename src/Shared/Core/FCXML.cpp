@@ -21,9 +21,9 @@
  */
 
 #include "FCXML.h"
-#include "Shared/Core/FCError.h"
-#include "Shared/Core/FCFile.h"
-#include "Shared/Core/FCStringUtils.h"
+#include "FCError.h"
+#include "FCFile.h"
+#include "FCStringUtils.h"
 
 FCXML::FCXML()
 : m_pData(0)
