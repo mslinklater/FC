@@ -21,11 +21,7 @@
  */
 
 #include "FCPerformanceCounter.h"
-
-extern void plt_FCPerformanceCounter_New( void* instance );
-extern void plt_FCPerformanceCounter_Delete( void* instance );
-extern void plt_FCPerformanceCounter_Zero( void* instance );
-extern double plt_FCPerformanceCounter_NanoValue( void* instance );
+#include "Shared/FCPlatformInterface.h"
 
 FCPerformanceCounter::FCPerformanceCounter()
 {

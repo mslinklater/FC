@@ -22,8 +22,7 @@
 
 #include "FCAds.h"
 #include <string>
-#include "FCAds_platform.h"
-
+#include "Shared/FCPlatformInterface.h"
 
 namespace FCAds {
 	void ShowBanner( std::string key )

@@ -22,18 +22,18 @@
 
 #include "FCInput.h"
 #include "Shared/Lua/FCLua.h"
-#include "FCInput_platform.h"
+#include "Shared/FCPlatformInterface.h"
 
 static FCInput* s_pInstance;
 
-void FCInput::PlatformTapSubscriber( const std::string& viewName, const FCVector2f &pos )
+void FCInput::PlatformTapSubscriber( const std::string& viewName, const float posX, const float posY )
 {
 	TapSubscriberMap& tapSubscribers = s_pInstance->m_screens[ viewName ].m_tapSubscribers;
 	
 	for (TapSubscriberMapIter i = tapSubscribers.begin(); i != tapSubscribers.end(); i++) {
 		// call Lua
 		
-		FCLua::Instance()->CoreVM()->CallFuncWithSig(i->second, true, "ff>", pos.x, pos.y);
+		FCLua::Instance()->CoreVM()->CallFuncWithSig(i->second, true, "ff>", posX, posY);
 	}
 }
 

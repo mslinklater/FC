@@ -28,6 +28,7 @@
 #include "FCLuaAsserts.h"
 #include "Shared/Core/FCError.h"
 #include "Shared/Core/FCFile.h"
+#include "Shared/FCPlatformInterface.h"
 
 extern "C" {
 #include <lua.h>

@@ -22,7 +22,7 @@
 
 #include "FCAnalytics.h"
 #include "Shared/Lua/FCLua.h"
-#include "FCAnalytics_platform.h"
+#include "Shared/FCPlatformInterface.h"
 
 static FCAnalytics* s_pInstance = 0;
 

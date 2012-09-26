@@ -22,11 +22,7 @@
 
 #include "FCError.h"
 #include "Debug/FCConnect.h"
-
-extern void plt_FCHalt();
-extern void plt_FCLog( std::string log );
-extern void plt_FCWarning( std::string log );
-extern void plt_FCFatal( std::string log );
+#include "Shared/FCPlatformInterface.h"
 
 void FCHalt()
 {

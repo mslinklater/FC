@@ -30,9 +30,6 @@ class lua_State;
 
 //extern void FCError_RegisterLuaFunctions( lua_State* _state );
 
-
-
-
 class FCError
 {
 public:

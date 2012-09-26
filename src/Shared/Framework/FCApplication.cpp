@@ -35,7 +35,7 @@
 #include "Shared/Framework/Actor/FCActorSystem.h"
 #include "Shared/Framework/Online/FCOnlineLeaderboard.h"
 
-#include "FCFramework_platform.h"
+#include "Shared/FCPlatformInterface.h"
 
 static FCApplication* s_pInstance = 0;
 
@@ -47,6 +47,7 @@ static FCHandle	s_sessionActiveAnalyticsHandle = kFCHandleInvalid;
 
 static int lua_ShowStatusBar( lua_State* _state )
 {
+	FC_TRACE;
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TBOOLEAN);
 	
@@ -58,6 +59,7 @@ static int lua_ShowStatusBar( lua_State* _state )
 
 static int lua_SetBackgroundColor( lua_State* _state )
 {
+	FC_TRACE;
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TTABLE);
 
@@ -91,6 +93,7 @@ static int lua_SetBackgroundColor( lua_State* _state )
 
 static int lua_ShowGameCenterLeaderboards( lua_State* _state )
 {
+	FC_TRACE;
 	FC_LUA_ASSERT_NUMPARAMS(0);
 
 	s_pInstance->ShowExternalLeaderboard();
@@ -100,6 +103,7 @@ static int lua_ShowGameCenterLeaderboards( lua_State* _state )
 
 static int lua_LaunchExternalURL( lua_State* _state )
 {
+	FC_TRACE;
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 
@@ -110,6 +114,7 @@ static int lua_LaunchExternalURL( lua_State* _state )
 
 static int lua_MainViewSize( lua_State* _state )
 {
+	FC_TRACE;
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	
 	FCVector2f size = s_pInstance->MainViewSize();
@@ -122,6 +127,7 @@ static int lua_MainViewSize( lua_State* _state )
 
 static int lua_PauseGame( lua_State* _state )
 {
+	FC_TRACE;
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TBOOLEAN);
 	
@@ -136,6 +142,7 @@ static int lua_PauseGame( lua_State* _state )
 
 static int lua_SetUpdateFrequency( lua_State* _state )
 {
+	FC_TRACE;
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
@@ -157,15 +164,18 @@ FCApplication* FCApplication::Instance()
 
 FCApplication::FCApplication()
 {
+	FC_TRACE;
 }
 
 FCApplication::~FCApplication()
 {
+	FC_TRACE;
 	FC_HALT;
 }
 
 void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 {
+	FC_TRACE;
 	m_delegate = params.pDelegate;
 	m_performanceCounter = FCPerformanceCounterRef( new FCPerformanceCounter );
 	m_lua = FCLuaVMRef( FCLua::Instance()->CoreVM() );
@@ -184,8 +194,6 @@ void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 	FCViewManager::Instance();
 	FCBuild::Instance();
 
-//	FCConnect::Instance()->Start();
-//	FCConnect::Instance()->EnableWithName("FCConnect");
 	FCAnalytics::Instance();
     FCOnlineLeaderboard::Instance();
 	
@@ -206,6 +214,7 @@ void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 
 void FCApplication::WarmBoot()
 {
+	FC_TRACE;
 	m_delegate->InitializeSystems();
 	m_delegate->RegisterPhasesWithManager( FCPhaseManager::Instance() );
 	m_lua->CallFuncWithSig("FCApp.WarmBoot", true, "");
@@ -213,11 +222,13 @@ void FCApplication::WarmBoot()
 
 void FCApplication::Shutdown()
 {
+	FC_TRACE;
 	FC_HALT;
 }
 
 void FCApplication::Update()
 {
+	FC_TRACE;
 	static int fps = 0;
 	static float seconds = 0.0f;
 	
@@ -275,43 +286,51 @@ void FCApplication::Update()
 
 void FCApplication::AddUpdateSubscriber(FCApplicationUpdateFuncPtr func)
 {
+	FC_TRACE;
 	m_updateSubscribers.insert( func );
 }
 
 void FCApplication::RemoveUpdateSubscriber(FCApplicationUpdateFuncPtr func)
 {
+	FC_TRACE;
 	m_updateSubscribers.erase( func );
 }
 
 void FCApplication::Pause()
 {
+	FC_TRACE;
 	m_paused = true;
 	m_lua->SetGlobalBool("FCApp.paused", true);
 }
 
 void FCApplication::Resume()
 {
+	FC_TRACE;
 	m_paused = false;
 	m_lua->SetGlobalBool("FCApp.paused", false);
 }
 
 void FCApplication::RegisterExceptionHandler()
 {
+	FC_TRACE;
 	FC_HALT;
 }
 
 void FCApplication::SetAnalyticsID( std::string ident )
 {
+	FC_TRACE;
 	FC_HALT;
 }
 
 void FCApplication::SetTestFlightID( std::string ident )
 {
+	FC_TRACE;
 	FC_HALT;
 }
 
 void FCApplication::WillResignActive()
 {
+	FC_TRACE;
 	FCConnect::Instance()->Stop();
 	
 	FC_ASSERT(s_sessionActiveAnalyticsHandle != kFCHandleInvalid);
@@ -329,11 +348,13 @@ void FCApplication::WillResignActive()
 
 void FCApplication::DidEnterBackground()
 {
+	FC_TRACE;
 	m_lua->CallFuncWithSig("FCApp.DidEnterBackground", false, "");
 }
 
 void FCApplication::WillEnterForeground()
 {
+	FC_TRACE;
 	m_lua->CallFuncWithSig("FCApp.WillEnterForeground", false, "");
 
 	FCNotification note;
@@ -343,6 +364,7 @@ void FCApplication::WillEnterForeground()
 
 void FCApplication::DidBecomeActive()
 {
+	FC_TRACE;
 #if defined(FC_DEBUG)
 	FCConnect::Instance()->Start();
 	FCConnect::Instance()->EnableWithName("FCConnect");
@@ -361,6 +383,7 @@ void FCApplication::DidBecomeActive()
 
 void FCApplication::WillTerminate()
 {
+	FC_TRACE;
 	m_lua->CallFuncWithSig("FCApp.WillTerminate", false, "");
 	
 	FCNotification note;
@@ -370,6 +393,7 @@ void FCApplication::WillTerminate()
 
 bool FCApplication::ShouldAutorotateToInterfaceOrientation( FCInterfaceOrientation orient )
 {
+	FC_TRACE;
 	bool ret = true;
 	
 	switch (orient) {
@@ -385,31 +409,37 @@ bool FCApplication::ShouldAutorotateToInterfaceOrientation( FCInterfaceOrientati
 
 void FCApplication::SetUpdateFrequency(int freq)
 {
+	FC_TRACE;
 	FC_HALT;
 }
 
 void FCApplication::ShowExternalLeaderboard()
 {
+	FC_TRACE;
 	FC_HALT;
 }
 
 void FCApplication::ShowStatusBar( bool visible )
 {
+	FC_TRACE;
 	FC_HALT;
 }
 
 void FCApplication::SetBackgroundColor(FCColor4f &color)
 {
+	FC_TRACE;
 	m_backgroundColor = color;
 }
 
 FCVector2f FCApplication::MainViewSize()
 {
+	FC_TRACE;
 	FC_HALT;
 	return FCVector2f( 0.0f, 0.0f );
 }
 
 void FCApplication::LaunchExternalURL( std::string url )
 {
+	FC_TRACE;
 	FC_HALT;
 }

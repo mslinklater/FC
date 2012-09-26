@@ -21,11 +21,7 @@
  */
 
 #include "FCConnect.h"
-
-extern bool plt_FCConnect_Start();
-extern bool plt_FCConnect_EnableWithName( std::string name );
-extern void plt_FCConnect_Stop();
-extern void plt_FCConnect_SendString( std::string s );
+#include "Shared/FCPlatformInterface.h"
 
 FCConnect* FCConnect::Instance()
 {

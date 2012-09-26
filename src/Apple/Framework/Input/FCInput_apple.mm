@@ -107,7 +107,7 @@ void plt_FCInput_RemoveTapFromView( const char* viewName )
 			pos.x = point.x / size.width;
 			pos.y = point.y / size.height;
 			
-			_tapSubscriber( [key UTF8String], pos );
+			_tapSubscriber( [key UTF8String], pos.x, pos.y );
 			return;
 		}
 	}

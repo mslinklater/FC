@@ -27,7 +27,6 @@
 
 #include "Shared/Core/FCCore.h"
 
-typedef void (*FCInputPlatformTapSubscriber)(const std::string& viewName, const FCVector2f& pos);
 
 class FCInput : public FCBase
 {
@@ -41,7 +40,7 @@ public:
 	FCHandle AddTapSubscriber( const std::string& viewName, const std::string& luaFunc );
 	void RemoveTapSubscriber( const std::string& viewName, FCHandle h );
 	
-	static void PlatformTapSubscriber( const std::string& viewName, const FCVector2f& pos );
+	static void PlatformTapSubscriber( const std::string& viewName, const float posX, const float posY );
 	
 	typedef std::map<FCHandle, std::string>	TapSubscriberMap;
 	typedef TapSubscriberMap::iterator		TapSubscriberMapIter;

@@ -66,6 +66,8 @@ public:
 	float h;
 };
 
+typedef void (*FCInputPlatformTapSubscriber)(const std::string& viewName, const float posX, const float posY);
+
 // Some common container types.
 
 typedef std::vector<std::string>		FCStringVector;

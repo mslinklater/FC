@@ -21,6 +21,7 @@
  */
 
 #include "FCFile.h"
+#include "Shared/FCPlatformInterface.h"
 
 FCFile::FCFile()
 : m_handle( 0 )

@@ -22,7 +22,7 @@
 
 #include "FCPersistentData.h"
 #include "Shared/Lua/FCLua.h"
-#include "FCFramework_platform.h"
+#include "Shared/FCPlatformInterface.h"
 
 static FCPersistentData* s_pInstance = 0;
 

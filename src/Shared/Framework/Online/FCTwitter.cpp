@@ -22,7 +22,7 @@
 
 #include "FCTwitter.h"
 #include "Shared/Lua/FCLua.h"
-#include "FCOnline_platform.h"
+#include "Shared/FCPlatformInterface.h"
 
 static FCTwitter* s_pInstance = 0;
 

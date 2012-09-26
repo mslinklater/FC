@@ -23,6 +23,7 @@
 #include "FCResource.h"
 
 #include "Shared/Core/FCFile.h"
+#include "Shared/FCPlatformInterface.h"
 
 void FCResource::InitWithContentsOfFile(std::string filename)
 {

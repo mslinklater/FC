@@ -28,4 +28,10 @@ static inline float FCDegToRad( float deg )
 	return deg * 0.017453292519943f;
 }
 
+#ifdef FC_FUNCTION_TRACE
+#define FC_TRACE FC_LOG( std::string("Trace: ") + __FILE__ + ":" + __FUNCTION__)
+#else
+#define FC_TRACE
+#endif
+
 #endif

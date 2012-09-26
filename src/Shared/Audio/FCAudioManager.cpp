@@ -22,7 +22,7 @@
 
 #include "FCAudioManager.h"
 #include "Shared/Lua/FCLua.h"
-#include "FCAudio_platform.h"
+#include "Shared/FCPlatformInterface.h"
 
 static FCAudioManager* s_pInstance;
 

@@ -23,9 +23,8 @@
 #include "FCDevice.h"
 #include "../FCError.h"
 #include "Shared/Lua/FCLua.h"
+#include "Shared/FCPlatformInterface.h"
 
-extern void plt_FCDevice_ColdProbe();
-extern void plt_FCDevice_WarmProbe( uint32_t options );
 
 static int lua_ColdProbe( lua_State* _state )
 {

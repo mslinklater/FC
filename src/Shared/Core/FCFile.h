@@ -28,10 +28,6 @@
 
 #include "FCCore.h"
 
-extern std::string plt_FCFile_ApplicationBundlePathForPath( std::string filename );
-extern std::string plt_FCFile_NormalPathForPath( std::string filename );
-extern std::string plt_FCFile_DocumentsFolderPathForPath( std::string filename );
-
 enum FCFileLocation
 {
 	kFCFileLocationApplicationBundle,

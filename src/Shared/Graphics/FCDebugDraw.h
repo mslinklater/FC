@@ -25,11 +25,10 @@
 
 #include "FCGraphics.h"
 
-extern void plt_FCDebugDraw_2DLine( FCVector2f& p1, FCVector2f& p2 );
 
 void FCDebugDraw_2DLine( FCVector2f& p1, FCVector2f& p2 )
 {
-	plt_FCDebugDraw_2DLine( p1, p2 );
+	plt_FCDebugDraw_2DLine( p1.x, p1.y, p2.x, p2.y );
 }
 
 #endif

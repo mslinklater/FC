@@ -22,7 +22,7 @@
 
 #include "FCViewManager.h"
 #include "Shared/Lua/FCLua.h"
-#include "FCUI_platform.h"
+#include "Shared/FCPlatformInterface.h"
 
 static FCViewManager* s_pInstance = 0;
 

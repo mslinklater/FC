@@ -23,7 +23,7 @@
 #import <Foundation/Foundation.h>
 #import <GameKit/GameKit.h>
 
-#include "Shared/Framework/Online/FCOnline_platform.h"
+#include "Shared/FCPlatformInterface.h"
 
 @interface FCOnlineLeaderboard_apple : NSObject <GKLeaderboardViewControllerDelegate> {
     GKLocalPlayer*  _localPlayer;
