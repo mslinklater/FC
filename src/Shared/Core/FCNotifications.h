@@ -43,11 +43,17 @@ extern std::string kFCNotificationResume;
 extern std::string kFCNotificationPlayerIDChanged;
 extern std::string kFCNotificationHighScoresChanged;
 
+class FCNotificationInfo {
+public:
+	FCNotificationInfo(){}
+	virtual ~FCNotificationInfo(){}
+};
+
 class FCNotification
 {
 public:
 	std::string	notification;
-	FCDataRef	data;
+	FCSharedPtr<FCNotificationInfo>	info;
 };
 
 typedef void (*FCNotificationHandler)(FCNotification, void*);

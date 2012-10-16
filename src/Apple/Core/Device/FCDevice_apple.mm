@@ -105,7 +105,7 @@ void plt_FCDevice_WarmProbe( uint32_t options )
 	FCDevice::Instance()->SetCap(kFCDeviceDisplayScale, ss.str());
 	
 	ss.str("");
-	ss << aspectRatio;
+	ss << ( screenSize.width / screenSize.height );
 	FCDevice::Instance()->SetCap(kFCDeviceDisplayAspectRatio, ss.str());
 	
 	ss.str("");
@@ -122,7 +122,7 @@ void plt_FCDevice_WarmProbe( uint32_t options )
 
 	ss.str("");
 	ss << screenSize.height;
-	FCDevice::Instance()->SetCap(kFCDeviceDisplayPhysicalYRes, ss.str());
+	FCDevice::Instance()->SetCap(kFCDeviceDisplayPhysicalYRes, ss.str());	
 }
 
 -(void)coldBoot

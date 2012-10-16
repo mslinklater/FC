@@ -205,7 +205,7 @@ std::string FCPersistentData::Print()
 
 bool FCPersistentData::Exists( std::string key )
 {
-	std::string ret = plt_FCPersistentData_ValueForKey( key );
+	std::string ret = plt_FCPersistentData_ValueForKey( key.c_str() );
 
 	if (ret.size()) {
 		return true;
@@ -216,55 +216,55 @@ bool FCPersistentData::Exists( std::string key )
 
 void FCPersistentData::ClearValueForKey( std::string key )
 {
-    plt_FCPersistentData_ClearValueForKey( key );
+    plt_FCPersistentData_ClearValueForKey( key.c_str() );
 }
 
 void FCPersistentData::AddStringForKey( std::string value, std::string key )
 {
-	plt_FCPersistentData_SetValueForKey(value, key);
+	plt_FCPersistentData_SetValueForKey(value.c_str(), key.c_str());
 }
 
 std::string FCPersistentData::StringForKey( std::string key )
 {
-	return plt_FCPersistentData_ValueForKey( key );
+	return plt_FCPersistentData_ValueForKey( key.c_str() );
 }
 
 void FCPersistentData::AddFloatForKey( float value, std::string key )
 {
 	std::stringstream ss;
 	ss << value;
-	plt_FCPersistentData_SetValueForKey(ss.str(), key);
+	plt_FCPersistentData_SetValueForKey(ss.str().c_str(), key.c_str());
 }
 
 float FCPersistentData::FloatForKey( std::string key )
 {
-	return (float)atof( plt_FCPersistentData_ValueForKey(key).c_str() );
+	return (float)atof( plt_FCPersistentData_ValueForKey(key.c_str()) );
 }
 
 void FCPersistentData::AddIntForKey( int32_t value, std::string key )
 {
 	std::stringstream ss;
 	ss << value;
-	plt_FCPersistentData_SetValueForKey(ss.str(), key);
+	plt_FCPersistentData_SetValueForKey(ss.str().c_str(), key.c_str());
 }
 
 int32_t FCPersistentData::IntForKey( std::string key )
 {
-	return atoi(plt_FCPersistentData_ValueForKey(key).c_str());
+	return atoi(plt_FCPersistentData_ValueForKey(key.c_str()));
 }
 
 void FCPersistentData::AddBoolForKey( bool value, std::string key )
 {
 	if (value) {
-		plt_FCPersistentData_SetValueForKey("true", key);
+		plt_FCPersistentData_SetValueForKey("true", key.c_str());
 	} else {
-		plt_FCPersistentData_SetValueForKey("false", key);		
+		plt_FCPersistentData_SetValueForKey("false", key.c_str());
 	}
 }
 
 bool FCPersistentData::BoolForKey( std::string key )
 {
-	if (plt_FCPersistentData_ValueForKey(key) == "true") {
+	if ( strcmp( plt_FCPersistentData_ValueForKey(key.c_str()), "true") == 0) {
 		return true;
 	} else {
 		return false;

@@ -45,7 +45,7 @@ void FCXML::InitWithContentsOfFile(std::string filename)
 	
 	m_filename = filename;
 	
-	std::string filepath = plt_FCFile_ApplicationBundlePathForPath( filename );
+	std::string filepath = plt_FCFile_ApplicationBundlePathForPath( filename.c_str() );
 	
 	FILE* hFile = fopen(filepath.c_str(), "r");
 

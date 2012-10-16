@@ -265,8 +265,10 @@ void plt_FCViewManager_SetViewBackgroundColor( const char* viewName, const FCCol
 
 -(void)add:(UIView*)view as:(NSString*)name
 {
+	// Assert the view name is unique
 	FC_ASSERT([_viewDictionary valueForKey:name] == nil);
 	
+	// Assert the view conforms to the managed view protocol
 	FC_ASSERT([view conformsToProtocol:@protocol(FCManagedView_apple)]);
 	
 	[((id<FCManagedView_apple>)view) setManagedViewName:name];

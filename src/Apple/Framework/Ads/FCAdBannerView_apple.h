@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined(FC_ADS)
+
 #import <UIKit/UIKit.h>
 #import "AdWhirlView.h"
 #import "FCViewManager_apple.h"
@@ -40,3 +42,4 @@
 
 @end
 
+#endif // FC_ADS

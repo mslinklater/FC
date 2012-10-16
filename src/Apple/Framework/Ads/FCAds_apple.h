@@ -20,9 +20,12 @@
  THE SOFTWARE.
  */
 
+#if defined( FC_ADS )
+
 #import <Foundation/Foundation.h>
 #include<string>
 
 void plt_FCAds_ShowBanner( std::string key );
 void plt_FCAds_HideBanner();
 
+#endif // FC_ADS

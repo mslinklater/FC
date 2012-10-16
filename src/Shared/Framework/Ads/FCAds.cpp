@@ -20,18 +20,73 @@
  THE SOFTWARE.
  */
 
+#if defined( FC_ADS )
+
 #include "FCAds.h"
 #include <string>
 #include "Shared/FCPlatformInterface.h"
+#include "Shared/Lua/FCLua.h"
 
-namespace FCAds {
-	void ShowBanner( std::string key )
-	{
-		plt_FCAds_ShowBanner( key.c_str() );
+static FCAds* s_pInstance = 0;
+
+static int lua_Visible( lua_State* _state )
+{
+	if (s_pInstance->Visible()) {
+		lua_pushboolean( _state, 1);
+	} else {
+		lua_pushboolean( _state, 0);
 	}
-	
-	void HideBanner()
-	{
-		plt_FCAds_HideBanner();		
-	}
+	return 1;
 }
+
+static int lua_ShowBanner( lua_State* _state )
+{
+	std::string key = lua_tostring(_state, 1);
+	s_pInstance->ShowBanner(key);
+	return 0;
+}
+
+static int lua_HideBanner( lua_State* _state )
+{
+	s_pInstance->HideBanner();
+	return 0;
+}
+
+FCAds::FCAds()
+: m_visible( false )
+{
+	FCLua::Instance()->CoreVM()->CreateGlobalTable("FCAds");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_Visible, "FCAds.Visible");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_ShowBanner, "FCAds.ShowBanner");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_HideBanner, "FCAds.HideBanner");
+}
+
+FCAds::~FCAds()
+{
+	FCLua::Instance()->CoreVM()->RemoveCFunction("FCAds.Visible");
+	FCLua::Instance()->CoreVM()->RemoveCFunction("FCAds.ShowBanner");
+	FCLua::Instance()->CoreVM()->RemoveCFunction("FCAds.HideBanner");
+	FCLua::Instance()->CoreVM()->DestroyGlobalTable("FCAds");
+}
+
+FCAds* FCAds::Instance()
+{
+	if (!s_pInstance) {
+		s_pInstance = new FCAds;
+	}
+	return s_pInstance;
+}
+
+void FCAds::ShowBanner( std::string key )
+{
+	plt_FCAds_ShowBanner( key.c_str() );
+	m_visible = true;
+}
+
+void FCAds::HideBanner()
+{
+	plt_FCAds_HideBanner();
+	m_visible = false;
+}
+
+#endif // FC_ADS

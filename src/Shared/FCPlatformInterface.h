@@ -50,9 +50,9 @@ extern void plt_FCAudio_SourcePosition( FCHandle h, float x, float y, float z );
 extern void plt_FCAudio_SourcePitch( FCHandle h, float pitch );
 
 extern bool plt_FCConnect_Start();
-extern bool plt_FCConnect_EnableWithName( std::string name );
+extern bool plt_FCConnect_EnableWithName( const char* name );
 extern void plt_FCConnect_Stop();
-extern void plt_FCConnect_SendString( std::string s );
+extern void plt_FCConnect_SendString( const char* s );
 
 extern void plt_FCPerformanceCounter_New( void* instance );
 extern void plt_FCPerformanceCounter_Delete( void* instance );
@@ -63,13 +63,13 @@ extern void plt_FCDevice_ColdProbe();
 extern void plt_FCDevice_WarmProbe( uint32_t options );
 
 extern void plt_FCHalt();
-extern void plt_FCLog( std::string log );
-extern void plt_FCWarning( std::string log );
-extern void plt_FCFatal( std::string log );
+extern void plt_FCLog( const char* log );
+extern void plt_FCWarning( const char* log );
+extern void plt_FCFatal( const char* log );
 
-extern std::string plt_FCFile_ApplicationBundlePathForPath( std::string filename );
-extern std::string plt_FCFile_NormalPathForPath( std::string filename );
-extern std::string plt_FCFile_DocumentsFolderPathForPath( std::string filename );
+extern const char* plt_FCFile_ApplicationBundlePathForPath( const char* filename );
+extern const char* plt_FCFile_NormalPathForPath( const char* filename );
+extern const char* plt_FCFile_DocumentsFolderPathForPath( const char* filename );
 
 extern void plt_FCAds_ShowBanner( const char* key );
 extern void plt_FCAds_HideBanner();
@@ -86,9 +86,9 @@ extern void plt_FCPersistentData_Load();
 extern void plt_FCPersistentData_Save();
 extern void plt_FCPersistentData_Clear();
 extern void plt_FCPersistentData_Print();
-extern void plt_FCPersistentData_SetValueForKey( std::string value, std::string key );
-extern std::string plt_FCPersistentData_ValueForKey( std::string key );
-extern void plt_FCPersistentData_ClearValueForKey( std::string key );
+extern void plt_FCPersistentData_SetValueForKey( const char* value, const char* key );
+extern const char* plt_FCPersistentData_ValueForKey( const char* key );
+extern void plt_FCPersistentData_ClearValueForKey( const char* key );
 
 extern void plt_FCInput_SetTapSubscriberFunc( FCInputPlatformTapSubscriber func );
 extern void plt_FCInput_AddTapToView( const char* viewName );

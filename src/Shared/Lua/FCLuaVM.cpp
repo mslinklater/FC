@@ -45,7 +45,7 @@ static void common_LoadScriptForState( std::string path, lua_State* _state, bool
 	// if this is FC source, load from main bundle as plaintext
 	
 	if (path.find("fc_") == 0) {
-		filePath = plt_FCFile_ApplicationBundlePathForPath(path + ".lua");
+		filePath = plt_FCFile_ApplicationBundlePathForPath( (path + ".lua").c_str() );
 	}
 	else
 	{
@@ -54,7 +54,7 @@ static void common_LoadScriptForState( std::string path, lua_State* _state, bool
 //#else
 		path = "Assets/Lua/" + path;
 //#endif
-		filePath = plt_FCFile_ApplicationBundlePathForPath(path + ".lua");
+		filePath = plt_FCFile_ApplicationBundlePathForPath( (path + ".lua").c_str() );
 	}
 	
 	if(filePath == "")

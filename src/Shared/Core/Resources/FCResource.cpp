@@ -33,7 +33,7 @@ void FCResource::InitWithContentsOfFile(std::string filename)
 	m_xml = FCXMLRef( new FCXML );
 	m_xml->InitWithContentsOfFile(fcrFilename);
 	
-	FILE* hFile = fopen( plt_FCFile_ApplicationBundlePathForPath(binFilename).c_str(), "rb");
+	FILE* hFile = fopen( plt_FCFile_ApplicationBundlePathForPath(binFilename.c_str()), "rb");
 	
 	fseek(hFile, 0, SEEK_END);
 	m_binaryPayloadSize = ftell(hFile);

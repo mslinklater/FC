@@ -28,5 +28,6 @@
 #include "FCSharedPtr.h"
 #include "FCStringUtils.h"
 #include "FCError.h"
+#include "FCStringUtils.h"
 
 #include "Maths/FCMaths.h"

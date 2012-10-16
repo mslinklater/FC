@@ -25,6 +25,7 @@
 #include "Shared/Framework/Phase/FCPhaseManager.h"
 #include "Shared/Framework/UI/FCViewManager.h"
 #include "Shared/Framework/FCBuild.h"
+#include "Shared/Framework/Ads/FCAds.h"
 #include "Shared/Core/Debug/FCConnect.h"
 #include "Shared/Framework/Analytics/FCAnalytics.h"
 #include "Shared/Framework/Online/FCTwitter.h"
@@ -193,7 +194,11 @@ void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 	FCPhaseManager::Instance();
 	FCViewManager::Instance();
 	FCBuild::Instance();
-
+	
+#if defined(FC_ADS)
+	FCAds::Instance();
+#endif
+	
 	FCAnalytics::Instance();
     FCOnlineLeaderboard::Instance();
 	
@@ -218,6 +223,44 @@ void FCApplication::WarmBoot()
 	m_delegate->InitializeSystems();
 	m_delegate->RegisterPhasesWithManager( FCPhaseManager::Instance() );
 	m_lua->CallFuncWithSig("FCApp.WarmBoot", true, "");
+	
+	// Layout
+	
+	m_lua->LoadScriptOptional("Layout/layout_global");
+	
+	std::string xString = FCDevice::Instance()->GetCap(kFCDeviceDisplayLogicalXRes);
+	int32_t x = FCIntFromString( xString );
+	std::string yString = FCDevice::Instance()->GetCap(kFCDeviceDisplayLogicalYRes);
+	int32_t y = FCIntFromString( yString );
+
+	float aspect = (float)y / (float)x;
+	float aspect4by3 = 4.0f / 3.0f;
+	float aspect3by2 = 3.0f / 2.0f;
+	float aspect16by9 = 16.0f / 9.0f;
+	
+	float diff4by3 = fabsf(aspect - aspect4by3);
+	float diff3by2 = fabsf(aspect - aspect3by2);
+	float diff16by9 = fabsf(aspect - aspect16by9);
+	
+	if ((diff4by3 < diff3by2) && (diff4by3 < diff16by9)) {
+		m_lua->LoadScriptOptional("Layout/layout_4by3");
+	}
+	if ((diff3by2 < diff4by3) && (diff3by2 < diff16by9)) {
+		m_lua->LoadScriptOptional("Layout/layout_3by2");
+	}
+	if ((diff16by9 < diff3by2) && (diff16by9 < diff4by3)) {
+		m_lua->LoadScriptOptional("Layout/layout_16by9");
+	}
+	
+	// Languages
+	
+	m_lua->LoadScriptOptional("Languages/en");	// default is English
+	
+	std::string locale = FCDevice::Instance()->GetCap(kFCDeviceLocale);
+	
+	if (locale != "en") {
+		m_lua->LoadScriptOptional("Languages/" + locale);	// override with translations
+	}
 }
 
 void FCApplication::Shutdown()

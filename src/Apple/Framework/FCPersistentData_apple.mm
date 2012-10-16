@@ -27,10 +27,10 @@
 void plt_FCPersistentData_Load();
 void plt_FCPersistentData_Save();
 void plt_FCPersistentData_Clear();
-void plt_FCPersistentData_ClearValueForKey( std::string key );
+void plt_FCPersistentData_ClearValueForKey( const char* key );
 void plt_FCPersistentData_Print();
-void plt_FCPersistentData_SetValueForKey( std::string value, std::string key );
-std::string plt_FCPersistentData_ValueForKey( std::string key );
+void plt_FCPersistentData_SetValueForKey( const char* value, const char* key );
+const char* plt_FCPersistentData_ValueForKey( const char* key );
 
 void plt_FCPersistentData_Load()
 {
@@ -47,9 +47,9 @@ void plt_FCPersistentData_Clear()
 	[[FCPersistentData_apple instance] clear];	
 }
 
-void plt_FCPersistentData_ClearValueForKey( std::string key )
+void plt_FCPersistentData_ClearValueForKey( const char* key )
 {
-	[[FCPersistentData_apple instance].dataRoot removeObjectForKey:@(key.c_str())];
+	[[FCPersistentData_apple instance].dataRoot removeObjectForKey:@(key)];
 }
 
 void plt_FCPersistentData_Print()
@@ -57,14 +57,14 @@ void plt_FCPersistentData_Print()
 	[[FCPersistentData_apple instance] print];	
 }
 
-void plt_FCPersistentData_SetValueForKey( std::string value, std::string key )
+void plt_FCPersistentData_SetValueForKey( const char* value, const char* key )
 {
-	[[FCPersistentData_apple instance].dataRoot setValue:@(value.c_str()) forKey:@(key.c_str())];
+	[[FCPersistentData_apple instance].dataRoot setValue:@(value) forKey:@(key)];
 }
 
-std::string plt_FCPersistentData_ValueForKey( std::string key )
+const char* plt_FCPersistentData_ValueForKey( const char* key )
 {
-	NSString* ret = [[FCPersistentData_apple instance].dataRoot valueForKey:@(key.c_str())];
+	NSString* ret = [[FCPersistentData_apple instance].dataRoot valueForKey:@(key)];
 		
 	if (ret) {
 		FC_ASSERT( [ret isKindOfClass:[NSString class]] );
@@ -124,8 +124,7 @@ std::string plt_FCPersistentData_ValueForKey( std::string key )
 
 -(void)print
 {
-//	NSLog(@"Persistent Sote:");
-//	NSLog(@"%@", self.dataRoot);
+	NSLog(@"%@", self.dataRoot);
 }
 
 @end

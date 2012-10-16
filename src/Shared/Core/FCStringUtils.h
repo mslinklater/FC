@@ -27,5 +27,6 @@
 
 extern FCStringVector FCStringUtils_ComponentsSeparatedByString( const std::string& data, const std::string& sep );
 extern void FCStringUtils_ReplaceOccurencesOfStringWithString( std::string& string, const std::string& search, const std::string& replace );
-
+extern float FCFloatFromString( std::string& string );
+extern int32_t FCIntFromString( std::string& string );
 #endif

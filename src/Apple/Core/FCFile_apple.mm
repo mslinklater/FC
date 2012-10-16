@@ -25,13 +25,13 @@
 
 #include <string>
 
-std::string plt_FCFile_ApplicationBundlePathForPath( std::string filename );
-std::string plt_FCFile_NormalPathForPath( std::string filename );
-std::string plt_FCFile_DocumentsFolderPathForPath( std::string filename );
+const char* plt_FCFile_ApplicationBundlePathForPath( const char* filename );
+const char* plt_FCFile_NormalPathForPath( const char* filename );
+const char* plt_FCFile_DocumentsFolderPathForPath( const char* filename );
 
-std::string plt_FCFile_ApplicationBundlePathForPath( std::string filename )
+const char* plt_FCFile_ApplicationBundlePathForPath( const char* filename )
 {
-	NSArray* components = [@(filename.c_str()) componentsSeparatedByString:@"."];
+	NSArray* components = [@(filename) componentsSeparatedByString:@"."];
 	NSString* fullPath = [[NSBundle mainBundle] pathForResource:[components objectAtIndex:0] ofType:[components objectAtIndex:1]];
 	
 	if (fullPath) {
@@ -41,13 +41,13 @@ std::string plt_FCFile_ApplicationBundlePathForPath( std::string filename )
 	}
 }
 
-std::string plt_FCFile_NormalPathForPath( std::string filename )
+const char* plt_FCFile_NormalPathForPath( const char* filename )
 {
 	FC_HALT;
 	return "";
 }
 
-std::string plt_FCFile_DocumentsFolderPathForPath( std::string filename )
+const char* plt_FCFile_DocumentsFolderPathForPath( const char* filename )
 {
 	FC_HALT;
 	return "";

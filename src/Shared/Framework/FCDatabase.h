@@ -20,30 +20,14 @@
  THE SOFTWARE.
  */
 
-#include "FCError.h"
-#include "Debug/FCConnect.h"
-#include "Shared/FCPlatformInterface.h"
+#ifndef CR3_FCDatabase_h
+#define CR3_FCDatabase_h
 
-void FCHalt()
+class FCDatabase
 {
-	plt_FCHalt();
-}
+public:
+	static FCDatabase* Instance();
+private:
+};
 
-void FCLog( std::string log )
-{
-	FCConnect::Instance()->SendString(log);
-	plt_FCLog(log.c_str());
-}
-
-void FCWarning( std::string message )
-{
-	FCConnect::Instance()->SendString(message);
-	plt_FCWarning(message.c_str());
-}
-
-void FCFatal( std::string message )
-{
-	FCConnect::Instance()->SendString(message);
-	plt_FCFatal(message.c_str());
-}
-
+#endif

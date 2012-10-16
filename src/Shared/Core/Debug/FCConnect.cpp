@@ -39,7 +39,7 @@ bool FCConnect::Start()
 
 bool FCConnect::EnableWithName( std::string name )
 {
-	return plt_FCConnect_EnableWithName( name );
+	return plt_FCConnect_EnableWithName( name.c_str() );
 }
 
 void FCConnect::Stop()
@@ -49,5 +49,5 @@ void FCConnect::Stop()
 
 void FCConnect::SendString( std::string s )
 {
-	plt_FCConnect_SendString( s );
+	plt_FCConnect_SendString( s.c_str() );
 }

@@ -49,13 +49,13 @@ FCFileReturn FCFile::Open(std::string filename, FCFileOpenMode mode, FCFileLocat
 	
 	switch (loc) {
 		case kFCFileLocationApplicationBundle:
-			filepath = plt_FCFile_ApplicationBundlePathForPath( filename );
+			filepath = plt_FCFile_ApplicationBundlePathForPath( filename.c_str() );
 			break;
 		case kFCFileLocationNormalFile:
-			filepath = plt_FCFile_NormalPathForPath( filename );
+			filepath = plt_FCFile_NormalPathForPath( filename.c_str() );
 			break;
 		case kFCFileLocationDocumentsFolder:
-			filepath = plt_FCFile_DocumentsFolderPathForPath( filename );
+			filepath = plt_FCFile_DocumentsFolderPathForPath( filename.c_str() );
 			break;			
 		default:
 			break;

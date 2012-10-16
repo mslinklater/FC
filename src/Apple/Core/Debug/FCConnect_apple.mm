@@ -27,18 +27,18 @@
 #pragma mark - Platform API
 
 bool plt_FCConnect_Start();
-bool plt_FCConnect_EnableWithName( std::string name );
+bool plt_FCConnect_EnableWithName( const char* name );
 void plt_FCConnect_Stop();
-void plt_FCConnect_SendString( std::string s );
+void plt_FCConnect_SendString( const char* s );
 
 bool plt_FCConnect_Start()
 {
 	return [[FCConnect_apple instance] start];
 }
 
-bool plt_FCConnect_EnableWithName( std::string name )
+bool plt_FCConnect_EnableWithName( const char* name )
 {
-	return [[FCConnect_apple instance] enableWithName:@(name.c_str())];
+	return [[FCConnect_apple instance] enableWithName:@(name)];
 }
 
 void plt_FCConnect_Stop()
@@ -46,9 +46,9 @@ void plt_FCConnect_Stop()
 	[[FCConnect_apple instance] stop];
 }
 
-void plt_FCConnect_SendString( std::string s )
+void plt_FCConnect_SendString( const char* s )
 {
-	[[FCConnect_apple instance] sendString:@(s.c_str())];
+	[[FCConnect_apple instance] sendString:@(s)];
 }
 
 #pragma mark - Objective-C API

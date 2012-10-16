@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined( FC_ADS )
+
 #import "FCAdBannerView_apple.h"
 #import "FCViewManager_apple.h"
 
@@ -80,3 +82,4 @@ extern UIViewController* s_rootViewController;
 
 @end
 
+#endif // FC_ADS

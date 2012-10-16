@@ -25,10 +25,19 @@
 
 #include<string>
 
-namespace FCAds
-{
+class FCAds {
+public:
+	FCAds();
+	virtual ~FCAds();
+	
+	static FCAds* Instance();
+	
 	void ShowBanner( std::string key );
 	void HideBanner();
-}
+	bool Visible(){ return m_visible; }
+	
+private:
+	bool m_visible;
+};
 
 #endif

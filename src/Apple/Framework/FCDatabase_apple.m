@@ -20,30 +20,18 @@
  THE SOFTWARE.
  */
 
-#include "FCError.h"
-#include "Debug/FCConnect.h"
-#include "Shared/FCPlatformInterface.h"
+#import "FCDatabase_apple.h"
 
-void FCHalt()
+static FCDatabase_apple* s_pInstance = 0;
+
+@implementation FCDatabase_apple
+
++(FCDatabase_apple*)instance
 {
-	plt_FCHalt();
+	if (!s_pInstance) {
+		s_pInstance = [[FCDatabase_apple alloc] init];
+	}
+	return s_pInstance;
 }
 
-void FCLog( std::string log )
-{
-	FCConnect::Instance()->SendString(log);
-	plt_FCLog(log.c_str());
-}
-
-void FCWarning( std::string message )
-{
-	FCConnect::Instance()->SendString(message);
-	plt_FCWarning(message.c_str());
-}
-
-void FCFatal( std::string message )
-{
-	FCConnect::Instance()->SendString(message);
-	plt_FCFatal(message.c_str());
-}
-
+@end

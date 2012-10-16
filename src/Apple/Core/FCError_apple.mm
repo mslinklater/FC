@@ -25,9 +25,9 @@
 #include <string>
 
 void plt_FCHalt();
-void plt_FCLog(std::string log);
-void plt_FCWarning(std::string message);
-void plt_FCFatal(std::string message);
+void plt_FCLog( const char* log );
+void plt_FCWarning( const char* message );
+void plt_FCFatal( const char* message );
 
 void plt_FCHalt()
 {
@@ -35,18 +35,18 @@ void plt_FCHalt()
 	*pHalt = 0xff;
 }
 
-void plt_FCLog( std::string log )
+void plt_FCLog( const char* log )
 {
-	NSLog( @"Log: %@", @(log.c_str()) );
+	NSLog( @"Log: %@", @(log) );
 }
 
-void plt_FCWarning( std::string log )
+void plt_FCWarning( const char* log )
 {
-	NSLog( @"Warning: %@", @(log.c_str()) );	
+	NSLog( @"Warning: %@", @(log) );
 }
 
-void plt_FCFatal( std::string log )
+void plt_FCFatal( const char* log )
 {
-	NSLog( @"FATAL: %@", @(log.c_str()) );	
+	NSLog( @"FATAL: %@", @(log) );
 	plt_FCHalt();
 }

@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined( FC_ADS )
+
 #import "FCAds_apple.h"
 #import "FCAdBannerView_apple.h"
 #import "FCViewManager_apple.h"
@@ -55,3 +57,4 @@ void plt_FCAds_HideBanner()
 	}
 }
 
+#endif // FC_ADS

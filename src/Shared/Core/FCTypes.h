@@ -82,7 +82,6 @@ typedef std::map<FCHandle, std::string>		FCStringMapByHandle;
 
 typedef std::set<std::string>	FCStringSet;
 
-//typedef std::shared_ptr<char>				FCDataRef;
 typedef FCSharedPtr<char>					FCDataRef;
 typedef std::vector<FCDataRef>				FCDataRefVector;
 typedef FCDataRefVector::iterator			FCDataRefVectorIter;

@@ -59,3 +59,19 @@ void FCStringUtils_ReplaceOccurencesOfStringWithString( std::string& find, const
 	
 	return;
 }
+
+float FCFloatFromString( std::string& string )
+{
+	float out;
+	sscanf(string.c_str(), "%f", &out);
+	return out;
+}
+
+int32_t FCIntFromString( std::string& string )
+{
+	uint32_t out;
+	sscanf(string.c_str(), "%d", &out);
+	return out;
+}
+
+
