@@ -221,6 +221,17 @@ static int lua_SetBackgroundColor( lua_State* _state )
 	return 0;
 }
 
+static int lua_SendToFront( lua_State* _state )
+{
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	
+	std::string viewName = lua_tostring(_state, 1);
+	s_pInstance->SendViewToFront( viewName );
+	
+	return 0;
+}
+
 static int lua_SetImage( lua_State* _state )
 {
 	FC_LUA_ASSERT_NUMPARAMS(2);
@@ -351,6 +362,7 @@ FCViewManager::FCViewManager()
 	lua->RegisterCFunction(lua_SetImage, "FCViewManager.SetImage");
 	lua->RegisterCFunction(lua_SetURL, "FCViewManager.SetURL");
 	lua->RegisterCFunction(lua_SetBackgroundColor, "FCViewManager.SetBackgroundColor");
+	lua->RegisterCFunction(lua_SendToFront, "FCViewManager.SendViewToFront");
 	
 	lua->RegisterCFunction(lua_CreateView, "FCViewManager.CreateView");
 	lua->RegisterCFunction(lua_DestroyView, "FCViewManager.DestroyView");

@@ -406,7 +406,6 @@ void FCLuaVM::CallFuncWithSig( std::string func, bool required, std::string sig,
 				lua_pushstring(m_state, va_arg(vl, char*));
 				break;
 			case 'b': /* bool argument */
-//				lua_pushboolean(m_state, va_arg(vl, bool));
 				lua_pushboolean(m_state, va_arg(vl, int));
 				break;
 			case 't': /* table argument */

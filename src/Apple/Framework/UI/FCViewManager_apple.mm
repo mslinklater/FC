@@ -266,10 +266,14 @@ void plt_FCViewManager_SetViewBackgroundColor( const char* viewName, const FCCol
 -(void)add:(UIView*)view as:(NSString*)name
 {
 	// Assert the view name is unique
-	FC_ASSERT([_viewDictionary valueForKey:name] == nil);
+	if ([_viewDictionary valueForKey:name]) {
+		FCFatal( std::string("Trying to add non-unique view name: ") + [name UTF8String]);
+	}
 	
 	// Assert the view conforms to the managed view protocol
-	FC_ASSERT([view conformsToProtocol:@protocol(FCManagedView_apple)]);
+	if(![view conformsToProtocol:@protocol(FCManagedView_apple)]) {
+		FCFatal( std::string("View does not conform to FCManagedView_apple protocol: ") + [name UTF8String]);
+	}
 	
 	[((id<FCManagedView_apple>)view) setManagedViewName:name];
 	

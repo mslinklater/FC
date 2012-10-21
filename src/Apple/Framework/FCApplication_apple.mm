@@ -253,9 +253,6 @@ static void uncaughtExceptionHandler(NSException *exception) {
 
 -(void)pause
 {
-//	FC_HALT;
-//	[[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithUTF8String:kFCNotificationPause.c_str()] object:nil];
-	
 	FCNotification note;
 	note.notification = kFCNotificationPause;
 	
@@ -264,9 +261,6 @@ static void uncaughtExceptionHandler(NSException *exception) {
 
 -(void)resume
 {
-//	FC_HALT;
-//	[[NSNotificationCenter defaultCenter] postNotificationName:[NSString stringWithUTF8String:kFCNotificationResume.c_str()] object:nil];
-	
 	FCNotification note;
 	note.notification = kFCNotificationResume;
 	

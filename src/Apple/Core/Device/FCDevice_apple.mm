@@ -81,7 +81,7 @@ void plt_FCDevice_WarmProbe( uint32_t options )
 	CGFloat scale = [UIScreen mainScreen].scale;
 	CGRect bounds = [UIScreen mainScreen].bounds;
 	CGSize screenSize = [UIScreen mainScreen].currentMode.size;
-	CGFloat aspectRatio = [UIScreen mainScreen].currentMode.pixelAspectRatio;
+	CGFloat aspectRatio = bounds.size.width / bounds.size.height;
 	
 	// bounds are always reported for portrait, so do some swapping if landscape
 	
@@ -105,7 +105,7 @@ void plt_FCDevice_WarmProbe( uint32_t options )
 	FCDevice::Instance()->SetCap(kFCDeviceDisplayScale, ss.str());
 	
 	ss.str("");
-	ss << ( screenSize.width / screenSize.height );
+	ss << aspectRatio;
 	FCDevice::Instance()->SetCap(kFCDeviceDisplayAspectRatio, ss.str());
 	
 	ss.str("");

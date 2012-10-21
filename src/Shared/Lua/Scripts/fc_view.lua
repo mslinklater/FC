@@ -58,3 +58,7 @@ function FCView:SetStringProperty( prop, value )
 	FCViewManager.SetViewPropertyString( self.m_name, prop, value )
 end
 
+function FCView:SendToFront()
+	FCViewManager.SendViewToFront( self.m_name )
+end
+
