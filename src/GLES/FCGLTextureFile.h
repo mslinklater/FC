@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCGLTextureFile_h
-#define CR1_FCGLTextureFile_h
+#ifndef _FCGLTextureFile_h
+#define _FCGLTextureFile_h
 
 #include "Shared/Graphics/FCGraphics.h"
 

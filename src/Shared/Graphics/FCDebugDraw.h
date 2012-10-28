@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCDebugDraw_h
-#define CR1_FCDebugDraw_h
+#ifndef _FCDebugDraw_h
+#define _FCDebugDraw_h
 
 #include "FCGraphics.h"
 

@@ -22,6 +22,8 @@
 
 #import "FCConnect_apple.h"
 
+#include "Shared/FCPlatformInterface.h"
+
 #include <string>
 
 #pragma mark - Platform API
@@ -58,7 +60,7 @@ void plt_FCConnect_SendString( const char* s )
 #include <unistd.h>
 #include <CFNetwork/CFSocketStream.h>
 #include "Shared/Core/FCError.h"
-#include "Shared/Lua/FCLua.h"
+//#include "Shared/Lua/FCLua.h"
 
 static NSString* s_ErrorDomain = @"FCConnectErrorDomain";
 static FCConnect_apple* s_connect;
@@ -363,8 +365,8 @@ static void ServerAcceptCallback(CFSocketRef socket, CFSocketCallBackType type, 
 				uint8_t pBuffer[128];
 				NSUInteger bufferSize = 128;
 				NSUInteger bytesRead = [_inputStream read:&pBuffer[0] maxLength:bufferSize];
-				pBuffer[bytesRead] = 0;
-				FCLua::Instance()->ExecuteLine( (char*)(&pBuffer[0]) );
+				pBuffer[bytesRead] = 0;				
+				fc_FCLua_ExecuteLine( (const char*)(&pBuffer[0]) );
 				break;
 			}
 			case NSStreamEventHasSpaceAvailable:

@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR3_FCDatabase_h
-#define CR3_FCDatabase_h
+#ifndef _FCDatabase_h
+#define _FCDatabase_h
 
 class FCDatabase
 {

@@ -50,9 +50,7 @@ void plt_FCAds_HideBanner()
 {
 	if (s_bannerView) 
 	{
-		FCViewManager_apple* vm = [FCViewManager_apple instance];
 		[s_bannerView removeFromSuperview];
-		[vm remove:@"adbanner"];
 		s_bannerView = nil;
 	}
 }

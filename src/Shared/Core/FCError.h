@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCError_h
-#define CR1_FCError_h
+#ifndef _FCError_h
+#define _FCError_h
 
 #include <string>
 #include <sstream>

@@ -35,6 +35,7 @@
 #include "Shared/Physics/FCPhysics.h"
 #include "Shared/Framework/Actor/FCActorSystem.h"
 #include "Shared/Framework/Online/FCOnlineLeaderboard.h"
+#include "Shared/Framework/Store/FCStore.h"
 
 #include "Shared/FCPlatformInterface.h"
 
@@ -207,6 +208,7 @@ void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 	FCDevice::Instance()->ColdProbe();
 	
 	FCDevice::Instance()->WarmProbe( params.allowableOrientationsMask );
+	FCStore::Instance()->WarmBoot();
 	
 	FCPersistentData::Instance()->Load();
 	FCPhysics::Instance();

@@ -20,6 +20,9 @@
  THE SOFTWARE.
  */
 
+#ifndef _FCPhysics2DBodyDef_h
+#define _FCPhysics2DBodyDef_h
+
 #include "Shared/Core/FCCore.h"
 #include "Shared/Core/FCXML.h"
 
@@ -53,3 +56,4 @@ public:
 
 typedef FCSharedPtr<FCPhysics2DBodyDef> FCPhysics2DBodyDefRef;
 
+#endif // _FCPhysics2DBodyDef_h

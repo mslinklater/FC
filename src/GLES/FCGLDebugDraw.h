@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCGLDebugDraw_h
-#define CR1_FCGLDebugDraw_h
+#ifndef _FCGLDebugDraw_h
+#define _FCGLDebugDraw_h
 
 #include "Shared/Core/Maths/FCVector.h"
 

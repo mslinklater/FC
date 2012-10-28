@@ -20,6 +20,9 @@
  THE SOFTWARE.
  */
 
+#include <string>
+#include <map>
+
 #include "FCTypes.h"
 #include "FCKeys.h"
 #include "FCMacros.h"
@@ -31,3 +34,4 @@
 #include "FCStringUtils.h"
 
 #include "Maths/FCMaths.h"
+

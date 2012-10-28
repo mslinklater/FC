@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCAnalytics_h
-#define CR1_FCAnalytics_h
+#ifndef _FCAnalytics_h
+#define _FCAnalytics_h
 
 #include "Shared/Core/FCCore.h"
 

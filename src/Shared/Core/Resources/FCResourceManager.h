@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCResourceManager_h
-#define CR1_FCResourceManager_h
+#ifndef _FCResourceManager_h
+#define _FCResourceManager_h
 
 #include "FCResource.h"
 

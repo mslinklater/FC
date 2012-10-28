@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCApplication_h
-#define CR1_FCApplication_h
+#ifndef _FCApplication_h
+#define _FCApplication_h
 
 #include "Shared/Core/FCCore.h"
 #include "Shared/Core/Debug/FCPerformanceCounter.h"

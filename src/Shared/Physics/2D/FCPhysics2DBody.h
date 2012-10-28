@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCPhysics2DBody_h
-#define CR1_FCPhysics2DBody_h
+#ifndef _FCPhysics2DBody_h
+#define _FCPhysics2DBody_h
 
 #include "Shared/Core/FCCore.h"
 #include "FCPhysics2DBodyDef.h"

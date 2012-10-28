@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCGLShaderAttribute_h
-#define CR1_FCGLShaderAttribute_h
+#ifndef _FCGLShaderAttribute_h
+#define _FCGLShaderAttribute_h
 
 #include <string>
 #include <map>

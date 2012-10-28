@@ -25,6 +25,7 @@
 
 #import <Foundation/Foundation.h>
 #import <GameKit/GameKit.h>
+#import <StoreKit/StoreKit.h>
 
 #include "Shared/Framework/FCApplication.h"
 
@@ -32,9 +33,11 @@
 
 extern UIViewController* FCRootViewController();
 
-@interface FCApplication_apple : NSObject <GKLeaderboardViewControllerDelegate>
+@interface FCApplication_apple : NSObject <	GKLeaderboardViewControllerDelegate>
+//											SKPaymentTransactionObserver>
 {
 	CADisplayLink* _displayLink;
+	NSURLConnection*	_connection;
 }
 @property(nonatomic, strong) CADisplayLink* displayLink;
 

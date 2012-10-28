@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCBuild_h
-#define CR1_FCBuild_h
+#ifndef _FCBuild_h
+#define _FCBuild_h
 
 #include "Shared/Core/FCCore.h"
 

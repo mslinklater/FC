@@ -20,6 +20,9 @@
  THE SOFTWARE.
  */
 
+#ifndef _FCPhaseManager_h
+#define _FCPhaseManager_h
+
 #include "Shared/Core/FCCore.h"
 #include "FCPhase.h"
 
@@ -41,34 +44,7 @@ protected:
 	FCPhaseRefVector	m_activePhases;
 };
 
+#endif // _FCPhaseManager_h
 
 
 
-
-#if 0
-#import <Foundation/Foundation.h>
-#import "FCPhase.h"
-
-class FCLuaVM;
-
-@interface FCPhaseManager : NSObject
-{
-	FCPhase* _rootPhase;
-	NSMutableArray* _phaseQueue;
-	NSMutableArray* _activePhases;
-}
-@property(nonatomic, strong) FCPhase* rootPhase;
-@property(nonatomic, strong) NSMutableArray* phaseQueue;
-@property(nonatomic, strong) NSMutableArray* activePhases;
-
-+(FCPhaseManager*)instance;
-+(void)registerLuaFunctions:(FCLuaVM*)lua;
--(void)update:(float)dt;
--(FCPhase*)createPhaseWithName:(NSString*)name;
--(void)attachPhase:(FCPhase*)phase toParent:(FCPhase*)parentPhase;
-
--(void)addPhaseToQueue:(NSString*)name;
--(void)deactivatePhase:(NSString*)name;
-
-@end
-#endif

@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCAds_h
-#define CR1_FCAds_h
+#ifndef _FCAds_h
+#define _FCAds_h
 
 #include<string>
 

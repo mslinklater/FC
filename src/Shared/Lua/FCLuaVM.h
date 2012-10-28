@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCLuaVM_h
-#define CR1_FCLuaVM_h
+#ifndef _FCLuaVM_h
+#define _FCLuaVM_h
 
 #include <string>
 #include <memory>

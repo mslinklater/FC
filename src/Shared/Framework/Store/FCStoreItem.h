@@ -20,45 +20,31 @@
  THE SOFTWARE.
  */
 
-#ifndef _FCLuaAsserts_h
-#define _FCLuaAsserts_h
+#ifndef _FCStoreItem_h
+#define _FCStoreItem_h
 
-#include <sstream>
+#include "Shared/Core/FCCore.h"
 
-#if defined(FC_DEBUG)
+class FCStoreItem {
+public:
+	FCStoreItem(){}
+	virtual ~FCStoreItem(){}
+	
+	void SetDescription( std::string desc ){ m_description = desc; }
+	void SetPrice( std::string price ){ m_price = price; }
+	void SetIdentifier( std::string ident ){ m_identifier = ident; }
 
-#define FC_LUA_ASSERT_TYPE( stackpos, type )	\
-{							\
-	if( lua_type( _state, stackpos ) != type )	\
-	{	\
-		std::stringstream error;	\
-		error << "Lua (" << __FUNCTION__ << "): Wrong type of assert, wanted " << lua_typename( _state, type) << ", but found " << lua_typename( _state, lua_type( _state, stackpos));	\
-		FC_LOG(error.str());	\
-		FCLua_DumpStack( _state );	\
-		FC_HALT;	\
-		return 0;	\
-	}	\
-}
+	std::string Description(){ return m_description; }
+	std::string Price(){ return m_price; }
+	std::string Identifier(){ return m_identifier; }
+	
+private:
+	std::string m_description;
+	std::string m_price;
+	std::string m_identifier;
+};
 
-#define FC_LUA_ASSERT_NUMPARAMS( n )	\
-{										\
-	if( lua_gettop( _state ) != n )		\
-	{									\
-		std::stringstream error;	\
-		error << "Lua (" << __FUNCTION__ << "): Wrong number of parameters. Expected " << n << " but received " << lua_gettop( _state );	\
-		FC_LOG(error.str());	\
-		FCLua_DumpStack( _state );		\
-		FC_HALT;	\
-		return 0;	\
-	}			\
-}
-
-#else
-
-#define FC_LUA_ASSERT_TYPE(stackpos, type){}
-#define FC_LUA_ASSERT_NUMPARAMS( n ){}
-
-#endif	// DEBUG
+typedef std::vector<FCStoreItem>			FCStoreItemVec;
+typedef FCStoreItemVec::iterator	FCStoreItemVecIter;
 
 #endif
-

@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCInput_h
-#define CR1_FCInput_h
+#ifndef _FCInput_h
+#define _FCInput_h
 
 // subscribe to types of input
 

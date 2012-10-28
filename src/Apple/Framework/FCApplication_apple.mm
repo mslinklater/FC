@@ -244,6 +244,8 @@ static void uncaughtExceptionHandler(NSException *exception) {
     UIView* gameRootView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     [s_rootViewController.view addSubview:gameRootView];
     [FCViewManager_apple instance].rootView = gameRootView;
+	
+//	[[SKPaymentQueue defaultQueue] addTransactionObserver:self];
 }
 
 -(void)update
@@ -319,6 +321,20 @@ static void uncaughtExceptionHandler(NSException *exception) {
 	[_displayLink setFrameInterval:60 / freq];
 	[_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
+
+
+
+
+#pragma mark - 
+
+//-(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+//{
+//	NSError* error = 0;
+//	
+//	id obj = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+//	
+//	NSLog(@"Received: %@", obj);
+//}
 
 @end
 

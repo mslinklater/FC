@@ -25,7 +25,7 @@
 #import "FCAdBannerView_apple.h"
 #import "FCViewManager_apple.h"
 
-#include "Shared/Lua/FCLua.h"
+#include "Shared/FCPlatformInterface.h"
 
 extern UIViewController* s_rootViewController;
 
@@ -39,14 +39,14 @@ extern UIViewController* s_rootViewController;
 		_adWhirlView = [AdWhirlView requestAdWhirlViewWithDelegate:self];
 		[self addSubview:_adWhirlView];
 
-		FCLua::Instance()->CoreVM()->SetGlobalNumber("AdBannerHeight", 0);
+		fc_FCLua_SetGlobalNumber("AdBannerHeight", 0);
     }
     return self;
 }
 
 -(void)dealloc
 {
-	FCLua::Instance()->CoreVM()->SetGlobalNumber("AdBannerHeight", 0);
+	fc_FCLua_SetGlobalNumber("AdBannerHeight", 0);
 }
 
 - (NSString *)adWhirlApplicationKey 
@@ -77,7 +77,7 @@ extern UIViewController* s_rootViewController;
 	self.frame = newFrame;
 	
 	[UIView commitAnimations];
-	FCLua::Instance()->CoreVM()->SetGlobalNumber("AdBannerHeight", adSize.height);
+	fc_FCLua_SetGlobalNumber("AdBannerHeight", adSize.height);
 }
 
 @end

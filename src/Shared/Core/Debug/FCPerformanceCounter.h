@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCPerformanceCounter_h
-#define CR1_FCPerformanceCounter_h
+#ifndef _FCPerformanceCounter_h
+#define _FCPerformanceCounter_h
 
 #include <stdint.h>
 #include <memory>

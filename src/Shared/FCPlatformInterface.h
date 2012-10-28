@@ -20,10 +20,17 @@
  THE SOFTWARE.
  */
 
-#ifndef CR2_FCPlatformInterface_h
-#define CR2_FCPlatformInterface_h
+#ifndef _FCPlatformInterface_h
+#define _FCPlatformInterface_h
 
 #include "Shared/Core/FCTypes.h"
+
+/* FCLua */
+
+extern void fc_FCLua_SetGlobalNumber( const char* name, double value );
+extern void fc_FCLua_ExecuteLine( const char* line );
+
+/* FCAudio */
 
 extern void plt_FCAudio_PlayMusic( const char* name );
 extern void plt_FCAudio_SetMusicVolume( float vol );
@@ -134,5 +141,24 @@ extern void plt_FCViewManager_SendViewToBack( const char* viewName );
 extern bool plt_FCViewManager_ViewExists( const char* viewName );
 
 extern void plt_FCDebugDraw_2DLine( float x1, float y1, float x2, float y2 );
+
+/* FCStore */
+
+extern void plt_FCStore_WarmBoot();
+extern bool plt_FCStore_Available();
+
+extern void plt_FCStore_ClearItemRequestList();
+extern void plt_FCStore_AddItemRequest( const char* itemId );
+extern void plt_FCStore_ProcessItemRequestList();
+
+extern void fc_FCStore_ClearStoreItems();
+extern void fc_FCStore_AddStoreItem( const char* description, const char* price, const char* identifier );
+extern void fc_FCStore_EndStoreItems();
+
+extern void fc_FCStore_PurchaseSuccessful( const char* identifier );
+extern void fc_FCStore_PurchaseFailed( const char* identifier );
+
+extern void plt_FCStore_PurchaseRequest( const char* identifier );
+
 
 #endif

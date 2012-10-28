@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCGLMesh_h
-#define CR1_FCGLMesh_h
+#ifndef _FCGLMesh_h
+#define _FCGLMesh_h
 
 #include "Shared/Graphics/FCGraphics.h"
 

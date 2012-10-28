@@ -1,6 +1,6 @@
 -- Utility functions
 
-function PrintTable( tbl, recurse )
+function FCPrintTable( tbl, recurse )
 	if tbl == nil then
 		print("table is nil")
 		return
@@ -8,7 +8,7 @@ function PrintTable( tbl, recurse )
 	for k,v in pairs(tbl) do
 		if type(v) == "table" and recurse ~= nil then
 			print("TABLE: " .. k)
-			PrintTable(v, recurse)
+			FCPrintTable(v, recurse)
 		else
 			print( k, v )
 		end

@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCObjectManager_h
-#define CR1_FCObjectManager_h
+#ifndef _FCObjectManager_h
+#define _FCObjectManager_h
 
 #include "Shared/Core/FCCore.h"
 #include "Shared/Core/Resources/FCResource.h"

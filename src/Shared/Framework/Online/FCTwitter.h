@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCTwitter_h
-#define CR1_FCTwitter_h
+#ifndef _FCTwitter_h
+#define _FCTwitter_h
 
 #include "Shared/Core/FCCore.h"
 

@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCPhysics2DJoint_h
-#define CR1_FCPhysics2DJoint_h
+#ifndef _FCPhysics2DJoint_h
+#define _FCPhysics2DJoint_h
 
 #include <map>
 

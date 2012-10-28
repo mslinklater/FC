@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCAudioManager_h
-#define CR1_FCAudioManager_h
+#ifndef _FCAudioManager_h
+#define _FCAudioManager_h
 
 #include "Shared/Core/FCCore.h"
 

@@ -21,8 +21,8 @@
  */
 
 
-#ifndef CR1_FCGLTextureManager_h
-#define CR1_FCGLTextureManager_h
+#ifndef _FCGLTextureManager_h
+#define _FCGLTextureManager_h
 
 #include "Shared/Graphics/FCGraphics.h"
 

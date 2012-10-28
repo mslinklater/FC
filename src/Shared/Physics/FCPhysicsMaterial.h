@@ -20,6 +20,9 @@
  THE SOFTWARE.
  */
 
+#ifndef _FCPhysicsMaterial_h
+#define _FCPhysicsMaterial_h
+
 #include "Shared/Core/FCCore.h"
 
 class FCPhysicsMaterial {
@@ -39,3 +42,4 @@ public:
 typedef FCSharedPtr<FCPhysicsMaterial> FCPhysicsMaterialRef;
 typedef std::map<std::string, FCPhysicsMaterialRef> FCPhysicsMaterialRefMapByString;
 
+#endif // _FCPhysicsMaterial_h

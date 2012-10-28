@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCConnect_h
-#define CR1_FCConnect_h
+#ifndef _FCConnect_h
+#define _FCConnect_h
 
 #include <string>
 

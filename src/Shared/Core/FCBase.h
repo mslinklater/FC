@@ -22,8 +22,8 @@
 
 // Base class for all FC C++ objects
 
-#ifndef CR1_FCBase_h
-#define CR1_FCBase_h
+#ifndef _FCBase_h
+#define _FCBase_h
 
 #include <string>
 

@@ -20,45 +20,25 @@
  THE SOFTWARE.
  */
 
-#ifndef _FCLuaAsserts_h
-#define _FCLuaAsserts_h
+#import <Foundation/Foundation.h>
+#import <StoreKit/StoreKit.h>
 
-#include <sstream>
-
-#if defined(FC_DEBUG)
-
-#define FC_LUA_ASSERT_TYPE( stackpos, type )	\
-{							\
-	if( lua_type( _state, stackpos ) != type )	\
-	{	\
-		std::stringstream error;	\
-		error << "Lua (" << __FUNCTION__ << "): Wrong type of assert, wanted " << lua_typename( _state, type) << ", but found " << lua_typename( _state, lua_type( _state, stackpos));	\
-		FC_LOG(error.str());	\
-		FCLua_DumpStack( _state );	\
-		FC_HALT;	\
-		return 0;	\
-	}	\
+@interface FCStore_apple : NSObject <SKProductsRequestDelegate, SKPaymentTransactionObserver> {
+	NSMutableSet*	_itemRequestSet;
+	NSArray*		_products;
 }
+@property(nonatomic, strong) NSMutableSet*	itemRequestSet;
+@property(nonatomic, strong) NSArray*		products;
 
-#define FC_LUA_ASSERT_NUMPARAMS( n )	\
-{										\
-	if( lua_gettop( _state ) != n )		\
-	{									\
-		std::stringstream error;	\
-		error << "Lua (" << __FUNCTION__ << "): Wrong number of parameters. Expected " << n << " but received " << lua_gettop( _state );	\
-		FC_LOG(error.str());	\
-		FCLua_DumpStack( _state );		\
-		FC_HALT;	\
-		return 0;	\
-	}			\
-}
++(FCStore_apple*)instance;
 
-#else
+-(void)warmBoot;
+-(BOOL)available;
 
-#define FC_LUA_ASSERT_TYPE(stackpos, type){}
-#define FC_LUA_ASSERT_NUMPARAMS( n ){}
+-(void)clearItemRequests;
+-(void)addItemRequest:(NSString*)itemId;
+-(void)processItemRequests;
 
-#endif	// DEBUG
+-(void)purchaseRequest:(NSString*)identifier;
 
-#endif
-
+@end

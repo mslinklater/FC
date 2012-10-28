@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCPhysics2DContactListener_h
-#define CR1_FCPhysics2DContactListener_h
+#ifndef _FCPhysics2DContactListener_h
+#define _FCPhysics2DContactListener_h
 
 #include "Shared/Core/FCCore.h"
 

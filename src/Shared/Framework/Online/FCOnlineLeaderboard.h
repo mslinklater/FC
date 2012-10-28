@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR2_FCOnlineLeaderboard_h
-#define CR2_FCOnlineLeaderboard_h
+#ifndef _FCOnlineLeaderboard_h
+#define _FCOnlineLeaderboard_h
 
 #include <string>
 #include <map>

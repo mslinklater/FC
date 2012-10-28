@@ -22,8 +22,8 @@
 
 // TODO - change this to use FCDataRef
 
-#ifndef CR1_FCCrypto_h
-#define CR1_FCCrypto_h
+#ifndef _FCCrypto_h
+#define _FCCrypto_h
 
 #include "FCTypes.h"
 

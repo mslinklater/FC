@@ -22,6 +22,16 @@
 
 #include "FCLua.h"
 
+void fc_FCLua_SetGlobalNumber( const char* name, double value )
+{
+	FCLua::Instance()->CoreVM()->SetGlobalNumber(name, value);
+}
+
+void fc_FCLua_ExecuteLine( const char* line )
+{
+	FCLua::Instance()->ExecuteLine( line );
+}
+
 static FCHandle common_newThread( lua_State* _state, std::string name )
 {
 	static int s_recurseCount = 0;

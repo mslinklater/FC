@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCStringUtils_h
-#define CR1_FCStringUtils_h
+#ifndef _FCStringUtils_h
+#define _FCStringUtils_h
 
 #include "FCTypes.h"
 

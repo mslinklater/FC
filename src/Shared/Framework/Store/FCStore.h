@@ -20,45 +20,41 @@
  THE SOFTWARE.
  */
 
-#ifndef _FCLuaAsserts_h
-#define _FCLuaAsserts_h
+#ifndef _FCStore_h
+#define _FCStore_h
 
-#include <sstream>
+#include "Shared/Core/FCCore.h"
+#include "FCStoreItem.h"
 
-#if defined(FC_DEBUG)
+class FCStore {
+public:
+	static FCStore* Instance();
+	
+	FCStore();
+	virtual ~FCStore();
+	
+	void WarmBoot();
+	bool Available();
 
-#define FC_LUA_ASSERT_TYPE( stackpos, type )	\
-{							\
-	if( lua_type( _state, stackpos ) != type )	\
-	{	\
-		std::stringstream error;	\
-		error << "Lua (" << __FUNCTION__ << "): Wrong type of assert, wanted " << lua_typename( _state, type) << ", but found " << lua_typename( _state, lua_type( _state, stackpos));	\
-		FC_LOG(error.str());	\
-		FCLua_DumpStack( _state );	\
-		FC_HALT;	\
-		return 0;	\
-	}	\
-}
+	void GetStoreItemDetailsWithLuaCallbacks( FCStringVector items, std::string luaCallback, std::string luaError );
+	
+	void ClearStoreItems();
+	void AddStoreItem( std::string description, std::string price, std::string identifier );
+	void EndStoreItems();
 
-#define FC_LUA_ASSERT_NUMPARAMS( n )	\
-{										\
-	if( lua_gettop( _state ) != n )		\
-	{									\
-		std::stringstream error;	\
-		error << "Lua (" << __FUNCTION__ << "): Wrong number of parameters. Expected " << n << " but received " << lua_gettop( _state );	\
-		FC_LOG(error.str());	\
-		FCLua_DumpStack( _state );		\
-		FC_HALT;	\
-		return 0;	\
-	}			\
-}
-
-#else
-
-#define FC_LUA_ASSERT_TYPE(stackpos, type){}
-#define FC_LUA_ASSERT_NUMPARAMS( n ){}
-
-#endif	// DEBUG
+	void PurchaseRequest( std::string identifier, std::string luaSuccess, std::string luaError );
+	
+	void PurchaseSuccessful( std::string identifier );
+	void PurchaseFailed( std::string identifier );
+	
+private:
+	std::string m_storeItemDetailsLauCallback;
+	std::string m_storeItemDetailsLuaError;
+	
+	FCStoreItemVec	m_storeItems;
+	
+	std::string m_purchaseSuccessLuaCallback;
+	std::string m_purchaseFailLuaCallback;
+};
 
 #endif
-

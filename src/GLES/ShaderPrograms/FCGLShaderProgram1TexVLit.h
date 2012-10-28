@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCGLShaderProgram1TexVLit_h
-#define CR1_FCGLShaderProgram1TexVLit_h
+#ifndef _FCGLShaderProgram1TexVLit_h
+#define _FCGLShaderProgram1TexVLit_h
 
 #include "Shared/Graphics/FCGraphics.h"
 

@@ -273,8 +273,8 @@ static int lua_CreateView( lua_State* _state )
 	
 	std::string parent = "";
 	
-	if (lua_gettop(_state) > 2) {
-		FC_LUA_ASSERT_TYPE(3, LUA_TSTRING)
+	if ( (lua_gettop(_state) > 2) && ( lua_type(_state, 3) == LUA_TSTRING) )
+	{
 		parent = lua_tostring(_state, 3);
 	}
 	

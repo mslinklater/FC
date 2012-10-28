@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCLuaThread_h
-#define CR1_FCLuaThread_h
+#ifndef _FCLuaThread_h
+#define _FCLuaThread_h
 
 #include <map>
 #include <memory>

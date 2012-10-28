@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR2_FCSharedPtr_h
-#define CR2_FCSharedPtr_h
+#ifndef _FCSharedPtr_h
+#define _FCSharedPtr_h
 
 // Based on shared_ptr impl by Itay Maman:
 // http://www.codeproject.com/KB/cpp/auto_ref.aspx

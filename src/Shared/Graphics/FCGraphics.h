@@ -20,7 +20,7 @@
  THE SOFTWARE.
  */
 
-#ifndef CR2_FCGraphics_h
-#define CR2_FCGraphics_h
+#ifndef _FCGraphics_h
+#define _FCGraphics_h
 
 #endif

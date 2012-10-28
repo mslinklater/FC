@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCPersistentData_h
-#define CR1_FCPersistentData_h
+#ifndef _FCPersistentData_h
+#define _FCPersistentData_h
 
 #include "Shared/Core/FCCore.h"
 

@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCFile_h
-#define CR1_FCFile_h
+#ifndef _FCFile_h
+#define _FCFile_h
 
 #include <iostream>
 #include <string>

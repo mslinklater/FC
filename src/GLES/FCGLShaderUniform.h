@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCGLShaderUniform_h
-#define CR1_FCGLShaderUniform_h
+#ifndef _FCGLShaderUniform_h
+#define _FCGLShaderUniform_h
 
 #include <string>
 #include <map>

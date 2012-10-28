@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCXML_h
-#define CR1_FCXML_h
+#ifndef _FCXML_h
+#define _FCXML_h
 
 #include <memory>
 #include <rapidxml.hpp>

@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCPhysics_h
-#define CR1_FCPhysics_h
+#ifndef _FCPhysics_h
+#define _FCPhysics_h
 
 #include "Shared/Core/FCCore.h"
 

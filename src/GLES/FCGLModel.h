@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCGLModel_h
-#define CR1_FCGLModel_h
+#ifndef _FCGLModel_h
+#define _FCGLModel_h
 
 #include "Shared/Graphics/FCGraphics.h"
 

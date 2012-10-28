@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_FCGLShaderProgramFlatUnlit_h
-#define CR1_FCGLShaderProgramFlatUnlit_h
+#ifndef _FCGLShaderProgramFlatUnlit_h
+#define _FCGLShaderProgramFlatUnlit_h
 
 #include "Shared/Graphics/FCGraphics.h"
 

@@ -20,8 +20,8 @@
  THE SOFTWARE.
  */
 
-#ifndef CR1_Device_h
-#define CR1_Device_h
+#ifndef _Device_h
+#define _Device_h
 
 /*
  

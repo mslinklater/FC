@@ -2,12 +2,12 @@
 
 FCView = {}
 
-function FCView:New( name, classType )
+function FCView:New( name, classType, parent )
 	ret = {}
 	ret.m_name = name
 	ret.m_classType = classType
 
-	FCViewManager.CreateView( name, classType )
+	FCViewManager.CreateView( name, classType, parent )
 
 	-- setup the metatable entries
 
@@ -58,7 +58,7 @@ function FCView:SetStringProperty( prop, value )
 	FCViewManager.SetViewPropertyString( self.m_name, prop, value )
 end
 
-function FCView:SendToFront()
+function FCView:MoveToFront()
 	FCViewManager.SendViewToFront( self.m_name )
 end
 
