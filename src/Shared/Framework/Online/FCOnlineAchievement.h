@@ -20,46 +20,32 @@
  THE SOFTWARE.
  */
 
-#include "FCError.h"
-#include "Debug/FCConnect.h"
-#include "Shared/FCPlatformInterface.h"
+#ifndef CR3_FCOnlineAchievement_h
+#define CR3_FCOnlineAchievement_h
 
-void FCHalt()
-{
-	plt_FCHalt();
-}
+#include "Shared/Core/FCCore.h"
 
-void FCLog( std::string log )
-{
-	FCConnect::Instance()->SendString(log);
-	plt_FCLog(log.c_str());
-}
+class FCOnlineAchievement {
+public:
+	
+	static FCOnlineAchievement* Instance();
+	
+	FCOnlineAchievement();
+	virtual ~FCOnlineAchievement();
+	
+	void Register( std::string name );
+	void RefreshFromServer();
+	void SetProgress( std::string name, float progress );
+	void ServerProgress( std::string name, float progress );
+	void ReportUnreported();
+	void ClearAll();
+	
+private:
+	
+	typedef std::map<std::string, float> AchievementMap;
+	typedef AchievementMap::iterator AchievementMapIter;
 
-void FCWarning( std::string message )
-{
-	FCConnect::Instance()->SendString(message);
-	plt_FCWarning(message.c_str());
-}
+	AchievementMap m_achievements;
+};
 
-void FCFatal( std::string message )
-{
-	FCConnect::Instance()->SendString(message);
-	plt_FCFatal(message.c_str());
-}
-
-void fc_FCError_Fatal( const char* error )
-{
-	FCFatal( error );
-}
-
-void fc_FCError_Log( const char* error )
-{
-	FCLog( error );
-}
-
-void fc_FCError_Warning( const char* error )
-{
-	FCWarning( error );
-}
-
-
+#endif

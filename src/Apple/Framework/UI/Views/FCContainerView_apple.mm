@@ -20,46 +20,27 @@
  THE SOFTWARE.
  */
 
-#include "FCError.h"
-#include "Debug/FCConnect.h"
-#include "Shared/FCPlatformInterface.h"
+#import "FCContainerView_apple.h"
 
-void FCHalt()
+@implementation FCContainerView_apple
+
+- (id)initWithFrame:(CGRect)frame
 {
-	plt_FCHalt();
+    self = [super initWithFrame:frame];
+    if (self) {
+		self.backgroundColor = [UIColor clearColor];
+		self.clipsToBounds = YES;
+    }
+    return self;
 }
 
-void FCLog( std::string log )
+/*
+// Only override drawRect: if you perform custom drawing.
+// An empty implementation adversely affects performance during animation.
+- (void)drawRect:(CGRect)rect
 {
-	FCConnect::Instance()->SendString(log);
-	plt_FCLog(log.c_str());
+    // Drawing code
 }
+*/
 
-void FCWarning( std::string message )
-{
-	FCConnect::Instance()->SendString(message);
-	plt_FCWarning(message.c_str());
-}
-
-void FCFatal( std::string message )
-{
-	FCConnect::Instance()->SendString(message);
-	plt_FCFatal(message.c_str());
-}
-
-void fc_FCError_Fatal( const char* error )
-{
-	FCFatal( error );
-}
-
-void fc_FCError_Log( const char* error )
-{
-	FCLog( error );
-}
-
-void fc_FCError_Warning( const char* error )
-{
-	FCWarning( error );
-}
-
-
+@end

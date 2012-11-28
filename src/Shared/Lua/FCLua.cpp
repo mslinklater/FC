@@ -67,6 +67,7 @@ static FCHandle common_newThread( lua_State* _state, std::string name )
 
 static int lua_NewThread( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCNewThread()");
 	FC_LUA_ASSERT_TYPE(1, LUA_TFUNCTION);
 	
 	std::string name = "";
@@ -93,6 +94,7 @@ static int lua_NewThread( lua_State* _state )
 
 static int lua_WaitThread( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCWait()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
@@ -120,6 +122,7 @@ static int lua_WaitThread( lua_State* _state )
 
 static int lua_WaitGameThread( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCWaitGame()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
@@ -143,6 +146,7 @@ static int lua_WaitGameThread( lua_State* _state )
 
 static int lua_KillThread( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCKillThread()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
@@ -166,6 +170,7 @@ static int lua_KillThread( lua_State* _state )
 
 static int lua_Log( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCLog()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	char buffer[16];
@@ -178,6 +183,21 @@ static int lua_Log( lua_State* _state )
 
 static int lua_Warning( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCWarning()");
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	
+	char buffer[16];
+	
+	sprintf(buffer, "0x%08x", (unsigned int)_state);
+	
+	FC_WARNING(std::string("Lua(") + std::string(buffer) + "): " + lua_tostring(_state, 1));
+	return 0;
+}
+
+static int lua_Error( lua_State* _state )
+{
+	FC_LUA_FUNCDEF("FCError()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
@@ -191,6 +211,7 @@ static int lua_Warning( lua_State* _state )
 
 static int lua_Fatal( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCFatal()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_FATAL(std::string("Lua: ") + lua_tostring(_state, 1));
@@ -219,6 +240,7 @@ FCLua::FCLua()
 	m_coreVM->RegisterCFunction(lua_KillThread, "FCKillThread");
 	m_coreVM->RegisterCFunction(lua_Log, "FCLog");
 	m_coreVM->RegisterCFunction(lua_Warning, "FCWarning");
+	m_coreVM->RegisterCFunction(lua_Error, "FCError");
 	m_coreVM->RegisterCFunction(lua_Fatal, "FCFatal");
 
 	m_perfCounter = FCPerformanceCounterRef( new FCPerformanceCounter );

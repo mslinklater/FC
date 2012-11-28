@@ -25,6 +25,10 @@
 
 #include "Shared/Core/FCTypes.h"
 
+/* FCError */
+
+extern void fc_FCError_Fatal( const char* message );
+
 /* FCLua */
 
 extern void fc_FCLua_SetGlobalNumber( const char* name, double value );
@@ -120,6 +124,13 @@ extern void plt_FCOnlineLeaderboard_PostScore(  const char* leaderboardName,
 											  unsigned int handle,
 											  plt_FCOnlineLeaderboard_PostCallback callback );
 
+extern void plt_FCOnlineAchievement_Init();
+//extern void plt_FCOnlineAchievement_RefreshFromServer();
+extern void plt_FCOnlineAchievement_UpdateProgress( const char* name, float progress );
+extern void plt_FCOnlineAchievement_ReportUnreported();
+extern void plt_FCOnlineAchievement_ClearAll();
+//extern void fc_FCOnlineAchievement_ServerProgress( const char* name, float progress );
+
 extern void plt_FCViewManager_SetScreenAspectRatio( float w, float h );
 extern void plt_FCViewManager_SetViewText( const char* viewName, const char* text );
 extern void plt_FCViewManager_SetViewTextColor( const char* viewName, FCColor4f color );
@@ -134,10 +145,11 @@ extern void plt_FCViewManager_SetViewBackgroundColor( const char* viewName, cons
 extern void plt_FCViewManager_CreateView( const char* viewName, const char* className, const char* parent );
 extern void plt_FCViewManager_DestroyView( const char* viewName );
 extern void plt_FCViewManager_SetViewPropertyInt( const char* viewName, const char* property, int32_t value );
+extern void plt_FCViewManager_SetViewPropertyFloat( const char* viewName, const char* property, float value );
 extern void plt_FCViewManager_SetViewPropertyString( const char* viewName, const char* property, const char* value );
 
-extern void plt_FCViewManager_SendViewToFront( const char* viewName );
-extern void plt_FCViewManager_SendViewToBack( const char* viewName );
+extern void plt_FCViewManager_MoveViewToFront( const char* viewName );
+extern void plt_FCViewManager_MoveViewToBack( const char* viewName );
 extern bool plt_FCViewManager_ViewExists( const char* viewName );
 
 extern void plt_FCDebugDraw_2DLine( float x1, float y1, float x2, float y2 );

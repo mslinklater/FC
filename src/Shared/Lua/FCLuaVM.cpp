@@ -114,6 +114,7 @@ static void common_LoadScriptForState( std::string path, lua_State* _state, bool
 
 static int lua_LoadScript( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCLoadScript()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
@@ -123,6 +124,7 @@ static int lua_LoadScript( lua_State* _state )
 
 static int lua_LoadScriptOptional( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCLoadScriptOptional()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	

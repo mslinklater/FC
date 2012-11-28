@@ -33,6 +33,7 @@
 #include "FCLuaCommon.h"
 #include "FCLuaMemory.h"
 #include "FCLuaAsserts.h"
+#include "FCLuaUtils.h"
 
 // Some helpers which shold probably be moved out
 

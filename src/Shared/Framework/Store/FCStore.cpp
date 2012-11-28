@@ -54,6 +54,7 @@ void fc_FCStore_PurchaseFailed( const char* identifier )
 
 static int lua_StoreAvailable( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCStore.Available()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	
 	if (s_pInstance->Available()) {
@@ -66,6 +67,7 @@ static int lua_StoreAvailable( lua_State* _state )
 
 static int lua_PurchaseRequest( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCStore.PurchaseRequest()");
 	FC_LUA_ASSERT_NUMPARAMS(3);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);

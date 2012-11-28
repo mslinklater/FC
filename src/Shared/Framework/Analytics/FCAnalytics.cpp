@@ -28,6 +28,7 @@ static FCAnalytics* s_pInstance = 0;
 
 static int lua_RegisterEvent( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAnalytics.RegisterEvent()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
@@ -38,6 +39,7 @@ static int lua_RegisterEvent( lua_State* _state )
 
 static int lua_BeginTimedEvent( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAnalytics.BeginTimedEvent()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
@@ -50,6 +52,7 @@ static int lua_BeginTimedEvent( lua_State* _state )
 
 static int lua_EndTimedEvent( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAnalytics.EndTimedEvent()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
@@ -60,6 +63,7 @@ static int lua_EndTimedEvent( lua_State* _state )
 
 static int lua_DiscardTimedEvent( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAnalytics.DiscardTimedEvent()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	

@@ -24,19 +24,23 @@
 #define _FCLuaAsserts_h
 
 #include <sstream>
+#include "FCLuaCommon.h"
 
 #if defined(FC_DEBUG)
+
+#define FC_LUA_FUNCDEF( n ) std::string _desc = n
 
 #define FC_LUA_ASSERT_TYPE( stackpos, type )	\
 {							\
 	if( lua_type( _state, stackpos ) != type )	\
 	{	\
 		std::stringstream error;	\
-		error << "Lua (" << __FUNCTION__ << "): Wrong type of assert, wanted " << lua_typename( _state, type) << ", but found " << lua_typename( _state, lua_type( _state, stackpos));	\
+		lua_Debug ar;	\
+		lua_getstack(_state, 1, &ar);	\
+		lua_getinfo(_state, "nSl", &ar);	\
+		error << "ERROR: Lua (" << ar.short_src << ":" << ar.currentline << "-" << _desc << "): Wrong type, wanted " << lua_typename( _state, type) << ", but found " << lua_typename( _state, lua_type( _state, stackpos));	\
 		FC_LOG(error.str());	\
 		FCLua_DumpStack( _state );	\
-		FC_HALT;	\
-		return 0;	\
 	}	\
 }
 
@@ -45,16 +49,18 @@
 	if( lua_gettop( _state ) != n )		\
 	{									\
 		std::stringstream error;	\
-		error << "Lua (" << __FUNCTION__ << "): Wrong number of parameters. Expected " << n << " but received " << lua_gettop( _state );	\
+		lua_Debug ar;	\
+		lua_getstack(_state, 1, &ar);	\
+		lua_getinfo(_state, "nSl", &ar);	\
+		error << "ERROR: Lua (" << ar.short_src << ":" << ar.currentline << "-" << _desc << "): Wrong number of parameters. Expected " << n << " but received " << lua_gettop( _state );	\
 		FC_LOG(error.str());	\
 		FCLua_DumpStack( _state );		\
-		FC_HALT;	\
-		return 0;	\
 	}			\
 }
 
 #else
 
+#define FC_LUA_FUNCDEF( n ){}
 #define FC_LUA_ASSERT_TYPE(stackpos, type){}
 #define FC_LUA_ASSERT_NUMPARAMS( n ){}
 

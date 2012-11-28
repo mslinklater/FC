@@ -27,6 +27,7 @@ static FCPhysics* s_pInstance = 0;
 
 static int lua_Reset( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPhysics.Reset()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	s_pInstance->Reset();
 	return 0;
@@ -34,6 +35,7 @@ static int lua_Reset( lua_State* _state )
 
 static int lua_Create2DSystem( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPhysics.Create2DSystem()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	s_pInstance->Create2DSystem();
 	return 0;
@@ -41,6 +43,7 @@ static int lua_Create2DSystem( lua_State* _state )
 
 static int lua_SetMaterial( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPhysics.SetMaterial()");
 	FC_LUA_ASSERT_NUMPARAMS(2);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TTABLE);

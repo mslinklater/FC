@@ -28,6 +28,7 @@ static FCAudioManager* s_pInstance;
 
 static int lua_PlayMusic( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.PlayMusic()");
 	FC_LUA_ASSERT_NUMPARAMS( 1 );
 	FC_LUA_ASSERT_TYPE( 1, LUA_TSTRING );
 	
@@ -37,6 +38,7 @@ static int lua_PlayMusic( lua_State* _state )
 
 static int lua_SetMusicVolume( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.SetMusicVolume()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
@@ -47,6 +49,7 @@ static int lua_SetMusicVolume( lua_State* _state )
 
 static int lua_SetSFXVolume( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.SetSFXVolume()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
@@ -57,6 +60,7 @@ static int lua_SetSFXVolume( lua_State* _state )
 
 static int lua_SetMusicFinishedCallback( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.SetMusicFinishedCallback()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 
@@ -67,6 +71,7 @@ static int lua_SetMusicFinishedCallback( lua_State* _state )
 
 static int lua_PauseMusic( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.PauseMusic()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	plt_FCAudio_PauseMusic();
 	return 0;
@@ -74,6 +79,7 @@ static int lua_PauseMusic( lua_State* _state )
 
 static int lua_ResumeMusic( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.ResumeMusic()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	plt_FCAudio_ResumeMusic();
 	return 0;
@@ -81,6 +87,7 @@ static int lua_ResumeMusic( lua_State* _state )
 
 static int lua_StopMusic( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.StopMusic()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	plt_FCAudio_StopMusic();
 	return 0;
@@ -88,6 +95,7 @@ static int lua_StopMusic( lua_State* _state )
 
 static int lua_DeleteBuffer( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.DeleteBuffer()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 
@@ -97,6 +105,7 @@ static int lua_DeleteBuffer( lua_State* _state )
 
 static int lua_LoadSimpleSound( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.LoadSimpleSound()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
@@ -107,6 +116,7 @@ static int lua_LoadSimpleSound( lua_State* _state )
 
 static int lua_UnloadSimpleSound( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.UnloadSimpleSound()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
@@ -117,6 +127,7 @@ static int lua_UnloadSimpleSound( lua_State* _state )
 
 static int lua_PlaySimpleSound( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.PlaySimpleSound()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 
@@ -127,6 +138,7 @@ static int lua_PlaySimpleSound( lua_State* _state )
 
 static int lua_SubscribeToPhysics2D( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.SubscribeToPhysics2D()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 
 	plt_FCAudio_SubscribeToPhysics2D();
@@ -136,6 +148,7 @@ static int lua_SubscribeToPhysics2D( lua_State* _state )
 
 static int lua_UnsubscribeFromPhysics2D( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.UnsubscribeFromPhysics2D");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	
 	plt_FCAudio_UnsubscribeToPhysics2D();
@@ -145,6 +158,7 @@ static int lua_UnsubscribeFromPhysics2D( lua_State* _state )
 
 static int lua_CreateBufferWithFile( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.CreateBufferWithFile()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
@@ -154,6 +168,7 @@ static int lua_CreateBufferWithFile( lua_State* _state )
 
 static int lua_AddCollisionTypeHandler( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.AddCollisionTypeHandler()");
 	FC_LUA_ASSERT_NUMPARAMS(3);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
@@ -168,6 +183,7 @@ static int lua_AddCollisionTypeHandler( lua_State* _state )
 
 static int lua_RemoveCollisionTypeHandler( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.RemoveCollisionTypeHandler()");
 	FC_LUA_ASSERT_NUMPARAMS(2);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
@@ -180,6 +196,7 @@ static int lua_RemoveCollisionTypeHandler( lua_State* _state )
 
 static int lua_PrepareSourceWithBuffer( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.PrepareSourceWithBuffer()");
 	FC_LUA_ASSERT_NUMPARAMS(2);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(2, LUA_TBOOLEAN);
@@ -196,6 +213,8 @@ static int lua_PrepareSourceWithBuffer( lua_State* _state )
 
 static int lua_SourceSetVolume( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.SourceSetVolume()");
+
 	FC_LUA_ASSERT_NUMPARAMS(2);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
@@ -210,6 +229,7 @@ static int lua_SourceSetVolume( lua_State* _state )
 
 static int lua_SourcePlay( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.SourcePlay()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
@@ -222,6 +242,7 @@ static int lua_SourcePlay( lua_State* _state )
 
 static int lua_SourceStop( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.SourceStop");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
@@ -234,6 +255,7 @@ static int lua_SourceStop( lua_State* _state )
 
 static int lua_SourceLooping( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.SourceLooping()");
 	FC_LUA_ASSERT_NUMPARAMS(2);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(2, LUA_TBOOLEAN);
@@ -249,6 +271,7 @@ static int lua_SourceLooping( lua_State* _state )
 
 static int lua_SourcePosition( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.SourcePosition()");
 	FC_LUA_ASSERT_NUMPARAMS(4);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
@@ -264,6 +287,7 @@ static int lua_SourcePosition( lua_State* _state )
 
 static int lua_SourcePitch( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCAudio.SourcePitch()");
 	FC_LUA_ASSERT_NUMPARAMS(2);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);

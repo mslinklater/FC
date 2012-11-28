@@ -27,6 +27,7 @@ static FCPhaseManager* s_pInstance = 0;
 
 static int lua_AddPhaseToQueue( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPhaseManager.AddPhaseToQueue()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TSTRING);
 
@@ -39,6 +40,7 @@ static int lua_AddPhaseToQueue( lua_State* _state )
 
 static int lua_DeactivatePhase( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPhaseManager.DeactivatePhase()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TSTRING);
 	

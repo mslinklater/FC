@@ -20,46 +20,30 @@
  THE SOFTWARE.
  */
 
-#include "FCError.h"
-#include "Debug/FCConnect.h"
-#include "Shared/FCPlatformInterface.h"
+#include "FCLuaUtils.h"
+#include "FCLuaAsserts.h"
 
-void FCHalt()
+FCColor4f ColorFromLuaColor( lua_State* _state, int stackPos )
 {
-	plt_FCHalt();
+	FC_LUA_FUNCDEF("C - ColorFromLuaColor");
+	lua_getfield(_state, 2, "r");
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
+	float r = (float)lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	lua_getfield(_state, 2, "g");
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
+	float g = (float)lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	lua_getfield(_state, 2, "b");
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
+	float b = (float)lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	lua_getfield(_state, 2, "a");
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
+	float a = (float)lua_tonumber(_state, -1);
+
+	return FCColor4f(r, g, b, a);
 }
-
-void FCLog( std::string log )
-{
-	FCConnect::Instance()->SendString(log);
-	plt_FCLog(log.c_str());
-}
-
-void FCWarning( std::string message )
-{
-	FCConnect::Instance()->SendString(message);
-	plt_FCWarning(message.c_str());
-}
-
-void FCFatal( std::string message )
-{
-	FCConnect::Instance()->SendString(message);
-	plt_FCFatal(message.c_str());
-}
-
-void fc_FCError_Fatal( const char* error )
-{
-	FCFatal( error );
-}
-
-void fc_FCError_Log( const char* error )
-{
-	FCLog( error );
-}
-
-void fc_FCError_Warning( const char* error )
-{
-	FCWarning( error );
-}
-
-

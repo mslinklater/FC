@@ -30,6 +30,7 @@ static FCOnlineLeaderboard* s_pInstance = 0;
 
 static int lua_Available( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCOnlineLeaderboard.Available()");
     FC_LUA_ASSERT_NUMPARAMS(0);
     
     if ( s_pInstance->Available() ) {
@@ -43,6 +44,8 @@ static int lua_Available( lua_State* _state )
 
 static int lua_Show( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCOnlineLeaderboard.Show()");
+	FC_LUA_ASSERT_NUMPARAMS(0);
     s_pInstance->Show();
     
     return 0;
@@ -50,6 +53,7 @@ static int lua_Show( lua_State* _state )
 
 static int lua_PostScore( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCOnlineLeaderboard.PostScore()");
     FC_LUA_ASSERT_NUMPARAMS(2);
     FC_LUA_ASSERT_TYPE( 1, LUA_TSTRING );
     FC_LUA_ASSERT_TYPE( 2, LUA_TNUMBER );
@@ -61,6 +65,7 @@ static int lua_PostScore( lua_State* _state )
 
 static int lua_CheckForStoredScore( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCOnlineLeaderboard.CheckForStoredScore()");
     FC_LUA_ASSERT_NUMPARAMS(1);
     FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
     

@@ -35,6 +35,7 @@
 #include "Shared/Physics/FCPhysics.h"
 #include "Shared/Framework/Actor/FCActorSystem.h"
 #include "Shared/Framework/Online/FCOnlineLeaderboard.h"
+#include "Shared/Framework/Online/FCOnlineAchievement.h"
 #include "Shared/Framework/Store/FCStore.h"
 
 #include "Shared/FCPlatformInterface.h"
@@ -50,6 +51,7 @@ static FCHandle	s_sessionActiveAnalyticsHandle = kFCHandleInvalid;
 static int lua_ShowStatusBar( lua_State* _state )
 {
 	FC_TRACE;
+	FC_LUA_FUNCDEF("FCApplication.ShowStatusBar()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TBOOLEAN);
 	
@@ -62,29 +64,28 @@ static int lua_ShowStatusBar( lua_State* _state )
 static int lua_SetBackgroundColor( lua_State* _state )
 {
 	FC_TRACE;
+	FC_LUA_FUNCDEF("FCApplication.SetBackgroundColor()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TTABLE);
 
 	FCColor4f color;
 	
-	lua_pushnil(_state);
-	
-	lua_next(_state, -2);
+	lua_getfield(_state, 1, "r");
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	color.r = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
-	lua_next(_state, -2);
+	lua_getfield(_state, 1, "g");
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	color.g = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
-	lua_next(_state, -2);
+	lua_getfield(_state, 1, "b");
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	color.b = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
-	lua_next(_state, -2);
+	lua_getfield(_state, 1, "a");
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	color.a = (float)lua_tonumber(_state, -1);
 	
@@ -96,6 +97,7 @@ static int lua_SetBackgroundColor( lua_State* _state )
 static int lua_ShowGameCenterLeaderboards( lua_State* _state )
 {
 	FC_TRACE;
+	FC_LUA_FUNCDEF("FCApplication.ShowGameCenterLeaderboards()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 
 	s_pInstance->ShowExternalLeaderboard();
@@ -106,6 +108,7 @@ static int lua_ShowGameCenterLeaderboards( lua_State* _state )
 static int lua_LaunchExternalURL( lua_State* _state )
 {
 	FC_TRACE;
+	FC_LUA_FUNCDEF("FCApplication.LaunchExternalURL()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 
@@ -117,6 +120,7 @@ static int lua_LaunchExternalURL( lua_State* _state )
 static int lua_MainViewSize( lua_State* _state )
 {
 	FC_TRACE;
+	FC_LUA_FUNCDEF("FCApplication.MainViewSize()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	
 	FCVector2f size = s_pInstance->MainViewSize();
@@ -127,9 +131,32 @@ static int lua_MainViewSize( lua_State* _state )
 	return 2;
 }
 
+static int lua_LoadLuaLayout( lua_State* _state )
+{
+	FC_TRACE;
+	FC_LUA_FUNCDEF("FCApplication.LoadLuaLayout()");
+	FC_LUA_ASSERT_NUMPARAMS(0);
+	
+	s_pInstance->LoadLuaLayout();
+	
+	return 0;
+}
+
+static int lua_LoadLuaLanguage( lua_State* _state )
+{
+	FC_TRACE;
+	FC_LUA_FUNCDEF("FCApplication.LoadLuaLanguage()");
+	FC_LUA_ASSERT_NUMPARAMS(0);
+	
+	s_pInstance->LoadLuaLanguage();
+	
+	return 0;
+}
+
 static int lua_PauseGame( lua_State* _state )
 {
 	FC_TRACE;
+	FC_LUA_FUNCDEF("FCApplication.PauseGame()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TBOOLEAN);
 	
@@ -145,6 +172,7 @@ static int lua_PauseGame( lua_State* _state )
 static int lua_SetUpdateFrequency( lua_State* _state )
 {
 	FC_TRACE;
+	FC_LUA_FUNCDEF("FCApplication.SetUpdateFrequency()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
@@ -190,6 +218,8 @@ void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 	m_lua->RegisterCFunction(lua_MainViewSize, "FCApp.MainViewSize");
 	m_lua->RegisterCFunction(lua_PauseGame, "FCApp.Pause");
 	m_lua->RegisterCFunction(lua_SetUpdateFrequency, "FCApp.SetUpdateFrequency");	
+	m_lua->RegisterCFunction(lua_LoadLuaLayout, "FCApp.LoadLuaLayout");
+	m_lua->RegisterCFunction(lua_LoadLuaLanguage, "FCApp.LoadLuaLanguage");
 	m_lua->SetGlobalBool("FCApp.paused", false);
 
 	FCPhaseManager::Instance();
@@ -213,7 +243,7 @@ void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 	FCPersistentData::Instance()->Load();
 	FCPhysics::Instance();
 	FCActorSystem::Instance();
-	
+	FCOnlineAchievement::Instance();
 	m_lua->LoadScript("main");
 	m_lua->CallFuncWithSig("FCApp.ColdBoot", true, "");
 	WarmBoot();
@@ -228,13 +258,38 @@ void FCApplication::WarmBoot()
 	
 	// Layout
 	
+	
+	// Languages
+	
+
+}
+
+void FCApplication::Shutdown()
+{
+	FC_TRACE;
+	FC_HALT;
+}
+
+void FCApplication::LoadLuaLanguage()
+{
+	m_lua->LoadScriptOptional("Languages/en");	// default is English
+	
+	std::string locale = FCDevice::Instance()->GetCap(kFCDeviceLocale);
+	
+	if (locale != "en") {
+		m_lua->LoadScriptOptional("Languages/" + locale);	// override with translations
+	}
+}
+
+void FCApplication::LoadLuaLayout()
+{
 	m_lua->LoadScriptOptional("Layout/layout_global");
 	
 	std::string xString = FCDevice::Instance()->GetCap(kFCDeviceDisplayLogicalXRes);
 	int32_t x = FCIntFromString( xString );
 	std::string yString = FCDevice::Instance()->GetCap(kFCDeviceDisplayLogicalYRes);
 	int32_t y = FCIntFromString( yString );
-
+	
 	float aspect = (float)y / (float)x;
 	float aspect4by3 = 4.0f / 3.0f;
 	float aspect3by2 = 3.0f / 2.0f;
@@ -253,22 +308,6 @@ void FCApplication::WarmBoot()
 	if ((diff16by9 < diff3by2) && (diff16by9 < diff4by3)) {
 		m_lua->LoadScriptOptional("Layout/layout_16by9");
 	}
-	
-	// Languages
-	
-	m_lua->LoadScriptOptional("Languages/en");	// default is English
-	
-	std::string locale = FCDevice::Instance()->GetCap(kFCDeviceLocale);
-	
-	if (locale != "en") {
-		m_lua->LoadScriptOptional("Languages/" + locale);	// override with translations
-	}
-}
-
-void FCApplication::Shutdown()
-{
-	FC_TRACE;
-	FC_HALT;
 }
 
 void FCApplication::Update()

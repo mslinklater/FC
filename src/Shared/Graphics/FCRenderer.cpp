@@ -31,6 +31,7 @@ static IFCRenderer* s_luaRenderer = 0;
 
 static int lua_SetCurrentRenderer( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCRenderer.SetCurrentRenderer()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	

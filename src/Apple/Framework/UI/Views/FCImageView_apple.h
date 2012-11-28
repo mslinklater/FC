@@ -20,46 +20,21 @@
  THE SOFTWARE.
  */
 
-#include "FCError.h"
-#include "Debug/FCConnect.h"
-#include "Shared/FCPlatformInterface.h"
+#import <UIKit/UIKit.h>
+#import "FCViewManager_apple.h"
 
-void FCHalt()
-{
-	plt_FCHalt();
+@interface FCImageView_apple : UIView <FCManagedView_apple> {
+	NSString*		_managedViewName;
+	UIImageView*	_imageView;
+	NSString*		_image;
+	int				_contentMode;
+	
+	NSString*				_tapFunction;
+	UITapGestureRecognizer*	mTapRecognizer;
 }
-
-void FCLog( std::string log )
-{
-	FCConnect::Instance()->SendString(log);
-	plt_FCLog(log.c_str());
-}
-
-void FCWarning( std::string message )
-{
-	FCConnect::Instance()->SendString(message);
-	plt_FCWarning(message.c_str());
-}
-
-void FCFatal( std::string message )
-{
-	FCConnect::Instance()->SendString(message);
-	plt_FCFatal(message.c_str());
-}
-
-void fc_FCError_Fatal( const char* error )
-{
-	FCFatal( error );
-}
-
-void fc_FCError_Log( const char* error )
-{
-	FCLog( error );
-}
-
-void fc_FCError_Warning( const char* error )
-{
-	FCWarning( error );
-}
-
-
+@property(nonatomic, strong) NSString* managedViewName;
+@property(nonatomic, strong) UIImageView* imageView;
+@property(nonatomic, strong) NSString* image;
+@property(nonatomic) int contentMode;
+@property(nonatomic, strong) NSString* tapFunction;
+@end

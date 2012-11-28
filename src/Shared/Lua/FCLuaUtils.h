@@ -20,46 +20,15 @@
  THE SOFTWARE.
  */
 
-#include "FCError.h"
-#include "Debug/FCConnect.h"
-#include "Shared/FCPlatformInterface.h"
+#ifndef FCLuaUtils_h
+#define FCLuaUtils_h
 
-void FCHalt()
-{
-	plt_FCHalt();
+#include "Shared/Core/FCCore.h"
+
+extern "C" {
+#include <lua.h>
 }
 
-void FCLog( std::string log )
-{
-	FCConnect::Instance()->SendString(log);
-	plt_FCLog(log.c_str());
-}
+FCColor4f ColorFromLuaColor( lua_State* _state, int stackPos );
 
-void FCWarning( std::string message )
-{
-	FCConnect::Instance()->SendString(message);
-	plt_FCWarning(message.c_str());
-}
-
-void FCFatal( std::string message )
-{
-	FCConnect::Instance()->SendString(message);
-	plt_FCFatal(message.c_str());
-}
-
-void fc_FCError_Fatal( const char* error )
-{
-	FCFatal( error );
-}
-
-void fc_FCError_Log( const char* error )
-{
-	FCLog( error );
-}
-
-void fc_FCError_Warning( const char* error )
-{
-	FCWarning( error );
-}
-
-
+#endif

@@ -63,6 +63,8 @@ public:
 	virtual void ColdBoot( FCApplicationColdBootParams& params );
 	
 	void WarmBoot();	// no need for platform layer
+	void LoadLuaLayout();
+	void LoadLuaLanguage();
 	
 	virtual void Shutdown();
 	void Update();

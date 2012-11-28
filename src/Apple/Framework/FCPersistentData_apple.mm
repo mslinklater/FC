@@ -89,15 +89,17 @@ const char* plt_FCPersistentData_ValueForKey( const char* key )
 {
 	self = [super init];
 	if (self) {
+		NSArray* documentDirectories = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+		NSString* directory = [documentDirectories objectAtIndex:0];
+		
+		NSError* error;
+		
+		if (![[NSFileManager defaultManager] fileExistsAtPath:directory])
+			[[NSFileManager defaultManager] createDirectoryAtPath:directory withIntermediateDirectories:NO attributes:nil error:&error];
+		
+		_filename = [directory stringByAppendingPathComponent:@"savedata"];
 	}
 	return self;
-}
-
--(NSString*)filename
-{
-	NSArray* documentDirectories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-	NSString* documentDirectory = [documentDirectories objectAtIndex:0];
-	return [documentDirectory stringByAppendingPathComponent:@"savedata"];
 }
 
 -(void)load
@@ -112,8 +114,13 @@ const char* plt_FCPersistentData_ValueForKey( const char* key )
 -(void)save
 {
 	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-		[NSKeyedArchiver archiveRootObject:self.dataRoot toFile:[self filename]];
-	});	
+		
+		if( [NSKeyedArchiver archiveRootObject:self.dataRoot toFile:_filename] == NO)
+		{
+			FCLog("Error saving data");
+		}
+		
+	});
 }
 
 -(void)clear

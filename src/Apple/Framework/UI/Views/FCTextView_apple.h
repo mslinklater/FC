@@ -20,46 +20,23 @@
  THE SOFTWARE.
  */
 
-#include "FCError.h"
-#include "Debug/FCConnect.h"
-#include "Shared/FCPlatformInterface.h"
+#import <UIKit/UIKit.h>
+#import "FCViewManager_apple.h"
 
-void FCHalt()
-{
-	plt_FCHalt();
+@interface FCTextView_apple : UIView <FCManagedView_apple> {
+	NSString* _managedViewName;
+	UITextView*	_textView;
+	NSString* _text;
+	
+	NSString*	_fontName;
+	float		_fontSize;
 }
 
-void FCLog( std::string log )
-{
-	FCConnect::Instance()->SendString(log);
-	plt_FCLog(log.c_str());
-}
+@property(nonatomic, strong) NSString* managedViewName;
+@property(nonatomic, strong) UITextView* textView;
+@property(nonatomic, strong) NSString* text;
 
-void FCWarning( std::string message )
-{
-	FCConnect::Instance()->SendString(message);
-	plt_FCWarning(message.c_str());
-}
+@property(nonatomic, strong) NSString* fontName;
+@property(nonatomic) float fontSize;
 
-void FCFatal( std::string message )
-{
-	FCConnect::Instance()->SendString(message);
-	plt_FCFatal(message.c_str());
-}
-
-void fc_FCError_Fatal( const char* error )
-{
-	FCFatal( error );
-}
-
-void fc_FCError_Log( const char* error )
-{
-	FCLog( error );
-}
-
-void fc_FCError_Warning( const char* error )
-{
-	FCWarning( error );
-}
-
-
+@end

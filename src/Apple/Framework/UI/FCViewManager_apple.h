@@ -51,8 +51,8 @@ class FCLuaVM;
 
 -(void)remove:(NSString*)name;
 
--(void)sendViewToBack:(NSString*)name;
--(void)sendViewToFront:(NSString*)name;
+-(void)moveViewToBack:(NSString*)name;
+-(void)moveViewToFront:(NSString*)name;
 -(void)makeView:(NSString*)name inFrontOf:(NSString*)relativeName;
 -(void)makeView:(NSString*)name behind:(NSString*)relativeName;
 

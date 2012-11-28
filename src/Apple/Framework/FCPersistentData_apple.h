@@ -24,12 +24,14 @@
 
 @interface FCPersistentData_apple : NSObject {
 	NSMutableDictionary* _dataRoot;
+	NSString*	_filename;
 }
 @property(nonatomic, strong) NSMutableDictionary* dataRoot;
+@property(nonatomic, strong) NSString* filename;
 
 +(FCPersistentData_apple*)instance;
 
--(NSString*)filename;
+//-(NSString*)filename;
 
 -(void)load;
 -(void)save;

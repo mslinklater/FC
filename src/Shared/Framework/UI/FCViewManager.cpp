@@ -28,6 +28,7 @@ static FCViewManager* s_pInstance = 0;
 
 static int lua_SetText( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCViewManager.SetText()");
 	FC_LUA_ASSERT_NUMPARAMS(2);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
@@ -42,30 +43,29 @@ static int lua_SetText( lua_State* _state )
 
 static int lua_SetTextColor( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCViewManager.SetTextColor()");
 	FC_LUA_ASSERT_NUMPARAMS(2);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TTABLE);
 	
 	std::string viewName = lua_tostring(_state, 1);
 	
-	lua_pushnil(_state);
-	
-	lua_next(_state, -2);
+	lua_getfield(_state, 2, "r");
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float r = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
-	lua_next(_state, -2);
+	lua_getfield(_state, 2, "g");
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float g = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
-	lua_next(_state, -2);
+	lua_getfield(_state, 2, "b");
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float b = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
-	lua_next(_state, -2);
+	lua_getfield(_state, 2, "a");
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float a = (float)lua_tonumber(_state, -1);
 	
@@ -76,6 +76,7 @@ static int lua_SetTextColor( lua_State* _state )
 
 static int lua_GetFrame( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCViewManager.GetFrame()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
@@ -103,6 +104,7 @@ static int lua_GetFrame( lua_State* _state )
 
 static int lua_SetFrame( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCViewManager.SetFrame()");
 	FC_ASSERT( lua_gettop(_state) <= 3);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TTABLE);
@@ -116,24 +118,22 @@ static int lua_SetFrame( lua_State* _state )
 		lua_pop(_state, 1);
 	}
 	
-	lua_pushnil(_state);
-	
-	lua_next(_state, 2);
+	lua_getfield(_state, 2, "x");
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float x = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
-	lua_next(_state, 2);
+	lua_getfield(_state, 2, "y");
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float y = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
-	lua_next(_state, 2);
+	lua_getfield(_state, 2, "w");
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float w = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
-	lua_next(_state, 2);
+	lua_getfield(_state, 2, "h");
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float h = (float)lua_tonumber(_state, -1);
 	
@@ -145,6 +145,7 @@ static int lua_SetFrame( lua_State* _state )
 
 static int lua_SetAlpha( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCViewManager.SetAlpha()");
 	FC_ASSERT( lua_gettop(_state) <= 3);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
@@ -166,6 +167,7 @@ static int lua_SetAlpha( lua_State* _state )
 
 static int lua_SetOnSelectLuaFunction( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCViewManager.SetOnSelectLuaFunction()");
 	FC_LUA_ASSERT_NUMPARAMS(2);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_ASSERT( (lua_type(_state, 2) == LUA_TSTRING) || (lua_type(_state, 2) == LUA_TNIL) );
@@ -187,53 +189,67 @@ static int lua_SetOnSelectLuaFunction( lua_State* _state )
 
 static int lua_SetBackgroundColor( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCViewManager.SetBackgroundColor()");
 	FC_LUA_ASSERT_NUMPARAMS(2);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TTABLE);
 
 	std::string viewName = lua_tostring(_state, 1);
 	
-	FCColor4f color;
+	FCColor4f color = ColorFromLuaColor(_state, 2);
 	
-	lua_pushnil(_state);
-	
-	lua_next(_state, -2);
-	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	color.r = (float)lua_tonumber(_state, -1);
-	lua_pop(_state, 1);
-	
-	lua_next(_state, -2);
-	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	color.g = (float)lua_tonumber(_state, -1);
-	lua_pop(_state, 1);
-	
-	lua_next(_state, -2);
-	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	color.b = (float)lua_tonumber(_state, -1);
-	lua_pop(_state, 1);
-	
-	lua_next(_state, -2);
-	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-	color.a = (float)lua_tonumber(_state, -1);
+//	lua_getfield(_state, 2, "r");
+//	lua_next(_state, -2);
+//	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
+//	color.r = (float)lua_tonumber(_state, -1);
+//	lua_pop(_state, 1);
+//	
+//	lua_next(_state, -2);
+//	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
+//	color.g = (float)lua_tonumber(_state, -1);
+//	lua_pop(_state, 1);
+//	
+//	lua_next(_state, -2);
+//	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
+//	color.b = (float)lua_tonumber(_state, -1);
+//	lua_pop(_state, 1);
+//	
+//	lua_next(_state, -2);
+//	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
+//	color.a = (float)lua_tonumber(_state, -1);
 	
 	s_pInstance->SetViewBackgroundColor( viewName, color );
 	
 	return 0;
 }
 
-static int lua_SendToFront( lua_State* _state )
+static int lua_MoveToFront( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCViewManager.MoveToFront()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
 	std::string viewName = lua_tostring(_state, 1);
-	s_pInstance->SendViewToFront( viewName );
+	s_pInstance->MoveViewToFront( viewName );
+	
+	return 0;
+}
+
+static int lua_MoveToBack( lua_State* _state )
+{
+	FC_LUA_FUNCDEF("FCViewManager.MoveToBack()");
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	
+	std::string viewName = lua_tostring(_state, 1);
+	s_pInstance->MoveViewToBack( viewName );
 	
 	return 0;
 }
 
 static int lua_SetImage( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCViewManager.SetImage()");
 	FC_LUA_ASSERT_NUMPARAMS(2);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
@@ -248,6 +264,7 @@ static int lua_SetImage( lua_State* _state )
 
 static int lua_SetURL( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCViewManager.SetURL()");
 	FC_LUA_ASSERT_NUMPARAMS(2);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
@@ -262,6 +279,7 @@ static int lua_SetURL( lua_State* _state )
 
 static int lua_CreateView( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCViewManager.CreateView()");
 	FC_ASSERT( lua_gettop(_state) > 1 );
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
@@ -285,6 +303,7 @@ static int lua_CreateView( lua_State* _state )
 
 static int lua_DestroyView( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCViewManager.DestroyView()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
@@ -297,6 +316,7 @@ static int lua_DestroyView( lua_State* _state )
 
 static int lua_SetViewPropertyInteger( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCViewManager.SetViewPropertyInteger()");
 	FC_LUA_ASSERT_NUMPARAMS(3);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
@@ -311,8 +331,26 @@ static int lua_SetViewPropertyInteger( lua_State* _state )
 	return 0;
 }
 
+static int lua_SetViewPropertyFloat( lua_State* _state )
+{
+	FC_LUA_FUNCDEF("FCViewManager.SetViewPropertyFloat()");
+	FC_LUA_ASSERT_NUMPARAMS(3);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
+	
+	std::string name = lua_tostring(_state, 1);
+	std::string property = lua_tostring(_state, 2);
+	int32_t value = lua_tonumber(_state, 3);
+	
+	s_pInstance->SetViewPropertyFloat( name, property, value );
+	
+	return 0;
+}
+
 static int lua_SetViewPropertyString( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCViewManager.SetViewPropertyString()");
 	FC_LUA_ASSERT_NUMPARAMS(3);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
@@ -332,8 +370,9 @@ static int lua_PrintViews( lua_State* _state )
 	return 0;
 }
 
-static int lua_SetScreenAspectRatio( lua_State* _state )
+static int lua_SetScreenAspectRatio( lua_State* _state )	// deprecate ?
 {
+	FC_LUA_FUNCDEF("FCViewManager.SetScreenAspectRatio()");
 	FC_LUA_ASSERT_NUMPARAMS(2);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
@@ -362,7 +401,8 @@ FCViewManager::FCViewManager()
 	lua->RegisterCFunction(lua_SetImage, "FCViewManager.SetImage");
 	lua->RegisterCFunction(lua_SetURL, "FCViewManager.SetURL");
 	lua->RegisterCFunction(lua_SetBackgroundColor, "FCViewManager.SetBackgroundColor");
-	lua->RegisterCFunction(lua_SendToFront, "FCViewManager.SendViewToFront");
+	lua->RegisterCFunction(lua_MoveToFront, "FCViewManager.MoveViewToFront");
+	lua->RegisterCFunction(lua_MoveToBack, "FCViewManager.MoveViewToBack");
 	
 	lua->RegisterCFunction(lua_CreateView, "FCViewManager.CreateView");
 	lua->RegisterCFunction(lua_DestroyView, "FCViewManager.DestroyView");
@@ -370,6 +410,7 @@ FCViewManager::FCViewManager()
 	lua->RegisterCFunction(lua_PrintViews, "FCViewManager.PrintViews");
 	lua->RegisterCFunction(lua_SetViewPropertyInteger, "FCViewManager.SetViewPropertyInteger");
 	lua->RegisterCFunction(lua_SetViewPropertyString, "FCViewManager.SetViewPropertyString");
+	lua->RegisterCFunction(lua_SetViewPropertyFloat, "FCViewManager.SetViewPropertyFloat");
 }
 
 FCViewManager::~FCViewManager()
@@ -450,19 +491,24 @@ void FCViewManager::SetViewPropertyInt(const std::string &viewName, const std::s
 	plt_FCViewManager_SetViewPropertyInt( viewName.c_str(), property.c_str(), value );
 }
 
+void FCViewManager::SetViewPropertyFloat(const std::string &viewName, const std::string &property, float value)
+{
+	plt_FCViewManager_SetViewPropertyFloat( viewName.c_str(), property.c_str(), value );
+}
+
 void FCViewManager::SetViewPropertyString(const std::string &viewName, const std::string &property, const std::string& value)
 {
 	plt_FCViewManager_SetViewPropertyString( viewName.c_str(), property.c_str(), value.c_str() );
 }
 
-void FCViewManager::SendViewToFront( const std::string& viewname )
+void FCViewManager::MoveViewToFront( const std::string& viewname )
 {
-	plt_FCViewManager_SendViewToFront( viewname.c_str() );
+	plt_FCViewManager_MoveViewToFront( viewname.c_str() );
 }
 
-void FCViewManager::SendViewToBack( const std::string& viewname )
+void FCViewManager::MoveViewToBack( const std::string& viewname )
 {
-	plt_FCViewManager_SendViewToBack( viewname.c_str() );
+	plt_FCViewManager_MoveViewToBack( viewname.c_str() );
 }
 
 bool FCViewManager::ViewExists(const std::string& viewName)

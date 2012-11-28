@@ -28,6 +28,7 @@ static FCActorSystem* s_pInstance;
 
 static int lua_Reset( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCActorSystem.Reset()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	
 	s_pInstance->Reset();
@@ -36,6 +37,7 @@ static int lua_Reset( lua_State* _state )
 
 static int lua_GetActorPosition( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCActorSystem.GetActorPosition()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
@@ -51,6 +53,7 @@ static int lua_GetActorPosition( lua_State* _state )
 
 static int lua_SetActorPosition( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCActorSystem.SetActorPosition");
 	FC_LUA_ASSERT_NUMPARAMS(4);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
@@ -72,6 +75,7 @@ static int lua_SetActorPosition( lua_State* _state )
 
 static int lua_GetActorLinearVelocity( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCActorSystem.GetActorLinearVelocity()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
@@ -87,6 +91,7 @@ static int lua_GetActorLinearVelocity( lua_State* _state )
 
 static int lua_SetActorLinearVelocity( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCActorSystem.SetActorLinearVelocity()");
 	FC_LUA_ASSERT_NUMPARAMS(4);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
@@ -102,6 +107,7 @@ static int lua_SetActorLinearVelocity( lua_State* _state )
 
 static int lua_ApplyImpulse( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCActorSystem.ApplyImpulse()");
 	FC_LUA_ASSERT_NUMPARAMS(4);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);

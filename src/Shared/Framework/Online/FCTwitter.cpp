@@ -28,6 +28,7 @@ static FCTwitter* s_pInstance = 0;
 
 static int lua_CanTweet( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCTwitter.CanTweet()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	
 	lua_pushboolean(_state, s_pInstance->CanTweet() );
@@ -37,6 +38,7 @@ static int lua_CanTweet( lua_State* _state )
 
 static int lua_TweetWithText( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCTwitter.TweetWithText()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
@@ -49,6 +51,7 @@ static int lua_TweetWithText( lua_State* _state )
 
 static int lua_AddHyperlink( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCTwitter.AddHyperlink()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
@@ -61,6 +64,7 @@ static int lua_AddHyperlink( lua_State* _state )
 
 static int lua_Send( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCTwitter.Send()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	s_pInstance->Send();
 	return 0;

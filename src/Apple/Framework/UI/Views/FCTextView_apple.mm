@@ -20,67 +20,65 @@
  THE SOFTWARE.
  */
 
-#if defined( FC_ADS )
+#import "FCTextView_apple.h"
 
-#import "FCAdBannerView_apple.h"
-#import "FCViewManager_apple.h"
-
+#include "Shared/Framework/UI/FCViewManagerTypes.h"
 #include "Shared/FCPlatformInterface.h"
 
-extern UIViewController* s_rootViewController;
+@implementation FCTextView_apple
 
-@implementation FCAdBannerView_apple
-
-- (id)initWithFrame:(CGRect)frame key:(NSString*)key
+- (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
-		_adWhirlKey = key;
-		_adWhirlView = [AdWhirlView requestAdWhirlViewWithDelegate:self];
-		[self addSubview:_adWhirlView];
-
-		fc_FCLua_SetGlobalNumber("AdBannerHeight", 0);
+		_textView = [[UITextView alloc] initWithFrame:CGRectZero];
+		_textView.backgroundColor = [UIColor clearColor];
+		_textView.editable = NO;
+		_textView.userInteractionEnabled = NO;
+		[self addSubview:_textView];
+		self.clipsToBounds = YES;
     }
     return self;
 }
 
--(void)dealloc
+-(void)setFrame:(CGRect)frame
 {
-	fc_FCLua_SetGlobalNumber("AdBannerHeight", 0);
-	_adWhirlView .delegate = nil;
+	[super setFrame:frame];
+	_textView.frame = CGRectMake(0.0, 0.0, frame.size.width, frame.size.height);
 }
 
-- (NSString *)adWhirlApplicationKey 
+-(void)setText:(NSString *)text
 {
-	return _adWhirlKey;
+	_textView.text = text;
 }
 
-- (UIViewController *)viewControllerForPresentingModalView 
+-(void)setFontName:(NSString*)fontName
 {
-	return _viewController;
+	_fontName = fontName;
 }
 
-- (void)adWhirlDidReceiveAd:(AdWhirlView *)adWhirlView 
+-(void)setFontSize:(float)size
 {
-	[self bringSubviewToFront:_adWhirlView];
-	
-	[UIView beginAnimations:@"blah" context:nil];
-	
-	[UIView setAnimationDuration:0.7];
-	
-	CGSize adSize = [_adWhirlView actualAdSize];
-	CGRect newFrame = _adWhirlView.frame;
-	
-	newFrame.size = adSize;
-    newFrame.origin.x = (s_rootViewController.view.bounds.size.width - adSize.width)/ 2;
-	
-	_adWhirlView.frame = newFrame;
-	self.frame = newFrame;
-	
-	[UIView commitAnimations];
-	fc_FCLua_SetGlobalNumber("AdBannerHeight", adSize.height);
+	_textView.font = [UIFont fontWithName:_fontName size:size];
+}
+
+-(void)setTextAlignment:(int)alignment
+{
+	switch (alignment) {
+		case kFCViewTextAlignmentLeft:
+			_textView.textAlignment = UITextAlignmentLeft;
+			break;
+		case kFCViewTextAlignmentCenter:
+			_textView.textAlignment = UITextAlignmentCenter;
+			break;
+		case kFCViewTextAlignmentRight:
+			_textView.textAlignment = UITextAlignmentRight;
+			break;
+			
+		default:
+			fc_FCError_Fatal("unknown enum");
+			break;
+	}
 }
 
 @end
-
-#endif // FC_ADS

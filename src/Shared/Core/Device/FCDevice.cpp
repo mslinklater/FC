@@ -28,6 +28,7 @@
 
 static int lua_ColdProbe( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCDevice.ColdProbe()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	plt_FCDevice_ColdProbe();
 	return 0;
@@ -35,6 +36,7 @@ static int lua_ColdProbe( lua_State* _state )
 
 static int lua_WarmProbe( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCDevice.WarmProbe()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	plt_FCDevice_WarmProbe( 0 );	// what to do here ?
 	return 0;
@@ -42,6 +44,7 @@ static int lua_WarmProbe( lua_State* _state )
 
 static int lua_Print( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCDevice.Print()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	FCDevice::Instance()->Print();
 	return 0;
@@ -49,6 +52,7 @@ static int lua_Print( lua_State* _state )
 
 static int lua_GetDeviceString( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCDevice.GetString()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
@@ -61,6 +65,7 @@ static int lua_GetDeviceString( lua_State* _state )
 
 static int lua_GetDeviceFloat( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCDevice.GetFloat()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
@@ -76,6 +81,7 @@ static int lua_GetDeviceFloat( lua_State* _state )
 
 static int lua_GetDeviceInteger( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCDevice.GetInteger()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
@@ -92,6 +98,7 @@ static int lua_GetDeviceInteger( lua_State* _state )
 
 static int lua_GetGameCenterID( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCDevice.GetGameCenterID");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	
 	std::string ret = FCDevice::Instance()->GetCap(kFCDeviceGameCenterID);

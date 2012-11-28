@@ -28,6 +28,7 @@ static FCPersistentData* s_pInstance = 0;
 
 static int lua_Save( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPersistentData.Save()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	s_pInstance->Save();
 	return 0;
@@ -35,6 +36,7 @@ static int lua_Save( lua_State* _state )
 
 static int lua_Load( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPersistentData.Load()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	s_pInstance->Load();
 	return 0;
@@ -42,13 +44,26 @@ static int lua_Load( lua_State* _state )
 
 static int lua_Clear( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPersistentData.Clear()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	s_pInstance->Clear();
 	return 0;
 }
 
+static int lua_ClearValueForKey( lua_State* _state )
+{
+	FC_LUA_FUNCDEF("FCPersistentData.ClearValueForKey()");
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	
+	std::string key = lua_tostring(_state, 1);
+	
+	s_pInstance->ClearValueForKey( key );
+	return 0;
+}
+
 static int lua_Print( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPersistentData.Print()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	s_pInstance->Print();
 	return 0;
@@ -56,6 +71,7 @@ static int lua_Print( lua_State* _state )
 
 static int lua_SetBool( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPersistentData.SetBool()");
 	FC_LUA_ASSERT_NUMPARAMS(2);
 	FC_LUA_ASSERT_TYPE(-2, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TBOOLEAN);
@@ -73,6 +89,7 @@ static int lua_SetBool( lua_State* _state )
 
 static int lua_GetBool( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPersistentData.GetBool()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TSTRING);
 	
@@ -93,6 +110,7 @@ static int lua_GetBool( lua_State* _state )
 
 static int lua_SetString( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPersistentData.SetString()");
 	FC_LUA_ASSERT_NUMPARAMS(2);
 	FC_LUA_ASSERT_TYPE(-2, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TSTRING);
@@ -107,6 +125,7 @@ static int lua_SetString( lua_State* _state )
 
 static int lua_GetString( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPersistentData.GetString()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TSTRING);
 	
@@ -123,6 +142,7 @@ static int lua_GetString( lua_State* _state )
 
 static int lua_SetNumber( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPersistentData.SetNumber()");
 	FC_LUA_ASSERT_NUMPARAMS(2);
 	FC_LUA_ASSERT_TYPE(-2, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
@@ -136,6 +156,7 @@ static int lua_SetNumber( lua_State* _state )
 
 static int lua_GetNumber( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPersistentData.GetNumber()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(-1, LUA_TSTRING);
 	
@@ -166,6 +187,7 @@ FCPersistentData::FCPersistentData()
 	lua->RegisterCFunction(lua_Save, "FCPersistentData.Save");
 	lua->RegisterCFunction(lua_Load, "FCPersistentData.Load");
 	lua->RegisterCFunction(lua_Clear, "FCPersistentData.Clear");
+	lua->RegisterCFunction(lua_ClearValueForKey, "FCPersistentData.ClearValue");
 	lua->RegisterCFunction(lua_Print, "FCPersistentData.Print");
 	lua->RegisterCFunction(lua_SetBool, "FCPersistentData.SetBool");
 	lua->RegisterCFunction(lua_GetBool, "FCPersistentData.GetBool");
@@ -189,6 +211,9 @@ void FCPersistentData::Save()
 {
 	FC_LOG("FCPersistentData:Save()");
 	plt_FCPersistentData_Save();
+#if defined( DEBUG)
+//	plt_FCPersistentData_Print();
+#endif
 }
 
 void FCPersistentData::Clear()

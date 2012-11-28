@@ -29,6 +29,7 @@ static FCPhysics2D* s_pInstance = 0;
 
 static int lua_CreateDistanceJoint( lua_State* _state )
 {	
+	FC_LUA_FUNCDEF("FCPhysics2D.CreateDistanceJoint()");
 	FC_ASSERT(lua_gettop(_state) >= 4);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
@@ -91,6 +92,7 @@ static int lua_CreateDistanceJoint( lua_State* _state )
 
 static int lua_CreateRevoluteJoint( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPhysics2D.CreateRevoluteJoint()");
 	FC_ASSERT(lua_gettop(_state) >= 3);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
@@ -123,6 +125,7 @@ static int lua_CreateRevoluteJoint( lua_State* _state )
 
 static int lua_CreatePrismaticJoint( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPhysics2D.CreatePrismaticJoint()");
 	FC_LUA_ASSERT_NUMPARAMS(3);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
@@ -152,6 +155,7 @@ static int lua_CreatePrismaticJoint( lua_State* _state )
 
 static int lua_CreatePulleyJoint( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPhysics2D.CreatePulleyJoint()");
 	FC_LUA_ASSERT_NUMPARAMS(7);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
@@ -195,6 +199,7 @@ static int lua_CreatePulleyJoint( lua_State* _state )
 
 static int lua_CreateRopeJoint( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPhysics2D.CreateRopeJoint()");
 	FC_LUA_ASSERT_NUMPARAMS(6);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	FC_LUA_ASSERT_TYPE(2, LUA_TSTRING);
@@ -222,6 +227,7 @@ static int lua_CreateRopeJoint( lua_State* _state )
 
 static int lua_SetRevoluteJointLimits( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPhysics2D.SetRevoluteJointLimits()");
 	FC_LUA_ASSERT_NUMPARAMS(3);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
@@ -242,6 +248,7 @@ static int lua_SetRevoluteJointLimits( lua_State* _state )
 
 static int lua_SetRevoluteJointMotor( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPhysics2D.SetRevoluteJointMotor()");
 	FC_LUA_ASSERT_NUMPARAMS(3);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
@@ -262,6 +269,7 @@ static int lua_SetRevoluteJointMotor( lua_State* _state )
 
 static int lua_SetPrismaticJointLimits( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPhysics2D.SetPrismaticJointLimits()");
 	FC_LUA_ASSERT_NUMPARAMS(3);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
@@ -282,6 +290,7 @@ static int lua_SetPrismaticJointLimits( lua_State* _state )
 
 static int lua_SetPrismaticJointMotor( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPhysics2D.SetPrismaticJointMotor()");
 	FC_LUA_ASSERT_NUMPARAMS(3);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
@@ -302,6 +311,7 @@ static int lua_SetPrismaticJointMotor( lua_State* _state )
 
 static int lua_GetBodyAngularVelocity( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("FCPhysics2D.GetBodyAngularVelocity()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	

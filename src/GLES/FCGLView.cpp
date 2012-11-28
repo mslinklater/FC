@@ -28,6 +28,7 @@ static FCGLViewRef s_currentLuaTarget = 0;
 
 static int lua_SetCurrentView( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("GLView.SetCurrentView()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 	
@@ -43,6 +44,7 @@ static int lua_SetCurrentView( lua_State* _state )
 
 static int lua_SetClearColor( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("GLView.SetClearColor()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TTABLE);
 	
@@ -77,6 +79,7 @@ static int lua_SetClearColor( lua_State* _state )
 
 static int lua_SetFOV( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("GLView.SetFOV()");
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	
@@ -88,6 +91,7 @@ static int lua_SetFOV( lua_State* _state )
 
 static int lua_SetNearFarClip( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("GLView.SetNearFarClip()");
 	FC_LUA_ASSERT_NUMPARAMS(2);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
@@ -101,6 +105,7 @@ static int lua_SetNearFarClip( lua_State* _state )
 
 static int lua_SetFrustumTranslation( lua_State* _state )
 {
+	FC_LUA_FUNCDEF("GLView.SetFrustumTranslation()");
 	FC_LUA_ASSERT_NUMPARAMS(3);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);

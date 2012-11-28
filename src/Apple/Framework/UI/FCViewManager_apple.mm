@@ -39,9 +39,10 @@ void plt_FCViewManager_SetViewURL( const char* viewName, const char* url );
 void plt_FCViewManager_CreateView( const char* viewName, const char* className, const char* parent );
 void plt_FCViewManager_DestroyView( const char* viewName );
 void plt_FCViewManager_SetViewPropertyInt( const char* viewName, const char* property, int32_t value );
+void plt_FCViewManager_SetViewPropertyFloat( const char* viewName, const char* property, float value );
 void plt_FCViewManager_SetViewPropertyString( const char* viewName, const char* property, const char* value );
-void plt_FCViewManager_SendViewToFront( const char* viewName );
-void plt_FCViewManager_SendViewToBack( const char* viewName );
+void plt_FCViewManager_MoveViewToFront( const char* viewName );
+void plt_FCViewManager_MoveViewToBack( const char* viewName );
 bool plt_FCViewManager_ViewExists( const char* viewName );
 void plt_FCViewManager_SetViewBackgroundColor( const char* viewName, const FCColor4f& color );
 
@@ -130,8 +131,12 @@ void plt_FCViewManager_DestroyView( const char* viewName )
 
 void plt_FCViewManager_SetViewPropertyInt( const char* viewName, const char* property, int32_t value )
 {
-	[s_pInstance setView:@(viewName)
-								   property:@(property) to:@(value)];
+	[s_pInstance setView:@(viewName) property:@(property) to:@(value)];
+}
+
+void plt_FCViewManager_SetViewPropertyFloat( const char* viewName, const char* property, float value )
+{
+	[s_pInstance setView:@(viewName) property:@(property) to:@(value)];
 }
 
 void plt_FCViewManager_SetViewPropertyString( const char* viewName, const char* property, const char* value )
@@ -140,14 +145,14 @@ void plt_FCViewManager_SetViewPropertyString( const char* viewName, const char* 
 								   property:@(property) to:@(value)];
 }
 
-void plt_FCViewManager_SendViewToFront( const char*viewName )
+void plt_FCViewManager_MoveViewToFront( const char*viewName )
 {
-	[s_pInstance sendViewToFront:@(viewName)];
+	[s_pInstance moveViewToFront:@(viewName)];
 }
 
-void plt_FCViewManager_SendViewToBack( const char* viewName )
+void plt_FCViewManager_MoveViewToBack( const char* viewName )
 {
-	[s_pInstance sendViewToBack:@(viewName)];
+	[s_pInstance moveViewToBack:@(viewName)];
 }
 
 bool plt_FCViewManager_ViewExists( const char* viewName )
@@ -302,7 +307,7 @@ void plt_FCViewManager_SetViewBackgroundColor( const char* viewName, const FCCol
 	
 }
 
--(void)sendViewToBack:(NSString*)name
+-(void)moveViewToBack:(NSString*)name
 {
 	UIView* thisView = [_viewDictionary valueForKey:name];
 	
@@ -311,7 +316,7 @@ void plt_FCViewManager_SetViewBackgroundColor( const char* viewName, const FCCol
 	[_rootView sendSubviewToBack:thisView];
 }
 
--(void)sendViewToFront:(NSString*)name
+-(void)moveViewToFront:(NSString*)name
 {
 	UIView* thisView = [_viewDictionary valueForKey:name];
 	
@@ -407,26 +412,9 @@ void plt_FCViewManager_SetViewBackgroundColor( const char* viewName, const FCCol
 		
 		__block CGRect scaledFrame;
 		scaledFrame.origin.x = containerFrame.size.width * frame.origin.x;			
-		scaledFrame.origin.y = containerFrame.size.height * frame.origin.y;			
-		
-		CGSize mainViewSize;
-        FCVector2f size;
-        size.x = _rootView.frame.size.width;
-        size.y = _rootView.frame.size.height;
-		mainViewSize.width = size.x;
-		mainViewSize.height = size.y;
-		
-		if (frame.size.width < 0) {
-			scaledFrame.size.width = thisView.frame.size.width;
-		} else {
-			scaledFrame.size.width = mainViewSize.width * frame.size.width;
-		}
-		
-		if (frame.size.height < 0) {
-			scaledFrame.size.height = thisView.frame.size.height;
-		} else {
-			scaledFrame.size.height = mainViewSize.height * frame.size.height;			
-		}
+		scaledFrame.origin.y = containerFrame.size.height * frame.origin.y;
+		scaledFrame.size.width = containerFrame.size.width * frame.size.width;
+		scaledFrame.size.height = containerFrame.size.height * frame.size.height;
 		
 #if TARGET_OS_IPHONE
 		[UIView animateWithDuration:seconds animations:^{		
