@@ -122,7 +122,7 @@ void FCOnlineAchievement::Register(std::string name)
 {
 	FC_ASSERT( m_achievements.find(name) == m_achievements.end() );
 	
-	FCLog( std::string("FCOnlineAchievement register: " + name));
+	FC_LOG( std::string("FCOnlineAchievement register: " + name));
 	   
 	m_achievements[name] = 0.0f;
 }
@@ -164,7 +164,7 @@ void FCOnlineAchievement::ReportUnreported()
 
 void FCOnlineAchievement::ClearAll()
 {
-	FCLog("FCOnlineAchievement: ClearAll()");
+	FC_LOG("FCOnlineAchievement: ClearAll()");
 	plt_FCOnlineAchievement_ClearAll();
 }
 

@@ -94,7 +94,7 @@ public:
 	
 	virtual FCVector2f MainViewSize();
 	
-	virtual void LaunchExternalURL( std::string url );
+	virtual bool LaunchExternalURL( std::string url );
 
 	bool ShouldAutorotateToInterfaceOrientation( FCInterfaceOrientation orient );
 private:

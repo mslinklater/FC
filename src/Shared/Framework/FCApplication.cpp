@@ -112,9 +112,9 @@ static int lua_LaunchExternalURL( lua_State* _state )
 	FC_LUA_ASSERT_NUMPARAMS(1);
 	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
 
-	s_pInstance->LaunchExternalURL( lua_tostring(_state, 1) );
+	lua_pushboolean(_state, s_pInstance->LaunchExternalURL( lua_tostring(_state, 1) ) );
 	
-	return 0;
+	return 1;
 }
 
 static int lua_MainViewSize( lua_State* _state )
@@ -522,7 +522,7 @@ FCVector2f FCApplication::MainViewSize()
 	return FCVector2f( 0.0f, 0.0f );
 }
 
-void FCApplication::LaunchExternalURL( std::string url )
+bool FCApplication::LaunchExternalURL( std::string url )
 {
 	FC_TRACE;
 	FC_HALT;

@@ -117,7 +117,7 @@ const char* plt_FCPersistentData_ValueForKey( const char* key )
 		
 		if( [NSKeyedArchiver archiveRootObject:self.dataRoot toFile:_filename] == NO)
 		{
-			FCLog("Error saving data");
+			FC_LOG("Error saving data");
 		}
 		
 	});

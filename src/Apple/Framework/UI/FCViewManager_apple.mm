@@ -313,7 +313,7 @@ void plt_FCViewManager_SetViewBackgroundColor( const char* viewName, const FCCol
 	
 	FC_ASSERT(thisView);
 	
-	[_rootView sendSubviewToBack:thisView];
+	[thisView.superview sendSubviewToBack:thisView];
 }
 
 -(void)moveViewToFront:(NSString*)name
@@ -322,7 +322,7 @@ void plt_FCViewManager_SetViewBackgroundColor( const char* viewName, const FCCol
 	
 	FC_ASSERT(thisView);
 	
-	[_rootView bringSubviewToFront:thisView];
+	[thisView.superview bringSubviewToFront:thisView];
 }
 
 -(void)makeView:(NSString*)name inFrontOf:(NSString*)relativeName

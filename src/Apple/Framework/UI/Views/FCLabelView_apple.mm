@@ -37,6 +37,10 @@
 		self.backgroundColor = [UIColor clearColor];
 		mLabel.backgroundColor = [UIColor clearColor];
 		self.clipsToBounds = YES;
+		
+		mLabel.shadowColor = [UIColor whiteColor];
+		mLabel.shadowOffset = CGSizeMake(2, 2);
+		
     }
     return self;
 }

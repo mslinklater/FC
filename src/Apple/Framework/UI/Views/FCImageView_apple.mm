@@ -53,31 +53,31 @@
 {
 	switch (contentMode) {
 		case kFCViewContentModeScaleToFill:
-			self.contentMode = UIViewContentModeScaleToFill; break;
+			_imageView.contentMode = UIViewContentModeScaleToFill; break;
 		case kFCViewContentModeScaleAspectFit:
-			self.contentMode = UIViewContentModeScaleAspectFit; break;
+			_imageView.contentMode = UIViewContentModeScaleAspectFit; break;
 		case kFCViewContentModeScaleAspectFill:
-			self.contentMode = UIViewContentModeScaleAspectFill; break;
+			_imageView.contentMode = UIViewContentModeScaleAspectFill; break;
 		case kFCViewContentModeRedraw:
-			self.contentMode = UIViewContentModeRedraw; break;
+			_imageView.contentMode = UIViewContentModeRedraw; break;
 		case kFCViewContentModeCenter:
-			self.contentMode = UIViewContentModeCenter; break;
+			_imageView.contentMode = UIViewContentModeCenter; break;
 		case kFCViewContentModeTop:
-			self.contentMode = UIViewContentModeTop; break;
+			_imageView.contentMode = UIViewContentModeTop; break;
 		case kFCViewContentModeBottom:
-			self.contentMode = UIViewContentModeBottom; break;
+			_imageView.contentMode = UIViewContentModeBottom; break;
 		case kFCViewContentModeLeft:
-			self.contentMode = UIViewContentModeLeft; break;
+			_imageView.contentMode = UIViewContentModeLeft; break;
 		case kFCViewContentModeRight:
-			self.contentMode = UIViewContentModeRight; break;
+			_imageView.contentMode = UIViewContentModeRight; break;
 		case kFCViewContentModeTopLeft:
-			self.contentMode = UIViewContentModeTopLeft; break;
+			_imageView.contentMode = UIViewContentModeTopLeft; break;
 		case kFCViewContentModeTopRight:
-			self.contentMode = UIViewContentModeTopRight; break;
+			_imageView.contentMode = UIViewContentModeTopRight; break;
 		case kFCViewContentModeBottomLeft:
-			self.contentMode = UIViewContentModeBottomLeft; break;
+			_imageView.contentMode = UIViewContentModeBottomLeft; break;
 		case kFCViewContentModeBottomRight:
-			self.contentMode = UIViewContentModeBottomRight; break;
+			_imageView.contentMode = UIViewContentModeBottomRight; break;
 		default:
 			// TODO error returning
 			break;
@@ -87,6 +87,12 @@
 -(void)setImage:(NSString *)imageName
 {
 	UIImage* image = [UIImage imageNamed:imageName];
+	
+	if( image == nil )
+	{
+//		_imageView.backgroundColor = [UIColor greenColor];
+	}
+	
 	[_imageView setImage:image];
 }
 

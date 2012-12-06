@@ -1,17 +1,24 @@
 -- Lua FCView object class
 
 FCView = {}
+FCView.nextName = 1
 
 function FCView:New( name, classType, parent )
 	ret = {}
-	ret.name = name
 	ret.classType = classType
 	ret.subviews = {}
 
-	if parent ~= nil then
-		FCViewManager.CreateView( name, classType, parent.name )
+	if name == nil then
+		ret.name = "view" .. FCView.nextName
+		FCView.nextName = FCView.nextName + 1
 	else
-		FCViewManager.CreateView( name, classType, nil )
+		ret.name = name
+	end
+
+	if parent ~= nil then
+		FCViewManager.CreateView( ret.name, classType, parent.name )
+	else
+		FCViewManager.CreateView( ret.name, classType, nil )
 	end
 
 	-- setup the metatable entries

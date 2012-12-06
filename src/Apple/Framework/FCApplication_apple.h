@@ -47,7 +47,7 @@ extern UIViewController* FCRootViewController();
 -(void)setUpdateFrequency:(int)freq;
 
 -(void)showGameCenterLeaderboard;
--(void)launchExternalURL:(NSString*)url;
+-(BOOL)launchExternalURL:(NSString*)url;
 -(CGSize)mainViewSize;
 
 -(void)coldBoot;
@@ -85,7 +85,7 @@ public:
 	
 	FCVector2f MainViewSize();
 	
-	void LaunchExternalURL( std::string url );
+	bool LaunchExternalURL( std::string url );
 	
 private:
 	FCApplication_apple*	m_pApp;

@@ -176,10 +176,10 @@ void FCApplicationProxy::SetUpdateFrequency(int freq)
 //	return 0;
 //}
 
-void FCApplicationProxy::LaunchExternalURL( std::string url )
+bool FCApplicationProxy::LaunchExternalURL( std::string url )
 {
 	NSString* stringURL = @(url.c_str());
-	[m_pApp launchExternalURL:stringURL];
+	return [m_pApp launchExternalURL:stringURL];
 }
 
 void FCApplicationProxy::RegisterExceptionHandler()
@@ -302,9 +302,9 @@ static void uncaughtExceptionHandler(NSException *exception) {
 	// call lua func ?
 }
 
--(void)launchExternalURL:(NSString *)url
+-(BOOL)launchExternalURL:(NSString *)url
 {
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
+	return [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
 }
 
 -(CGSize)mainViewSize
