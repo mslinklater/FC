@@ -113,14 +113,20 @@ const char* plt_FCPersistentData_ValueForKey( const char* key )
 
 -(void)save
 {
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+//	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
 		
-		if( [NSKeyedArchiver archiveRootObject:self.dataRoot toFile:_filename] == NO)
-		{
-			FC_LOG("Error saving data");
-		}
-		
-	});
+	int numTries = 0;
+	BOOL success;
+
+	do {
+		success = [NSKeyedArchiver archiveRootObject:self.dataRoot toFile:_filename];
+		numTries++;
+	} while ((success == NO) && (numTries < 10));
+	
+	if( success == NO)
+	{
+		FC_LOG("Error saving data");
+	}
 }
 
 -(void)clear

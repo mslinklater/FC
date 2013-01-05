@@ -29,7 +29,22 @@ static int lua_FCDebug( lua_State* _state )
 {
 	FC_LUA_FUNCDEF("FCBuild.Debug()");
 	FC_LUA_ASSERT_NUMPARAMS(0);
-#if FC_DEBUG
+	
+#if defined(DEBUG)
+	lua_pushboolean(_state, 1);
+#else
+	lua_pushboolean(_state, 0);
+#endif
+	
+	return 1;
+}
+
+static int lua_FCAdhoc( lua_State* _state )
+{
+	FC_LUA_FUNCDEF("FCBuild.Adhoc()");
+	FC_LUA_ASSERT_NUMPARAMS(0);
+	
+#if defined(ADHOC)
 	lua_pushboolean(_state, 1);
 #else
 	lua_pushboolean(_state, 0);
@@ -42,6 +57,7 @@ FCBuild::FCBuild()
 {
 	FCLua::Instance()->CoreVM()->CreateGlobalTable("FCBuild");
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_FCDebug, "FCBuild.Debug");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_FCAdhoc, "FCBuild.Adhoc");
 }
 
 FCBuild::~FCBuild()
@@ -59,7 +75,16 @@ FCBuild* FCBuild::Instance()
 
 bool FCBuild::Debug()
 {
-#if DEBUG
+#if defined(DEBUG)
+	return true;
+#else
+	return false;
+#endif
+}
+
+bool FCBuild::Adhoc()
+{
+#if defined(ADHOC)
 	return true;
 #else
 	return false;

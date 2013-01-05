@@ -132,6 +132,7 @@ void plt_FCDevice_WarmProbe( uint32_t options )
 	FCDevice::Instance()->SetCap(kFCDeviceOSVersion, [[UIDevice currentDevice].systemVersion UTF8String]);
 	FCDevice::Instance()->SetCap(kFCDeviceOSName, [[UIDevice currentDevice].systemName UTF8String]);
 	FCDevice::Instance()->SetCap(kFCDeviceHardwareName, [[UIDevice currentDevice].name UTF8String]);
+	FCDevice::Instance()->SetCap(kFCDeviceHardwareModel, [[UIDevice currentDevice].model UTF8String]);
 	
 	// Pirated
 	

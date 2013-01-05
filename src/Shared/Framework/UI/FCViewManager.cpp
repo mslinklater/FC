@@ -223,6 +223,18 @@ static int lua_SetBackgroundColor( lua_State* _state )
 	return 0;
 }
 
+static int lua_ShrinkFontToFit( lua_State* _state )
+{
+	FC_LUA_FUNCDEF("FCViewManager.ShrinkFontToFit()");
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	
+	std::string viewName = lua_tostring(_state, 1);
+	s_pInstance->ShrinkFontToFit( viewName );
+	
+	return 0;
+}
+
 static int lua_MoveToFront( lua_State* _state )
 {
 	FC_LUA_FUNCDEF("FCViewManager.MoveToFront()");
@@ -403,6 +415,7 @@ FCViewManager::FCViewManager()
 	lua->RegisterCFunction(lua_SetBackgroundColor, "FCViewManager.SetBackgroundColor");
 	lua->RegisterCFunction(lua_MoveToFront, "FCViewManager.MoveViewToFront");
 	lua->RegisterCFunction(lua_MoveToBack, "FCViewManager.MoveViewToBack");
+	lua->RegisterCFunction(lua_ShrinkFontToFit, "FCViewManager.ShrinkFontToFit");
 	
 	lua->RegisterCFunction(lua_CreateView, "FCViewManager.CreateView");
 	lua->RegisterCFunction(lua_DestroyView, "FCViewManager.DestroyView");
@@ -446,6 +459,11 @@ FCRect FCViewManager::FullFrame()
 	return plt_FCViewManager_FullFrame();
 }
 
+void FCViewManager::ShrinkFontToFit( const std::string& viewName )
+{
+	plt_FCViewManager_ShrinkFontToFit( viewName.c_str() );
+}
+
 void FCViewManager::SetViewFrame(const std::string &viewName, const FCRect &rect, float seconds)
 {
 	plt_FCViewManager_SetViewFrame( viewName.c_str(), rect, seconds );
@@ -478,11 +496,13 @@ void FCViewManager::SetViewBackgroundColor( const std::string& viewName, const F
 
 void FCViewManager::CreateView( const std::string& viewName, const std::string& classType, const std::string& parent )
 {
+	FC_LOG(std::string("Create view: ") + viewName);
 	plt_FCViewManager_CreateView(viewName.c_str(), classType.c_str(), parent.c_str());
 }
 
 void FCViewManager::DestroyView(const std::string &viewName)
 {
+	FC_LOG(std::string("Destroy view: ") + viewName);
 	plt_FCViewManager_DestroyView( viewName.c_str() );
 }
 

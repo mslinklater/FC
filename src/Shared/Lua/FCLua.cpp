@@ -49,7 +49,7 @@ static FCHandle common_newThread( lua_State* _state, std::string name )
 		FC_FATAL("Too many Lua threads");
 	}
 	
-	FCHandle handle = NewFCHandle();
+	FCHandle handle = FCHandleNew();
 	
 	FCLuaThread* thread = new FCLuaThread( _state, handle );
 	
@@ -274,11 +274,18 @@ void FCLua::UpdateThreads( float realDelta, float gameDelta )
 	
 	for (FCLuaThreadRefMapIter i = m_threadsMap.begin(); i != m_threadsMap.end(); ++i) 
 	{
-		i->second->Update(realDelta, gameDelta);
-		
-		if (i->second->ThreadState() == kLuaThreadStateDead) {
+		if(i->second)
+		{
+			i->second->Update(realDelta, gameDelta);
+			if (i->second->ThreadState() == kLuaThreadStateDead) {
+				delList.push_back(i);
+			}
+		}
+		else
+		{
 			delList.push_back(i);
 		}
+		
 	}
 
 	for (std::vector<FCLuaThreadRefMapIter>::iterator i = delList.begin(); i != delList.end(); i++) {

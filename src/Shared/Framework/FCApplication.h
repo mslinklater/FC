@@ -36,7 +36,10 @@ public:
 	virtual ~FCApplicationDelegate(){}
 	
 	virtual void RegisterPhasesWithManager( FCPhaseManager* pPhaseManager ) = 0;
+	virtual void DeregisterPhasesWithManager( FCPhaseManager* pPhaseManager ) = 0;
 	virtual void InitializeSystems() = 0;
+	virtual void ShutdownSystems() = 0;
+	
 	virtual void Update( float realTime, float gameTime ) = 0;
 };
 
@@ -56,6 +59,7 @@ class FCApplication
 {
 public:
 	static FCApplication* Instance();
+	static void RequestWarmBoot( int context );
 	
 	FCApplication();
 	virtual ~FCApplication();
@@ -63,6 +67,7 @@ public:
 	virtual void ColdBoot( FCApplicationColdBootParams& params );
 	
 	void WarmBoot();	// no need for platform layer
+	void WarmShutdown();
 	void LoadLuaLayout();
 	void LoadLuaLanguage();
 	
@@ -105,6 +110,7 @@ private:
 	bool							m_paused;
 	FCColor4f						m_backgroundColor;
 	FCApplicationUpdateFuncPtrSet	m_updateSubscribers;
+	static bool						s_warmBootRequested;
 };
 
 #endif

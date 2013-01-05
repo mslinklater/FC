@@ -51,7 +51,7 @@ class FCPhase : public FCBase
 public:
 	
 	FCPhase( std::string name );
-	virtual ~FCPhase(){}
+	virtual ~FCPhase();
 	
 	virtual FCPhaseUpdate Update( float dt );
 	virtual void WasAddedToQueue();

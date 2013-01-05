@@ -33,6 +33,7 @@ public:
 	static FCBuild* Instance();
 	
 	bool Debug();
+	bool Adhoc();
 private:
 };
 

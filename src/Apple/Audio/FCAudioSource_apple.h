@@ -21,10 +21,11 @@
  */
 
 #import <Foundation/Foundation.h>
-#import <OpenAL/al.h>
-#import <OpenAL/alc.h>
+//#import <OpenAL/al.h>
+//#import <OpenAL/alc.h>
 
 #import "FCCore.h"
+#import "FCOpenAL.h"
 
 @interface FCAudioSource_apple : NSObject {
 	FCHandle		_handle;

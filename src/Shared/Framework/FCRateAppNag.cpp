@@ -20,32 +20,27 @@
  THE SOFTWARE.
  */
 
-#ifndef _FCPhaseManager_h
-#define _FCPhaseManager_h
+#include "FCRateAppNag.h"
+#include "Shared/Lua/FCLua.h"
 
-#include "Shared/Core/FCCore.h"
-#include "FCPhase.h"
+static FCRateAppNag* s_pInstance = 0;
 
-class FCPhaseManager : public FCBase
+FCRateAppNag* FCRateAppNag::Instance()
 {
-public:
-	static FCPhaseManager* Instance();
-	
-	FCPhaseManager();
-	virtual ~FCPhaseManager();
-	
-	void Update( float dt );
-	void AttachPhase( FCPhaseRef phase );
-	void DetatchPhase( FCPhaseRef phase );
-	void AddPhaseToQueue( std::string name );
-	void DeactivatePhase( std::string name );
-protected:
-	FCPhaseRef		m_rootPhase;
-	FCPhaseRefVector	m_phaseQueue;
-	FCPhaseRefVector	m_activePhases;
-};
+	if (!s_pInstance) {
+		s_pInstance = new FCRateAppNag;
+	}
+	return s_pInstance;
+}
 
-#endif // _FCPhaseManager_h
+FCRateAppNag::FCRateAppNag()
+{
+	
+}
 
+FCRateAppNag::~FCRateAppNag()
+{
+	
+}
 
 

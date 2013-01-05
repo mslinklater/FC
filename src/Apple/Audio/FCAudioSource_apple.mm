@@ -30,24 +30,21 @@
 {
 	self = [super init];
 	if (self) {
-		alGenSources(1, &_ALHandle);
-		
-		AL_CHECK;
+		FCALGenSources(1, &_ALHandle);
 	}
 	return self;
 }
 
 -(void)dealloc
 {
-	alDeleteSources(1, &_ALHandle);
+	FCALSourcei(_ALHandle, AL_BUFFER, 0);
+	FCALDeleteSources(1, &_ALHandle);
 }
 
 -(BOOL)stopped
 {
 	ALint state;
-	alGetSourcei(_ALHandle, AL_SOURCE_STATE, &state);
-	
-	AL_CHECK;
+	FCALGetSourcei(_ALHandle, AL_SOURCE_STATE, &state);
 	
 	switch (state) {
 		case AL_STOPPED:
@@ -78,72 +75,56 @@
 -(void)setVolume:(float)volume
 {
 	FCClamp(volume, 0.0f, 1.0f);
-	alSourcef(_ALHandle, AL_GAIN, volume * volume);
-	AL_CHECK;
+	FCALSourcef(_ALHandle, AL_GAIN, volume * volume);
 	_volume = volume;
 }
 
 -(void)setPitch:(float)pitch
 {
 	FCClamp(pitch, 0.01f, 9999.0f);
-	alSourcef(_ALHandle, AL_PITCH, pitch);
-	AL_CHECK;
+	FCALSourcef(_ALHandle, AL_PITCH, pitch);
 	_pitch = pitch;
 }
 
 -(void)setLooping:(BOOL)looping
 {
 	if (looping) {
-		alSourcei(_ALHandle, AL_LOOPING, AL_TRUE);
+		FCALSourcei(_ALHandle, AL_LOOPING, AL_TRUE);
 	} else {
-		alSourcei(_ALHandle, AL_LOOPING, AL_FALSE);		
+		FCALSourcei(_ALHandle, AL_LOOPING, AL_FALSE);
 	}
 	_looping = looping;
 }
 
 -(void)setALBufferHandle:(ALuint)ALBufferHandle
 {
-	alSourcei(_ALHandle, AL_BUFFER, ALBufferHandle);
-
-	AL_CHECK;
+	FCALSourcei(_ALHandle, AL_BUFFER, ALBufferHandle);
 
 	// Turn Looping OFF
-	alSourcei(_ALHandle, AL_LOOPING, AL_FALSE);
-
-	AL_CHECK;
+	FCALSourcei(_ALHandle, AL_LOOPING, AL_FALSE);
 
 	float sourcePosAL[] = {0.0f, 0.0f, 0.0f};
-	alSourcefv(_ALHandle, AL_POSITION, sourcePosAL);
+	FCALSourcefv(_ALHandle, AL_POSITION, sourcePosAL);
 
-	AL_CHECK;
-
-	alSourcef(_ALHandle, AL_REFERENCE_DISTANCE, 50.0f);
-
-	AL_CHECK;
+	FCALSourcef(_ALHandle, AL_REFERENCE_DISTANCE, 50.0f);
 
 	_ALBufferHandle = ALBufferHandle;
 }
 
 -(void)play
 {
-	alSourcePlay( _ALHandle );
-
-	AL_CHECK;
+	FCALSourcePlay( _ALHandle );
 }
 
 -(void)stop
 {
-	alSourceStop(_ALHandle);
-
-	AL_CHECK;
+	FCALSourceStop(_ALHandle);
 }
 
 -(NSString*)description
 {
 	ALint state;
-	alGetSourcei(_ALHandle, AL_SOURCE_STATE, &state);
-	
-	AL_CHECK;
+	FCALGetSourcei(_ALHandle, AL_SOURCE_STATE, &state);
 	
 	switch (state) {
 		case AL_STOPPED:

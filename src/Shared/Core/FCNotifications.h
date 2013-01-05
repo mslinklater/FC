@@ -20,6 +20,7 @@
  THE SOFTWARE.
  */
 
+#if 1
 
 #ifndef FCNotifications_h
 #define FCNotifications_h
@@ -89,3 +90,5 @@ private:
 };
 
 #endif // FCNotifications_h
+
+#endif

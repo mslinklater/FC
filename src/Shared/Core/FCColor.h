@@ -39,4 +39,6 @@ public:
 	float	a;
 };
 
+static const FCColor4f kFCColorGreen(){ return FCColor4f(0.0f, 1.0f, 0.0f, 1.0f); }
+
 #endif // FCCOLOR_H

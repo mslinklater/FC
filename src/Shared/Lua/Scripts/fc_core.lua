@@ -14,6 +14,7 @@ FCLoadScript( "fc_stats" )
 
 -- View Management
 
+FCLoadScript( "fc_viewfactory" )
 FCLoadScript( "fc_view" )
 
 

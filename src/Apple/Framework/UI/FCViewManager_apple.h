@@ -44,7 +44,7 @@ class FCLuaVM;
 
 -(void)createView:(NSString*)name asClass:(NSString*)className withParent:(NSString*)parentView;
 -(void)destroyView:(NSString*)name;
-
+-(void)shrinkFontToFit:(NSString*)name;
 -(void)add:(UIView*)view as:(NSString*)name;
 
 -(UIView*)viewNamed:(NSString*)name;

@@ -59,6 +59,7 @@
 
 -(void)setFontSize:(float)size
 {
+	_fontSize = size;
 	_textView.font = [UIFont fontWithName:_fontName size:size];
 }
 
@@ -78,6 +79,15 @@
 		default:
 			fc_FCError_Fatal("unknown enum");
 			break;
+	}
+}
+
+-(void)shrinkFontToFit
+{
+	if (_textView.contentSize.height > _textView.frame.size.height) {
+		while (_textView.contentSize.height > _textView.frame.size.height) {
+			[self setFontSize:_fontSize - 1.0f];
+		}
 	}
 }
 

@@ -37,6 +37,7 @@ public:
 	void SetViewTextColor( const std::string& viewName, FCColor4f color );
 	FCRect ViewFrame( const std::string& viewName );
 	FCRect FullFrame( );
+	void ShrinkFontToFit( const std::string& viewName );
 	void SetViewFrame( const std::string& viewName, const FCRect& rect, float seconds );
 	void SetViewAlpha( const std::string& viewName, float alpha, float seconds );
 	void SetViewOnSelectLuaFunction( const std::string& viewName, const std::string& func );

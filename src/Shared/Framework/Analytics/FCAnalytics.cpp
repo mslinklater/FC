@@ -96,13 +96,14 @@ FCAnalytics* FCAnalytics::Instance()
 
 void FCAnalytics::RegisterEvent(std::string event)
 {
+	FC_LOG( std::string("Analytics Event:") + event);
 	plt_FCAnalytics_RegisterEvent( event.c_str() );
 }
 
 FCHandle FCAnalytics::BeginTimedEvent(std::string event)
 {
 	plt_FCAnalytics_BeginTimedEvent( event.c_str() );
-	FCHandle h = NewFCHandle();
+	FCHandle h = FCHandleNew();
 	m_timedEvents[h] = event;
 	return h;
 }

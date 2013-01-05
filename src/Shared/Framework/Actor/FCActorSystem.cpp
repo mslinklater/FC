@@ -278,7 +278,7 @@ FCActorRef FCActorSystem::CreateActor(std::string actorClass, std::string name)
 {
 	FCActorRef actor = ActorOfClass( actorClass );
 	
-	FCHandle handle = NewFCHandle();
+	FCHandle handle = FCHandleNew();
 	
 	actor->SetHandle( handle );
 
@@ -329,7 +329,7 @@ FCActorRef FCActorSystem::CreateActor(FCXMLNode actorXML, std::string actorClass
 	
 	FCActorRef actor = ActorOfClass( actorClass );
 	
-	FCHandle handle = NewFCHandle();
+	FCHandle handle = FCHandleNew();
 	
 	actor->Init(actorXML, bodyXML, modelXML, res, name, handle);
 	

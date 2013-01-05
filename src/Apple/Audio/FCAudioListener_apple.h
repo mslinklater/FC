@@ -23,6 +23,7 @@
 #import <Foundation/Foundation.h>
 
 #import "FCCore.h"
+#import "FCOpenAL.h"
 
 @interface FCAudioListener_apple : NSObject {
 	FCVector3f	_position;

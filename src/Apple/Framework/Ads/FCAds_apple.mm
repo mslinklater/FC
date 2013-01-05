@@ -31,7 +31,7 @@ void plt_FCAds_ShowBanner( const char* key );
 void plt_FCAds_HideBanner();
 
 static FCAdBannerView_apple* s_bannerView = nil;
-extern UIViewController* s_rootViewController;
+//extern UIViewController* s_rootViewController;
 
 void plt_FCAds_ShowBanner(const char* adWhirlKey)
 {
@@ -40,8 +40,8 @@ void plt_FCAds_ShowBanner(const char* adWhirlKey)
 		s_bannerView = [[FCAdBannerView_apple alloc] initWithFrame:CGRectMake(0, 0, 0, 0)
 															   key:@(adWhirlKey)];
         
-        [s_rootViewController.view addSubview:s_bannerView];
-        [s_rootViewController.view bringSubviewToFront:s_bannerView];
+        [FCRootViewController().view addSubview:s_bannerView];
+        [FCRootViewController().view bringSubviewToFront:s_bannerView];
 		s_bannerView.viewController = FCRootViewController();
 	}
 }

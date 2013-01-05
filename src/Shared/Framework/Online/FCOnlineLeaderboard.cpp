@@ -114,7 +114,7 @@ void FCOnlineLeaderboard::Show()
 
 void FCOnlineLeaderboard::PostScore( std::string leaderboardName, unsigned int score )
 {
-    FCHandle handle = NewFCHandle();
+    FCHandle handle = FCHandleNew();
     
     PendingScore newPendingScore;
     newPendingScore.leaderboardName = leaderboardName;

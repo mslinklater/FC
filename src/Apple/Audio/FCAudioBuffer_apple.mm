@@ -20,14 +20,11 @@
  THE SOFTWARE.
  */
 
-//#include "FCAudioBuffer.h"
 #import "FCAudioBuffer_apple.h"
 #import "FCAudioManager_apple.h"
 
 #import <AudioToolbox/AudioToolbox.h>
 #import <AudioToolbox/ExtendedAudioFile.h>
-
-#if 1
 
 @implementation FCAudioBuffer_apple
 
@@ -35,11 +32,9 @@
 {
 	self = [super init];
 	if (self) {
-		alGenBuffers(1, &_ALHandle);
+		FCALGenBuffers(1, &_ALHandle);
 		
-		AL_CHECK;
-
-		OSStatus						err = noErr;	
+		OSStatus						err = noErr;
 		ExtAudioFileRef					extRef = NULL;
 		AudioStreamBasicDescription		theFileFormat;
 		UInt32							thePropertySize = sizeof(theFileFormat);
@@ -98,9 +93,7 @@
 			_freq = (ALsizei)theOutputFormat.mSampleRate;
 		}
 		
-		alBufferData(_ALHandle, _format, _bufferData, _size, _freq);
-		
-		AL_CHECK;
+		FCALBufferData(_ALHandle, _format, _bufferData, _size, _freq);		
 	}
 	return self;
 }
@@ -111,9 +104,8 @@
 		free( _bufferData );
 	}
 	
-	alDeleteBuffers(1, &_ALHandle);
+	FCALDeleteBuffers(1, &_ALHandle);
 }
 
 @end
 
-#endif

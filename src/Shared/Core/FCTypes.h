@@ -38,7 +38,7 @@ typedef uint32_t FCHandle;	// should last a while 8)
 static const FCHandle kFCHandleInvalid = 0;
 static const FCHandle kFCHandleFirstValid = 1;
 
-extern FCHandle NewFCHandle( void );
+extern FCHandle FCHandleNew( void );
 
 enum FCReturn
 {
@@ -107,5 +107,6 @@ typedef std::map<std::string, FCData>		FCDataMapByString;
 // Function pointer types
 
 typedef void (*FCVoidVoidFuncPtr)(void);
+typedef void (*FCVoidIntFuncPtr)(int);
 
 #endif // FCTypes_h

@@ -69,6 +69,10 @@ function FCView:SetAlpha( alpha, duration )
 	FCViewManager.SetAlpha( self.name, alpha, duration )
 end
 
+function FCView:ShrinkFontToFit( )
+	FCViewManager.ShrinkFontToFit( self.name )
+end
+
 function FCView:SetText( text )
 	FCViewManager.SetText( self.name, text )
 end

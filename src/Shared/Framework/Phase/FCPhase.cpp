@@ -22,9 +22,11 @@
 
 #include "FCPhase.h"
 #include "Shared/Lua/FCLua.h"
+#include "Shared/Core/FCCore.h"
 
 FCPhase::FCPhase( std::string name )
 {
+	FC_LOG(std::string("Phase created: ") + name);
 	m_name = name;
 	m_state = kFCPhaseStateInactive;
 	
@@ -39,6 +41,11 @@ FCPhase::FCPhase( std::string name )
 	m_luaWillDeactivateFunc = name + "Phase.WillDeactivate";
 	m_luaIsNowDeactiveFunc = name + "Phase.IsNowDeactive";
 	m_luaLoaded = false;
+}
+
+FCPhase::~FCPhase()
+{
+	FC_LOG(std::string("Phase destroyed: ") + m_name);
 }
 
 FCPhaseUpdate FCPhase::Update(float dt)

@@ -21,8 +21,7 @@
  */
 
 #import "FCOnlineLeaderboard_apple.h"
-
-extern UIViewController* s_rootViewController;
+#import "FCApplication_apple.h"
 
 static FCOnlineLeaderboard_apple* s_pInstance;
 
@@ -107,7 +106,7 @@ void plt_FCOnlineLeaderboard_PostScore(  const char* leaderboardName,
     if (leaderboardController != nil)
     {
         leaderboardController.leaderboardDelegate = self;
-        [s_rootViewController presentModalViewController: leaderboardController animated: YES];
+        [FCRootViewController() presentModalViewController: leaderboardController animated: YES];
     }
 }
 
@@ -126,7 +125,7 @@ void plt_FCOnlineLeaderboard_PostScore(  const char* leaderboardName,
 
 - (void)leaderboardViewControllerDidFinish:(GKLeaderboardViewController *)viewController
 {
-    [s_rootViewController dismissModalViewControllerAnimated:YES];
+    [FCRootViewController() dismissModalViewControllerAnimated:YES];
 }
 @end
 

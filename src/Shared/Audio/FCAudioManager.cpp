@@ -211,6 +211,17 @@ static int lua_PrepareSourceWithBuffer( lua_State* _state )
 	return 1;
 }
 
+static int lua_DeleteSource( lua_State* _state )
+{
+	FC_LUA_FUNCDEF("FCAudio.DeleteSource()");
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	
+	plt_FCAudio_DeleteSource( lua_tointeger(_state, 1));
+	
+	return 0;
+}
+
 static int lua_SourceSetVolume( lua_State* _state )
 {
 	FC_LUA_FUNCDEF("FCAudio.SourceSetVolume()");
@@ -325,6 +336,7 @@ FCAudioManager::FCAudioManager()
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_PrepareSourceWithBuffer, "FCAudio.PrepareSourceWithBuffer");
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourceSetVolume, "FCAudio.SourceSetVolume");
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourcePlay, "FCAudio.SourcePlay");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_DeleteSource, "FCAudio.DeleteSource");
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourceStop, "FCAudio.SourceStop");
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourcePosition, "FCAudio.SourcePosition");
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SourcePitch, "FCAudio.SourcePitch");

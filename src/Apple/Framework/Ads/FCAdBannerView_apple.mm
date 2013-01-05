@@ -26,8 +26,7 @@
 #import "FCViewManager_apple.h"
 
 #include "Shared/FCPlatformInterface.h"
-
-extern UIViewController* s_rootViewController;
+#include "FCApplication_apple.h"
 
 @implementation FCAdBannerView_apple
 
@@ -72,7 +71,7 @@ extern UIViewController* s_rootViewController;
 	CGRect newFrame = _adWhirlView.frame;
 	
 	newFrame.size = adSize;
-    newFrame.origin.x = (s_rootViewController.view.bounds.size.width - adSize.width)/ 2;
+    newFrame.origin.x = (FCRootViewController().view.bounds.size.width - adSize.width)/ 2;
 	
 	_adWhirlView.frame = newFrame;
 	self.frame = newFrame;

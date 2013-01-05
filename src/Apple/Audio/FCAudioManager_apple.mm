@@ -95,6 +95,11 @@ void plt_FCAudio_DeleteBuffer( FCHandle h )
 	[[FCAudioManager_apple instance] deleteBuffer:h];
 }
 
+void plt_FCAudio_DeleteSource( FCHandle h )
+{
+	[[FCAudioManager_apple instance] deleteSource:h];
+}
+
 FCHandle plt_FCAudio_LoadSimpleSound( const char* name )
 {
 	NSString* namestring = @(name);
@@ -287,7 +292,6 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 				break;
 				
 			default:
-//				NSLog(@"%@", [FCAudioManager_apple instance].activeSources);
 				NSString* string = [NSString stringWithFormat:@"Unknown AL error %d", error];
 				FC_LOG( [string UTF8String] );
 				break;
@@ -341,13 +345,9 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 		result = AudioSessionSetActive(true);
 		FC_ASSERT( result == 0 );
 		
-		alGetError();
-		
 		_device = alcOpenDevice( NULL );
 		_context = alcCreateContext( _device, 0 );
 		alcMakeContextCurrent( _context );
-		
-
 	}
 	return self;
 }
@@ -356,7 +356,9 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 {
 	FCPhysics::Instance()->TwoD()->ContactListener()->RemoveSubscriber(CollisionSubscriber);
 	alcDestroyContext(_context);
+	AL_CHECK;
     alcCloseDevice(_device);
+	AL_CHECK;
 }
 
 -(void)setMusicVolume:(float)musicVolume
@@ -406,7 +408,7 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 
 -(FCHandle)loadSimpleSound:(NSString*)name
 {
-	FCHandle h = NewFCHandle();
+	FCHandle h = FCHandleNew();
 	
 	NSString* path = [[NSBundle mainBundle] pathForResource:name ofType:@"m4a"];
 
@@ -442,7 +444,7 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 
 -(FCHandle)createBufferWithFile:(NSString *)filename
 {
-	FCHandle h = NewFCHandle();
+	FCHandle h = FCHandleNew();
 	
 	FCAudioBuffer_apple* buffer = [[FCAudioBuffer_apple alloc] initWithFilename:filename];
 	[_buffers setObject:buffer forKey:[NSNumber numberWithInt:h]];
@@ -454,6 +456,12 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 {
 	FC_ASSERT([_buffers objectForKey:[NSNumber numberWithInt:handle]]);
 	[_buffers removeObjectForKey:[NSNumber numberWithInt:handle]];
+}
+
+-(void)deleteSource:(FCHandle)handle
+{
+	FC_ASSERT([_activeSources objectForKey:[NSNumber numberWithInt:handle]]);
+	[_activeSources removeObjectForKey:[NSNumber numberWithInt:handle]];
 }
 
 -(FCHandle)prepareSourceWithBuffer:(FCHandle)hBuffer vital:(BOOL)vital
@@ -491,7 +499,7 @@ static void CollisionSubscriber(tCollisionMap& collisions)
 		FCAudioSource_apple* source = [[FCAudioSource_apple alloc] init];
 		source.ALBufferHandle = buffer.ALHandle;
 		
-		FCHandle hSource = NewFCHandle();
+		FCHandle hSource = FCHandleNew();
 		source.handle = hSource;
 		
 		[_activeSources setObject:source forKey:[NSNumber numberWithInt:hSource]];

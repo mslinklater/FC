@@ -34,6 +34,15 @@ extern void fc_FCError_Fatal( const char* message );
 extern void fc_FCLua_SetGlobalNumber( const char* name, double value );
 extern void fc_FCLua_ExecuteLine( const char* line );
 
+/* Debug */
+
+extern void plt_FCDebugMenu_AddButton( FCHandle handle, const char* name, const FCColor4f& color );
+extern void plt_FCDebugMenu_AddSelection( FCHandle handle, const char* name, const FCColor4f& color );
+extern void plt_FCDebugMenu_AddSelectionOption( FCHandle handle, const char* name );
+extern void plt_FCDebugMenu_Show();
+extern void plt_FCDebugMenu_Hide();
+extern void fc_FCDebugMenu_ButtonPressed( FCHandle handle );
+
 /* FCAudio */
 
 extern void plt_FCAudio_PlayMusic( const char* name );
@@ -53,6 +62,7 @@ extern FCHandle plt_FCAudio_CreateBufferWithFile( const char* name );
 extern void plt_FCAudio_AddCollisionTypeHandler( const char* type1, const char* type2, const char* func );
 extern void plt_FCAudio_RemoveCollisionTypeHandler( const char* type1, const char* type2 );
 extern FCHandle plt_FCAudio_PrepareSourceWithBuffer( FCHandle h, bool vital );
+extern void plt_FCAudio_DeleteSource( FCHandle h );
 extern void plt_FCAudio_SourceSetVolume( FCHandle h, float vol );
 extern void plt_FCAudio_SourcePlay( FCHandle h );
 extern void plt_FCAudio_SourceStop( FCHandle h );
@@ -60,18 +70,35 @@ extern void plt_FCAudio_SourceLooping( FCHandle h, bool looping );
 extern void plt_FCAudio_SourcePosition( FCHandle h, float x, float y, float z );
 extern void plt_FCAudio_SourcePitch( FCHandle h, float pitch );
 
+/* FCConnect */
+
 extern bool plt_FCConnect_Start();
 extern bool plt_FCConnect_EnableWithName( const char* name );
 extern void plt_FCConnect_Stop();
 extern void plt_FCConnect_SendString( const char* s );
+
+// Performance Counter
 
 extern void plt_FCPerformanceCounter_New( void* instance );
 extern void plt_FCPerformanceCounter_Delete( void* instance );
 extern void plt_FCPerformanceCounter_Zero( void* instance );
 extern double plt_FCPerformanceCounter_NanoValue( void* instance );
 
+// RateAppNag
+
+extern void plt_RateAppNag( const char* string );
+
+// Notifications
+
+//extern void plt_FCNotification_Display( const char* string, const char* image );
+//extern void fc_FCNotification_Finished();
+
+// Device
+
 extern void plt_FCDevice_ColdProbe();
 extern void plt_FCDevice_WarmProbe( uint32_t options );
+
+// Logging
 
 extern void plt_FCHalt();
 extern void plt_FCLog( const char* log );
@@ -148,6 +175,7 @@ extern void plt_FCViewManager_SetViewPropertyInt( const char* viewName, const ch
 extern void plt_FCViewManager_SetViewPropertyFloat( const char* viewName, const char* property, float value );
 extern void plt_FCViewManager_SetViewPropertyString( const char* viewName, const char* property, const char* value );
 
+extern void plt_FCViewManager_ShrinkFontToFit( const char* viewName );
 extern void plt_FCViewManager_MoveViewToFront( const char* viewName );
 extern void plt_FCViewManager_MoveViewToBack( const char* viewName );
 extern bool plt_FCViewManager_ViewExists( const char* viewName );

@@ -39,4 +39,6 @@
 @property(nonatomic, strong) NSString* fontName;
 @property(nonatomic) float fontSize;
 
+-(void)shrinkFontToFit;
+
 @end

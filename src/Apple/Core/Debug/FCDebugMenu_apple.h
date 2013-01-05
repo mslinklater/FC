@@ -20,32 +20,30 @@
  THE SOFTWARE.
  */
 
-#ifndef _FCPhaseManager_h
-#define _FCPhaseManager_h
+#if !defined(ADHOC)
 
-#include "Shared/Core/FCCore.h"
-#include "FCPhase.h"
+#import <UIKit/UIKit.h>
 
-class FCPhaseManager : public FCBase
-{
-public:
-	static FCPhaseManager* Instance();
+@interface FCDebugMenu_apple : UIScrollView {
+	NSMutableDictionary* mButtons;
 	
-	FCPhaseManager();
-	virtual ~FCPhaseManager();
-	
-	void Update( float dt );
-	void AttachPhase( FCPhaseRef phase );
-	void DetatchPhase( FCPhaseRef phase );
-	void AddPhaseToQueue( std::string name );
-	void DeactivatePhase( std::string name );
-protected:
-	FCPhaseRef		m_rootPhase;
-	FCPhaseRefVector	m_phaseQueue;
-	FCPhaseRefVector	m_activePhases;
-};
+	CGPoint	mNextButtonPos;
+	CGSize	mContentSize;
+	UILabel*	mDebugButton;
+	UITapGestureRecognizer*	mTapRecognizer;
+	BOOL	mDisplayed;
+}
 
-#endif // _FCPhaseManager_h
++(FCDebugMenu_apple*)instance;
 
+-(void)tap:(id)sender;
 
+-(void)show;
+-(void)hide;
 
+-(void)addButtonWithHandle:(uint32_t)h text:(NSString*)text color:(UIColor*)color;
+
+-(void)buttonResponder:(id)sender;
+@end
+
+#endif

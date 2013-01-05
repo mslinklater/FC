@@ -120,6 +120,7 @@ void plt_FCOnlineAchievement_ClearAll()
 	if (isNew) {
 		GKAchievement* achievement = [[GKAchievement alloc] initWithIdentifier:name];
 		achievement.percentComplete = amount * 100.0f;
+		achievement.showsCompletionBanner = YES;
 		[_unreportedAchievements addObject:achievement];
 	}
 	

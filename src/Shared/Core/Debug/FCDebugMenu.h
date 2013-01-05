@@ -20,32 +20,47 @@
  THE SOFTWARE.
  */
 
-#ifndef _FCPhaseManager_h
-#define _FCPhaseManager_h
+#ifndef _FCDebugMenu_h
+#define _FCDebugMenu_h
 
+#if !defined(ADHOC)
+
+#include <map>
 #include "Shared/Core/FCCore.h"
-#include "FCPhase.h"
 
-class FCPhaseManager : public FCBase
+class FCDebugMenu
 {
 public:
-	static FCPhaseManager* Instance();
+	static FCDebugMenu* Instance();
 	
-	FCPhaseManager();
-	virtual ~FCPhaseManager();
+	FCDebugMenu();
+	virtual ~FCDebugMenu();
 	
-	void Update( float dt );
-	void AttachPhase( FCPhaseRef phase );
-	void DetatchPhase( FCPhaseRef phase );
-	void AddPhaseToQueue( std::string name );
-	void DeactivatePhase( std::string name );
-protected:
-	FCPhaseRef		m_rootPhase;
-	FCPhaseRefVector	m_phaseQueue;
-	FCPhaseRefVector	m_activePhases;
+	void Init();
+	void Show();
+	void Hide();
+	
+	void AddButton( std::string name, std::string lua, FCVoidIntFuncPtr pCFunc, uint32_t cFuncContext, const FCColor4f& color );
+	
+	void AddMulti( std::string name, std::string lua, const FCStringVector& options, const FCColor4f& color );
+
+	void ButtonPressed( FCHandle h );
+	
+private:
+	
+	struct ButtonDetails {
+		std::string			lua;
+		FCVoidIntFuncPtr	cFuncPtr;
+		uint32_t			cFuncContext;
+	};
+	
+	typedef std::map<FCHandle, ButtonDetails>	ButtonMap;
+	typedef ButtonMap::const_iterator			ButtonMapConstIter;
+	typedef ButtonMap::iterator					ButtonMapIter;
+	
+	ButtonMap	m_buttons;
 };
 
-#endif // _FCPhaseManager_h
+#endif // ADHOC
 
-
-
+#endif

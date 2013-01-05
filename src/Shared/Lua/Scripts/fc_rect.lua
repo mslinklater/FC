@@ -27,3 +27,12 @@ end
 function FCRectOne()	-- handy for views
 	return FCRectMake( 0, 0, 1, 1 )
 end
+
+function FCRectCopy( src )
+	if src.class ~= "FCRect" then
+		FCError("Trying to copy a FCRect from a non-FCRect")
+	end
+
+	ret = FCRectMake( src.x, src.y, src.w, src.h )
+	return ret;
+end

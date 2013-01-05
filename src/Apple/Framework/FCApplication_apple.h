@@ -23,7 +23,7 @@
 #ifndef FCAPPLICATION_APPLE_H
 #define FCAPPLICATION_APPLE_H
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 #import <GameKit/GameKit.h>
 #import <StoreKit/StoreKit.h>
 
@@ -32,19 +32,28 @@
 #pragma mark - ObjC
 
 extern UIViewController* FCRootViewController();
+extern void FCSetRootViewController( UIViewController* vc );
 
 @interface FCApplication_apple : NSObject <	GKLeaderboardViewControllerDelegate>
-//											SKPaymentTransactionObserver>
 {
 	CADisplayLink* _displayLink;
 	NSURLConnection*	_connection;
+#if !defined( ADHOC )
+	UIView*	mDebugMenuButton;
+#endif
 }
 @property(nonatomic, strong) CADisplayLink* displayLink;
+
++(FCApplication_apple*)instance;
 
 -(void)registerExceptionHandler;
 -(void)showStatusBar:(bool)visible;
 -(void)setBackgroundColor:(FCColor4f&)color;
 -(void)setUpdateFrequency:(int)freq;
+
+#if !defined( ADHOC )
+-(void)setDebugMenuButton:(UIView*)view;
+#endif
 
 -(void)showGameCenterLeaderboard;
 -(BOOL)launchExternalURL:(NSString*)url;

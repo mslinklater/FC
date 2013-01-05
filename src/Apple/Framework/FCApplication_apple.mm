@@ -32,16 +32,22 @@
 
 #include "Shared/Core/FCCore.h"
 
-UIViewController* s_rootViewController = nil;
+static UIViewController* s_rootViewController = nil;
 
 UIViewController* FCRootViewController()
 {
 	return s_rootViewController;
 }
 
+void FCSetRootViewController( UIViewController* vc )
+{
+	s_rootViewController = vc;
+}
+
 FCApplication* plt_FCApplication_Instance();
 
 static FCApplication* s_pInstance = 0;
+static FCApplication_apple* s_pInstance_apple = 0;
 
 FCApplication* plt_FCApplication_Instance()
 {
@@ -55,6 +61,7 @@ FCApplication* plt_FCApplication_Instance()
 FCApplicationProxy::FCApplicationProxy()
 {
 	m_pApp = [[FCApplication_apple alloc] init];
+	s_pInstance_apple = m_pApp;
 }
 
 FCApplicationProxy::~FCApplicationProxy()
@@ -98,9 +105,7 @@ void FCApplicationProxy::Resume()
 
 void FCApplicationProxy::SetAnalyticsID( std::string ident )
 {
-//#if defined( _FC_FLURRY )
 	[FlurryAnalytics startSession:@(ident.c_str())];
-//#endif // _FC_FLURRY
 }
 
 void FCApplicationProxy::SetTestFlightID( std::string ident )
@@ -202,6 +207,11 @@ static void uncaughtExceptionHandler(NSException *exception) {
 
 @synthesize displayLink = _displayLink;
 
++(FCApplication_apple*)instance
+{
+	return s_pInstance_apple;
+}
+
 -(id)init
 {
 	self = [super init];
@@ -232,6 +242,14 @@ static void uncaughtExceptionHandler(NSException *exception) {
 	
 }
 
+#if !defined( ADHOC )
+-(void)setDebugMenuButton:(UIView*)view
+{
+	mDebugMenuButton = view;
+	[s_rootViewController.view addSubview:view];
+}
+#endif
+
 -(void)coldBoot
 {
 	FC_ASSERT( s_rootViewController );
@@ -244,8 +262,9 @@ static void uncaughtExceptionHandler(NSException *exception) {
     UIView* gameRootView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
     [s_rootViewController.view addSubview:gameRootView];
     [FCViewManager_apple instance].rootView = gameRootView;
-	
-//	[[SKPaymentQueue defaultQueue] addTransactionObserver:self];
+#if !defined(ADHOC)
+	[s_rootViewController.view bringSubviewToFront:mDebugMenuButton];
+#endif
 }
 
 -(void)update
@@ -321,20 +340,6 @@ static void uncaughtExceptionHandler(NSException *exception) {
 	[_displayLink setFrameInterval:60 / freq];
 	[_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 }
-
-
-
-
-#pragma mark - 
-
-//-(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
-//{
-//	NSError* error = 0;
-//	
-//	id obj = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-//	
-//	NSLog(@"Received: %@", obj);
-//}
 
 @end
 

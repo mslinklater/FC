@@ -27,6 +27,7 @@
 #include "Shared/Framework/FCBuild.h"
 #include "Shared/Framework/Ads/FCAds.h"
 #include "Shared/Core/Debug/FCConnect.h"
+#include "Shared/Core/Debug/FCDebugMenu.h"
 #include "Shared/Framework/Analytics/FCAnalytics.h"
 #include "Shared/Framework/Online/FCTwitter.h"
 #include "Shared/Audio/FCAudioManager.h"
@@ -181,7 +182,19 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	return 0;
 }
 
+#if !defined( ADHOC )
+static int lua_WarmBoot( lua_State* _state )
+{
+	FC_LUA_FUNCDEF("FCApplication.WarmBoot()");
+	FC_LUA_ASSERT_NUMPARAMS(0);
+	s_pInstance->WarmBoot();
+	return 0;
+}
+#endif
+
 // C++ functions
+
+bool FCApplication::s_warmBootRequested = false;
 
 FCApplication* FCApplication::Instance()
 {
@@ -222,6 +235,11 @@ void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 	m_lua->RegisterCFunction(lua_LoadLuaLanguage, "FCApp.LoadLuaLanguage");
 	m_lua->SetGlobalBool("FCApp.paused", false);
 
+#if !defined(ADHOC)
+	FCDebugMenu::Instance()->Init();
+	m_lua->RegisterCFunction(lua_WarmBoot, "FCApp.WarmBoot");
+#endif
+	
 	FCPhaseManager::Instance();
 	FCViewManager::Instance();
 	FCBuild::Instance();
@@ -252,16 +270,27 @@ void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 void FCApplication::WarmBoot()
 {
 	FC_TRACE;
+	
+	s_warmBootRequested = false;
+	
 	m_delegate->InitializeSystems();
 	m_delegate->RegisterPhasesWithManager( FCPhaseManager::Instance() );
 	m_lua->CallFuncWithSig("FCApp.WarmBoot", true, "");
-	
-	// Layout
-	
-	
-	// Languages
-	
+}
 
+void FCApplication::RequestWarmBoot(int context)
+{
+	s_warmBootRequested = true;
+	FCDebugMenu::Instance()->Hide();
+}
+
+void FCApplication::WarmShutdown()
+{
+	FC_TRACE;
+	
+	m_delegate->ShutdownSystems();
+	m_delegate->DeregisterPhasesWithManager( FCPhaseManager::Instance() );
+	m_lua->CallFuncWithSig("FCApp.WarmShutdown", true, "");
 }
 
 void FCApplication::Shutdown()
@@ -315,6 +344,12 @@ void FCApplication::Update()
 	FC_TRACE;
 	static int fps = 0;
 	static float seconds = 0.0f;
+	
+	if (s_warmBootRequested) {
+		WarmShutdown();;
+		WarmBoot();
+	}
+	
 	
 	FCPerformanceCounterRef localCounter = FCPerformanceCounterRef( new FCPerformanceCounter );
 	localCounter->Zero();
@@ -526,4 +561,5 @@ bool FCApplication::LaunchExternalURL( std::string url )
 {
 	FC_TRACE;
 	FC_HALT;
+	return true;
 }

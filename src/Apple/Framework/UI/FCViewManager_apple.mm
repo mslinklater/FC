@@ -43,6 +43,7 @@ void plt_FCViewManager_SetViewPropertyFloat( const char* viewName, const char* p
 void plt_FCViewManager_SetViewPropertyString( const char* viewName, const char* property, const char* value );
 void plt_FCViewManager_MoveViewToFront( const char* viewName );
 void plt_FCViewManager_MoveViewToBack( const char* viewName );
+void plt_FCViewManager_ShrinkFontToFit( const char* viewName );
 bool plt_FCViewManager_ViewExists( const char* viewName );
 void plt_FCViewManager_SetViewBackgroundColor( const char* viewName, const FCColor4f& color );
 
@@ -56,6 +57,11 @@ void plt_FCViewManager_SetScreenAspectRatio( float w, float h )
 void plt_FCViewManager_SetViewText( const char* viewName, const char* text )
 {
 	[s_pInstance setView:@(viewName) text:@(text)];
+}
+
+void plt_FCViewManager_ShrinkFontToFit( const char* viewName )
+{
+	[s_pInstance shrinkFontToFit:@(viewName)];
 }
 
 void plt_FCViewManager_SetViewTextColor( const char* viewName, FCColor4f color )
@@ -458,6 +464,25 @@ void plt_FCViewManager_SetViewBackgroundColor( const char* viewName, const FCCol
 	frame.size.height /= containerFrame.size.height;
 	
 	return frame;
+}
+
+-(void)shrinkFontToFit:(NSString *)name
+{
+	UIView* thisView = [_viewDictionary valueForKey:name];
+	
+	FC_ASSERT(thisView);
+	
+	if ([thisView respondsToSelector:@selector(shrinkFontToFit)])
+	{
+			NSMethodSignature* sig = [[thisView class] instanceMethodSignatureForSelector:@selector(setAlpha:)];
+			NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:sig];
+			[invocation setSelector:@selector(shrinkFontToFit)];
+			[invocation setTarget:thisView];
+			[invocation invoke];
+	} else {
+		FC_FATAL( std::string("Sending 'shrinkFontToFit' to a view which does not respond to shrinkFontToFit - ") + [[thisView description] UTF8String]);
+	}
+	
 }
 
 -(void)setView:(NSString*)viewName alpha:(float)alpha over:(float)seconds

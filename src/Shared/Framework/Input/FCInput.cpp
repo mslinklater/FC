@@ -58,7 +58,7 @@ FCHandle FCInput::AddTapSubscriber( const std::string& viewName, const std::stri
 {
 	TapSubscriberMap& tapSubscribers = m_screens[ viewName ].m_tapSubscribers;
 	
-	FCHandle h = NewFCHandle();
+	FCHandle h = FCHandleNew();
 	tapSubscribers[h] = luaFunc;
 	
 	plt_FCInput_AddTapToView( viewName.c_str() );

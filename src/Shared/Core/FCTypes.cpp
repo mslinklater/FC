@@ -22,7 +22,7 @@
 
 #include "FCTypes.h"
 
-FCHandle NewFCHandle()
+FCHandle FCHandleNew()
 {
 	static FCHandle s_nextHandle = kFCHandleInvalid;
 

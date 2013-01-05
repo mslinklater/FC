@@ -22,10 +22,9 @@
 
 
 #import <Foundation/Foundation.h>
-#import <OpenAL/al.h>
-#import <OpenAL/alc.h>
 
 #import "FCCore.h"
+#import "FCOpenAL.h"
 
 @interface FCAudioBuffer_apple : NSObject {
 	ALuint		_ALHandle;

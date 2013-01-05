@@ -430,7 +430,7 @@ FCHandle FCPhysics2D::CreateDistanceJoint(FCPhysics2DDistanceJointCreateDefRef d
 	jointDef.collideConnected = true;
 	b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
 
-	FCHandle handle = NewFCHandle();
+	FCHandle handle = FCHandleNew();
 	
 	m_joints[ handle ] = joint;
 	return handle;
@@ -449,7 +449,7 @@ FCHandle FCPhysics2D::CreateRevoluteJoint(FCPhysics2DRevoluteJointCreateDefRef d
 	jointDef.enableLimit = false;
 	b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
 	
-	FCHandle handle = NewFCHandle();
+	FCHandle handle = FCHandleNew();
 	
 	m_joints[ handle ] = joint;
 	return handle;
@@ -470,7 +470,7 @@ FCHandle FCPhysics2D::CreatePrismaticJoint(FCPhysics2DPrismaticJointCreateDefRef
 	
 	b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
 	
-	FCHandle handle = NewFCHandle();
+	FCHandle handle = FCHandleNew();
 	
 	m_joints[ handle ] = joint;
 	return handle;
@@ -500,7 +500,7 @@ FCHandle FCPhysics2D::CreatePulleyJoint(FCPhysics2DPulleyJointCreateDefRef def)
 	
 	b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
 	
-	FCHandle handle = NewFCHandle();
+	FCHandle handle = FCHandleNew();
 	
 	m_joints[ handle ] = joint;
 	return handle;
@@ -528,7 +528,7 @@ FCHandle FCPhysics2D::CreateRopeJoint(FCPhysics2DRopeJointCreateDefRef def)
 	
 	b2Joint* joint = m_pWorld->CreateJoint(&jointDef);
 	
-	FCHandle handle = NewFCHandle();
+	FCHandle handle = FCHandleNew();
 	
 	m_joints[ handle ] = joint;
 	return handle;

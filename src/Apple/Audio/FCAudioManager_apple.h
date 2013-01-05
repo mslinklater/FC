@@ -23,10 +23,9 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
-#import <OpenAL/al.h>
-#import <OpenAL/alc.h>
 #import <AudioToolbox/AudioToolbox.h>
 #import <AudioToolbox/ExtendedAudioFile.h>
+#import "FCOpenAL.h"
 
 #import "FCCore.h"
 
@@ -87,6 +86,7 @@
 -(void)deleteBuffer:(FCHandle)handle;
 
 -(FCHandle)prepareSourceWithBuffer:(FCHandle)hBuffer vital:(BOOL)vital;
+-(void)deleteSource:(FCHandle)handle;
 
 -(void)playMusic:(NSString*)name;
 -(void)pauseMusic;

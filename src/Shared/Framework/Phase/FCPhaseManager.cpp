@@ -179,6 +179,28 @@ void FCPhaseManager::AttachPhase(FCPhaseRef phase)
 	m_rootPhase->m_children[ phase->Name() ] = phase;
 }
 
+void FCPhaseManager::DetatchPhase( FCPhaseRef phase )
+{
+	phase->m_parent = 0;
+	m_rootPhase->m_children.erase( phase->Name() );
+
+	// detatch from phaseQueue and activePhases
+	
+	for (FCPhaseRefVectorIter i = m_phaseQueue.begin(); i != m_phaseQueue.end(); ++i) {
+		if (*i == phase) {
+			m_phaseQueue.erase(i);
+			break;
+		}
+	}
+
+	for (FCPhaseRefVectorIter i = m_activePhases.begin(); i != m_activePhases.end(); ++i) {
+		if (*i == phase) {
+			m_activePhases.erase(i);
+			break;
+		}
+	}
+}
+
 void FCPhaseManager::AddPhaseToQueue(std::string name)
 {
 	FC_ASSERT(m_rootPhase->m_children.find(name) != m_rootPhase->m_children.end());

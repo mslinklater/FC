@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if 1
+
 #include "FCNotifications.h"
 
 static FCNotificationManager* s_pInstance = 0;
@@ -98,4 +100,4 @@ FCReturn FCNotificationManager::SendNotification(FCNotification &notification)
 	return kFCReturnOK;
 }
 
-
+#endif
