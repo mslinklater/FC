@@ -41,7 +41,7 @@ public:
     
     void    PostScore( std::string leaderboardName, unsigned int score );
 
-    void    CheckForStoredScore( std::string leaderboardName );
+//    void    CheckForStoredScore( std::string leaderboardName );
     
     void    Show();
     
@@ -49,22 +49,22 @@ public:
     
 private:
     
-    static void ScoreCallback( unsigned int handle, bool success );
-    void StoreScoreForLater( FCHandle handle );
+//    static void ScoreCallback( unsigned int handle, bool success );
+//    void StoreScoreForLater( FCHandle handle );
+//    
+//    void SuccessfulPost( FCHandle handle )
+//    {
+//        m_pendingScores.erase( handle );
+//    }
+//    
+//    struct PendingScore {
+//        std::string     leaderboardName;
+//        unsigned int    score;
+//    };
     
-    void SuccessfulPost( FCHandle handle )
-    {
-        m_pendingScores.erase( handle );
-    }
+//    typedef std::map<FCHandle, PendingScore>    PendingScoreMap;
     
-    struct PendingScore {
-        std::string     leaderboardName;
-        unsigned int    score;
-    };
-    
-    typedef std::map<FCHandle, PendingScore>    PendingScoreMap;
-    
-    PendingScoreMap m_pendingScores;
+//    PendingScoreMap m_pendingScores;
 };
 
 #endif

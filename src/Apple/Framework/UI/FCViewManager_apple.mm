@@ -116,7 +116,7 @@ void plt_FCViewManager_CreateView( const char* viewName, const char* className, 
 
 	if (!NSClassFromString(appleClassName)) 
 	{
-		FC_FATAL( std::string("FCViewManager_apple - Unknown view class: ") + className );
+		FC_FATAL( std::string("FCViewManager_apple - Unknown view class: ") + [appleClassName UTF8String] );
 	}
 	
 	if (strlen(parent)) {
@@ -149,6 +149,11 @@ void plt_FCViewManager_SetViewPropertyString( const char* viewName, const char* 
 {
 	[s_pInstance setView:@(viewName) 
 								   property:@(property) to:@(value)];
+}
+
+void plt_FCViewManager_SetViewTapFunction( const char* viewName, const char* function )
+{
+	[s_pInstance setView:@(viewName) tapFunction:@(function)];
 }
 
 void plt_FCViewManager_MoveViewToFront( const char*viewName )
@@ -570,6 +575,26 @@ void plt_FCViewManager_SetViewBackgroundColor( const char* viewName, const FCCol
 	} else {
 		FC_FATAL( std::string("Sending 'setURL' to a view which does not respond to setURL - ") + [[thisView description] UTF8String]);
 	}	
+}
+
+-(void)setView:(NSString *)viewName tapFunction:(NSString *)function
+{
+	UIView* thisView = [_viewDictionary valueForKey:viewName];
+	
+	FC_ASSERT( thisView );
+	
+	if ([thisView respondsToSelector:@selector(setTapFunction:)])
+	{
+		NSMethodSignature* sig = [[thisView class] instanceMethodSignatureForSelector:@selector(setTapFunction:)];
+		NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:sig];
+		[invocation setSelector:@selector(setTapFunction:)];
+		[invocation setTarget:thisView];
+		[invocation setArgument:&function atIndex:2];
+		[invocation invoke];
+		
+	} else {
+		FC_FATAL( std::string("Sending 'setTapFunction' to a view which does not respond to setTapFunction - ") + [[thisView description] UTF8String]);
+	}
 }
 
 -(void)setView:(NSString *)viewName property:(NSString*)property to:(id)value

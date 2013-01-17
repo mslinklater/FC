@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined(FC_TWITTER)
+
 #include "FCTwitter.h"
 #include "Shared/Lua/FCLua.h"
 #include "Shared/FCPlatformInterface.h"
@@ -111,3 +113,5 @@ void FCTwitter::Send()
 {
 	plt_FCTwitter_Send();
 }
+
+#endif // FC_TWITTER

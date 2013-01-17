@@ -85,14 +85,14 @@ void plt_FCDevice_WarmProbe( uint32_t options )
 	
 	// bounds are always reported for portrait, so do some swapping if landscape
 	
-	if (UIDeviceOrientationIsLandscape( [UIDevice currentDevice].orientation ) && (m_warmBootOptions & kFCInterfaceOrientation_Landscape))
+	if ((m_warmBootOptions & kFCInterfaceOrientation_Landscape))
 	{
 		float temp = bounds.size.height;
 		bounds.size.height = bounds.size.width;
 		bounds.size.width = temp;
 	}
 	
-	if (UIDeviceOrientationIsPortrait( [UIDevice currentDevice].orientation ) && (m_warmBootOptions & kFCInterfaceOrientation_Portrait))
+	if ((m_warmBootOptions & kFCInterfaceOrientation_Landscape))
 	{
 		float temp = screenSize.height;
 		screenSize.height = screenSize.width;

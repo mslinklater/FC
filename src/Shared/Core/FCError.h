@@ -45,7 +45,7 @@ extern void FCHalt();
 
 // Only when debug ---------------------------
 
-#if defined (FC_DEBUG)
+#if !defined (ADHOC)
 
 extern void FCLog( std::string log );
 extern void FCWarning( std::string message );
@@ -55,7 +55,7 @@ extern void FCWarning( std::string message );
 					
 // Release stubs -----------------------------
 
-#else // DEBUG
+#else // !ADHOC
 
 #define FC_LOG( n )
 #define FC_WARNING( n )

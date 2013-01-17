@@ -198,26 +198,6 @@ static int lua_SetBackgroundColor( lua_State* _state )
 	
 	FCColor4f color = ColorFromLuaColor(_state, 2);
 	
-//	lua_getfield(_state, 2, "r");
-//	lua_next(_state, -2);
-//	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-//	color.r = (float)lua_tonumber(_state, -1);
-//	lua_pop(_state, 1);
-//	
-//	lua_next(_state, -2);
-//	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-//	color.g = (float)lua_tonumber(_state, -1);
-//	lua_pop(_state, 1);
-//	
-//	lua_next(_state, -2);
-//	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-//	color.b = (float)lua_tonumber(_state, -1);
-//	lua_pop(_state, 1);
-//	
-//	lua_next(_state, -2);
-//	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-//	color.a = (float)lua_tonumber(_state, -1);
-	
 	s_pInstance->SetViewBackgroundColor( viewName, color );
 	
 	return 0;
@@ -299,7 +279,12 @@ static int lua_CreateView( lua_State* _state )
 	const char* first = lua_tostring(_state, 1);
 	
 	std::string name = first;
-	std::string className = lua_tostring(_state, 2);
+	
+	FC_LOG( lua_typename(_state, 2));
+	
+	const char* second = lua_tostring(_state, 2);
+	
+	std::string className = second;
 	
 	std::string parent = "";
 	
@@ -397,6 +382,30 @@ static int lua_SetScreenAspectRatio( lua_State* _state )	// deprecate ?
 	return 0;
 }
 
+static int lua_SetTapFunction( lua_State* _state )
+{
+	FC_LUA_FUNCDEF("FCViewManager.SetTapFunction()");
+	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+
+	std::string name = lua_tostring( _state, 1 );
+	
+	if (lua_type(_state, 2) == LUA_TNIL) {
+		s_pInstance->SetViewTapFunction(name, "");
+	} else if (lua_type(_state,2) == LUA_TSTRING) {
+		s_pInstance->SetViewTapFunction(name, lua_tostring(_state, 2));
+	} else {
+		FC_ASSERT(0);
+	}
+	
+	return 0;
+}
+
+void fc_FCViewManager_CallTapFunction( const char* func )
+{
+	FCLua::Instance()->CoreVM()->CallFuncWithSig( func, true, "" );
+}
+
 FCViewManager::FCViewManager()
 {
 	// register Lua
@@ -419,7 +428,9 @@ FCViewManager::FCViewManager()
 	
 	lua->RegisterCFunction(lua_CreateView, "FCViewManager.CreateView");
 	lua->RegisterCFunction(lua_DestroyView, "FCViewManager.DestroyView");
-	
+
+	lua->RegisterCFunction(lua_SetTapFunction, "FCViewManager.SetTapFunction");
+
 	lua->RegisterCFunction(lua_PrintViews, "FCViewManager.PrintViews");
 	lua->RegisterCFunction(lua_SetViewPropertyInteger, "FCViewManager.SetViewPropertyInteger");
 	lua->RegisterCFunction(lua_SetViewPropertyString, "FCViewManager.SetViewPropertyString");
@@ -496,13 +507,13 @@ void FCViewManager::SetViewBackgroundColor( const std::string& viewName, const F
 
 void FCViewManager::CreateView( const std::string& viewName, const std::string& classType, const std::string& parent )
 {
-	FC_LOG(std::string("Create view: ") + viewName);
+//	FC_LOG(std::string("Create view: ") + viewName);
 	plt_FCViewManager_CreateView(viewName.c_str(), classType.c_str(), parent.c_str());
 }
 
 void FCViewManager::DestroyView(const std::string &viewName)
 {
-	FC_LOG(std::string("Destroy view: ") + viewName);
+//	FC_LOG(std::string("Destroy view: ") + viewName);
 	plt_FCViewManager_DestroyView( viewName.c_str() );
 }
 
@@ -519,6 +530,11 @@ void FCViewManager::SetViewPropertyFloat(const std::string &viewName, const std:
 void FCViewManager::SetViewPropertyString(const std::string &viewName, const std::string &property, const std::string& value)
 {
 	plt_FCViewManager_SetViewPropertyString( viewName.c_str(), property.c_str(), value.c_str() );
+}
+
+void FCViewManager::SetViewTapFunction(const std::string &viewName, const std::string &func)
+{
+	plt_FCViewManager_SetViewTapFunction(viewName.c_str(), func.c_str());
 }
 
 void FCViewManager::MoveViewToFront( const std::string& viewname )

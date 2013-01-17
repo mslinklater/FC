@@ -27,6 +27,7 @@
 
 @interface FCOnlineLeaderboard_apple : NSObject <GKLeaderboardViewControllerDelegate> {
     GKLocalPlayer*  _localPlayer;
+	NSMutableArray*	_unreportedScores;
 }
 @property(nonatomic, strong) GKLocalPlayer* localPlayer;
 
@@ -34,10 +35,10 @@
 
 -(void)authenticateLocalPlayer;
 
--(void)postScore:(unsigned int)score
-   toLeaderboard:(NSString*)leaderboardName
-      withHandle:(unsigned int)handle
-        callback:(plt_FCOnlineLeaderboard_PostCallback)callback;
+-(void)postScore:(unsigned int)value
+   toLeaderboard:(NSString*)leaderboardName;
+
+-(void)postUnreportedScores;
 
 -(void)show;
 @end

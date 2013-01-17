@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined(FC_TWITTER)
+
 #import <Foundation/Foundation.h>
 
 @class TWTweetComposeViewController;
@@ -37,3 +39,5 @@
 -(BOOL)addHyperlink:(NSString*)hyperlink;
 -(void)send;
 @end
+
+#endif // FC_TWITTER

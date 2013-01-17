@@ -28,9 +28,7 @@ static FCOnlineLeaderboard_apple* s_pInstance;
 void plt_FCOnlineLeaderboard_Init( void );
 bool plt_FCOnlineLeaderboard_Available( void );
 void plt_FCOnlineLeaderboard_PostScore(  const char* leaderboardName,
-                                              unsigned int score,
-                                              unsigned int handle,
-                                              plt_FCOnlineLeaderboard_PostCallback callback );
+                                              unsigned int score );
 
 void plt_FCOnlineLeaderboard_Init( void )
 {
@@ -51,11 +49,9 @@ bool plt_FCOnlineLeaderboard_Available( void )
 }
 
 void plt_FCOnlineLeaderboard_PostScore(  const char* leaderboardName,
-                                       unsigned int score,
-                                       unsigned int handle,
-                                       plt_FCOnlineLeaderboard_PostCallback callback )
+                                       unsigned int score )
 {
-    [s_pInstance postScore:score toLeaderboard:@(leaderboardName) withHandle:handle callback:callback];
+    [s_pInstance postScore:score toLeaderboard:@(leaderboardName)];
     return;
 }
 
@@ -69,35 +65,83 @@ void plt_FCOnlineLeaderboard_PostScore(  const char* leaderboardName,
     return s_pInstance;
 }
 
+-(NSString*)filename
+{
+	NSArray* documentDirectories = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES);
+	NSString* documentDirectory = [documentDirectories objectAtIndex:0];
+	return [documentDirectory stringByAppendingPathComponent:@"scores"];
+}
+
 -(id)init
 {
     self = [super init];
     if (self) {
+		_unreportedScores = [NSKeyedUnarchiver unarchiveObjectWithFile:[self filename]];
+		if (_unreportedScores == nil) {
+			_unreportedScores = [NSMutableArray array];
+		}
+		
         [self authenticateLocalPlayer];
+		[self postUnreportedScores];
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willResignActiveNotification:) name:UIApplicationWillResignActiveNotification object:nil];
     }
     return self;
 }
 
--(void)postScore:(unsigned int)score
+-(void)dealloc
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+}
+
+-(void)willResignActiveNotification:(NSNotification*)note
+{
+	[NSKeyedArchiver archiveRootObject:_unreportedScores toFile:[self filename]];
+}
+
+-(void)postScore:(unsigned int)value
    toLeaderboard:(NSString*)leaderboardName
-      withHandle:(unsigned int)handle
-        callback:(plt_FCOnlineLeaderboard_PostCallback)callback
+
 {
     if (_localPlayer) {
-        GKScore *scoreReporter = [[GKScore alloc] initWithCategory:leaderboardName];
-        scoreReporter.value = score;
-        
-        [scoreReporter reportScoreWithCompletionHandler:^(NSError *error) {
-            if (error != nil)
-            {
-                (callback)(handle, false);
-            }
-            else
-            {
-                (callback)(handle, true);
-            }
-        }];
-    }
+		
+		BOOL isNew = YES;
+		
+		for (GKScore* score in _unreportedScores) {
+			if( [score.category isEqualToString:leaderboardName] )
+			{
+				isNew = NO;
+				if (score.value < value) {
+					score.value = value;
+				}
+			}
+		}
+		
+		if (isNew) {
+			GKScore *score = [[GKScore alloc] initWithCategory:leaderboardName];
+			score.value = value;
+			[_unreportedScores addObject:score];
+		}
+
+    } else {
+		[self authenticateLocalPlayer];
+	}
+	
+	[self postUnreportedScores];
+}
+
+-(void)postUnreportedScores
+{
+	for (GKScore* score in _unreportedScores) {
+		[score reportScoreWithCompletionHandler:^(NSError *error) {
+			if (error == nil)
+			{
+				dispatch_async(dispatch_get_main_queue(), ^{
+					[_unreportedScores removeObject:score];
+				});
+			}
+		}];
+	}
 }
 
 -(void)show

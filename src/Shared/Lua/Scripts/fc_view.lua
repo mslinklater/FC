@@ -101,7 +101,8 @@ function FCView:SetStringProperty( prop, value )
 end
 
 function FCView:SetTapFunction( value )
-	FCViewManager.SetViewPropertyString( self.name, "tapFunction", value )
+	--FCViewManager.SetViewPropertyString( self.name, "tapFunction", value )
+	FCViewManager.SetTapFunction( self.name, value )
 end
 
 function FCView:MoveToFront()
@@ -135,6 +136,7 @@ kFCImageView = "FCImageView"
 kFCLabelView = "FCLabelView"
 kFCTextView = "FCTextView"
 kFCContainerView = "FCContainerView"
+kFCGLView = "FCGLView"
 
 kFCViewContentModeScaleToFill = 1
 kFCViewContentModeScaleAspectFit = 2

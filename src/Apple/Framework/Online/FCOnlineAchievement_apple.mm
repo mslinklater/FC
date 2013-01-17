@@ -78,8 +78,20 @@ void plt_FCOnlineAchievement_ClearAll()
 		}
 
 		[self reportUnreportedAchievements];
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willResignActiveNotification:) name:UIApplicationWillResignActiveNotification object:nil];
 	}
 	return self;
+}
+
+-(void)dealloc
+{
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
+}
+
+-(void)willResignActiveNotification:(NSNotification*)note
+{
+	[NSKeyedArchiver archiveRootObject:_unreportedAchievements toFile:[self filename]];
 }
 
 -(NSString*)filename
@@ -129,12 +141,14 @@ void plt_FCOnlineAchievement_ClearAll()
 
 -(void)reportUnreportedAchievements
 {
+	if ([_unreportedAchievements count] == 0) {
+		return;
+	}
+	
 	if (_localPlayer == nil) {
 		[self authenticateLocalPlayer];
 		return;
 	}
-
-	NSMutableArray* unreported = [NSMutableArray array];
 
 	// try
 
@@ -142,18 +156,14 @@ void plt_FCOnlineAchievement_ClearAll()
 	{
 		[achievement reportAchievementWithCompletionHandler:^(NSError *error)
 		 {
-			 if (error != nil)
+			 if (error == nil)
 			 {
-				 [unreported addObject:achievement];
+				 dispatch_async(dispatch_get_main_queue(), ^{
+					 [_unreportedAchievements removeObject:achievement];
+				 });
 			 }
 		 }];
 	}
-
-	_unreportedAchievements = unreported;
-
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
-		[NSKeyedArchiver archiveRootObject:_unreportedAchievements toFile:[self filename]];
-	});
 }
 
 -(void)refreshFromServer

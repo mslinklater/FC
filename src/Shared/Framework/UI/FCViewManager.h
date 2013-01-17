@@ -49,6 +49,7 @@ public:
 	void SetViewPropertyInt( const std::string& viewName, const std::string& property, int32_t value );
 	void SetViewPropertyFloat( const std::string& viewName, const std::string& property, float value );
 	void SetViewPropertyString( const std::string& viewName, const std::string& property, const std::string& value );
+	void SetViewTapFunction( const std::string& viewName, const std::string& func );
 	
 	void MoveViewToFront( const std::string& viewname );
 	void MoveViewToBack( const std::string& viewname );

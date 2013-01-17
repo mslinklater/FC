@@ -20,6 +20,12 @@
  THE SOFTWARE.
  */
 
+#if !defined(ADHOC)
+#define FC_CONNECT
+#endif
+
+#if defined(FC_CONNECT)
+
 #ifndef _FCConnect_h
 #define _FCConnect_h
 
@@ -45,3 +51,5 @@ public:
 };
 
 #endif
+
+#endif // FC_CONNECT

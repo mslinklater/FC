@@ -45,7 +45,7 @@ static FCApplication* s_pInstance = 0;
 
 static FCHandle	s_sessionActiveAnalyticsHandle = kFCHandleInvalid;
 
-
+extern bool gLandscape;
 
 // Lua functions
 
@@ -182,7 +182,6 @@ static int lua_SetUpdateFrequency( lua_State* _state )
 	return 0;
 }
 
-#if !defined( ADHOC )
 static int lua_WarmBoot( lua_State* _state )
 {
 	FC_LUA_FUNCDEF("FCApplication.WarmBoot()");
@@ -190,7 +189,6 @@ static int lua_WarmBoot( lua_State* _state )
 	s_pInstance->WarmBoot();
 	return 0;
 }
-#endif
 
 // C++ functions
 
@@ -233,11 +231,12 @@ void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 	m_lua->RegisterCFunction(lua_SetUpdateFrequency, "FCApp.SetUpdateFrequency");	
 	m_lua->RegisterCFunction(lua_LoadLuaLayout, "FCApp.LoadLuaLayout");
 	m_lua->RegisterCFunction(lua_LoadLuaLanguage, "FCApp.LoadLuaLanguage");
+//	m_lua->RegisterCFunction(lua_WarmBoot, "FCApp.WarmBoot");
 	m_lua->SetGlobalBool("FCApp.paused", false);
 
-#if !defined(ADHOC)
+#if defined(FC_DEBUGMENU)
+	gLandscape = params.allowableOrientationsMask & kFCInterfaceOrientation_Landscape;
 	FCDebugMenu::Instance()->Init();
-	m_lua->RegisterCFunction(lua_WarmBoot, "FCApp.WarmBoot");
 #endif
 	
 	FCPhaseManager::Instance();
@@ -251,7 +250,10 @@ void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 	FCAnalytics::Instance();
     FCOnlineLeaderboard::Instance();
 	
+#if defined(FC_TWITTER)
 	FCTwitter::Instance();
+#endif
+	
 	FCAudioManager::Instance();
 	FCDevice::Instance()->ColdProbe();
 	
@@ -264,7 +266,7 @@ void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 	FCOnlineAchievement::Instance();
 	m_lua->LoadScript("main");
 	m_lua->CallFuncWithSig("FCApp.ColdBoot", true, "");
-	WarmBoot();
+//	WarmBoot();
 }
 
 void FCApplication::WarmBoot()
@@ -281,7 +283,10 @@ void FCApplication::WarmBoot()
 void FCApplication::RequestWarmBoot(int context)
 {
 	s_warmBootRequested = true;
+	
+#if defined(FC_DEBUGMENU)
 	FCDebugMenu::Instance()->Hide();
+#endif
 }
 
 void FCApplication::WarmShutdown()
@@ -304,6 +309,8 @@ void FCApplication::LoadLuaLanguage()
 	m_lua->LoadScriptOptional("Languages/en");	// default is English
 	
 	std::string locale = FCDevice::Instance()->GetCap(kFCDeviceLocale);
+	
+	FC_LOG( std::string("Locale: ") + locale );
 	
 	if (locale != "en") {
 		m_lua->LoadScriptOptional("Languages/" + locale);	// override with translations
@@ -450,8 +457,9 @@ void FCApplication::SetTestFlightID( std::string ident )
 void FCApplication::WillResignActive()
 {
 	FC_TRACE;
+#if defined(FC_CONNECT)
 	FCConnect::Instance()->Stop();
-	
+#endif
 	FC_ASSERT(s_sessionActiveAnalyticsHandle != kFCHandleInvalid);
 	
 	FCAnalytics::Instance()->EndTimedEvent(s_sessionActiveAnalyticsHandle);
@@ -513,14 +521,24 @@ void FCApplication::WillTerminate()
 bool FCApplication::ShouldAutorotateToInterfaceOrientation( FCInterfaceOrientation orient )
 {
 	FC_TRACE;
-	bool ret = true;
+	bool ret = false;
 	
 	switch (orient) {
 		case kFCInterfaceOrientation_Landscape:
-			FCLua::Instance()->CoreVM()->CallFuncWithSig("FCApp.SupportsLandscape", false, ">b", &ret);
+			FCLua::Instance()->CoreVM()->CallFuncWithSig("SupportsLandscape", true, ">b", &ret);
+			if (ret) {
+				FC_LOG( std::string("Supports Landscape: yes"));
+			} else {
+				FC_LOG( std::string("Supports Landscape: no"));
+			}
 			break;
 		case kFCInterfaceOrientation_Portrait:
-			FCLua::Instance()->CoreVM()->CallFuncWithSig("FCApp.SupportsPortrait", false, ">b", &ret);
+			FCLua::Instance()->CoreVM()->CallFuncWithSig("SupportsPortrait", true, ">b", &ret);
+			if (ret) {
+				FC_LOG( std::string("Supports Portrait: yes"));
+			} else {
+				FC_LOG( std::string("Supports Portrait: no"));
+			}
 			break;
 	}
 	return ret;

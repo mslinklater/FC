@@ -20,10 +20,14 @@
  THE SOFTWARE.
  */
 
+#if !defined(ADHOC)
+#define FC_DEBUGMENU
+#endif
+
 #ifndef _FCDebugMenu_h
 #define _FCDebugMenu_h
 
-#if !defined(ADHOC)
+#if defined(FC_DEBUGMENU)
 
 #include <map>
 #include "Shared/Core/FCCore.h"

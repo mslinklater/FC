@@ -134,10 +134,12 @@ extern void plt_FCInput_RemoveTapFromView( const char* viewName );
 
 // Twitter
 
+#if defined(FC_TWITTER)
 extern bool plt_FCTwitter_CanTweet();
 extern bool plt_FCTwitter_TweetWithText( const char* text );
 extern bool plt_FCTwitter_AddHyperlink( const char* hyperlink );
 extern void plt_FCTwitter_Send();
+#endif
 
 // Online Leaderboard
 
@@ -147,9 +149,7 @@ extern void plt_FCOnlineLeaderboard_Init( void );
 extern void plt_FCOnlineLeaderboard_Show( void );
 extern bool plt_FCOnlineLeaderboard_Available( void );
 extern void plt_FCOnlineLeaderboard_PostScore(  const char* leaderboardName,
-											  unsigned int score,
-											  unsigned int handle,
-											  plt_FCOnlineLeaderboard_PostCallback callback );
+											  unsigned int score );
 
 extern void plt_FCOnlineAchievement_Init();
 //extern void plt_FCOnlineAchievement_RefreshFromServer();
@@ -174,11 +174,14 @@ extern void plt_FCViewManager_DestroyView( const char* viewName );
 extern void plt_FCViewManager_SetViewPropertyInt( const char* viewName, const char* property, int32_t value );
 extern void plt_FCViewManager_SetViewPropertyFloat( const char* viewName, const char* property, float value );
 extern void plt_FCViewManager_SetViewPropertyString( const char* viewName, const char* property, const char* value );
+extern void plt_FCViewManager_SetViewTapFunction( const char* viewName, const char* function );
 
 extern void plt_FCViewManager_ShrinkFontToFit( const char* viewName );
 extern void plt_FCViewManager_MoveViewToFront( const char* viewName );
 extern void plt_FCViewManager_MoveViewToBack( const char* viewName );
 extern bool plt_FCViewManager_ViewExists( const char* viewName );
+
+extern void fc_FCViewManager_CallTapFunction( const char* function );
 
 extern void plt_FCDebugDraw_2DLine( float x1, float y1, float x2, float y2 );
 

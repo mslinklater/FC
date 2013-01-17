@@ -39,4 +39,6 @@
 -(void)reportAchievementName:(NSString*)name amount:(float)amount;
 -(void)refreshFromServer;
 -(void)clearAll;
+
+-(void)willResignActiveNotification:(NSNotification*)note;
 @end

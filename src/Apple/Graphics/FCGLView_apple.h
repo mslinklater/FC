@@ -21,6 +21,32 @@
  */
 
 #import <UIKit/UIKit.h>
+#import <GLKit/GLKit.h>
+
+#import "FCViewManager_apple.h"
+
+@interface FCGLView_apple : UIView <FCManagedView_apple, GLKViewDelegate> {
+	NSString*		_managedViewName;
+//	GLKViewController*	_vc;
+	GLKView*		_glView;
+	EAGLContext*	_glContext;
+}
+@property(nonatomic, strong) NSString* managedViewName;
+//@property(nonatomic, strong) GLKViewController* vc;
+@property(nonatomic, strong) GLKView* glView;
+@property(nonatomic, strong) EAGLContext* glContext;
+@end
+
+
+
+
+
+
+
+
+
+
+#if 0
 
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
@@ -211,4 +237,6 @@ public:
 };
 
 typedef FCSharedPtr<FCGLViewProxy> FCGLViewProxyRef;
+
+#endif
 

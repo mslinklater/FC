@@ -56,10 +56,11 @@ extern void FCSetRootViewController( UIViewController* vc );
 #endif
 
 -(void)showGameCenterLeaderboard;
+
 -(BOOL)launchExternalURL:(NSString*)url;
 -(CGSize)mainViewSize;
 
--(void)coldBoot;
+-(void)coldBootWithParams:(FCApplicationColdBootParams&)params;
 -(void)update;
 -(void)pause;
 -(void)resume;
@@ -74,6 +75,7 @@ public:
 	virtual ~FCApplicationProxy();
 	
 	void ColdBoot( FCApplicationColdBootParams& params );
+	void WarmBoot();
 	void Shutdown();
 	void Pause();
 	void Resume();

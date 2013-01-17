@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined(FC_TWITTER)
+
 #import <Twitter/Twitter.h>
 
 #import "FCTwitter_apple.h"
@@ -95,3 +97,5 @@ static FCTwitter_apple* s_pInstance;
 }
 
 @end
+
+#endif // FC_TWITTER

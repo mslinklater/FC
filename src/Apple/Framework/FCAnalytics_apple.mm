@@ -22,7 +22,7 @@
 
 #import "FCAnalytics_apple.h"
 
-#import "FlurryAnalytics.h"
+#import "Flurry.h"
 
 #include <string>
 #include "Shared/Core/FCCore.h"
@@ -33,15 +33,15 @@ void	plt_FCAnalytics_EndTimedEvent( const char* event );
 
 void	plt_FCAnalytics_RegisterEvent( const char* event )
 {
-	[FlurryAnalytics logEvent:@(event)];
+	[Flurry logEvent:@(event)];
 }
 
 void	plt_FCAnalytics_BeginTimedEvent( const char* event )
 {
-	[FlurryAnalytics logEvent:@(event) timed:YES];
+	[Flurry logEvent:@(event) timed:YES];
 }
 
 void	plt_FCAnalytics_EndTimedEvent( const char* event )
 {
-	[FlurryAnalytics endTimedEvent:@(event) withParameters:nil];
+	[Flurry endTimedEvent:@(event) withParameters:nil];
 }

@@ -110,6 +110,7 @@ private:
 	bool							m_paused;
 	FCColor4f						m_backgroundColor;
 	FCApplicationUpdateFuncPtrSet	m_updateSubscribers;
+	
 	static bool						s_warmBootRequested;
 };
 

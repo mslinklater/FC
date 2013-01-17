@@ -24,7 +24,7 @@
 
 #import "FCApplication_apple.h"
 #import "FCViewManager_apple.h"
-#import "FlurryAnalytics.h"
+#import "Flurry.h"
 
 #if defined( _FC_TESTFLIGHT )
 #import "TestFlight.h"
@@ -71,14 +71,14 @@ FCApplicationProxy::~FCApplicationProxy()
 
 void FCApplicationProxy::ColdBoot( FCApplicationColdBootParams& params )
 {
-	[m_pApp coldBoot];
+	[m_pApp coldBootWithParams:params];
 	FCApplication::ColdBoot( params );
 }
 
-//void FCApplicationProxy::WarmBoot()
-//{
-//	FC
-//}
+void FCApplicationProxy::WarmBoot()
+{
+	FCApplication::WarmBoot();
+}
 
 void FCApplicationProxy::Shutdown()
 {
@@ -105,7 +105,7 @@ void FCApplicationProxy::Resume()
 
 void FCApplicationProxy::SetAnalyticsID( std::string ident )
 {
-	[FlurryAnalytics startSession:@(ident.c_str())];
+	[Flurry startSession:@(ident.c_str())];
 }
 
 void FCApplicationProxy::SetTestFlightID( std::string ident )
@@ -196,7 +196,7 @@ static void uncaughtExceptionHandler(NSException *exception) {
     FC_LOG( "Sending uncaught exception to Flurry" );
 	
 //#if defined( _FC_FLURRY )
-    [FlurryAnalytics logError:@"Uncaught" message:@"Crash!" exception:exception];
+    [Flurry logError:@"Uncaught" message:@"Crash!" exception:exception];
 //#endif // _FC_FLURRY
 }
 
@@ -250,7 +250,7 @@ static void uncaughtExceptionHandler(NSException *exception) {
 }
 #endif
 
--(void)coldBoot
+-(void)coldBootWithParams:(FCApplicationColdBootParams &)params
 {
 	FC_ASSERT( s_rootViewController );
 	
@@ -259,7 +259,16 @@ static void uncaughtExceptionHandler(NSException *exception) {
 	[_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
 	
 	s_rootViewController.view.backgroundColor = [UIColor blackColor];
-    UIView* gameRootView = [[UIView alloc] initWithFrame:[UIScreen mainScreen].bounds];
+	
+	CGRect frame = [UIScreen mainScreen].bounds;
+
+	if (params.allowableOrientationsMask & kFCInterfaceOrientation_Landscape) {
+		float temp = frame.size.width;
+		frame.size.width = frame.size.height;
+		frame.size.height = temp;
+	}
+	
+    UIView* gameRootView = [[UIView alloc] initWithFrame:frame];
     [s_rootViewController.view addSubview:gameRootView];
     [FCViewManager_apple instance].rootView = gameRootView;
 #if !defined(ADHOC)

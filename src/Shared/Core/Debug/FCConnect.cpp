@@ -21,6 +21,9 @@
  */
 
 #include "FCConnect.h"
+
+#if defined(FC_CONNECT)
+
 #include "Shared/FCPlatformInterface.h"
 
 FCConnect* FCConnect::Instance()
@@ -51,3 +54,5 @@ void FCConnect::SendString( std::string s )
 {
 	plt_FCConnect_SendString( s.c_str() );
 }
+
+#endif // FC_CONNECT

@@ -20,7 +20,9 @@
  THE SOFTWARE.
  */
 
-#if !defined(ADHOC)
+#include "Shared/Core/Debug/FCDebugMenu.h"
+
+#if defined( FC_DEBUGMENU )
 
 #import <UIKit/UIKit.h>
 
@@ -46,4 +48,4 @@
 -(void)buttonResponder:(id)sender;
 @end
 
-#endif
+#endif // FC_DEBUGMENU

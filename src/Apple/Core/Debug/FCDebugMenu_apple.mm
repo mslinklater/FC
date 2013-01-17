@@ -20,15 +20,18 @@
  THE SOFTWARE.
  */
 
-#if !defined( ADHOC )
-
 #import "FCDebugMenu_apple.h"
+
+#if defined( FC_DEBUGMENU )
+
 #import "FCApplication_apple.h"
 
 #include "Shared/Core/FCCore.h"
 #include "Shared/FCPlatformInterface.h"
 
 static FCDebugMenu_apple* s_pInstance;
+
+extern bool gLandscape;
 
 void plt_FCDebugMenu_AddButton( FCHandle handle, const char* name, const FCColor4f& color )
 {
@@ -62,7 +65,16 @@ void plt_FCDebugMenu_AddSelectionOption( FCHandle handle, const char* name )
 +(FCDebugMenu_apple*)instance
 {
 	if (!s_pInstance) {
-		s_pInstance = [[FCDebugMenu_apple alloc] initWithFrame:[UIScreen mainScreen].bounds];
+		
+		CGRect frame = [UIScreen mainScreen].bounds;
+		
+		if ( gLandscape ) {
+			float temp = frame.size.width;
+			frame.size.width = frame.size.height;
+			frame.size.height = temp;
+		}
+		
+		s_pInstance = [[FCDebugMenu_apple alloc] initWithFrame:frame];
 	}
 	return s_pInstance;
 }

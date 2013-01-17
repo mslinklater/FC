@@ -20,12 +20,15 @@
  THE SOFTWARE.
  */
 
-#if !defined( ADHOC )
-
 #include "FCDebugMenu.h"
+
+#if defined( FC_DEBUGMENU )
+
 #include "Shared/FCPlatformInterface.h"
 #include "Shared/Lua/FCLua.h"
 #include "Shared/Framework/FCApplication.h"
+
+bool gLandscape;
 
 static FCDebugMenu* s_pInstance = 0;
 
@@ -42,6 +45,11 @@ static int lua_AddMulti( lua_State* _state )
 void fc_FCDebugMenu_ButtonPressed( FCHandle handle )
 {
 	FCDebugMenu::Instance()->ButtonPressed( handle );
+}
+
+static void TestAssert( int context )
+{
+	FC_ASSERT(0);
 }
 
 FCDebugMenu* FCDebugMenu::Instance()
@@ -71,6 +79,7 @@ void FCDebugMenu::Init()
 
 	FCColor4f color = kFCColorGreen();
 	AddButton("Warm Boot", "", FCApplication::RequestWarmBoot, 0, color);
+	AddButton("Test Assert", "", TestAssert, 0, color);
 }
 
 void FCDebugMenu::Show()
@@ -125,4 +134,4 @@ void FCDebugMenu::AddMulti(std::string name, std::string luaFunc, const FCString
 	
 }
 
-#endif // ADHOC
+#endif // FC_DEBUGMENU

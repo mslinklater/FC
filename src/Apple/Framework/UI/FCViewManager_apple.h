@@ -70,5 +70,7 @@ class FCLuaVM;
 -(void)setView:(NSString *)viewName image:(NSString*)imageName;
 -(void)setView:(NSString *)viewName url:(NSString*)url;
 
+-(void)setView:(NSString*)viewName tapFunction:(NSString*)function;
+
 -(void)setView:(NSString *)viewName property:(NSString*)property to:(id)value;
 @end

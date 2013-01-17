@@ -60,7 +60,6 @@ void plt_FCConnect_SendString( const char* s )
 #include <unistd.h>
 #include <CFNetwork/CFSocketStream.h>
 #include "Shared/Core/FCError.h"
-//#include "Shared/Lua/FCLua.h"
 
 static NSString* s_ErrorDomain = @"FCConnectErrorDomain";
 static FCConnect_apple* s_connect;

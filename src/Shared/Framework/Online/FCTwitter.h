@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined(FC_TWITTER)
+
 #ifndef _FCTwitter_h
 #define _FCTwitter_h
 
@@ -40,3 +42,5 @@ private:
 };
 
 #endif
+
+#endif // FC_TWITTER

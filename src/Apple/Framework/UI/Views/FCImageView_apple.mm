@@ -23,7 +23,7 @@
 #import "FCImageView_apple.h"
 
 #include "Shared/Framework/UI/FCViewManagerTypes.h"
-#include "Shared/Lua/FCLua.h"
+#include "Shared/FCPlatformInterface.h"
 
 @implementation FCImageView_apple
 
@@ -108,7 +108,8 @@
 -(void)tapResponder:(id)sender
 {
 	if ([_tapFunction length]) {
-		FCLua::Instance()->CoreVM()->CallFuncWithSig([_tapFunction UTF8String], true, "");
+//		FCLua::Instance()->CoreVM()->CallFuncWithSig([_tapFunction UTF8String], true, "");
+		fc_FCViewManager_CallTapFunction([_tapFunction UTF8String]);
 	}
 }
 

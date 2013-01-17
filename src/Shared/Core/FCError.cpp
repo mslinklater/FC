@@ -31,19 +31,25 @@ void FCHalt()
 
 void FCLog( std::string log )
 {
+#if defined(FC_CONNECT)
 	FCConnect::Instance()->SendString(log);
+#endif
 	plt_FCLog(log.c_str());
 }
 
 void FCWarning( std::string message )
 {
+#if defined(FC_CONNECT)
 	FCConnect::Instance()->SendString(message);
+#endif
 	plt_FCWarning(message.c_str());
 }
 
 void FCFatal( std::string message )
 {
+#if defined(FC_CONNECT)
 	FCConnect::Instance()->SendString(message);
+#endif
 	plt_FCFatal(message.c_str());
 }
 

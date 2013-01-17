@@ -20,6 +20,65 @@
  THE SOFTWARE.
  */
 
+#import "FCGLView_apple.h"
+
+@implementation FCGLView_apple
+
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+		_glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+		_glView = [[GLKView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height) context:_glContext];
+		_glView.delegate = self;
+		[self addSubview:_glView];
+    }
+    return self;
+}
+
+-(void)setFrame:(CGRect)frame
+{
+	[super setFrame:frame];
+	[_glView setFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
+}
+
+#pragma mark - GLKViewDelegate
+
+-(void)glkView:(GLKView *)view drawInRect:(CGRect)rect
+{
+	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+	glClear( GL_COLOR_BUFFER_BIT );
+}
+
+@end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#if 0
+
 #import <QuartzCore/QuartzCore.h>
 
 #import "FCCore.h"
@@ -56,11 +115,14 @@ FCGLViewRef plt_FCGLView_Create( std::string name, std::string parent, const FCV
     return [CAEAGLLayer class];
 }
 
--(id)initWithFrame:(CGRect)aRect name:(NSString*)managedName;
+
+
+//-(id)initWithFrame:(CGRect)aRect name:(NSString*)managedName;
+-(id)initWithFrame:(CGRect)aRect
 {
 	self = [super initWithFrame:aRect];
 	if (self) {
-		_managedName = managedName;
+//		_managedName = managedName;
 		
         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
         
@@ -451,4 +513,6 @@ FCGLViewRef plt_FCGLView_Create( std::string name, std::string parent, const FCV
 }
 
 @end
+
+#endif
 
