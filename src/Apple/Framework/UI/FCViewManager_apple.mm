@@ -274,9 +274,10 @@ void plt_FCViewManager_SetViewBackgroundColor( const char* viewName, const FCCol
 
 -(void)destroyView:(NSString *)name
 {
-	UIView* thisView = [_viewDictionary valueForKey:name];
-	[thisView removeFromSuperview];
+	UIView<FCManagedView_apple>* thisView = [_viewDictionary valueForKey:name];
 	[_viewDictionary removeObjectForKey:name];
+	[thisView removeFromSuperview];
+	[thisView destroy];
 }
 
 -(void)add:(UIView*)view as:(NSString*)name

@@ -23,27 +23,48 @@
 #include "FCLuaUtils.h"
 #include "FCLuaAsserts.h"
 
-FCColor4f ColorFromLuaColor( lua_State* _state, int stackPos )
+FCColor4f FCColorFromLuaColor( lua_State* _state, int stackPos )
 {
-	FC_LUA_FUNCDEF("C - ColorFromLuaColor");
-	lua_getfield(_state, 2, "r");
+	FC_LUA_FUNCDEF("C - FCColorFromLuaColor");
+	lua_getfield(_state, stackPos, "r");
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float r = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
-	lua_getfield(_state, 2, "g");
+	lua_getfield(_state, stackPos, "g");
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float g = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
-	lua_getfield(_state, 2, "b");
+	lua_getfield(_state, stackPos, "b");
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float b = (float)lua_tonumber(_state, -1);
 	lua_pop(_state, 1);
 	
-	lua_getfield(_state, 2, "a");
+	lua_getfield(_state, stackPos, "a");
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
 	float a = (float)lua_tonumber(_state, -1);
 
 	return FCColor4f(r, g, b, a);
+}
+
+FCVector3f FCVector3fFromLuaVector( lua_State* _state, int stackPos )
+{
+	FC_LUA_FUNCDEF("C - FCVector3fFromLuaColor");
+	lua_getfield(_state, stackPos, "x");
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
+	float x = (float)lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	lua_getfield(_state, stackPos, "y");
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
+	float y = (float)lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	lua_getfield(_state, stackPos, "z");
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
+	float z = (float)lua_tonumber(_state, -1);
+	lua_pop(_state, 1);
+	
+	return FCVector3f(x, y, z);
 }

@@ -26,7 +26,7 @@ static NSMutableDictionary* s_performanceCounters;
 
 void plt_FCPerformanceCounter_New( void* instance )
 {
-	FCPerformanceCounter* pc = [[FCPerformanceCounter alloc] init];
+	FCPerformanceCounter_apple* pc = [[FCPerformanceCounter_apple alloc] init];
 	[s_performanceCounters setObject:pc forKey:@((int)instance)];
 }
 
@@ -37,19 +37,19 @@ void plt_FCPerformanceCounter_Delete( void* instance )
 
 void plt_FCPerformanceCounter_Zero( void* instance )
 {
-	FCPerformanceCounter* pc = [s_performanceCounters objectForKey:@((int)instance)];
+	FCPerformanceCounter_apple* pc = [s_performanceCounters objectForKey:@((int)instance)];
 	[pc zero];
 }
 
 double plt_FCPerformanceCounter_NanoValue( void* instance )
 {
-	FCPerformanceCounter* pc = [s_performanceCounters objectForKey:@((int)instance)];
+	FCPerformanceCounter_apple* pc = [s_performanceCounters objectForKey:@((int)instance)];
 	return [pc nanoValue];
 }
 
 #pragma mark Methods
 
-@implementation FCPerformanceCounter
+@implementation FCPerformanceCounter_apple
 
 +(void)initialize
 {

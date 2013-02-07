@@ -36,11 +36,6 @@
 
 static FCGLShaderManager* s_pInstance = 0;
 
-IFCShaderManager* plt_FCShaderManager_Instance()
-{
-	return FCGLShaderManager::Instance();
-}
-
 FCGLShaderManager::FCGLShaderManager()
 {
 	
@@ -51,14 +46,6 @@ FCGLShaderManager::~FCGLShaderManager()
 	
 }
 
-FCGLShaderManager* FCGLShaderManager::Instance()
-{
-	if (!s_pInstance) {
-		s_pInstance = new FCGLShaderManager;
-	}
-	return s_pInstance;
-}
-
 FCGLShaderRef FCGLShaderManager::AddShader( std::string name )
 {
 	FCGLShaderRefMapByStringIter ret = m_shaders.find( name );
@@ -66,7 +53,7 @@ FCGLShaderRef FCGLShaderManager::AddShader( std::string name )
 	if( ret == m_shaders.end() )
 	{
 		FCFile shaderFile;
-		shaderFile.Open(name, kFCFileOpenModeReadOnly, kFCFileLocationApplicationBundle);
+		shaderFile.Open( std::string("Shaders/") + name, kFCFileOpenModeReadOnly, kFCFileLocationApplicationBundle);
 		FCDataRef shaderData = shaderFile.Data();
 		
 		// process it
@@ -174,7 +161,16 @@ FCGLShaderProgramRefVec	FCGLShaderManager::AllShaders()
 	return ret;
 }
 
-void FCGLShaderManager::ActivateShader( std::string name )
+FCGLShaderProgramRef FCGLShaderManager::ActivateShader( std::string name )
 {
-	AddProgram(name, name);
+	FCGLShaderProgramRefMapByStringIter i = m_programs.find( name );
+	
+	if(i == m_programs.end())
+	{
+		AddProgram(name, name);
+		i = m_programs.find( name );
+	}
+	i->second->Use();
+	
+	return i->second;
 }

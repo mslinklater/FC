@@ -29,6 +29,7 @@ extern "C" {
 #include <lua.h>
 }
 
-FCColor4f ColorFromLuaColor( lua_State* _state, int stackPos );
+FCColor4f FCColorFromLuaColor( lua_State* _state, int stackPos );
+FCVector3f	FCVector3fFromLuaVector( lua_State* _state, int stackPos );
 
 #endif

@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined(FC_ONLINE)
+
 #import "FCOnlineLeaderboard_apple.h"
 #import "FCApplication_apple.h"
 
@@ -173,4 +175,4 @@ void plt_FCOnlineLeaderboard_PostScore(  const char* leaderboardName,
 }
 @end
 
-
+#endif // FC_ONLINE

@@ -26,8 +26,6 @@
 #include "GLES/FCGLHelpers.h"
 #include "Shared/Core/FCCore.h"
 
-extern GLuint FCGL_currentProgram;
-
 inline static void FCglActiveTexture( GLenum texture )
 {
 	glActiveTexture( texture );
@@ -395,11 +393,8 @@ inline static void FCglUniformMatrix4fv( GLint location, GLsizei count, GLboolea
 
 inline static void FCglUseProgram( GLuint program )
 {
-	if (FCGL_currentProgram != program) {
-		glUseProgram(program);
-		GLCHECK;
-		FCGL_currentProgram = program;
-	}
+	glUseProgram(program);
+	GLCHECK;
 }
 
 inline static void FCglValidateProgram( GLuint program )

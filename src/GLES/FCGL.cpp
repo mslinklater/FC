@@ -22,5 +22,3 @@
 
 #include "FCGL.h"
 
-GLuint FCGL_currentProgram = 0;
-

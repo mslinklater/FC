@@ -31,6 +31,7 @@
  */
 
 #include <map>
+#include <math.h>
 
 #include "../FCTypes.h"
 
@@ -46,6 +47,11 @@ public:
 	
 	std::string GetCap( std::string cap );
 	void SetCap( std::string cap, std::string value );
+	
+	float GetCapFloat( std::string cap )
+	{
+		return std::stof( GetCap(cap) );
+	}
 	
 	void Print();
 	

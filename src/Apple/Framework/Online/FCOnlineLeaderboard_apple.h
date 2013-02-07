@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if defined(FC_ONLINE)
+
 #import <Foundation/Foundation.h>
 #import <GameKit/GameKit.h>
 
@@ -42,3 +44,5 @@
 
 -(void)show;
 @end
+
+#endif // FC_ONLINE

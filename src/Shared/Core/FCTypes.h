@@ -78,7 +78,8 @@ typedef std::map<std::string, std::string>	FCStringStringMap;
 typedef FCStringStringMap::iterator			FCStringStringMapIter;
 typedef FCStringStringMap::const_iterator	FCStringStringMapConstIter;
 
-typedef std::map<FCHandle, std::string>		FCStringMapByHandle;
+typedef std::map<FCHandle, std::string>		FCHandleStringMap;
+typedef std::map<std::string, FCHandle>		FCStringHandleMap;
 
 typedef std::set<std::string>	FCStringSet;
 

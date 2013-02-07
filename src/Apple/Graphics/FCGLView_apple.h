@@ -25,16 +25,53 @@
 
 #import "FCViewManager_apple.h"
 
+#include "Shared/Graphics/FCGraphicsTypes.h"
+#include "Shared/Graphics/FCRenderer.h"
+
+@class FCPerformanceCounter_apple;
+
 @interface FCGLView_apple : UIView <FCManagedView_apple, GLKViewDelegate> {
 	NSString*		_managedViewName;
-//	GLKViewController*	_vc;
 	GLKView*		_glView;
 	EAGLContext*	_glContext;
+	CADisplayLink*	_displayLink;
+
+	eFCColorBufferFormat	_colorBufferFormat;
+	eFCDepthBufferFormat	_depthBufferFormat;
+	eFCStencilBufferFormat	_stencilBufferFormat;
+	eFCMultismapleFormat	_multisampleFormat;
+	
+	NSString*		_rendererName;
+	FCRenderer*	mRenderer;
+	
+	float			_frameRate;
+	
+	BOOL			firstFrame;
+	
+#if !defined(ADHOC)
+	UILabel*					_debugView;
+	FCPerformanceCounter_apple*	_perfCounter;
+#endif
 }
 @property(nonatomic, strong) NSString* managedViewName;
-//@property(nonatomic, strong) GLKViewController* vc;
 @property(nonatomic, strong) GLKView* glView;
 @property(nonatomic, strong) EAGLContext* glContext;
+@property(nonatomic, strong) CADisplayLink* displayLink;
+
+@property(nonatomic) eFCColorBufferFormat colorBufferFormat;
+@property(nonatomic) eFCDepthBufferFormat depthBufferFormat;
+@property(nonatomic) eFCStencilBufferFormat stencilBufferFormat;
+@property(nonatomic) eFCMultismapleFormat multisampleFormat;
+
+@property(nonatomic, strong) NSString* rendererName;
+
+@property(nonatomic) float frameRate;
+
+#if !defined(ADHOC)
+@property(nonatomic, strong) UILabel* debugView;
+#endif
+
+-(void)render;
 @end
 
 

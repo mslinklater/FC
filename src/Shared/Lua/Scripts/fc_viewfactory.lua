@@ -39,6 +39,44 @@ function FCViewFactory.AddViews( name, def, parentView )
 	if def.backgroundColor ~= nil then def:SetBackgroundColor( def.backgroundColor ) end
 	if def.textColor ~= nil then def:SetTextColor( def.textColor ) end
 
+-- renderer config
+
+	if def.renderer ~= nil and type(def.renderer) == "table" then
+		def.renderer.handle = FCRenderManager.CreateRenderer( def.name, def.renderer.initFunc )
+		def:SetRendererName( def.name )
+		if def.renderer.frameRate ~= nil then
+			FCRenderManager.SetRendererFrameRate( def.renderer.handle, def.renderer.frameRate )
+		end
+		if def.renderer.renderFunc ~= nil and type( def.renderer.renderFunc ) == "string" then
+			FCRenderManager.SetRendererRenderFunc( def.renderer.handle, def.renderer.renderFunc )
+		end
+
+		-- draw buffer format stuff
+
+		local fmt = def.renderer.format
+
+		if fmt ~= nil and type( fmt ) == "table" then
+			if fmt.color ~= nil then
+				def:SetColorBufferFormat( fmt.color )
+			end
+			if fmt.depth ~= nil then
+				def:SetDepthBufferFormat( fmt.color )
+			end
+			if fmt.stencil ~= nil then
+				def:SetStencilBufferFormat( fmt.color )
+			end
+			if fmt.multisample ~= nil then
+				def:SetMultisampleFormat( fmt.color )
+			end
+		end
+	end
+
+-- post create phase
+
+	if def.postCreate ~= nil and type(def.postCreate) == "function" then
+		def.postCreate()
+	end
+
 -- descend hierarchy
 
 	for subName, subDef in pairs( def ) do

@@ -113,6 +113,10 @@ function FCView:MoveToBack()
 	FCViewManager.MoveViewToBack( self.name )
 end
 
+function FCView:SetFrameRate( mode )
+	FCViewManager.SetViewPropertyFloat( self.name, "frameRate", mode )
+end
+
 function FCView:SetContentMode( mode )
 	FCViewManager.SetViewPropertyInteger( self.name, "contentMode", mode )
 end
@@ -126,34 +130,22 @@ function FCView:SetFontWithSize( font, size )
 	FCViewManager.SetViewPropertyFloat( self.name, "fontSize", size )
 end
 
--------------------------------------------------------------------------------------
--- Constants
--------------------------------------------------------------------------------------
+function FCView:SetRendererName( name )
+	FCViewManager.SetViewPropertyString( self.name, "rendererName", name )
+end
 
--- NOTE: These MUST mach the C counterparts
+function FCView:SetColorBufferFormat( mode )
+	FCViewManager.SetViewPropertyInteger( self.name, "colorBufferFormat", mode )
+end
 
-kFCImageView = "FCImageView"
-kFCLabelView = "FCLabelView"
-kFCTextView = "FCTextView"
-kFCContainerView = "FCContainerView"
-kFCGLView = "FCGLView"
+function FCView:SetDepthBufferFormat( mode )
+	FCViewManager.SetViewPropertyInteger( self.name, "depthBufferFormat", mode )
+end
 
-kFCViewContentModeScaleToFill = 1
-kFCViewContentModeScaleAspectFit = 2
-kFCViewContentModeScaleAspectFill = 3
-kFCViewContentModeRedraw = 4
-kFCViewContentModeCenter = 5
-kFCViewContentModeTop = 6
-kFCViewContentModeBottom = 7
-kFCViewContentModeLeft = 8
-kFCViewContentModeRight = 9
-kFCViewContentModeTopLeft = 10
-kFCViewContentModeTopRight = 11
-kFCViewContentModeBottomLeft = 12
-kFCViewContentModeBottomRight = 13
+function FCView:SetStencilBufferFormat( mode )
+	FCViewManager.SetViewPropertyInteger( self.name, "stencilBufferFormat", mode )
+end
 
-kFCViewTextAlignmentLeft = 1
-kFCViewTextAlignmentCenter = 2
-kFCViewTextAlignmentRight = 3
-
-
+function FCView:SetMultisampleFormat( mode )
+	FCViewManager.SetViewPropertyInteger( self.name, "multisampleFormat", mode )
+end

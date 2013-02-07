@@ -35,4 +35,25 @@ enum eFCTextureFileSourceFormat {
 	kFCTextureFileSourcePVR
 };
 
+enum eFCColorBufferFormat {
+	kFCColorBufferFormatRGBA8888 = 1,
+	kFCColorBufferFormatRGB565
+};
+
+enum eFCDepthBufferFormat {
+	kFCDepthBufferFormatNone = 1,
+	kFCDepthBufferFormat16,
+	kFCDepthBufferFormat24
+};
+
+enum eFCStencilBufferFormat {
+	kFCStencilBufferFormatNone = 1,
+	kFCStencilBufferFormat8
+};
+
+enum eFCMultismapleFormat {
+	kFCMultisampleFormatNone = 1,
+	kFCMultisampleFormat4x
+};
+
 #endif

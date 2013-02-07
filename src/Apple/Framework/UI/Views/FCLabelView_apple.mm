@@ -75,13 +75,13 @@
 {
 	switch (alignment) {
 		case kFCViewTextAlignmentLeft:
-			mLabel.textAlignment = UITextAlignmentLeft;
+			mLabel.textAlignment = NSTextAlignmentLeft;
 			break;
 		case kFCViewTextAlignmentCenter:
-			mLabel.textAlignment = UITextAlignmentCenter;
+			mLabel.textAlignment = NSTextAlignmentCenter;
 			break;
 		case kFCViewTextAlignmentRight:
-			mLabel.textAlignment = UITextAlignmentRight;
+			mLabel.textAlignment = NSTextAlignmentRight;
 			break;
 			
 		default:

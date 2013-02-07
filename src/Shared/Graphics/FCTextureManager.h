@@ -19,7 +19,7 @@
  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  THE SOFTWARE.
  */
-
+#if 0
 #ifndef FCTextureManager_h
 #define FCTextureManager_h
 
@@ -33,4 +33,5 @@ public:
 
 extern IFCTextureManager* plt_FCTextureManager_Instance();
 
+#endif
 #endif

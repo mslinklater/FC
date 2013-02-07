@@ -67,13 +67,13 @@
 {
 	switch (alignment) {
 		case kFCViewTextAlignmentLeft:
-			_textView.textAlignment = UITextAlignmentLeft;
+			_textView.textAlignment = NSTextAlignmentLeft;
 			break;
 		case kFCViewTextAlignmentCenter:
-			_textView.textAlignment = UITextAlignmentCenter;
+			_textView.textAlignment = NSTextAlignmentCenter;
 			break;
 		case kFCViewTextAlignmentRight:
-			_textView.textAlignment = UITextAlignmentRight;
+			_textView.textAlignment = NSTextAlignmentRight;
 			break;
 			
 		default:

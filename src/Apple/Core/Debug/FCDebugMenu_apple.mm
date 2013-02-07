@@ -92,7 +92,7 @@ void plt_FCDebugMenu_AddSelectionOption( FCHandle handle, const char* name )
 		mDebugButton.backgroundColor = [UIColor blackColor];
 		mDebugButton.text = @"D";
 		mDebugButton.textColor = [UIColor whiteColor];
-		mDebugButton.textAlignment = UITextAlignmentCenter;
+		mDebugButton.textAlignment = NSTextAlignmentCenter;
 		mDebugButton.userInteractionEnabled = YES;
 		mDebugButton.alpha = 0.2;
 

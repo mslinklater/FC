@@ -26,23 +26,40 @@
 #include "FCGraphics.h"
 
 #include "Shared/Core/FCCore.h"
-#include "Shared/Framework/Actor/FCActor.h"
 
-class IFCTextureManager;
+class FCViewport;
 
-class IFCRenderer {
+class FCRenderer {
 public:
-	IFCRenderer( std::string name );
-	virtual ~IFCRenderer();
 	
-	virtual void Init( std::string name ) = 0;
-//	virtual void SetTextureManager( IFCTextureManager* pTextureManager ) = 0;
-	virtual void Render( void ) = 0;
+	static void RegisterLuaFuncs();
 	
-	virtual void AddToGatherList( FCActorRef actor ) = 0;
-	virtual void RemoveFromGatherList( FCActorRef actor ) = 0;
+	FCRenderer( std::string name );
+	virtual ~FCRenderer();
+	
+	virtual void BeginInit( void );
+	virtual void EndInit( void );
+
+	virtual void BeginRender( void );
+	virtual void EndRender( void );
+	
+	// test stuff
+	
+	virtual void RenderTestSquare( void );
+	
+	// proper stuff
+	
+	void SetBackgroundColor( FCColor4f& color );
+	void SetCamera( FCHandle h );
+	
+protected:
+
+	FCViewport*			m_pViewport;
+	
+	FCColor4f	m_backgroundColor;
 };
 
-extern IFCRenderer* plt_FCRenderer_Create( std::string name );
+
+
 
 #endif

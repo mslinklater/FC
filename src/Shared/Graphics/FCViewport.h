@@ -20,21 +20,21 @@
  THE SOFTWARE.
  */
 
-#ifndef FCShaderManager_h
-#define FCShaderManager_h
-
-#include "FCGraphics.h"
+#ifndef FCViewport_h
+#define FCViewport_h
 
 #include "Shared/Core/FCCore.h"
 
-class IFCShaderManager {
+class FCViewport {
 public:
-	IFCShaderManager(){}
-	virtual ~IFCShaderManager(){}
 	
-	virtual void ActivateShader( std::string name ) = 0;
+	void SetOrthographic( float width, float height, float near, float far );
+	void SetPosition( const FCVector3f& pos );
+	
+	const FCMatrix4f	GetProjectionMatrix();
+private:
+	FCMatrix4f	m_projection;
+	FCMatrix4f	m_translation;
 };
-
-extern IFCShaderManager* plt_FCShaderManager_Instance();
 
 #endif

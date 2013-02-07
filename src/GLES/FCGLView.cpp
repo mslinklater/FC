@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if 0
+
 #include "FCGLView.h"
 #include "Shared/Lua/FCLua.h"
 
@@ -202,3 +204,5 @@ void FCGLView::SetFrustumTranslation(const FCVector3f &trans)
 {
 	
 }
+
+#endif

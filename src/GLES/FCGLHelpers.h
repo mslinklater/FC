@@ -1,14 +1,6 @@
 #ifndef FCGLHELPERS_H
 #define FCGLHELPERS_H
 
-//#if defined (__APPLE__)
-//#if defined (TARGET_OS_IPHONE)
-//#include <OpenGLES/EAGL.h>
-//#include <OpenGLES/ES2/gl.h>
-//#include <OpenGLES/ES2/glext.h>
-//#endif
-//#endif
-
 #ifdef __APPLE__
 #include "TargetConditionals.h"
 

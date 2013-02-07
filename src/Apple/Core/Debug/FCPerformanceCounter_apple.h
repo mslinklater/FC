@@ -30,7 +30,7 @@ void plt_FCPerformanceCounter_Delete( void* instance );
 void plt_FCPerformanceCounter_Zero( void* instance );
 double plt_FCPerformanceCounter_NanoValue( void* instance );
 
-@interface FCPerformanceCounter : NSObject
+@interface FCPerformanceCounter_apple : NSObject
 {
 	uint64_t					mZeroTime;
 	mach_timebase_info_data_t	mInfo;

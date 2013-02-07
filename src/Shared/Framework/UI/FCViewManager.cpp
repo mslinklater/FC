@@ -196,7 +196,7 @@ static int lua_SetBackgroundColor( lua_State* _state )
 
 	std::string viewName = lua_tostring(_state, 1);
 	
-	FCColor4f color = ColorFromLuaColor(_state, 2);
+	FCColor4f color = FCColorFromLuaColor(_state, 2);
 	
 	s_pInstance->SetViewBackgroundColor( viewName, color );
 	
@@ -279,8 +279,6 @@ static int lua_CreateView( lua_State* _state )
 	const char* first = lua_tostring(_state, 1);
 	
 	std::string name = first;
-	
-	FC_LOG( lua_typename(_state, 2));
 	
 	const char* second = lua_tostring(_state, 2);
 	

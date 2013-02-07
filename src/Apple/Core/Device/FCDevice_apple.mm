@@ -155,6 +155,7 @@ void plt_FCDevice_WarmProbe( uint32_t options )
 	NSString* localeCode = [[NSLocale preferredLanguages] objectAtIndex:0];
 	FCDevice::Instance()->SetCap(kFCDeviceLocale, [localeCode UTF8String]);
 
+#if defined(FC_ONLINE)
 	[[GKLocalPlayer localPlayer] authenticateWithCompletionHandler:^(NSError *error) 
 	 {
 		 if (error == nil)
@@ -164,10 +165,13 @@ void plt_FCDevice_WarmProbe( uint32_t options )
 		 }
 		 else
 		 {
+#endif
 			 FCDevice::Instance()->SetCap(kFCDeviceOSGameCenter, kFCDeviceNotPresent);
 			 FCDevice::Instance()->SetCap(kFCDeviceGameCenterID, "local");
+#if defined(FC_ONLINE)
 		 }
 	 }];
+#endif
 }
 
 @end

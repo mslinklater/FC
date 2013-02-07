@@ -20,6 +20,7 @@
  THE SOFTWARE.
  */
 
+
 #ifndef _FCGLRenderer_h
 #define _FCGLRenderer_h
 
@@ -28,19 +29,37 @@
 #include "Shared/Graphics/FCRenderer.h"
 #include "GLES/FCGLModel.h"
 
-class FCGLRenderer : public IFCRenderer
+class FCGLShaderManager;
+
+class FCGLRenderer : public FCRenderer
 {
 public:
-	FCGLRenderer( std::string name);
+	FCGLRenderer( std::string name );
 	virtual ~FCGLRenderer();
+
+	void BeginInit();
+	void EndInit();
+
+	void BeginRender();
+	void EndRender();
 	
-	void Init( std::string );	// not used ?
-	void Render();
-	void AddToGatherList( FCActorRef actor );
-	void RemoveFromGatherList( FCActorRef actor );
+	void RenderTestSquare();
+	
+//	void Init( std::string );	// not used ?
+//	void Render();
+//	void AddToGatherList( FCActorRef actor );
+//	void RemoveFromGatherList( FCActorRef actor );
 private:
 	std::string		m_name;
-	FCActorRefVec	m_gatherList;
+	
+	GLuint	m_testSquareVertexBufferHandle;
+	GLuint	m_testSquareIndexBufferHandle;
+	
+	FCGLShaderManager*	m_pShaderManager;
+	
+//	FCActorRefVec	m_gatherList;
 };
 
 #endif
+
+

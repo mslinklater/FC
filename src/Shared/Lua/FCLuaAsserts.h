@@ -58,11 +58,26 @@
 	}			\
 }
 
+#define FC_LUA_ASSERT_MINPARAMS( n )	\
+{										\
+if( lua_gettop( _state ) < n )		\
+{									\
+std::stringstream error;	\
+lua_Debug ar;	\
+lua_getstack(_state, 1, &ar);	\
+lua_getinfo(_state, "nSl", &ar);	\
+error << "ERROR: Lua (" << ar.short_src << ":" << ar.currentline << "-" << _desc << "): Wrong number of parameters. Expected at least " << n << " but received " << lua_gettop( _state );	\
+FC_LOG(error.str());	\
+FCLua_DumpStack( _state );		\
+}			\
+}
+
 #else
 
 #define FC_LUA_FUNCDEF( n ){}
 #define FC_LUA_ASSERT_TYPE(stackpos, type){}
 #define FC_LUA_ASSERT_NUMPARAMS( n ){}
+#define FC_LUA_ASSERT_MINPARAMS( n ){}
 
 #endif	// DEBUG
 

@@ -71,7 +71,20 @@ public:
 
 		return mat;
 	}
-	
+
+	static FCMatrix4f Orthographic( float width, float height, float near, float far ) {
+		FCMatrix4f mat;
+		
+		mat.e[0] = 2.0f / width;
+		mat.e[5] = 2.0f / height;
+		mat.e[10] = 2.0f / (far - near);
+		mat.e[15] = 1.0f;
+		
+		mat.e[1] = mat.e[2] = mat.e[3] = mat.e[4] = mat.e[6] = mat.e[7] = mat.e[8] = mat.e[9] = mat.e[11] = mat.e[12] = mat.e[13] = mat.e[14] = 0.0f;
+		
+		return mat;
+	}
+
 	static FCMatrix4f Translate( float x, float y, float z ) {
 		FCMatrix4f mat;
 		mat.e[0] = mat.e[5] = mat.e[10] = mat.e[15] = 1.0f;

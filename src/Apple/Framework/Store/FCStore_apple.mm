@@ -21,6 +21,7 @@
  */
 
 #import "FCStore_apple.h"
+#import "VerificationController.h"
 
 #include "Shared/FCPlatformInterface.h"
 
@@ -114,6 +115,20 @@ void plt_FCStore_PurchaseRequest( const char* identifier )
 	}
 }
 
+- (void)validateReceiptForTransaction:(SKPaymentTransaction *)transaction {
+    VerificationController * verifier = [VerificationController sharedInstance];
+    [verifier verifyPurchase:transaction completionHandler:^(BOOL success) {
+        if (success) {
+            NSLog(@"Successfully verified receipt!");
+			fc_FCStore_PurchaseSuccessful( [transaction.payment.productIdentifier UTF8String] );
+        } else {
+            NSLog(@"Failed to validate receipt.");
+            [[SKPaymentQueue defaultQueue] finishTransaction: transaction];
+			fc_FCStore_PurchaseFailed( [transaction.payment.productIdentifier UTF8String] );
+        }
+    }];
+}
+
 #pragma mark - SKProductsRequestDelegate
 
 -(void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
@@ -133,38 +148,6 @@ void plt_FCStore_PurchaseRequest( const char* identifier )
 
 #pragma mark - SKPaymentTransactionObserver
 
-//+ (NSString*)base64forData:(NSData*)theData {
-//
-//    const uint8_t* input = (const uint8_t*)[theData bytes];
-//    NSInteger length = [theData length];
-//
-//	static char table[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-//
-//	NSMutableData* data = [NSMutableData dataWithLength:((length + 2) / 3) * 4];
-//	uint8_t* output = (uint8_t*)data.mutableBytes;
-//
-//    NSInteger i;
-//	for (i=0; i < length; i += 3) {
-//		NSInteger value = 0;
-//        NSInteger j;
-//		for (j = i; j < (i + 3); j++) {
-//			value <<= 8;
-//
-//			if (j < length) {
-//				value |= (0xFF & input[j]);
-//			}
-//		}
-//
-//		NSInteger theIndex = (i / 3) * 4;
-//		output[theIndex + 0] =                    table[(value >> 18) & 0x3F];
-//		output[theIndex + 1] =                    table[(value >> 12) & 0x3F];
-//		output[theIndex + 2] = (i + 1) < length ? table[(value >> 6)  & 0x3F] : '=';
-//		output[theIndex + 3] = (i + 2) < length ? table[(value >> 0)  & 0x3F] : '=';
-//	}
-//
-//	return [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
-//}
-
 - (void)paymentQueue:(SKPaymentQueue *)queue updatedTransactions:(NSArray *)transactions
 {
     for (SKPaymentTransaction *transaction in transactions)
@@ -173,28 +156,10 @@ void plt_FCStore_PurchaseRequest( const char* identifier )
         {
             case SKPaymentTransactionStatePurchased:
 			{
-				// verify receipt - provide some sample code Apple - this is a PITA
-				
-				//				NSString* base64String = [FCApplication_apple base64forData:transaction.transactionReceipt];
-				//
-				//				NSString* json = [NSString stringWithFormat:@"{\"receipt-data\" : \"%@\"", base64String];
-				//
-				//				NSData* postData = [json dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES];
-				//				NSString* postLength = [NSString stringWithFormat:@"%d", [postData length]];
-				//
-				//				NSMutableURLRequest* request = [[NSMutableURLRequest alloc] init];
-				//				[request setURL:[NSURL URLWithString:@"https://sandbox.itunes.apple.com/verifyReceipt"]];
-				//				[request setHTTPMethod:@"POST"];
-				//				[request setValue:postLength forHTTPHeaderField:@"Content-Length"];
-				//				[request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Content-Type"];
-				//				[request setHTTPBody:postData];
-				//				_connection = [NSURLConnection connectionWithRequest:request delegate:self];
-				//				[_connection start];
-				
-				//				NSLog(@"Receipt - %@", [[NSString alloc] initWithData:transaction.transactionReceipt encoding:NSUTF8StringEncoding]);
-				
 				[[SKPaymentQueue defaultQueue] finishTransaction:transaction];
-				fc_FCStore_PurchaseSuccessful( [transaction.payment.productIdentifier UTF8String] );
+				[self validateReceiptForTransaction:transaction];
+//				fc_FCStore_PurchaseSuccessful( [transaction.payment.productIdentifier UTF8String] );
+				
                 break;
 				
 			}

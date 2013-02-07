@@ -38,7 +38,7 @@ public:
 	void		DiscardTimedEvent( FCHandle hEvent );
 	
 private:
-	FCStringMapByHandle	m_timedEvents;
+	FCHandleStringMap	m_timedEvents;
 };
 
 #endif

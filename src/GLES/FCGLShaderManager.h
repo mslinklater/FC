@@ -27,17 +27,14 @@
 
 #include "FCGL.h"
 #include "FCGLShaderProgram.h"
-#include "Shared/Graphics/FCShaderManager.h"
 #include "GLES/FCGLShaderUniform.h"
 #include "GLES/FCGLShader.h"
 
-class FCGLShaderManager : public IFCShaderManager
+class FCGLShaderManager
 {
 public:
 	FCGLShaderManager();
 	virtual ~FCGLShaderManager();
-	
-	static FCGLShaderManager* Instance();
 	
 	FCGLShaderRef AddShader( std::string name );
 	FCGLShaderRef Shader( std::string name );
@@ -45,7 +42,7 @@ public:
 	FCGLShaderProgramRef Program( std::string name );
 	FCGLShaderProgramRefVec	AllShaders();
 	
-	void	ActivateShader( std::string name );
+	FCGLShaderProgramRef ActivateShader( std::string name );
 	
 private:
 	FCGLShaderRefMapByString		m_shaders;

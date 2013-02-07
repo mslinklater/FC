@@ -29,7 +29,8 @@
 #include "Shared/Graphics/FCTextureManager.h"
 #include "FCGL.h"
 
-class FCGLTextureManager : public IFCTextureManager
+//class FCGLTextureManager : public IFCTextureManager
+class FCGLTextureManager
 {
 public:
 	FCGLTextureManager();

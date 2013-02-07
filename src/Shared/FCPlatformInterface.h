@@ -43,6 +43,13 @@ extern void plt_FCDebugMenu_Show();
 extern void plt_FCDebugMenu_Hide();
 extern void fc_FCDebugMenu_ButtonPressed( FCHandle handle );
 
+/* Renderer */
+
+extern class FCRenderer* plt_FCRenderer_Create( const char* name );
+extern void fc_FCRenderer_ViewReadyToRender( const char* viewName );
+extern void fc_FCRenderer_ViewReadyToInit( const char* viewName );
+//extern class FCShaderManager* plt_FCShaderManager_Instance();
+
 /* FCAudio */
 
 extern void plt_FCAudio_PlayMusic( const char* name );
@@ -143,6 +150,7 @@ extern void plt_FCTwitter_Send();
 
 // Online Leaderboard
 
+#if defined(FC_ONLINE)
 typedef void (*plt_FCOnlineLeaderboard_PostCallback)( unsigned int handle, bool success );
 
 extern void plt_FCOnlineLeaderboard_Init( void );
@@ -157,6 +165,7 @@ extern void plt_FCOnlineAchievement_UpdateProgress( const char* name, float prog
 extern void plt_FCOnlineAchievement_ReportUnreported();
 extern void plt_FCOnlineAchievement_ClearAll();
 //extern void fc_FCOnlineAchievement_ServerProgress( const char* name, float progress );
+#endif // FC_ONLINE
 
 extern void plt_FCViewManager_SetScreenAspectRatio( float w, float h );
 extern void plt_FCViewManager_SetViewText( const char* viewName, const char* text );

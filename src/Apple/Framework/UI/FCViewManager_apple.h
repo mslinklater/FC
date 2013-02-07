@@ -25,6 +25,8 @@
 @protocol FCManagedView_apple <NSObject>
 -(void)setManagedViewName:(NSString*)name;
 -(NSString*)managedViewName;
+@optional
+-(void)destroy;
 @end
 
 class FCLuaVM;

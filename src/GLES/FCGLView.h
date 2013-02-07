@@ -20,6 +20,8 @@
  THE SOFTWARE.
  */
 
+#if 0
+
 #ifndef FCGLView_h
 #define FCGLView_h
 
@@ -53,5 +55,7 @@ typedef FCSharedPtr<FCGLView> FCGLViewRef;
 typedef std::map<std::string, FCGLViewRef>	FCGLViewMap;
 
 extern FCGLViewRef plt_FCGLView_Create( std::string name, std::string parent, const FCVector2i& size );
+
+#endif
 
 #endif

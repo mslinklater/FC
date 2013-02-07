@@ -24,36 +24,112 @@
 
 #include"FCRenderer.h"
 #include "Shared/Lua/FCLua.h"
+#include "Shared/Graphics/Camera/FCCameraManager.h"
+#include "Shared/Graphics/Camera/FCCamera.h"
 
+static FCRenderer* s_pCurrent = 0;
+static int s_numRenderers = 0;
 
-static std::map<std::string, IFCRenderer*>	s_renderers;
-static IFCRenderer* s_luaRenderer = 0;
+// Lua
 
-static int lua_SetCurrentRenderer( lua_State* _state )
+static int lua_SetBackgroundColor( lua_State* _state )
 {
-	FC_LUA_FUNCDEF("FCRenderer.SetCurrentRenderer()");
+	FC_LUA_FUNCDEF("SetBackgroundColor");
 	FC_LUA_ASSERT_NUMPARAMS(1);
-	FC_LUA_ASSERT_TYPE(1, LUA_TSTRING);
+	FC_LUA_ASSERT_TYPE(1, LUA_TTABLE);
+	FC_ASSERT(s_pCurrent);
+
+	FCColor4f color = FCColorFromLuaColor(_state, 1);
+
+	s_pCurrent->SetBackgroundColor( color );
 	
-	std::string name = lua_tostring(_state, 1);
-	
-	FC_ASSERT( s_renderers.find(name) != s_renderers.end() );
-	s_luaRenderer = s_renderers[ name ];
 	return 0;
 }
 
-IFCRenderer::IFCRenderer( std::string name )
+static int lua_RenderTestSquare( lua_State* _state )
 {
-	if( s_renderers.size() == 0 )
-	{
-		FCLua::Instance()->CoreVM()->CreateGlobalTable("FCRenderer");
-		FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetCurrentRenderer, "FCRenderer.SetCurrentRenderer");
-	}
-	s_renderers[ name ] = this;
+	FC_LUA_FUNCDEF("FCRenderer::RenderTestSquare");
+	FC_LUA_ASSERT_NUMPARAMS(0);
+	FC_ASSERT(s_pCurrent);
+	
+	s_pCurrent->RenderTestSquare();
+	return 0;
 }
 
-IFCRenderer::~IFCRenderer()
+static int lua_SetCamera( lua_State* _state )
 {
-	FC_HALT; // what to do here ?
+	FC_LUA_FUNCDEF("FCRenderer::SetCamera");
+	FC_LUA_ASSERT_NUMPARAMS(1);
+	FC_LUA_ASSERT_TYPE(1, LUA_TTABLE);
+	FC_ASSERT(s_pCurrent);
+	
+	lua_getfield(_state, 1, "h");
+	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
+//	float g = (float)lua_tonumber(_state, -1);
+//	lua_pop(_state, 1);
+
+//	FCHandle h = lua_tointeger(_state, 1);
+	
+	s_pCurrent->SetCamera( lua_tointeger(_state, -1) );
+	lua_pop(_state, 1);
+	
+	return 0;
+}
+
+// Impl
+
+void FCRenderer::RegisterLuaFuncs()
+{
+	FCLua::Instance()->CoreVM()->CreateGlobalTable("FCRenderer");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetBackgroundColor, "FCRenderer.SetBackgroundColor");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_RenderTestSquare, "FCRenderer.RenderTestSquare");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetCamera, "FCRenderer.SetCamera");
+}
+
+FCRenderer::FCRenderer( std::string name )
+: m_backgroundColor(0.0f, 0.0f, 0.0f, 1.0f)
+{
+	s_numRenderers++;
+}
+
+FCRenderer::~FCRenderer()
+{
+	s_numRenderers--;
+}
+
+void FCRenderer::BeginInit()
+{
+	s_pCurrent = this;
+}
+
+void FCRenderer::EndInit()
+{
+	s_pCurrent = 0;
+}
+
+void FCRenderer::BeginRender()
+{
+	s_pCurrent = this;
+}
+
+void FCRenderer::EndRender()
+{
+	s_pCurrent = 0;
+}
+
+void FCRenderer::RenderTestSquare( void )
+{
+	
+}
+
+void FCRenderer::SetBackgroundColor(FCColor4f &color)
+{
+	m_backgroundColor = color;
+}
+
+void FCRenderer::SetCamera( FCHandle h )
+{
+	FCCamera* pCamera = FCCameraManager::Instance()->GetCamera(h);
+	m_pViewport = pCamera->GetViewport();
 }
 

@@ -38,6 +38,8 @@
 #include "Shared/Framework/Online/FCOnlineLeaderboard.h"
 #include "Shared/Framework/Online/FCOnlineAchievement.h"
 #include "Shared/Framework/Store/FCStore.h"
+#include "Shared/Graphics/Camera/FCCameraManager.h"
+#include "Shared/Graphics/FCRenderManager.h"
 
 #include "Shared/FCPlatformInterface.h"
 
@@ -254,6 +256,7 @@ void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 	FCTwitter::Instance();
 #endif
 	
+	FCRenderManager::Instance();
 	FCAudioManager::Instance();
 	FCDevice::Instance()->ColdProbe();
 	
@@ -264,6 +267,8 @@ void FCApplication::ColdBoot( FCApplicationColdBootParams& params )
 	FCPhysics::Instance();
 	FCActorSystem::Instance();
 	FCOnlineAchievement::Instance();
+	FCCameraManager::Instance();
+	FCRenderer::RegisterLuaFuncs();
 	m_lua->LoadScript("main");
 	m_lua->CallFuncWithSig("FCApp.ColdBoot", true, "");
 //	WarmBoot();
@@ -273,6 +278,7 @@ void FCApplication::WarmBoot()
 {
 	FC_TRACE;
 	
+	FCRenderManager::Instance()->Reset();
 	s_warmBootRequested = false;
 	
 	m_delegate->InitializeSystems();
@@ -356,10 +362,6 @@ void FCApplication::Update()
 		WarmShutdown();;
 		WarmBoot();
 	}
-	
-	
-	FCPerformanceCounterRef localCounter = FCPerformanceCounterRef( new FCPerformanceCounter );
-	localCounter->Zero();
 	
 	static float pauseSmooth = 0.0f;
 	float dt = (float)m_performanceCounter->MilliValue() / 1000.0f;

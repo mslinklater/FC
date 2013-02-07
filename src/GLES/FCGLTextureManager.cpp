@@ -26,10 +26,10 @@
 
 static FCGLTextureManager* s_pInstance = 0;
 
-IFCTextureManager* plt_FCTextureManager_Instance()
-{
-	return FCGLTextureManager::Instance();
-}
+//IFCTextureManager* plt_FCTextureManager_Instance()
+//{
+//	return FCGLTextureManager::Instance();
+//}
 
 FCGLTextureManager::FCGLTextureManager()
 {

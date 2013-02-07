@@ -20,6 +20,7 @@
  THE SOFTWARE.
  */
 
+#if defined(FC_ONLINE)
 
 #import "FCOnlineAchievement_apple.h"
 #import "FCCore_apple.h"
@@ -203,3 +204,5 @@ void plt_FCOnlineAchievement_ClearAll()
 }
 
 @end
+
+#endif // FC_ONLINE

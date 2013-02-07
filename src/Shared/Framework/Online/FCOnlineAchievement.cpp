@@ -109,8 +109,9 @@ FCOnlineAchievement::FCOnlineAchievement()
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetProgress, "FCOnlineAchievement.SetProgress");
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_ReportUnreported, "FCOnlineAchievement.ReportUnreported");
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_ClearAll, "FCOnlineAchievement.ClearAll");
-	
+#if defined(FC_ONLINE)
 	plt_FCOnlineAchievement_Init();
+#endif
 }
 
 FCOnlineAchievement::~FCOnlineAchievement()
@@ -142,7 +143,9 @@ void FCOnlineAchievement::SetProgress(std::string name, float progress)
 		m_achievements[name] = progress;
 		
 		// send to server
+#if defined(FC_ONLINE)
 		plt_FCOnlineAchievement_UpdateProgress(name.c_str(), progress);
+#endif
 	}
 }
 
@@ -159,12 +162,16 @@ void FCOnlineAchievement::ServerProgress(std::string name, float progress)
 
 void FCOnlineAchievement::ReportUnreported()
 {
+#if defined(FC_ONLINE)
 	plt_FCOnlineAchievement_ReportUnreported();
+#endif
 }
 
 void FCOnlineAchievement::ClearAll()
 {
 	FC_LOG("FCOnlineAchievement: ClearAll()");
+#if defined(FC_ONLINE)
 	plt_FCOnlineAchievement_ClearAll();
+#endif
 }
 

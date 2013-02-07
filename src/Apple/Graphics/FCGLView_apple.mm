@@ -20,7 +20,11 @@
  THE SOFTWARE.
  */
 
+#import <QuartzCore/QuartzCore.h>
+
 #import "FCGLView_apple.h"
+
+#import "FCPerformanceCounter_apple.h"
 
 @implementation FCGLView_apple
 
@@ -31,23 +35,154 @@
 		_glContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 		_glView = [[GLKView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height) context:_glContext];
 		_glView.delegate = self;
+		_glView.enableSetNeedsDisplay = NO;
+		self.frameRate = 60.0f;
 		[self addSubview:_glView];
+		
+		firstFrame = YES;
+		
+#if !defined(ADHOC)
+		_debugView = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, 12)];
+		_debugView.font = [UIFont systemFontOfSize:12];
+		_debugView.backgroundColor = [UIColor clearColor];
+		_debugView.textColor = [UIColor whiteColor];
+		_debugView.shadowColor = [UIColor blackColor];
+		_debugView.shadowOffset = CGSizeMake(1.0f, 1.0f);
+		[self addSubview:_debugView];
+		_perfCounter = [[FCPerformanceCounter_apple alloc] init];
+		[_perfCounter zero];
+#endif
+		
     }
     return self;
+}
+
+-(void)destroy
+{
+	CFIndex rc = CFGetRetainCount((__bridge CFTypeRef)self);
+	
+	[_displayLink removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+	_displayLink = nil;
+	_glView.delegate = nil;
+	rc = CFGetRetainCount((__bridge CFTypeRef)self);
+}
+
+-(void)setRendererName:(NSString *)rendererName
+{
+	_rendererName = rendererName;
+}
+
+-(void)setFrameRate:(float)frameRate
+{
+	_frameRate = frameRate;
+	if (!_displayLink) {
+		_displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(render)];
+		[_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+	}
+	_displayLink.frameInterval = (int)(60.0f / _frameRate);
 }
 
 -(void)setFrame:(CGRect)frame
 {
 	[super setFrame:frame];
 	[_glView setFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
+	
+#if !defined(ADHOC)
+	_debugView.frame = CGRectMake(0, 0, frame.size.width, 12);
+#endif
+}
+
+-(void)setManagedViewName:(NSString *)managedViewName
+{
+	_managedViewName = managedViewName;
+}
+
+-(void)setColorBufferFormat:(eFCColorBufferFormat)colorBufferFormat
+{
+	switch (colorBufferFormat) {
+		case kFCColorBufferFormatRGBA8888:
+			_glView.drawableColorFormat = GLKViewDrawableColorFormatRGBA8888;
+			break;
+		case kFCColorBufferFormatRGB565:
+			_glView.drawableColorFormat = GLKViewDrawableColorFormatRGB565;
+			break;
+	}
+}
+
+-(void)setDepthBufferFormat:(eFCDepthBufferFormat)depthBufferFormat
+{
+	switch (depthBufferFormat) {
+		case kFCDepthBufferFormatNone:
+			_glView.drawableDepthFormat = GLKViewDrawableDepthFormatNone;
+			break;
+		case kFCDepthBufferFormat16:
+			_glView.drawableDepthFormat = GLKViewDrawableDepthFormat16;
+			break;
+		case kFCDepthBufferFormat24:
+			_glView.drawableDepthFormat = GLKViewDrawableDepthFormat24;
+			break;
+	}
+}
+
+-(void)setStencilBufferFormat:(eFCStencilBufferFormat)stencilBufferFormat
+{
+	switch (stencilBufferFormat) {
+		case kFCStencilBufferFormatNone:
+			_glView.drawableStencilFormat = GLKViewDrawableStencilFormatNone;
+			break;
+		case kFCStencilBufferFormat8:
+			_glView.drawableStencilFormat = GLKViewDrawableStencilFormat8;
+			break;
+	}
+}
+
+-(void)setMultisampleFormat:(eFCMultismapleFormat)multisampleFormat
+{
+	switch (multisampleFormat) {
+		case kFCMultisampleFormatNone:
+			_glView.drawableMultisample = GLKViewDrawableMultisampleNone;
+			break;
+		case kFCMultisampleFormat4x:
+			_glView.drawableMultisample = GLKViewDrawableMultisample4X;
+			break;
+	}
+}
+
+-(void)render
+{
+	[_glView display];
 }
 
 #pragma mark - GLKViewDelegate
 
 -(void)glkView:(GLKView *)view drawInRect:(CGRect)rect
 {
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
-	glClear( GL_COLOR_BUFFER_BIT );
+	[EAGLContext setCurrentContext:_glView.context];
+	
+	if (firstFrame) {
+		firstFrame = NO;
+		fc_FCRenderer_ViewReadyToInit( [_managedViewName UTF8String] );
+	}
+	
+#if !defined(ADHOC)
+	double dt = [_perfCounter nanoValue] / 1000000000.0;
+	[_perfCounter zero];
+	_debugView.text = [NSString stringWithFormat:@"%@ - fps %.0f / %.1f", _managedViewName, _frameRate, 1.0f / dt];
+#endif
+	
+	GLbitfield clearBits = GL_COLOR_BUFFER_BIT;
+	
+	if (_glView.drawableDepthFormat != GLKViewDrawableDepthFormatNone) {
+		clearBits |= GL_DEPTH_BUFFER_BIT;
+	}
+	
+	if (_glView.drawableStencilFormat != GLKViewDrawableStencilFormatNone) {
+		clearBits |= GL_STENCIL_BUFFER_BIT;
+	}
+
+	glClear( clearBits );
+
+	fc_FCRenderer_ViewReadyToRender( [_managedViewName UTF8String] );
 }
 
 @end

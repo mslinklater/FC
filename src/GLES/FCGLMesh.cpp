@@ -40,8 +40,8 @@ FCGLMesh::FCGLMesh( std::string shaderName, GLenum primitiveType )
 , m_fixedUp(false)
 , m_primitiveType(primitiveType)
 {
-	m_shaderProgram = FCGLShaderManager::Instance()->Program( shaderName );
-	m_vertexBufferStride = m_shaderProgram->Stride();
+//	m_shaderProgram = FCGLShaderManager::Instance()->Program( shaderName );
+//	m_vertexBufferStride = m_shaderProgram->Stride();
 }
 
 FCGLMesh::~FCGLMesh()
