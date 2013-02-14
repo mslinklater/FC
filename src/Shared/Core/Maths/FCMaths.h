@@ -27,5 +27,6 @@
 #include "FCVector.h"
 #include "FCMatrix.h"
 #include "FCRandom.h"
+#include "FCMathsConstants.h"
 
 #endif

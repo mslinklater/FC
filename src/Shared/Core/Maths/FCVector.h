@@ -88,9 +88,22 @@ public:
 
 	FCVector3f operator+( FCVector3f &v ){ return FCVector3f( x + v.x, y + v.y, z + v.z); }
 	FCVector3f operator-( FCVector3f &v ){ return FCVector3f( x - v.x, y - v.y, z - v.z); }
+
+	// Cross product
+	FCVector3f operator*( FCVector3f &v ){
+		return FCVector3f( (y * v.z - z * v.y), (z * v.x - x * v.z), (x * v.y - y * v.x) );
+	}
 	
+	FCVector3f operator*( float f ){ return FCVector3f( x * f, y * f, z * f ); }
+
 	void Zero( void ){ x = y = z = 0.0f; }
 	void BlenderToEngine( void ){ z = -z; }	// from blender coordinates to FC engine
+	void Normalize( void ){
+		float mag = sqrt( x * x + y * y + z * z );
+		x /= mag;
+		y /= mag;
+		z /= mag;
+	}
 	
 	float	x;
 	float	y;

@@ -53,14 +53,16 @@ static int lua_DestroyCamera( lua_State* _state )
 static int lua_SetCameraPosition( lua_State* _state )
 {
 	FC_LUA_FUNCDEF("FCCameraManager.SetCameraPosition()");
-	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_NUMPARAMS(3);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(2, LUA_TTABLE);
+	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 	
 	FCHandle h = lua_tointeger(_state, 1);
 	FCVector3f pos = FCVector3fFromLuaVector(_state, 2);
+	float t = lua_tonumber(_state, 3);
 	
-	s_pInstance->SetCameraPosition( h, pos );
+	s_pInstance->SetCameraPosition( h, pos, t );
 	
 	return 0;
 }
@@ -68,14 +70,16 @@ static int lua_SetCameraPosition( lua_State* _state )
 static int lua_SetCameraTarget( lua_State* _state )
 {
 	FC_LUA_FUNCDEF("FCCameraManager.SetCameraTarget()");
-	FC_LUA_ASSERT_NUMPARAMS(2);
+	FC_LUA_ASSERT_NUMPARAMS(3);
 	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
 	FC_LUA_ASSERT_TYPE(2, LUA_TTABLE);
+	FC_LUA_ASSERT_TYPE(3, LUA_TNUMBER);
 	
 	FCHandle h = lua_tointeger(_state, 1);
 	FCVector3f pos = FCVector3fFromLuaVector(_state, 2);
+	float t = lua_tonumber(_state, 3);
 	
-	s_pInstance->SetCameraTarget( h, pos );
+	s_pInstance->SetCameraTarget( h, pos, t );
 	
 	return 0;
 }
@@ -101,6 +105,26 @@ static int lua_SetCameraOrthographicProjection( lua_State* _state )
 	return 0;
 }
 
+static int lua_SetCameraPerspectiveProjection( lua_State* _state )
+{
+	FC_LUA_FUNCDEF("FCCameraManager.SetCameraPerspectiveProjection()");
+	FC_LUA_ASSERT_MINPARAMS(2);
+	FC_LUA_ASSERT_TYPE(1, LUA_TNUMBER);
+	FC_LUA_ASSERT_TYPE(2, LUA_TNUMBER);
+	
+	FCHandle h = lua_tointeger(_state, 1);
+	
+	float x = lua_tonumber(_state, 2);
+	float y = 0.0f;
+	
+	if (lua_gettop(_state) > 2) {
+		y = lua_tonumber(_state, 3);
+	}
+	
+	s_pInstance->SetCameraPerspectiveProjection( h, x, y );
+	return 0;
+}
+
 // Impl
 
 FCCameraManager* FCCameraManager::Instance()
@@ -120,11 +144,13 @@ FCCameraManager::FCCameraManager()
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetCameraPosition, "FCCameraManager.SetCameraPosition");
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetCameraTarget, "FCCameraManager.SetCameraTarget");
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetCameraOrthographicProjection, "FCCameraManager.SetCameraOrthographicProjection");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetCameraPerspectiveProjection, "FCCameraManager.SetCameraPerspectiveProjection");
 }
 
 FCCameraManager::~FCCameraManager()
 {
 	// deregsiter lua functions
+	FCLua::Instance()->CoreVM()->RemoveCFunction("FCCameraManager.SetCameraPerspectiveProjection");
 	FCLua::Instance()->CoreVM()->RemoveCFunction("FCCameraManager.SetCameraOrthographicProjection");
 	FCLua::Instance()->CoreVM()->RemoveCFunction("FCCameraManager.SetCameraTarget");
 	FCLua::Instance()->CoreVM()->RemoveCFunction("FCCameraManager.SetCameraPosition");
@@ -140,6 +166,13 @@ FCHandle FCCameraManager::CreateCamera()
 	m_cameras[h] = new FCCamera;
 	
 	return h;
+}
+
+void FCCameraManager::Update(float dt, float gameTime)
+{
+	for (CamerasByHandleMapIter i = m_cameras.begin(); i != m_cameras.end(); i++) {
+		i->second->Update( dt, gameTime );
+	}
 }
 
 void FCCameraManager::DestroyCamera(FCHandle h)
@@ -158,22 +191,28 @@ FCCamera* FCCameraManager::GetCamera(FCHandle h)
 	return m_cameras[h];
 }
 
-void FCCameraManager::SetCameraPosition(FCHandle h, FCVector3f pos)
+void FCCameraManager::SetCameraPosition(FCHandle h, FCVector3f pos, float t )
 {
 	FC_ASSERT(m_cameras.find(h) != m_cameras.end());
 	
-	m_cameras[h]->SetPosition( pos );
+	m_cameras[h]->SetPosition( pos, t );
 }
 
-void FCCameraManager::SetCameraTarget(FCHandle h, FCVector3f pos)
+void FCCameraManager::SetCameraTarget(FCHandle h, FCVector3f pos, float t )
 {
 	FC_ASSERT(m_cameras.find(h) != m_cameras.end());
 	
-	m_cameras[h]->SetTarget( pos );
+	m_cameras[h]->SetTarget( pos, t );
 }
 
 void FCCameraManager::SetCameraOrthographicProjection( FCHandle h, float x, float y)
 {
 	FC_ASSERT(m_cameras.find(h) != m_cameras.end());
 	m_cameras[h]->SetOrthographicProjection( x, y );
+}
+
+void FCCameraManager::SetCameraPerspectiveProjection( FCHandle h, float x, float y)
+{
+	FC_ASSERT(m_cameras.find(h) != m_cameras.end());
+	m_cameras[h]->SetPerspectiveProjection( x, y );
 }

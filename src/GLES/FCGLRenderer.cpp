@@ -60,16 +60,74 @@ void FCGLRenderer::BeginInit()
 
 	// setup the test square stuff
 	
-	float pos[4*3] = { 1.0f, 1.0f, 0.0f, 1.0f, -1.0f, 0.0f, -1.0f, -1.0f, 0.0f, -1.0f, 1.0f, 0.0f };
-	uint16_t	index[6] = { 0, 1, 2, 2, 3, 0 };
+	struct Vert {
+		float			v[3];
+		unsigned char	c[4];
+	};
+
+	Vert verts[24] = {
+		
+		// +x
+
+		{ { 1.0f, 1.0f, 1.0f }, { 255, 128, 128, 255 }},
+		{ { 1.0f, -1.0f, 1.0f }, { 255, 128, 128, 255 }},
+		{ { 1.0f, -1.0f, -1.0f }, { 255, 128, 128, 255 }},
+		{ { 1.0f, 1.0f, -1.0f }, { 255, 128, 128, 255 }},
+
+		// -x
+
+		{ { -1.0f, -1.0f, -1.0f }, { 255, 0, 0, 255 }},
+		{ { -1.0f, -1.0f, 1.0f }, { 255, 0, 0, 255 }},
+		{ { -1.0f, 1.0f, 1.0f }, { 255, 0, 0, 255 }},
+		{ { -1.0f, 1.0f, -1.0f }, { 255, 128, 128, 255 }},
+
+		// +y
+
+		{ { 1.0f, 1.0f, 1.0f }, { 128, 255, 128, 255 }},
+		{ { 1.0f, 1.0f, -1.0f }, { 128, 255, 128, 255 }},
+		{ { -1.0f, 1.0f, -1.0f }, { 128, 255, 128, 255 }},
+		{ { -1.0f, 1.0f, 1.0f }, { 128, 255, 128, 255 }},
+		
+		// -y
+
+		{ { -1.0f, -1.0f, -1.0f }, { 0, 255, 0, 255 }},
+		{ { 1.0f, -1.0f, -1.0f }, { 0, 255, 0, 255 }},
+		{ { 1.0f, -1.0f, 1.0f }, { 0, 255, 0, 255 }},
+		{ { -1.0f, -1.0f, 1.0f }, { 0, 255, 0, 255 }},
+		
+		// +z
+
+		{ { 1.0f, 1.0f, 1.0f }, { 128, 128, 255, 255 }},
+		{ { -1.0f, 1.0f, 1.0f }, { 128, 128, 255, 255 }},
+		{ { -1.0f, -1.0f, 1.0f }, { 128, 128, 255, 255 }},
+		{ { 1.0f, -1.0f, 1.0f }, { 128, 128, 255, 255 }},
+		
+		// -z
+		
+		{ { -1.0f, -1.0f, -1.0f }, { 0, 0, 255, 255 }},
+		{ { -1.0f, 1.0f, -1.0f }, { 0, 0, 255, 255 }},
+		{ { 1.0f, 1.0f, -1.0f }, { 0, 0, 255, 255 }},
+		{ { 1.0f, -1.0f, -1.0f }, { 0, 0, 255, 255 }},
+
+};
 	
-	FCglGenBuffers( 1, &m_testSquareVertexBufferHandle );
-	FCglBindBuffer( GL_ARRAY_BUFFER, m_testSquareVertexBufferHandle );
-	FCglBufferData( GL_ARRAY_BUFFER, 48, pos, GL_STATIC_DRAW );
+	uint16_t	index[6 * 6] = {	0,1,2,2,3,0,
+									4,5,6,6,7,4,
+									8,9,10,10,11,8,
+									12,13,14,14,15,12,
+									16,17,18,18,19,16,
+									20,21,22,22,23,20
+									};
+
+	FCglGenBuffers( 1, &m_testCubeVertexBufferHandle );
+	FCglBindBuffer( GL_ARRAY_BUFFER, m_testCubeVertexBufferHandle );
+	FCglBufferData( GL_ARRAY_BUFFER, sizeof(verts), verts, GL_STATIC_DRAW );
+
+	FCglGenBuffers( 1, &m_testCubeIndexBufferHandle );
+	FCglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_testCubeIndexBufferHandle );
+	FCglBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof(index), index, GL_STATIC_DRAW );
 	
-	FCglGenBuffers( 1, &m_testSquareIndexBufferHandle );
-	FCglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_testSquareIndexBufferHandle );
-	FCglBufferData( GL_ELEMENT_ARRAY_BUFFER, 12, index, GL_STATIC_DRAW );
+	FCglEnable(GL_DEPTH_TEST);
 }
 
 void FCGLRenderer::EndInit()
@@ -89,17 +147,14 @@ void FCGLRenderer::EndRender()
 	FCRenderer::EndRender();
 }
 
-void FCGLRenderer::RenderTestSquare( void )
+void FCGLRenderer::RenderTestCube( void )
 {
-	FCGLShaderProgramRef shader = m_pShaderManager->ActivateShader("debug");
-	FCGLShaderUniformRef diffuseColor = shader->GetUniform("diffuse_color");
+	FCGLShaderProgramRef shader = m_pShaderManager->ActivateShader("flatunlit");
+	
 	FCGLShaderUniformRef projection = shader->GetUniform("projection");
 	FCGLShaderUniformRef modelview = shader->GetUniform("modelview");
 	
 	shader->Use();
-	
-	FCColor4f color( 0.5f, (float)(rand() % 10) * 0.1f, 0.5f, 1.0f );
-	FCglUniform4fv( diffuseColor->Location(), diffuseColor->Num(), (GLfloat*)&color);
 	
 	const FCMatrix4f proj = m_pViewport->GetProjectionMatrix();
 	
@@ -110,10 +165,10 @@ void FCGLRenderer::RenderTestSquare( void )
 	
 	shader->BindAttributes();
 	
-	FCglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_testSquareIndexBufferHandle );
-	FCglBindBuffer( GL_ARRAY_BUFFER, m_testSquareVertexBufferHandle );
+	FCglBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_testCubeIndexBufferHandle );
+	FCglBindBuffer( GL_ARRAY_BUFFER, m_testCubeVertexBufferHandle );
 	
-	FCglDrawElements( GL_TRIANGLES, 2 * 3, GL_UNSIGNED_SHORT, 0 );
+	FCglDrawElements( GL_TRIANGLES, 36, GL_UNSIGNED_SHORT, 0 );
 }
 
 //void FCGLRenderer::Init( std::string )

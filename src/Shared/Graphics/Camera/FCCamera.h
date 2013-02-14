@@ -32,9 +32,12 @@ public:
 	FCCamera();
 	virtual ~FCCamera();
 	
-	void SetPosition( const FCVector3f& pos );
-	void SetTarget( const FCVector3f& pos );
+	void Update( float realTime, float gameTime );
+	
+	void SetPosition( const FCVector3f& pos, float t );
+	void SetTarget( const FCVector3f& pos, float t );
 	void SetOrthographicProjection( float x, float y );
+	void SetPerspectiveProjection( float x, float y );
 	
 	FCViewport* GetViewport(){ return &m_viewport; }
 	
@@ -45,9 +48,28 @@ public:
 	};
 	
 private:
-	FCVector3f	m_target;
+//	FCVector3f	m_target;	// Should be moved into viewport
+	
 	eProjectionType	m_projectionType;
 	FCViewport	m_viewport;
+
+	// position interpolation
+	
+	bool		m_positionInterpActive;
+	FCVector3f	m_positionStartPos;
+	FCVector3f	m_positionEndPos;
+	FCVector3f	m_positionDeltaPos;
+	float		m_positionInterp;
+	float		m_positionDuration;
+	
+	// target interpolation
+	
+	bool		m_targetInterpActive;
+	FCVector3f	m_targetStartPos;
+	FCVector3f	m_targetEndPos;
+	FCVector3f	m_targetDeltaPos;
+	float		m_targetInterp;
+	float		m_targetDuration;
 };
 
 #endif

@@ -38,35 +38,37 @@ extern "C" {
 
 static void common_LoadScriptForState( std::string path, lua_State* _state, bool optional)
 {
-	std::string filePath;
+	bool loadedViaHTTP = false;
+
+	int ret = LUA_ERRERR;
+
+	// try to load via HTTP
 	
-	// load via FCConnect - if not, get the binary out the bundle
 	
-	// if this is FC source, load from main bundle as plaintext
 	
-	if (path.find("fc_") == 0) {
-		filePath = plt_FCFile_ApplicationBundlePathForPath( (path + ".lua").c_str() );
-	}
-	else
-	{
-//#if defined (FC_DEBUG)
-//		path = "Assets/LuaDebug/" + path;
-//#else
-		path = "Assets/Lua/" + path;
-//#endif
-		filePath = plt_FCFile_ApplicationBundlePathForPath( (path + ".lua").c_str() );
-	}
-	
-	if(filePath == "")
-	{ 
-		if (!optional) {
-			FC_FATAL( std::string("Cannot load Lua file: ") + path);
-		} else {
-			return;
+	if( !loadedViaHTTP ) {
+		std::string filePath;
+		
+		if (path.find("fc_") == 0) {
+			filePath = plt_FCFile_ApplicationBundlePathForPath( (path + ".lua").c_str() );
 		}
+		else
+		{
+			path = "Assets/Lua/" + path;
+			filePath = plt_FCFile_ApplicationBundlePathForPath( (path + ".lua").c_str() );
+		}
+		
+		if(filePath == "")
+		{
+			if (!optional) {
+				FC_FATAL( std::string("Cannot load Lua file: ") + path);
+			} else {
+				return;
+			}
+		}
+		
+		ret = luaL_loadfile(_state, filePath.c_str());
 	}
-	
-	int ret = luaL_loadfile(_state, filePath.c_str());
 	
 	switch (ret) {
 		case LUA_ERRSYNTAX:

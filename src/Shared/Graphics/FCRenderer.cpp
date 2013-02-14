@@ -46,13 +46,13 @@ static int lua_SetBackgroundColor( lua_State* _state )
 	return 0;
 }
 
-static int lua_RenderTestSquare( lua_State* _state )
+static int lua_RenderTestCube( lua_State* _state )
 {
-	FC_LUA_FUNCDEF("FCRenderer::RenderTestSquare");
+	FC_LUA_FUNCDEF("FCRenderer::RenderTestCube");
 	FC_LUA_ASSERT_NUMPARAMS(0);
 	FC_ASSERT(s_pCurrent);
 	
-	s_pCurrent->RenderTestSquare();
+	s_pCurrent->RenderTestCube();
 	return 0;
 }
 
@@ -65,11 +65,6 @@ static int lua_SetCamera( lua_State* _state )
 	
 	lua_getfield(_state, 1, "h");
 	FC_LUA_ASSERT_TYPE(-1, LUA_TNUMBER);
-//	float g = (float)lua_tonumber(_state, -1);
-//	lua_pop(_state, 1);
-
-//	FCHandle h = lua_tointeger(_state, 1);
-	
 	s_pCurrent->SetCamera( lua_tointeger(_state, -1) );
 	lua_pop(_state, 1);
 	
@@ -82,7 +77,7 @@ void FCRenderer::RegisterLuaFuncs()
 {
 	FCLua::Instance()->CoreVM()->CreateGlobalTable("FCRenderer");
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetBackgroundColor, "FCRenderer.SetBackgroundColor");
-	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_RenderTestSquare, "FCRenderer.RenderTestSquare");
+	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_RenderTestCube, "FCRenderer.RenderTestCube");
 	FCLua::Instance()->CoreVM()->RegisterCFunction(lua_SetCamera, "FCRenderer.SetCamera");
 }
 
@@ -117,7 +112,7 @@ void FCRenderer::EndRender()
 	s_pCurrent = 0;
 }
 
-void FCRenderer::RenderTestSquare( void )
+void FCRenderer::RenderTestCube( void )
 {
 	
 }

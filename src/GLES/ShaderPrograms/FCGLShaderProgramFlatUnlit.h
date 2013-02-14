@@ -52,7 +52,7 @@ public:
 		FCglVertexAttribPointer( m_positionAttribute->Location(), 3, GL_FLOAT, GL_FALSE, m_stride, (void*)0);
 		FCglEnableVertexAttribArray( m_positionAttribute->Location() );
 		
-		FCglVertexAttribPointer( m_diffuseColorAttribute->Location(), 4, GL_UNSIGNED_BYTE, GL_TRUE, m_stride, (void*)20);
+		FCglVertexAttribPointer( m_diffuseColorAttribute->Location(), 4, GL_UNSIGNED_BYTE, GL_TRUE, m_stride, (void*)12);
 		FCglEnableVertexAttribArray( m_diffuseColorAttribute->Location() );
 	}
 	

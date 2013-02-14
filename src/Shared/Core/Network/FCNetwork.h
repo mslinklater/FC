@@ -20,46 +20,13 @@
  THE SOFTWARE.
  */
 
-#ifndef FCRenderer_h
-#define FCRenderer_h
+#ifndef FCNetwork_h
+#define FCNetwork_h
 
-#include "FCGraphics.h"
-
-#include "Shared/Core/FCCore.h"
-
-class FCViewport;
-
-class FCRenderer {
+class FCNetwork {
 public:
 	
-	static void RegisterLuaFuncs();
-	
-	FCRenderer( std::string name );
-	virtual ~FCRenderer();
-	
-	virtual void BeginInit( void );
-	virtual void EndInit( void );
-
-	virtual void BeginRender( void );
-	virtual void EndRender( void );
-	
-	// test stuff
-	
-	virtual void RenderTestCube( void );
-	
-	// proper stuff
-	
-	void SetBackgroundColor( FCColor4f& color );
-	void SetCamera( FCHandle h );
-	
-protected:
-
-	FCViewport*			m_pViewport;
-	
-	FCColor4f	m_backgroundColor;
+private:
 };
-
-
-
 
 #endif

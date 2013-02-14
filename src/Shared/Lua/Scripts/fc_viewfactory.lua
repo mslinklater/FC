@@ -60,13 +60,13 @@ function FCViewFactory.AddViews( name, def, parentView )
 				def:SetColorBufferFormat( fmt.color )
 			end
 			if fmt.depth ~= nil then
-				def:SetDepthBufferFormat( fmt.color )
+				def:SetDepthBufferFormat( fmt.depth )
 			end
 			if fmt.stencil ~= nil then
-				def:SetStencilBufferFormat( fmt.color )
+				def:SetStencilBufferFormat( fmt.stencil )
 			end
 			if fmt.multisample ~= nil then
-				def:SetMultisampleFormat( fmt.color )
+				def:SetMultisampleFormat( fmt.multisample )
 			end
 		end
 	end

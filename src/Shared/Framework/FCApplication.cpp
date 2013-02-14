@@ -389,13 +389,12 @@ void FCApplication::Update()
 	// update the game systems here...
 	
 	FCPhysics::Instance()->Update( dt, gameTime );
-	
-	FCActorSystem::Instance()->Update(dt, gameTime);
+	FCCameraManager::Instance()->Update( dt, gameTime );
+	FCActorSystem::Instance()->Update( dt, gameTime );
 	
 	// Keep this as the last update - since render views are updated here.
 	FCPhaseManager::Instance()->Update( dt );
-	
-	
+
 	for (FCApplicationUpdateFuncPtrSetIter i = m_updateSubscribers.begin(); i != m_updateSubscribers.end(); i++) {
 		(*i)(dt, gameTime);
 	}

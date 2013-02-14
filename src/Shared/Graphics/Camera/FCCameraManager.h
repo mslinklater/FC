@@ -34,14 +34,17 @@ public:
 	FCCameraManager();
 	virtual ~FCCameraManager();
 	
+	void		Update( float dt, float gameTime );
+	
 	FCHandle	CreateCamera();
 	void		DestroyCamera( FCHandle h );
 	
 	FCCamera*	GetCamera( FCHandle h );
 
-	void		SetCameraPosition( FCHandle h, FCVector3f pos );
-	void		SetCameraTarget( FCHandle h, FCVector3f pos );
+	void		SetCameraPosition( FCHandle h, FCVector3f pos, float time );
+	void		SetCameraTarget( FCHandle h, FCVector3f pos, float t );
 	void		SetCameraOrthographicProjection( FCHandle h, float x, float y );
+	void		SetCameraPerspectiveProjection( FCHandle h, float x, float y );
 	
 	// set position
 	// set target
@@ -59,6 +62,7 @@ public:
 protected:
 	
 	typedef std::map<FCHandle, FCCamera*>	CamerasByHandleMap;
+	typedef CamerasByHandleMap::iterator	CamerasByHandleMapIter;
 
 	CamerasByHandleMap	m_cameras;
 };

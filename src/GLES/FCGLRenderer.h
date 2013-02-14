@@ -43,21 +43,15 @@ public:
 	void BeginRender();
 	void EndRender();
 	
-	void RenderTestSquare();
+	void RenderTestCube();
 	
-//	void Init( std::string );	// not used ?
-//	void Render();
-//	void AddToGatherList( FCActorRef actor );
-//	void RemoveFromGatherList( FCActorRef actor );
 private:
 	std::string		m_name;
 	
-	GLuint	m_testSquareVertexBufferHandle;
-	GLuint	m_testSquareIndexBufferHandle;
+	GLuint	m_testCubeVertexBufferHandle;
+	GLuint	m_testCubeIndexBufferHandle;
 	
 	FCGLShaderManager*	m_pShaderManager;
-	
-//	FCActorRefVec	m_gatherList;
 };
 
 #endif

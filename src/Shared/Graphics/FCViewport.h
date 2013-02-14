@@ -28,13 +28,29 @@
 class FCViewport {
 public:
 	
-	void SetOrthographic( float width, float height, float near, float far );
-	void SetPosition( const FCVector3f& pos );
+	FCViewport();
+	virtual ~FCViewport();
 	
+	void SetOrthographic( float width, float height, float near, float far );
+	void SetPerspective( float width, float height, float near, float far );
+	
+	void SetPosition( const FCVector3f& pos );
+	FCVector3f	Position(){ return m_position; }
+
+	void SetTarget( const FCVector3f& pos );
+	FCVector3f	Target(){ return m_target; }
+
 	const FCMatrix4f	GetProjectionMatrix();
 private:
+	
+	void Realign();
+	
+	FCVector3f	m_position;
+	FCVector3f	m_target;
+	FCVector3f	m_up;
 	FCMatrix4f	m_projection;
 	FCMatrix4f	m_translation;
+	FCMatrix4f	m_rotation;
 };
 
 #endif

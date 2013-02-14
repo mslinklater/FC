@@ -22,21 +22,72 @@
 
 #include "FCViewport.h"
 
+FCViewport::FCViewport()
+: m_position( 0.0f, 0.0f, 0.0f )
+, m_target( 0.0f, 0.0f, 0.0f )
+, m_up( 0.0f, 1.0f, 0.0f )
+{
+	
+}
+
+FCViewport::~FCViewport()
+{
+	
+}
+
 void FCViewport::SetOrthographic(float width, float height, float near, float far)
 {
 	m_projection = FCMatrix4f::Orthographic( width, height, near, far );
 }
 
+void FCViewport::SetPerspective(float width, float height, float near, float far)
+{
+	m_projection = FCMatrix4f::Frustum( -width, width, -height, height, near, far );
+}
+
 void FCViewport::SetPosition(const FCVector3f &pos)
 {
-	m_translation = FCMatrix4f::Translate(-pos.x, -pos.y, pos.z);
+	m_position = pos;
+	m_translation = FCMatrix4f::Translate(-pos.x, -pos.y, -pos.z);
+	
+	Realign();
+}
+
+void FCViewport::SetTarget(const FCVector3f &pos)
+{
+	m_target = pos;
+	Realign();
+}
+
+void FCViewport::Realign()
+{
+	// set rotation matrix
+	
+	m_rotation = FCMatrix4f::Identity();
+	
+	FCVector3f dir = m_position - m_target;
+	dir.Normalize();
+	FCVector3f right = m_up * dir;
+	right.Normalize();
+	FCVector3f up = dir * right;
+	up.Normalize();
+	
+	m_rotation.e[0] = right.x;
+	m_rotation.e[1] = up.x;
+	m_rotation.e[2] = dir.x;
+	m_rotation.e[4] = right.y;
+	m_rotation.e[5] = up.y;
+	m_rotation.e[6] = dir.y;
+	m_rotation.e[8] = right.z;
+	m_rotation.e[9] = up.z;
+	m_rotation.e[10] = dir.z;
 }
 
 const FCMatrix4f FCViewport::GetProjectionMatrix()
 {
 	FCMatrix4f ret;
 	
-	ret = m_translation * m_projection;
+	ret = m_translation * m_rotation * m_projection;
 	
 	return ret;
 }
